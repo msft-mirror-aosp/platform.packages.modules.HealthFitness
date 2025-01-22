@@ -359,7 +359,7 @@
     <string name="read_permission_category" msgid="6002099618259628632">"Дазвольце праграме “<xliff:g id="APP_NAME">%1$s</xliff:g>” счытваць даныя"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Дазвольце праграме “<xliff:g id="APP_NAME">%1$s</xliff:g>” запісваць даныя"</string>
     <string name="request_permissions_allow" msgid="4201324235711040631">"Дазволіць"</string>
-    <string name="request_permissions_allow_all" msgid="3419414351406638770">"Дазволіць усё"</string>
+    <string name="request_permissions_allow_all" msgid="3419414351406638770">"Дазволіць усе"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Не дазваляць"</string>
     <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Выберыце, якія даныя зможа счытваць ці запісваць гэта праграма ў платформе \"Здароўе і спорт\""</string>
     <string name="request_permissions_data_access_type_read" msgid="6005792244220381045">"Выберыце, якія даныя зможа счытваць гэта праграма з платформы \"Здароўе і спорт\""</string>

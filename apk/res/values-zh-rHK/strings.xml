@@ -89,7 +89,7 @@
     <string name="all_entries_button" msgid="5109091107239135235">"查看所有資料"</string>
     <string name="selected_date_view_action_description" msgid="6237240886988225664">"變更"</string>
     <string name="delete_permission_type_data_button" msgid="2270819954943391797">"刪除此資料"</string>
-    <string name="permgrouplab_health" msgid="468961137496587966">"Health Connect"</string>
+    <string name="permgrouplab_health" msgid="468961137496587966">"健康資料同步"</string>
     <string name="permgroupdesc_health" msgid="252080476917407273">"存取你的健康資料"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"讀取卡路里消耗量資料"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"允許應用程式讀取卡路里消耗量資料"</string>
@@ -168,7 +168,7 @@
     <string name="elevation_gained_lowercase_label" msgid="7532517182346738562">"爬升高度"</string>
     <string name="elevation_gained_read_content_description" msgid="6018756385903843355">"讀取爬升高度資料"</string>
     <string name="elevation_gained_write_content_description" msgid="6790199544670231367">"寫入爬升高度資料"</string>
-    <string name="floors_climbed_uppercase_label" msgid="3754372357767832441">"已行樓梯層數"</string>
+    <string name="floors_climbed_uppercase_label" msgid="3754372357767832441">"行樓梯層數"</string>
     <string name="floors_climbed_lowercase_label" msgid="5326072443481377299">"已行樓梯層數"</string>
     <string name="floors_climbed_read_content_description" msgid="4730764877684911752">"讀取已行樓梯層數資料"</string>
     <string name="floors_climbed_write_content_description" msgid="3480340610185615655">"寫入已行樓梯層數資料"</string>
@@ -423,7 +423,7 @@
     <string name="no_apps_allowed" msgid="5794833581324128108">"未允許任何應用程式"</string>
     <string name="no_apps_denied" msgid="743327680286446017">"未拒絕任何應用程式"</string>
     <string name="permissions_disconnect_all_dialog_title" msgid="27474286046207122">"要移除所有應用程式的存取權嗎？"</string>
-    <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"所有應用程式將無法存取 Health Connect，亦無法在當中新增資料。系統並不會刪除任何現有資料。\n\n此操作不會影響此應用程式可能擁有的位置、相機或麥克風等其他權限。"</string>
+    <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"所有應用程式將無法存取「健康資料同步」，亦無法在當中新增資料。系統並不會刪除任何現有資料。\n\n此操作不會影響此應用程式可能擁有的位置、相機或麥克風等其他權限。"</string>
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"全部移除"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"管理應用程式"</string>
     <string name="see_app_data" msgid="3951030076195119476">"查看應用程式資料"</string>
@@ -431,7 +431,7 @@
     <string name="delete_app_data" msgid="6890357774873859952">"刪除應用程式資料"</string>
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"已停用的應用程式"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"這些應用程式不再擁有存取權，但仍有資料儲存在 Health Connect"</string>
-    <string name="manage_permissions_time_frame" msgid="1299483940842401923">"「<xliff:g id="APP_NAME">%1$s</xliff:g>」可以讀取 <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>後新增的資料"</string>
+    <string name="manage_permissions_time_frame" msgid="1299483940842401923">"「<xliff:g id="APP_NAME">%1$s</xliff:g>」可以讀取<xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>後新增的資料"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"如要管理此應用程式可以存取的其他 Android 權限，請前往「設定」&gt; [應用程式]"</string>
     <string name="manage_permissions_rationale" msgid="2780008055185441703">"如要瞭解「<xliff:g id="APP_NAME">%1$s</xliff:g>」如何處理你的資料，請參閱開發人員的私隱權政策"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"如要管理此應用程式可以存取的其他 Android 權限，請前往「設定」，然後輕按 [應用程式]"</string>
@@ -537,10 +537,10 @@
     <string name="export_import_no_apps_text" msgid="6403119325024893690">"沒有可用的應用程式。安裝雲端儲存空間應用程式，即可在此查看"</string>
     <string name="export_import_install_apps_text" msgid="5026922993254770904">"如需使用更多選項，請安裝雲端儲存空間應用程式"</string>
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"前往「Play 商店」"</string>
-    <string name="onboarding_title" msgid="8550656211291180188">"開始使用 Health Connect"</string>
+    <string name="onboarding_title" msgid="8550656211291180188">"開始使用「健康資料同步」"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"「健康資料同步」能儲存健康和健身資料，方便你同步處理裝置上各個應用程式的資料"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"「健康資料同步」會儲存及同步來自不同應用程式的健康和健身資料。\n\n"<b>"健康和健身資料："</b>"包括運動時段、步數、營養、睡眠等等\n\n"<b>"健康記錄："</b>"包括疫苗、檢測結果等等"</string>
-    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"你可以用「健康資料同步」嚟"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"「健康資料同步」的用途"</string>
     <string name="share_data" msgid="3481932156368883946">"與應用程式分享資料"</string>
     <string name="share_data_description" msgid="2919871301634375092">"選擇每個應用程式可讀取或寫入 Health Connect 的資料"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"管理設定和私隱"</string>
@@ -590,7 +590,7 @@
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"返回"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"完成"</string>
     <string name="delete_dialog_failure_close_button" msgid="4376647579348193224">"關閉"</string>
-    <string name="delete_dialog_success_title" msgid="900884533930984889">"已從「健康資料同步」刪除的資料"</string>
+    <string name="delete_dialog_success_title" msgid="900884533930984889">"已從「健康資料同步」刪除資料"</string>
     <string name="delete_dialog_success_message" msgid="7454086333205881294">"如果你想從已連接應用程式徹底刪除資料，請檢查每個可能有儲存資料的應用程式。"</string>
     <string name="delete_dialog_done_button" msgid="1371340030947835493">"完成"</string>
     <string name="delete_dialog_see_connected_apps_button" msgid="2975631672738138716">"查看已連接的應用程式"</string>
@@ -1104,7 +1104,7 @@
     <string name="default_app_summary" msgid="6183876151011837062">"裝置預設設定"</string>
     <string name="app_data_title" msgid="6499967982291000837">"應用程式資料"</string>
     <string name="app_data_no_data_footer" msgid="7027700714577530371">"「<xliff:g id="APP_NAME">%1$s</xliff:g>」的資料將在這裡顯示"</string>
-    <string name="all_data_no_data_footer" msgid="2553443887019153340">"資料來自可存取「健康資料同步」的應用程式將會在這裡顯示"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"這裡會顯示可存取「健康資料同步」的應用程式的資料"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"日"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"週"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"月"</string>
@@ -1112,7 +1112,7 @@
     <string name="last_week_header" msgid="5194448963146719382">"上週"</string>
     <string name="this_month_header" msgid="2452395268894677189">"本月"</string>
     <string name="last_month_header" msgid="1359164797239191253">"上個月"</string>
-    <string name="tab_entries" msgid="3402700951602029493">"項目"</string>
+    <string name="tab_entries" msgid="3402700951602029493">"資料"</string>
     <string name="tab_access" msgid="7818197975407243701">"存取權"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"開始使用「健康資料同步」"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"同步第一個應用程式，即可在這些應用程式間分享健康和健身資料"</string>
@@ -1124,7 +1124,7 @@
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"尋找更多可透過「健康資料同步」與「<xliff:g id="APP_NAME">%s</xliff:g>」同步的應用程式"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"在應用程式商店上查看"</string>
     <string name="lock_screen_banner_title" msgid="5384381892985739755">"設定螢幕鎖定"</string>
-    <string name="lock_screen_banner_content" msgid="3392527073622152481">"為提高健康資料安全性，請為此裝置設定 PIN、圖案或密碼"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"為進一步保障健康資料安全，請為此裝置設定 PIN、圖案或密碼"</string>
     <string name="lock_screen_banner_button" msgid="2537090011380728122">"設定螢幕鎖定"</string>
     <string name="select_all" msgid="837499881590001166">"全部選取"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"已連結的應用程式將無法在「健康資料同步」中讀取這些資料"</string>
@@ -1143,17 +1143,17 @@
     <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"要永久刪除所選的「<xliff:g id="APP_NAME">%s</xliff:g>」資料嗎？"</string>
     <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"要永久刪除 <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>的所有項目嗎？"</string>
     <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"要永久刪除 <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>該星期的所有項目嗎？"</string>
-    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"要永久刪除 <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>的所有項目嗎？"</string>
+    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"要永久刪除<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>的所有項目嗎？"</string>
     <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"要永久刪除 <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>的所選項目嗎？"</string>
-    <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"要永久刪除 <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>該星期的所選項目嗎？"</string>
-    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"要永久刪除 <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>的所選項目嗎？"</string>
+    <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"要永久刪除<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>該星期的所選項目嗎？"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"要永久刪除<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>的所選項目嗎？"</string>
     <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"要永久刪除此項目嗎？"</string>
     <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"要永久刪除 <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>的所有「<xliff:g id="APP_NAME">%1$s</xliff:g>」項目嗎？"</string>
     <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"要永久刪除 <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>該星期的所有「<xliff:g id="APP_NAME">%1$s</xliff:g>」項目嗎？"</string>
     <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"要永久刪除 <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>的所有「<xliff:g id="APP_NAME">%1$s</xliff:g>」項目嗎？"</string>
-    <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"要永久刪除 <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>所選的「<xliff:g id="APP_NAME">%1$s</xliff:g>」項目嗎？"</string>
-    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"要永久刪除 <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>該星期所選的「<xliff:g id="APP_NAME">%1$s</xliff:g>」項目嗎？"</string>
-    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"要永久刪除 <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>所選的「<xliff:g id="APP_NAME">%1$s</xliff:g>」項目嗎？"</string>
+    <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"要永久刪除<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>的所選「<xliff:g id="APP_NAME">%1$s</xliff:g>」項目嗎？"</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"要永久刪除<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>該星期的所選「<xliff:g id="APP_NAME">%1$s</xliff:g>」項目嗎？"</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"要永久刪除<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>的所選「<xliff:g id="APP_NAME">%1$s</xliff:g>」項目嗎？"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"要永久刪除此「<xliff:g id="APP_NAME">%s</xliff:g>」項目嗎？"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"要永久刪除「<xliff:g id="APP_NAME">%2$s</xliff:g>」的<xliff:g id="DATA_TYPE">%1$s</xliff:g>資料嗎？"</string>
     <string name="on" msgid="8266542510798355807">"開啟"</string>
@@ -1179,13 +1179,13 @@
     <string name="give_permission_prompt" msgid="5788144216023065504">"這些權限允許「<xliff:g id="APP_NAME">%1$s</xliff:g>」存取裝置感應器的資料。"</string>
     <string name="allowed_apps_count" msgid="2289260267605628310">"已允許 <xliff:g id="NUMBER_0">%1$d</xliff:g> 個應用程式 (共 <xliff:g id="OTHER_NUMBER">%2$d</xliff:g> 個)"</string>
     <string name="no_apps_requesting" msgid="8088684445910698363">"沒有任何應用程式提出要求"</string>
-    <string name="allowed" msgid="4158456017482263737">"允許"</string>
+    <string name="allowed" msgid="4158456017482263737">"已允許"</string>
     <string name="not_allowed" msgid="6092523505093372147">"不允許"</string>
     <string name="access_sensor_note" msgid="7949933977197789634">"擁有此權限的應用程式可存取裝置感應器的<xliff:g id="DATA_TYPE">%s</xliff:g>資料。"</string>
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"要移除手錶上所有應用程式的<xliff:g id="DATA_TYPE">%s</xliff:g>存取權嗎？"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"剔號"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"叉號"</string>
-    <string name="current_allow_mode" msgid="6716206063077569218">"「<xliff:g id="APP_NAME">%1$s</xliff:g>」目前的健身和身心健康資料存取權：<xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="current_allow_mode" msgid="6716206063077569218">"目前，<xliff:g id="ALLOW_MODE">%2$s</xliff:g>「<xliff:g id="APP_NAME">%1$s</xliff:g>」存取健身和身心健康資料"</string>
     <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"一律允許「<xliff:g id="APP_NAME">%1$s</xliff:g>」存取健身和身心健康資料嗎？"</string>
     <string name="current_access" msgid="1457167070428176139">"「<xliff:g id="APP_NAME">%1$s</xliff:g>」可以存取<xliff:g id="DATA_TYPES">%2$s</xliff:g>。"</string>
     <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"管理健身和身心健康權限"</string>

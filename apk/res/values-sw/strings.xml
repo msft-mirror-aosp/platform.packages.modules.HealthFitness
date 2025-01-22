@@ -639,8 +639,8 @@
     <string name="spotting" msgid="1637175837078770520">"Data ya matone"</string>
     <string name="flow_spotting" msgid="832418664953780156">"Data ya matone"</string>
     <string name="flow_light" msgid="1937543318146228793">"Mtiririko mdogo wa damu"</string>
-    <string name="flow_medium" msgid="3783688724668943154">"Mtiririko kiasi wa damu"</string>
-    <string name="flow_heavy" msgid="8672261792750634294">"Mtiririko mkubwa wa damu"</string>
+    <string name="flow_medium" msgid="3783688724668943154">"Uvujaji wa wastani"</string>
+    <string name="flow_heavy" msgid="8672261792750634294">"Uvujaji mwingi"</string>
     <string name="flow_unknown" msgid="1634411759928572900">"Mtiririko wa kiwango kisichojulikana cha hedhi"</string>
     <string name="period_day" msgid="3821944462093965882">"Siku ya <xliff:g id="DAY">%1$d</xliff:g> kati ya siku <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g> za hedhi"</string>
     <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{Hedhi (siku 1)}other{Hedhi (siku #)}}"</string>
@@ -1144,7 +1144,7 @@
     <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"Ungependa kufuta kabisa data yote ya <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"Ungependa kufuta kabisa data yote ya wiki ya <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Ungependa kufuta kabisa data yote ya <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
-    <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Ungependa kufuta kabisa data uliyochagua ya <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Ungependa kufuta kabisa data uliyochagua ya tarehe <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"Ungependa kufuta kabisa data uliyochagua ya wiki ya <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"Ungependa kufuta kabisa data uliyochagua ya <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"Ungependa kufuta kabisa data hii?"</string>
@@ -1152,7 +1152,7 @@
     <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"Ungependa kufuta kabisa data yote ya <xliff:g id="APP_NAME">%1$s</xliff:g> ya wiki ya <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"Ungependa kufuta kabisa data yote ya <xliff:g id="APP_NAME">%1$s</xliff:g> ya <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"Ungependa kufuta kabisa data uliyochagua ya <xliff:g id="APP_NAME">%1$s</xliff:g> ya <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
-    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Ungependa kufuta kabisa data uliyochagua ya <xliff:g id="APP_NAME">%1$s</xliff:g> ya wiki ya <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Ungependa kufuta kabisa data uliyochagua ya <xliff:g id="APP_NAME">%1$s</xliff:g> ya wiki ya tarehe <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Ungependa kufuta kabisa data uliyochagua ya <xliff:g id="APP_NAME">%1$s</xliff:g> ya <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Ungependa kufuta kabisa data hii ya <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Ungependa kufuta kabisa data ya <xliff:g id="DATA_TYPE">%1$s</xliff:g> kwenye <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
@@ -1165,7 +1165,7 @@
     <string name="request_permissions_allow_selected" msgid="218527615680495438">"Ruhusu ulizochagua"</string>
     <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Unapotumia programu"</string>
     <string name="request_permissions_deny_all" msgid="4123735770293545320">"Kataa zote"</string>
-    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Ungependa kuruhusu <xliff:g id="APP_NAME">%1$s</xliff:g> ifikie data ya mazoezi na siha?"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Ungependa kuruhusu <xliff:g id="APP_NAME">%1$s</xliff:g> ifikie data ya siha na afya?"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> inaomba ruhusa ya kufikia data ya <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nChagua kuruhusu zote au udhibiti kila ruhusa kivyake."</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Ungependa kuruhusu <xliff:g id="APP_NAME">%1$s</xliff:g> ifikie <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
     <string name="fitness_and_wellness" msgid="2002316898861559748">"Siha na afya"</string>

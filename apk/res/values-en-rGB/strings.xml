@@ -1104,7 +1104,7 @@
     <string name="default_app_summary" msgid="6183876151011837062">"Device default"</string>
     <string name="app_data_title" msgid="6499967982291000837">"App data"</string>
     <string name="app_data_no_data_footer" msgid="7027700714577530371">"Data from <xliff:g id="APP_NAME">%1$s</xliff:g> will show here"</string>
-    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Data from apps with access to Health Connect will show here"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Data from apps with access to Health Connect will be shown here"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"Day"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Week"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Month"</string>

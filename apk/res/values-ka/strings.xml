@@ -48,7 +48,7 @@
     <string name="recent_access_header" msgid="7623497371790225888">"ბოლო წვდომა"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"არცერთ აპს არ ჰქონდა წვდომა Health Connect-თან"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"ყველა ბოლო წვდომის ნახვა"</string>
-    <string name="recent_access_screen_description" msgid="331101209889185402">"იხილეთ, რომელ აპებს ჰქონდათ თქვენს მონაცემებზე წვდომა ბოლო 24 საათის განმავლობაში"</string>
+    <string name="recent_access_screen_description" msgid="331101209889185402">"იხილეთ, რომელ აპებს ჰქონდა თქვენს მონაცემებზე წვდომა ბოლო 24 საათის განმავლობაში"</string>
     <string name="today_header" msgid="1006837293203834373">"დღეს"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"გუშინ"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"კითხვა: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
@@ -1104,7 +1104,7 @@
     <string name="default_app_summary" msgid="6183876151011837062">"მოწყობილობის ნაგულისხმევი"</string>
     <string name="app_data_title" msgid="6499967982291000837">"აპის მონაცემები"</string>
     <string name="app_data_no_data_footer" msgid="7027700714577530371">"მონაცემები <xliff:g id="APP_NAME">%1$s</xliff:g>-იდან აქ გამოჩნდება"</string>
-    <string name="all_data_no_data_footer" msgid="2553443887019153340">"მონაცემები იმ აპებიდან, რომლებსაც Health Connect-ზე აქვთ წვდომა, აქ გამოჩნდება"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"მონაცემები იმ აპებიდან, რომლებსაც Health Connect-ზე აქვს წვდომა, აქ გამოჩნდება"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"დღე"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"კვირა"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"თვე"</string>
@@ -1143,10 +1143,10 @@
     <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"გსურთ <xliff:g id="APP_NAME">%s</xliff:g>-ის არჩეული მონაცემების სამუდამოდ წაშლა?"</string>
     <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>-ისთვის ყველა სამუდამოდ წაშლა?"</string>
     <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>-ის კვირისთვის ყველა შენატანის სამუდამოდ წაშლა?"</string>
-    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>-ისთვის ყველა სამუდამოდ წაშლა?"</string>
+    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>სთვის ყველა შენატანის სამუდამოდ წაშლა?"</string>
     <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>-ისთვის არჩეული შენატანების სამუდამოდ წაშლა?"</string>
     <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>-ის კვირისთვის არჩეული შენატანების სამუდამოდ წაშლა?"</string>
-    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>-ისთვის არჩეული შენატანების სამუდამოდ წაშლა?"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>-სთვის არჩეული შენატანების სამუდამოდ წაშლა?"</string>
     <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"გსურთ ამ შენატანის სამუდამოდ წაშლა?"</string>
     <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>-ისთვის <xliff:g id="APP_NAME">%1$s</xliff:g>-ის ყველა შენატანის სამუდამოდ წაშლა?"</string>
     <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>-ის კვირისთვის <xliff:g id="APP_NAME">%1$s</xliff:g>-ის ყველა შენატანის სამუდამოდ წაშლა?"</string>

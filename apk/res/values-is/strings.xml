@@ -343,7 +343,7 @@
     <string name="procedures_uppercase_label" msgid="9176087520132593261">"Upplýsingar um meðferðir"</string>
     <string name="procedures_lowercase_label" msgid="5320804313946273234">"upplýsingar um meðferðir"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"Lesa upplýsingar um meðferðir"</string>
-    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Upplýsingar um lífstíl"</string>
+    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Upplýsingar um lífsstíl"</string>
     <string name="social_history_lowercase_label" msgid="9027541979445736412">"upplýsingar um lífstíl"</string>
     <string name="social_history_content_description" msgid="7187059309389849831">"Lesa upplýsingar um lífstíl"</string>
     <string name="visits_uppercase_label" msgid="8532619758336375886">"Upplýsingar um heimsóknir"</string>
@@ -376,7 +376,7 @@
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"Um heilsufarsgögn"</string>
     <string name="medical_request_data_to_share" msgid="6778034304921873317">"Gögnum sem verður deilt eru m.a."</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"Ef þú veitir <xliff:g id="APP_NAME">%1$s</xliff:g> aðgang getur forritið deilt heilsufarsgögnunum þínum með Heilsutengingu."</string>
-    <string name="medical_request_footer" msgid="6533749932770903089">"Samstilltu heilsufarsgögnin þín úr mismunandi forritum og af mismunandi upprunum til að nálgast þau á einum stað"</string>
+    <string name="medical_request_footer" msgid="6533749932770903089">"Samstilltu heilsufarsgögnin þín úr mismunandi forritum og af mismunandi uppruna til að nálgast þau á einum stað"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Fjarlægja allar heimildir?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Fjarlægja allt"</string>
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> mun ekki lengur geta lesið eða skrifað nein gögn frá Heilsutengingu.\n\nÞetta hefur ekki áhrif á aðrar heimildir sem forritið kann að hafa, eins og fyrir myndavél, hljóðnema eða staðsetningu."</string>
@@ -541,9 +541,9 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Heilsutenging varðveitir heilsu- og hreystigögnin þín og gefur þér kost á að samstilla ýmis forrit í tækinu þínu á einfaldan hátt"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Heilsutenging vistar og samstillir heilsu- og hreystigögnin þín úr mismunandi forritum.\n\n"<b>"Heilsu- og hreystigögn,"</b>" þ.m.t. æfingalotur, skref, næring, svefn og fleira\n\n"<b>"Heilsufarsgögn,"</b>" þ.m.t. bólusetningar, rannsóknarniðurstöður og fleira"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Með Heilsutengingu er hægt að"</string>
-    <string name="share_data" msgid="3481932156368883946">"Deildu gögnum með forritum"</string>
+    <string name="share_data" msgid="3481932156368883946">"Deilt gögnum með forritum"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Veldu hvaða gögn hvert forrit getur lesið eða skrifað yfir í Heilsutengingu"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Stjórnaðu stillingum og persónuvernd"</string>
+    <string name="manage_your_settings" msgid="7391184508015127137">"Stjórnað stillingum og persónuvernd"</string>
     <string name="manage_your_settings_description" msgid="557943168930365334">"Breyttu heimildum forrita og stjórnaðu gögnunum þínum hvenær sem er"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Til baka"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Byrja"</string>
@@ -1167,7 +1167,7 @@
     <string name="request_permissions_deny_all" msgid="4123735770293545320">"Hafna öllu"</string>
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Veita <xliff:g id="APP_NAME">%1$s</xliff:g> aðgang að gögnum um hreysti og vellíðan?"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> biður um aðgang að <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nVeldu að leyfa allt eða stjórnaðu þeim hverju fyrir sig."</string>
-    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Viltu veita <xliff:g id="APP_NAME">%1$s</xliff:g> aðgang að <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Viltu veita <xliff:g id="APP_NAME">%1$s</xliff:g> aðgang að „<xliff:g id="DATA_TYPE">%2$s</xliff:g>“?"</string>
     <string name="fitness_and_wellness" msgid="2002316898861559748">"Hreysti og vellíðan"</string>
     <string name="view_permissions_all_the_time" msgid="6899702815770193290">"hvenær sem er"</string>
     <string name="view_permissions_while_in_use" msgid="2031627107397429473">"á meðan forritið er í notkun"</string>

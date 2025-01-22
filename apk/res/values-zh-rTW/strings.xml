@@ -340,8 +340,8 @@
     <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"懷孕"</string>
     <string name="pregnancy_lowercase_label" msgid="810439290131044517">"懷孕"</string>
     <string name="pregnancy_content_description" msgid="3436773729243586287">"讀取懷孕資料"</string>
-    <string name="procedures_uppercase_label" msgid="9176087520132593261">"程序"</string>
-    <string name="procedures_lowercase_label" msgid="5320804313946273234">"程序"</string>
+    <string name="procedures_uppercase_label" msgid="9176087520132593261">"醫療程序"</string>
+    <string name="procedures_lowercase_label" msgid="5320804313946273234">"醫療程序"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"閱讀程序資料"</string>
     <string name="social_history_uppercase_label" msgid="4119611299449533999">"生活型態"</string>
     <string name="social_history_lowercase_label" msgid="9027541979445736412">"社交活動記錄"</string>
@@ -443,7 +443,7 @@
     <string name="additional_access_summary" msgid="1076197455435130191">"過去的資料、背景資料"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"這個應用程式的其他權限已移除"</string>
     <string name="permissions_header" msgid="6519976063360071569">"權限"</string>
-    <string name="fitness_permissions" msgid="586264186537460254">"健身與保健"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"健身與健康"</string>
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"運動、睡眠、營養等等"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"健康記錄"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"健康記錄"</string>
@@ -1104,7 +1104,7 @@
     <string name="default_app_summary" msgid="6183876151011837062">"裝置預設設定"</string>
     <string name="app_data_title" msgid="6499967982291000837">"應用程式資料"</string>
     <string name="app_data_no_data_footer" msgid="7027700714577530371">"「<xliff:g id="APP_NAME">%1$s</xliff:g>」的資料會顯示在這裡"</string>
-    <string name="all_data_no_data_footer" msgid="2553443887019153340">"如果資料來自可存取「健康資料同步」的應用程式，就會顯示在這裡"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"如果資料來自可存取「健康資料同步」的應用程式，就會在此顯示"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"一天"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"一週"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"一個月"</string>
@@ -1168,7 +1168,7 @@
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"要允許「<xliff:g id="APP_NAME">%1$s</xliff:g>」存取健身與健康資料嗎？"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"「<xliff:g id="APP_NAME">%1$s</xliff:g>」要求存取<xliff:g id="DATA_TYPES">%2$s</xliff:g>資料。\n\n你可以全部允許，也可以個別授予權限。"</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"要允許「<xliff:g id="APP_NAME">%1$s</xliff:g>」存取「<xliff:g id="DATA_TYPE">%2$s</xliff:g>」嗎？"</string>
-    <string name="fitness_and_wellness" msgid="2002316898861559748">"健身與保健"</string>
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"健身與健康"</string>
     <string name="view_permissions_all_the_time" msgid="6899702815770193290">"一律允許"</string>
     <string name="view_permissions_while_in_use" msgid="2031627107397429473">"僅在使用時允許"</string>
     <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"一律允許"</string>
@@ -1185,7 +1185,7 @@
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"要移除手錶上所有應用程式的<xliff:g id="DATA_TYPE">%s</xliff:g>存取權嗎？"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"勾號"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"叉號"</string>
-    <string name="current_allow_mode" msgid="6716206063077569218">"目前，「<xliff:g id="APP_NAME">%1$s</xliff:g>」可以存取健身與健康資料 <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="current_allow_mode" msgid="6716206063077569218">"目前，<xliff:g id="ALLOW_MODE">%2$s</xliff:g>「<xliff:g id="APP_NAME">%1$s</xliff:g>」存取健身與健康資料"</string>
     <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"要允許「<xliff:g id="APP_NAME">%1$s</xliff:g>」隨時存取健身與健康資料嗎？"</string>
     <string name="current_access" msgid="1457167070428176139">"「<xliff:g id="APP_NAME">%1$s</xliff:g>」可以存取<xliff:g id="DATA_TYPES">%2$s</xliff:g>。"</string>
     <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"管理健身與健康權限"</string>

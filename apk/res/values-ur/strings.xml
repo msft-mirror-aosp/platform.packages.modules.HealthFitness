@@ -356,7 +356,7 @@
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"ارتکازِ توجہ"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"ارتکازِ توجہ کے ڈیٹا کو پڑھیں"</string>
     <string name="mindfulness_write_content_description" msgid="7925112426563398421">"ارتکاز توجہ کے ڈیٹا کو لکھیں"</string>
-    <string name="read_permission_category" msgid="6002099618259628632">"\"<xliff:g id="APP_NAME">%1$s</xliff:g>\" کو پڑھنے کی اجازت دیں"</string>
+    <string name="read_permission_category" msgid="6002099618259628632">"‫\"<xliff:g id="APP_NAME">%1$s</xliff:g>\" کو پڑھنے کی اجازت دیں"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"\"<xliff:g id="APP_NAME">%1$s</xliff:g>\" کو لکھنے کی اجازت دیں"</string>
     <string name="request_permissions_allow" msgid="4201324235711040631">"اجازت دیں"</string>
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"سبھی کو اجازت دیں"</string>
@@ -370,7 +370,7 @@
     <string name="request_permissions_with_medical_header_title" msgid="6269944931319362595">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> کو تندرستی اور فلاح و بہبود کے ڈیٹا تک رسائی کی اجازت دیں؟"</string>
     <string name="request_permissions_rationale" msgid="2642076968583316986">"آپ اپنے <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> میں یہ جان سکتے ہیں کہ <xliff:g id="APP_NAME">%1$s</xliff:g> آپ کے ڈیٹا کو کیسے ہینڈل کرتی ہے"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"رازداری کی پالیسی"</string>
-    <string name="medical_request_header" msgid="2300521519021510027">"<xliff:g id="APP_NAME">%1$s</xliff:g> ایپ کو اپنے صحت کے ریکارڈز تک رسائی کی اجازت دیں؟"</string>
+    <string name="medical_request_header" msgid="2300521519021510027">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> ایپ کو آپ کے صحت کے ریکارڈز تک رسائی کی اجازت دیں؟"</string>
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"آپ کے رسائی دینے پر، ایپ الرجیز، لیب کے نتائج، ویکسینز اور مزید جیسے ڈیٹا کو پڑھ اور لکھ سکتی ہے\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"آپ کے رسائی دینے پر، ایپ الرجیز، لیب کے نتائج، ویکسینز اور مزید جیسے ڈیٹا کو پڑھ سکتی ہے\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"صحت کے ریکارڈز کے بارے میں"</string>
@@ -443,7 +443,7 @@
     <string name="additional_access_summary" msgid="1076197455435130191">"ماضی کا ڈیٹا، پس منظر کا ڈیٹا"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"اس ایپ کے لیے اضافی اجازتیں ہٹا دی گئیں"</string>
     <string name="permissions_header" msgid="6519976063360071569">"اجازتیں"</string>
-    <string name="fitness_permissions" msgid="586264186537460254">"تندرستی اور بہبودی"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"تندرستی اور بہبود"</string>
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"ورزش، نیند، غذائیت اور دیگر"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"صحت کے ریکارڈز"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"صحت کے ریکارڈز"</string>
@@ -537,7 +537,7 @@
     <string name="export_import_no_apps_text" msgid="6403119325024893690">"کوئی ایپ دستیاب نہیں۔ کلاؤڈ اسٹوریج ایپس کو یہاں دیکھنے کے لیے انسٹال کریں"</string>
     <string name="export_import_install_apps_text" msgid="5026922993254770904">"مزید اختیارات کے لئے، کلاؤڈ اسٹوریج ایپس کو یہاں دیکھنے کے لیے انسٹال کریں"</string>
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"‫Play اسٹور پر جائیں"</string>
-    <string name="onboarding_title" msgid="8550656211291180188">"Health Connect کے ساتھ شروع کریں"</string>
+    <string name="onboarding_title" msgid="8550656211291180188">"‫Health Connect کے ساتھ شروع کریں"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"‫Health Connect ایپ آپ کے صحت اور تندرستی کے ڈیٹا کو اسٹور کرتی ہے جو آپ کے آلہ پر مختلف ایپس کو سِنک کرنے کا ایک آسان طریقہ فراہم کرتا ہے"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"‫Health Connect مختلف ایپس کے آپ کی صحت اور تندرستی کے ڈیٹا کو اسٹور کرتی ہے اور مطابقت پذیر بناتی ہے۔\n\n"<b>"صحت اور فلاح و بہبود کا ڈیٹا،"</b>" بشمول ورزش کے سیشنز، قدموں کی تعداد، غذائیت اور نیند وغیرہ\n\n"<b>"صحت کے ریکارڈز،"</b>" بشمول ویکسینز اور لیب کے نتائج وغیرہ"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"‫Health Connect کے ساتھ آپ درج ذیل چیزیں کر سکتے ہیں"</string>
@@ -581,7 +581,7 @@
     <string name="confirming_question_permission_type_app_data_one_day" msgid="4377296923865256246">"<xliff:g id="APP_DATA">%2$s</xliff:g> کے ذریعے شامل کیا گیا گزشتہ 24 گھنٹوں کا <xliff:g id="DATA_TYPE">%1$s</xliff:g> ڈیٹا مستقل طور پر حذف کریں؟"</string>
     <string name="confirming_question_permission_type_app_data_one_week" msgid="2253468260502709170">"<xliff:g id="APP_DATA">%2$s</xliff:g> کے ذریعے شامل کیا گیا گزشتہ 7 دن کا <xliff:g id="DATA_TYPE">%1$s</xliff:g> ڈیٹا مستقل طور پر حذف کریں؟"</string>
     <string name="confirming_question_permission_type_app_data_one_month" msgid="1656927839079630144">"<xliff:g id="APP_DATA">%2$s</xliff:g> کے ذریعے شامل کیا گیا گزشتہ 30 دن کا <xliff:g id="DATA_TYPE">%1$s</xliff:g> ڈیٹا مستقل طور پر حذف کریں؟"</string>
-    <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"Health Connect ایپ سے <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g> کی تمام اجازتیں بھی ہٹا دیں"</string>
+    <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"‫Health Connect ایپ سے <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g> کی تمام اجازتیں بھی ہٹا دیں"</string>
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"<xliff:g id="APP_DATA">%2$s</xliff:g> کے ذریعے شامل کردہ تمام <xliff:g id="DATA_TYPE">%1$s</xliff:g> ڈیٹا کو مستقل طور پر حذف کریں؟"</string>
     <string name="confirming_question_single_entry" msgid="2064578008447638932">"اس اندراج کو Health Connect سے مستقل طور پر حذف کریں؟"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"منسلک ایپس Health Connect سے اس ڈیٹا تک مزید رسائی حاصل نہیں کر سکیں گی"</string>
@@ -791,7 +791,7 @@
     <string name="mindfulness_type_other" msgid="793524328911038908">"دیگر"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"غیر رہنما شدہ سیشن"</string>
     <string name="activity_intensity_type_moderate" msgid="7974792315871109564">"معتدل"</string>
-    <string name="activity_intensity_type_vigorous" msgid="5651020560923780330">"مضبوط"</string>
+    <string name="activity_intensity_type_vigorous" msgid="5651020560923780330">"شدید"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> منٹ"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> گھنٹے <xliff:g id="MIN">%2$s</xliff:g> منٹ"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> گھنٹہ"</string>
@@ -1139,7 +1139,7 @@
     <string name="a11y_previous_month" msgid="3304373968190750755">"پچھلا مہینہ"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"تمام ڈیٹا مستقل طور پر حذف کریں؟"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"منتخب ڈیٹا مستقل طور پر حذف کریں؟"</string>
-    <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"<xliff:g id="APP_NAME">%s</xliff:g> کا تمام ڈیٹا مستقل طور پر حذف کریں؟"</string>
+    <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"‫<xliff:g id="APP_NAME">%s</xliff:g> کا تمام ڈیٹا مستقل طور پر حذف کریں؟"</string>
     <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"منتخب <xliff:g id="APP_NAME">%s</xliff:g> کا ڈیٹا مستقل طور پر حذف کریں؟"</string>
     <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> کے لیے تمام اندراجات کو مستقل طور پر حذف کریں؟"</string>
     <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> کے ہفتے کے لیے تمام اندراجات کو مستقل طور پر حذف کریں؟"</string>
@@ -1168,7 +1168,7 @@
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> کو تندرستی اور فلاح و بہبود کے ڈیٹا تک رسائی کی اجازت دیں؟"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> <xliff:g id="DATA_TYPES">%2$s</xliff:g> تک رسائی کی درخواست کر رہا ہے۔\n\nسبھی کو اجازت دینے کا انتخاب کریں یا انہیں انفرادی طور پر کنٹرول کریں۔"</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> کو <xliff:g id="DATA_TYPE">%2$s</xliff:g> تک رسائی حاصل کرنے کی اجازت دیں؟"</string>
-    <string name="fitness_and_wellness" msgid="2002316898861559748">"تندرستی اور بہبودی"</string>
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"تندرستی اور بہبود"</string>
     <string name="view_permissions_all_the_time" msgid="6899702815770193290">"ہر وقت"</string>
     <string name="view_permissions_while_in_use" msgid="2031627107397429473">"استعمال کے دوران"</string>
     <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"ہر وقت"</string>
@@ -1181,7 +1181,7 @@
     <string name="no_apps_requesting" msgid="8088684445910698363">"کوئی ایپ درخواست نہیں کر رہی ہے"</string>
     <string name="allowed" msgid="4158456017482263737">"اجازت یافتہ"</string>
     <string name="not_allowed" msgid="6092523505093372147">"اجازت نہیں ہے"</string>
-    <string name="access_sensor_note" msgid="7949933977197789634">"اس اجازت والی ایپس آپ کے آلے کے سینسرز سے <xliff:g id="DATA_TYPE">%s</xliff:g> ڈیٹا تک رسائی حاصل کر سکتی ہے۔"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"اس اجازت والی ایپس آپ کے آلے کے سینسرز سے <xliff:g id="DATA_TYPE">%s</xliff:g> ڈیٹا تک رسائی حاصل کر سکتی ہیں۔"</string>
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"اپنی گھڑی پر موجود سبھی ایپس پر <xliff:g id="DATA_TYPE">%s</xliff:g> تک رسائی ہٹائیں؟"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"چیک مارک"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"کراس کا نشان"</string>

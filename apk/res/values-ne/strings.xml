@@ -21,7 +21,7 @@
     <string name="health_connect_summary" msgid="6401520186678972547">"एपलाई स्वास्थ्यसम्बन्धी जानकारी प्रयोग गर्न दिने कि नदिने भन्ने कुरा व्यवस्थापन गर्नुहोस्"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"अनुमति तथा डेटा"</string>
     <string name="home_subtitle" msgid="2154213430054477787">"आफ्नो डिभाइसमा भएका स्वास्थ्य र तन्दुरुस्तीसम्बन्धी जानकारी व्यवस्थापन गर्नुहोस् र ती जानकारी कुन कुन एपलाई प्रयोग गर्न दिने भन्ने कुरा नियन्त्रण गर्नुहोस्"</string>
-    <string name="data_title" msgid="4456619761533380816">"डेटा र अनुमति"</string>
+    <string name="data_title" msgid="4456619761533380816">"डेटा र एक्सेस"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"स्वास्थ्य अभिलेखहरू ब्राउज गर्नुहोस्"</string>
     <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"आफ्ना स्वास्थ्य अभिलेख र ती स्वास्थ्य अभिलेख एक्सेस गर्न सक्ने एपहरू हेर्नुहोस्"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"सबै कोटीहरू"</string>
@@ -48,7 +48,7 @@
     <string name="recent_access_header" msgid="7623497371790225888">"हालसालै डेटा एक्सेस गर्ने एपहरू"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"कुनै पनि एपले हालसालै Health Connect प्रयोग गरेको छैन"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"हालसालै डेटा रिड र राइट गरेका सबै एपहरू हेर्नुहोस्"</string>
-    <string name="recent_access_screen_description" msgid="331101209889185402">"विगत २४ घण्टामा कुन कुन एपले तपाईंको डेटा प्रयोग गरे भन्ने कुरा हेर्नुहोस्"</string>
+    <string name="recent_access_screen_description" msgid="331101209889185402">"विगत २४ घण्टामा कुन कुन एपले तपाईंको डेटा एक्सेस गरे भन्ने कुरा हेर्नुहोस्"</string>
     <string name="today_header" msgid="1006837293203834373">"आज"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"हिजो"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"रिड एक्सेस: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
@@ -196,10 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"ह्विलचेयरको ठेलाइ"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"ह्विलचेयरको ठेलाइसम्बन्धी डेटा रिड गर्ने अनुमति दिनुहोस्"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"ह्विलचेयरको ठेलाइसम्बन्धी डेटा राइट गर्ने अनुमति दिनुहोस्"</string>
-    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"क्रियाकलापको इन्टेन्सिटी"</string>
-    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"क्रियाकलापको इन्टेन्सिटी"</string>
-    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"क्रियाकलापको इन्टेन्सिटी रिड गर्नुहोस्"</string>
-    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"क्रियाकलापको इन्टेन्सिटी राइट गर्नुहोस्"</string>
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"क्रियाकलापको तीव्रता"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"क्रियाकलापको तीव्रता"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"क्रियाकलापको तीव्रता रिड गर्नुहोस्"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"क्रियाकलापको तीव्रता राइट गर्नुहोस्"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"बेसल मेटाबोलिक रेट"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"बेसल मेटाबोलिक रेट"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"बेसल मेटाबोलिक रेट रिड गर्ने अनुमति दिनुहोस्"</string>
@@ -340,9 +340,9 @@
     <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"गर्भावस्थासम्बन्धी जानकारी"</string>
     <string name="pregnancy_lowercase_label" msgid="810439290131044517">"गर्भावस्थासम्बन्धी जानकारी"</string>
     <string name="pregnancy_content_description" msgid="3436773729243586287">"गर्भावस्थासम्बन्धी जानकारी रिड गर्नुहोस्"</string>
-    <string name="procedures_uppercase_label" msgid="9176087520132593261">"प्रक्रियासम्बन्धी जानकारी"</string>
-    <string name="procedures_lowercase_label" msgid="5320804313946273234">"प्रक्रियासम्बन्धी जानकारी"</string>
-    <string name="procedures_content_description" msgid="1086900373141440005">"प्रक्रियासम्बन्धी जानकारी रिड गर्नुहोस्"</string>
+    <string name="procedures_uppercase_label" msgid="9176087520132593261">"शल्यक्रियासम्बन्धी जानकारी"</string>
+    <string name="procedures_lowercase_label" msgid="5320804313946273234">"शल्यक्रियासम्बन्धी जानकारी"</string>
+    <string name="procedures_content_description" msgid="1086900373141440005">"शल्यक्रियासम्बन्धी जानकारी रिड गर्ने अनुमति दिनुहोस्"</string>
     <string name="social_history_uppercase_label" msgid="4119611299449533999">"व्यक्तिगत जीवनसम्बन्धी विगतका जानकारी"</string>
     <string name="social_history_lowercase_label" msgid="9027541979445736412">"सामाजिक सञ्जालसम्बन्धी जानकारी"</string>
     <string name="social_history_content_description" msgid="7187059309389849831">"सामाजिक सञ्जालसम्बन्धी जानकारीको हिस्ट्री रिड गर्नुहोस्"</string>
@@ -771,7 +771,7 @@
     <string name="single_arm_triceps_extension" msgid="4500495528709994121">"सिङ्गल आर्म ट्राइसेप्स एक्स्टेन्सन"</string>
     <string name="sit_up" msgid="1872162440154479950">"सिट अप"</string>
     <string name="rest" msgid="5937058337671252210">"विश्राम"</string>
-    <string name="pause" msgid="5161459047750335691">"रोक्नुहोस्"</string>
+    <string name="pause" msgid="5161459047750335691">"पज गर्नुहोस्"</string>
     <string name="activity_type_australian_football" msgid="431838050917315084">"अस्ट्रेलियाली फुटबल"</string>
     <string name="unknown_type" msgid="4506151971125161053">"अज्ञात प्रकार"</string>
     <string name="sleep_session_default" msgid="7376764686701487196">"<xliff:g id="DURATION"> %1$s</xliff:g> निदाएको"</string>
@@ -1013,7 +1013,7 @@
     <string name="search_keywords_permissions" msgid="7821010295153350533">"अनुमतिहरू"</string>
     <string name="search_keywords_data" msgid="5359602744325490523">"health connect, स्वास्थ्यसम्बन्धी डेटा, स्वास्थ्यका कोटी, डेटा प्रयोग गर्ने अनुमति, गतिविधि, शारीरिक नाप, महिनावारीको रेकर्ड राख्ने सुविधा, पोषण, निद्रा, स्वास्थ्यसम्बन्धी आधारभूत विवरण"</string>
     <string name="search_breadcrumbs_permissions" msgid="2667471090347475796">"Health Connect तथा एपलाई दिइएका अनुमति"</string>
-    <string name="search_breadcrumbs_data" msgid="6635428480372024040">"Health Connect तथा डेटा र अनुमति"</string>
+    <string name="search_breadcrumbs_data" msgid="6635428480372024040">"Health Connect तथा डेटा र एक्सेस"</string>
     <string name="search_connected_apps" msgid="8180770761876928851">"एपहरू खोज्नुहोस्"</string>
     <string name="no_results" msgid="4007426147286897998">"कुनै पनि परिणाम भेटिएन"</string>
     <string name="help" msgid="6028777453152686162">"मद्दत"</string>
@@ -1167,7 +1167,7 @@
     <string name="request_permissions_deny_all" msgid="4123735770293545320">"सबै अस्वीकार गर्नुहोस्"</string>
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"<xliff:g id="APP_NAME">%1$s</xliff:g> लाई व्यायाम तथा तन्दुरुस्तीसम्बन्धी डेटा एक्सेस गर्न दिने हो?"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> ले <xliff:g id="DATA_TYPES">%2$s</xliff:g> एक्सेस गर्ने अनुमति मागिरहेको छ।\n\nसबै डेटा एक्सेस गर्ने अनुमति दिनुहोस् वा तिनीहरूलाई एक एक गरी नियन्त्रण गर्नुहोस्।"</string>
-    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"<xliff:g id="APP_NAME">%1$s</xliff:g> लाई <xliff:g id="DATA_TYPE">%2$s</xliff:g> प्रयोग गर्ने अनुमति दिने हो?"</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"<xliff:g id="APP_NAME">%1$s</xliff:g> लाई <xliff:g id="DATA_TYPE">%2$s</xliff:g> एक्सेस गर्ने अनुमति दिने हो?"</string>
     <string name="fitness_and_wellness" msgid="2002316898861559748">"तन्दुरुस्ती तथा आरोग्य"</string>
     <string name="view_permissions_all_the_time" msgid="6899702815770193290">"सधैँ"</string>
     <string name="view_permissions_while_in_use" msgid="2031627107397429473">"प्रयोग गर्दै गर्दा"</string>
@@ -1181,7 +1181,7 @@
     <string name="no_apps_requesting" msgid="8088684445910698363">"कुनै पनि एपले अनुमति मागिरहेको छैन"</string>
     <string name="allowed" msgid="4158456017482263737">"अनुमति दिइएको छ"</string>
     <string name="not_allowed" msgid="6092523505093372147">"अनुमति दिइएको छैन"</string>
-    <string name="access_sensor_note" msgid="7949933977197789634">"यो अनुमति पाएका एपहरू तपाईंको डिभाइसका सेन्सरहरूबाट लिइएको <xliff:g id="DATA_TYPE">%s</xliff:g> सँग सम्बन्धित जानकारी एक्सेस गर्न सक्छन्।"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"यो अनुमति पाएका एपहरू तपाईंको डिभाइसका सेन्सरहरूबाट लिइएको <xliff:g id="DATA_TYPE">%s</xliff:g>सँग सम्बन्धित जानकारी एक्सेस गर्न सक्छन्।"</string>
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"आफ्नो स्मार्ट वाचमा भएका सबै एपहरूका हकमा <xliff:g id="DATA_TYPE">%s</xliff:g> को एक्सेस हटाउने हो?"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"जाँच चिन्ह"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"क्रस चिन्ह"</string>

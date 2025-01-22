@@ -319,8 +319,8 @@
     <string name="allergies_intolerances_uppercase_label" msgid="2458552115947636884">"Alerxias"</string>
     <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"alerxias"</string>
     <string name="allergies_intolerances_content_description" msgid="7954532940667325068">"Ler os datos das alerxias"</string>
-    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Condicións"</string>
-    <string name="conditions_lowercase_label" msgid="2678248918552246997">"condicións"</string>
+    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Problemas de saúde"</string>
+    <string name="conditions_lowercase_label" msgid="2678248918552246997">"problemas de saúde"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Ler as condicións"</string>
     <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Vacinas"</string>
     <string name="vaccines_lowercase_label" msgid="4991324441768127447">"vacinas"</string>
@@ -359,7 +359,7 @@
     <string name="read_permission_category" msgid="6002099618259628632">"Permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> lea"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> escriba"</string>
     <string name="request_permissions_allow" msgid="4201324235711040631">"Permitir"</string>
-    <string name="request_permissions_allow_all" msgid="3419414351406638770">"Permitir todo"</string>
+    <string name="request_permissions_allow_all" msgid="3419414351406638770">"Permitir todos"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Non permitir"</string>
     <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Escolle os datos que queres que lea ou escriba esta aplicación en Saúde conectada"</string>
     <string name="request_permissions_data_access_type_read" msgid="6005792244220381045">"Escolle os datos que queres que lea esta aplicación en Saúde conectada"</string>
@@ -539,8 +539,8 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Ir a Play Store"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Comeza a usar Saúde conectada"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Saúde conectada almacena os teus datos de saúde e actividade física, e permíteche sincronizar facilmente as distintas aplicacións do dispositivo"</string>
-    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Saúde conectada almacena e sincroniza os teus datos de saúde e actividade física de distintas aplicacións.\n\n"<b>"Datos de actividade física e benestar:"</b>" sesións de exercicio, pasos, nutrición, sono e moito máis\n\n"<b>"Rexistros de información sanitaria:"</b>" vacinas ou resultados de análises, por exemplo"</string>
-    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Con Saúde conectada podes"</string>
+    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Saúde conectada almacena e sincroniza os teus datos de saúde e actividade física de distintas aplicacións.\n\n"<b>"Datos de actividade física e benestar:"</b>" Sesións de exercicio, pasos, nutrición, sono e moito máis\n\n"<b>"Rexistros de información sanitaria:"</b>" Vacinas ou resultados de análises, por exemplo"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Con Saúde conectada"</string>
     <string name="share_data" msgid="3481932156368883946">"Comparte datos coas túas aplicacións"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Decide que datos pode ler ou escribir cada aplicación en Saúde conectada"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Xestiona a túa configuración e privacidade"</string>
@@ -1166,8 +1166,8 @@
     <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Mentres se utiliza a aplicación"</string>
     <string name="request_permissions_deny_all" msgid="4123735770293545320">"Rexeitar todos"</string>
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Queres permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda aos datos de actividade física e benestar?"</string>
-    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> solicita permiso para acceder aos seguintes datos: <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nDecide se queres dar todos os permisos ou controlalos por separado."</string>
-    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Queres permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda a este tipo de datos: <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> solicita acceso a <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nDecide se queres dar todos os permisos ou controlalos por separado."</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Queres permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda a <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
     <string name="fitness_and_wellness" msgid="2002316898861559748">"Forma física e benestar"</string>
     <string name="view_permissions_all_the_time" msgid="6899702815770193290">"sempre"</string>
     <string name="view_permissions_while_in_use" msgid="2031627107397429473">"durante o seu uso"</string>
@@ -1181,12 +1181,12 @@
     <string name="no_apps_requesting" msgid="8088684445910698363">"Non hai ningunha solicitude por parte das aplicacións"</string>
     <string name="allowed" msgid="4158456017482263737">"Con permiso"</string>
     <string name="not_allowed" msgid="6092523505093372147">"Sen permiso"</string>
-    <string name="access_sensor_note" msgid="7949933977197789634">"As aplicacións que conten con este permiso poderán acceder a este tipo de datos (<xliff:g id="DATA_TYPE">%s</xliff:g>) dos sensores do teu dispositivo."</string>
-    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Queres quitarlles o acceso a este tipo de datos (<xliff:g id="DATA_TYPE">%s</xliff:g>) a todas as aplicacións do teu reloxo?"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"As aplicacións que conten con este permiso poderán acceder aos datos de <xliff:g id="DATA_TYPE">%s</xliff:g> dos sensores do teu dispositivo."</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Queres quitarlles o acceso a <xliff:g id="DATA_TYPE">%s</xliff:g> a todas as aplicacións do teu reloxo?"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"Marca de verificación"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"Cruz"</string>
-    <string name="current_allow_mode" msgid="6716206063077569218">"Actualmente, <xliff:g id="APP_NAME">%1$s</xliff:g> pode acceder aos teus datos de forma física e benestar <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="current_allow_mode" msgid="6716206063077569218">"Actualmente, <xliff:g id="APP_NAME">%1$s</xliff:g> pode acceder aos datos de forma física e benestar <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
     <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Queres permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda sempre aos teus datos de forma física e benestar?"</string>
-    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> ten acceso a estes datos: <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
+    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> ten acceso a <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
     <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Xestionar permisos de forma física e benestar"</string>
 </resources>
