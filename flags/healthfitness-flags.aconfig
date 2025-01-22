@@ -480,3 +480,21 @@ flag {
     bug: "384028690"
 }
 
+flag {
+    name: "symptoms"
+    namespace: "health_fitness_aconfig"
+    description: "Enables the symptoms data type."
+    bug: "391627288"
+    is_fixed_read_only: true
+    is_exported: true
+}
+
+flag {
+    name: "symptoms_db"
+    namespace: "health_fitness_aconfig"
+    description: "Enables DB changes to support the symptoms data type."
+    bug: "391627288"
+    is_fixed_read_only: true
+    is_exported: true
+}
+
