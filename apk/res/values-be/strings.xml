@@ -56,6 +56,11 @@
     <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Кіраваць дазволамі"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Час: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
+    <string name="recent_access_empty_state_title" msgid="4767157641389217682">"Праграмы не звярталіся да вашых даных у апошні час"</string>
+    <string name="recent_access_empty_state_description" msgid="6334951450158128989">"Тут будуць аўтаматычна паказвацца праграмы, якія нядаўна атрымлівалі доступ да вашых даных"</string>
+    <string name="recent_access_view_all_button" msgid="825946958049641541">"Праглядзець усе"</string>
+    <!-- no translation found for recent_access_error (2258399573560888960) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"Актыўнасць"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"актыўнасць"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Параметры цела"</string>

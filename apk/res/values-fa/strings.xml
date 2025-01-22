@@ -56,6 +56,11 @@
     <string name="separator" msgid="5521285473288943819">"، "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"مدیریت اجازه‌ها"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"زمان: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
+    <string name="recent_access_empty_state_title" msgid="4767157641389217682">"دسترسی جدیدی وجود ندارد"</string>
+    <string name="recent_access_empty_state_description" msgid="6334951450158128989">"برنامه‌هایی که اخیراً به داده‌هایتان دسترسی داشته‌اند به‌طور خودکار در اینجا نمایش داده می‌شوند"</string>
+    <string name="recent_access_view_all_button" msgid="825946958049641541">"مشاهده همه موارد"</string>
+    <!-- no translation found for recent_access_error (2258399573560888960) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"فعالیت"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"فعالیت"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"سنجه‌های بدن"</string>
@@ -456,7 +461,7 @@
     <string name="denied_apps_banner_button" msgid="4438480389769298412">"دیدن جزئیات"</string>
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"چرا Health Connect اجازه‌های برنامه را برمی‌دارد"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"اگر برنامه‌ای به حالت تعلیق درآید یا از Google Play برداشته شود، Health Connect به‌طور خودکار اجازه‌های آن را برمی‌دارد.\n\nاین بدان معنی است که آن برنامه دیگر نمی‌تواند به داده‌های ذخیره‌شده در Health Connect دسترسی داشته باشد. اگر این برنامه ازقبل داده‌های نوشته‌شده داشته باشد، در فهرست برنامه‌های غیرفعال نشان داده می‌شود."</string>
-    <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"متوجه‌ام"</string>
+    <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"متوجهم"</string>
     <string name="export_file_access_error_banner_button" msgid="6336949702329425932">"راه‌اندازی"</string>
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"داده‌ها صادر نشد"</string>
     <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"مشکلی در برون‌برد <xliff:g id="DATE">%1$s</xliff:g> وجود داشت. لطفاً برون‌برد برنامه‌ریزی‌شده جدیدی تنظیم کنید و دوباره امتحان کنید."</string>
@@ -1077,17 +1082,17 @@
     <string name="migration_in_progress_permissions_dialog_title" msgid="2188354144857156984">"یکپارچه‌سازی Health Connect درحال انجام است"</string>
     <string name="migration_in_progress_permissions_dialog_content" msgid="2249793103623253693">"‫Health Connect درحال ادغام شدن با سیستم Android است.\n\nوقتی این فرایند کامل شود اعلانی دریافت خواهید کرد و می‌توانید از <xliff:g id="APP_NAME">%1$s</xliff:g> با Health Connect استفاده کنید."</string>
     <string name="migration_in_progress_permissions_dialog_content_apps" msgid="8653954808926889199">"‫Health Connect درحال ادغام شدن با سیستم Android است.\n\nوقتی این فرایند کامل شود اعلانی دریافت خواهید کرد و می‌توانید از Health Connect استفاده کنید."</string>
-    <string name="migration_in_progress_permissions_dialog_button_got_it" msgid="3437208109334974656">"متوجه‌ام"</string>
+    <string name="migration_in_progress_permissions_dialog_button_got_it" msgid="3437208109334974656">"متوجهم"</string>
     <string name="migration_not_complete_dialog_title" msgid="3725576338159027149">"یکپارچه‌سازی Health Connect تکمیل نشد"</string>
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"هروقت دوباره دردسترس قرار بگیرد اعلان دریافت خواهید کرد."</string>
-    <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"متوجه‌ام"</string>
+    <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"متوجهم"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"ویژگی‌های جدید"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"اکنون می‌توانید مستقیماً از تنظیمات به Health Connect دسترسی داشته باشید. هروقت خواستید برنامه Health Connect را حذف نصب کنید تا فضای ذخیره‌سازی آزاد شود."</string>
-    <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"متوجه‌ام"</string>
+    <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"متوجهم"</string>
     <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"درحال بازیابی"</string>
     <string name="data_restore_in_progress_content" msgid="2684897189974069361">"‫Health Connect درحال بازیابی داده‌ها و اجازه‌ها است. تکمیل این کنش ممکن است مدتی طول بکشد."</string>
     <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"بازیابی Health Connect درحال انجام است"</string>
-    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"متوجه‌ام"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"متوجهم"</string>
     <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"باید به‌روزرسانی شود"</string>
     <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"قبل‌از ادامه دادن بازیابی داده‌ها، سیستم تلفن را به‌روز کنید."</string>
     <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"اکنون به‌روز کردن"</string>
