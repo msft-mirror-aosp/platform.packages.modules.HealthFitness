@@ -160,19 +160,11 @@ public class CloudRestoreManagerTest {
                         mReadAccessLogsHelper,
                         /* shouldRecordAccessLog= */ false);
         assertThat(records).hasSize(2);
-        // TODO: b/369801384 - Handle missing app name & last modified time being updated
+        // TODO: b/369801384 - Handle missing app name
         assertThat(mRecordProtoConverter.toRecordProto(records.get(0)))
-                .isEqualTo(
-                        stepsRecord.toBuilder()
-                                .clearAppName()
-                                .setLastModifiedTime(records.get(0).getLastModifiedTime())
-                                .build());
+                .isEqualTo(stepsRecord.toBuilder().clearAppName().build());
         assertThat(mRecordProtoConverter.toRecordProto(records.get(1)))
-                .isEqualTo(
-                        bloodPressureRecord.toBuilder()
-                                .clearAppName()
-                                .setLastModifiedTime(records.get(1).getLastModifiedTime())
-                                .build());
+                .isEqualTo(bloodPressureRecord.toBuilder().clearAppName().build());
         assertThat(mAppInfoHelper.getRecordTypesToContributingPackagesMap())
                 .containsExactly(
                         RecordTypeIdentifier.RECORD_TYPE_STEPS,
