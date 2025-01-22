@@ -56,6 +56,11 @@
     <string name="separator" msgid="5521285473288943819">"、 "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"管理权限"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"时间：<xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
+    <string name="recent_access_empty_state_title" msgid="4767157641389217682">"近期未访问"</string>
+    <string name="recent_access_empty_state_description" msgid="6334951450158128989">"近期访问过您数据的应用会自动显示在此处"</string>
+    <string name="recent_access_view_all_button" msgid="825946958049641541">"查看全部"</string>
+    <!-- no translation found for recent_access_error (2258399573560888960) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"活动"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"活动"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"身体测量数据"</string>
@@ -343,7 +348,7 @@
     <string name="procedures_uppercase_label" msgid="9176087520132593261">"医疗程序"</string>
     <string name="procedures_lowercase_label" msgid="5320804313946273234">"医疗程序"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"读取医疗程序"</string>
-    <string name="social_history_uppercase_label" msgid="4119611299449533999">"社交记录"</string>
+    <string name="social_history_uppercase_label" msgid="4119611299449533999">"个人生活史"</string>
     <string name="social_history_lowercase_label" msgid="9027541979445736412">"社交记录"</string>
     <string name="social_history_content_description" msgid="7187059309389849831">"读取社交记录"</string>
     <string name="visits_uppercase_label" msgid="8532619758336375886">"就医情况"</string>

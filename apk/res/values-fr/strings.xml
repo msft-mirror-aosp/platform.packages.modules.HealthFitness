@@ -56,6 +56,14 @@
     <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Gérer les autorisations"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Heure : <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
+    <!-- no translation found for recent_access_empty_state_title (4767157641389217682) -->
+    <skip />
+    <!-- no translation found for recent_access_empty_state_description (6334951450158128989) -->
+    <skip />
+    <!-- no translation found for recent_access_view_all_button (825946958049641541) -->
+    <skip />
+    <!-- no translation found for recent_access_error (2258399573560888960) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"Activité"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"activité"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Données corporelles"</string>
@@ -344,8 +352,8 @@
     <string name="procedures_lowercase_label" msgid="5320804313946273234">"opérations"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"Consulter les données relatives aux opérations"</string>
     <string name="social_history_uppercase_label" msgid="4119611299449533999">"Antécédents sociaux"</string>
-    <string name="social_history_lowercase_label" msgid="9027541979445736412">"historique social"</string>
-    <string name="social_history_content_description" msgid="7187059309389849831">"Lire l\'historique social"</string>
+    <string name="social_history_lowercase_label" msgid="9027541979445736412">"antécédents sociaux"</string>
+    <string name="social_history_content_description" msgid="7187059309389849831">"Lire les antécédents sociaux"</string>
     <string name="visits_uppercase_label" msgid="8532619758336375886">"Consultations"</string>
     <string name="visits_lowercase_label" msgid="2545887061364564151">"consultations"</string>
     <string name="visits_content_description" msgid="6336796415049565697">"Lire les consultations"</string>
@@ -417,7 +425,7 @@
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"Accès non autorisé"</string>
     <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"Mise à jour nécessaire"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"Paramètres et aide"</string>
-    <string name="disconnect_all_apps" msgid="748945115977534726">"Retirer l\'accès aux applis"</string>
+    <string name="disconnect_all_apps" msgid="748945115977534726">"Supprimer l\'accès pour toutes les applis"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"Lecture autorisée"</string>
     <string name="manage_permissions_write_header" msgid="6876806848658168370">"Modification autorisée"</string>
     <string name="no_apps_allowed" msgid="5794833581324128108">"Aucune appli autorisée"</string>

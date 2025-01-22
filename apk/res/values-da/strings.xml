@@ -56,6 +56,14 @@
     <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Administrer tilladelser"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Tidspunkt: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
+    <!-- no translation found for recent_access_empty_state_title (4767157641389217682) -->
+    <skip />
+    <!-- no translation found for recent_access_empty_state_description (6334951450158128989) -->
+    <skip />
+    <!-- no translation found for recent_access_view_all_button (825946958049641541) -->
+    <skip />
+    <!-- no translation found for recent_access_error (2258399573560888960) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"Aktivitet"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"aktivitet"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Kropsmål"</string>
@@ -343,9 +351,9 @@
     <string name="procedures_uppercase_label" msgid="9176087520132593261">"Procedurer"</string>
     <string name="procedures_lowercase_label" msgid="5320804313946273234">"procedurer"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"Læs procedurer"</string>
-    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Sundhedsdata"</string>
+    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Social anamnese"</string>
     <string name="social_history_lowercase_label" msgid="9027541979445736412">"sundhedsdata"</string>
-    <string name="social_history_content_description" msgid="7187059309389849831">"Læs sundhedsdata"</string>
+    <string name="social_history_content_description" msgid="7187059309389849831">"Læs social anamnese"</string>
     <string name="visits_uppercase_label" msgid="8532619758336375886">"Konsultationer"</string>
     <string name="visits_lowercase_label" msgid="2545887061364564151">"konsultationer"</string>
     <string name="visits_content_description" msgid="6336796415049565697">"Læs konsultationer"</string>
