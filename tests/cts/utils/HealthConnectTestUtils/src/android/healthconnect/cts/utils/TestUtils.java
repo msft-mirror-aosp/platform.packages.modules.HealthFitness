@@ -33,6 +33,7 @@ import static android.healthconnect.cts.utils.DataFactory.getDataOrigin;
 import static android.healthconnect.cts.utils.HealthConnectReceiver.callAndGetResponseWithShellPermissionIdentity;
 import static android.healthconnect.test.app.TestAppReceiver.ACTION_AGGREGATE_STEPS_COUNT;
 import static android.healthconnect.test.app.TestAppReceiver.ACTION_INSERT_EXERCISE_RECORD;
+import static android.healthconnect.test.app.TestAppReceiver.ACTION_INSERT_NUTRITION_IRON_RECORD;
 import static android.healthconnect.test.app.TestAppReceiver.ACTION_INSERT_PLANNED_EXERCISE_RECORD;
 import static android.healthconnect.test.app.TestAppReceiver.ACTION_INSERT_STEPS_RECORDS;
 import static android.healthconnect.test.app.TestAppReceiver.ACTION_INSERT_WEIGHT_RECORDS;
@@ -1251,6 +1252,20 @@ public final class TestUtils {
         bundle.putLongArray(EXTRA_TIMES, new long[] {startTime.toEpochMilli()});
         bundle.putLongArray(EXTRA_END_TIMES, new long[] {endTime.toEpochMilli()});
         sendCommandToTestAppReceiver(context, ACTION_INSERT_PLANNED_EXERCISE_RECORD, bundle);
+        return android.healthconnect.cts.utils.TestReceiver.getResult()
+                .getStringArrayList(EXTRA_RECORD_IDS)
+                .get(0);
+    }
+
+    /** Inserts {@link NutritionRecord} via test app with the specified iron level data in grams. */
+    public static String insertNutritionIronRecordViaTestApp(
+            Context context, Instant startTime, Instant endTime, String clientId, long ironGrams) {
+        Bundle bundle = new Bundle();
+        bundle.putLongArray(EXTRA_TIMES, new long[] {startTime.toEpochMilli()});
+        bundle.putLongArray(EXTRA_END_TIMES, new long[] {endTime.toEpochMilli()});
+        bundle.putStringArray(EXTRA_RECORD_CLIENT_IDS, new String[] {clientId});
+        bundle.putLongArray(EXTRA_RECORD_VALUES, new long[] {ironGrams});
+        sendCommandToTestAppReceiver(context, ACTION_INSERT_NUTRITION_IRON_RECORD, bundle);
         return android.healthconnect.cts.utils.TestReceiver.getResult()
                 .getStringArrayList(EXTRA_RECORD_IDS)
                 .get(0);
