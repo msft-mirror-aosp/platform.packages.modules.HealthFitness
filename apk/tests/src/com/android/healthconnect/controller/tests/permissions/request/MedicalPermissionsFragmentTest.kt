@@ -302,24 +302,23 @@ class MedicalPermissionsFragmentTest {
         }
         val activityScenario = launchFragment<MedicalPermissionsFragment>(bundleOf())
 
+        var allowAllPreference: HealthMainSwitchPreference? = null
         activityScenario.onActivity { activity: TestActivity ->
             val fragment =
                 activity.supportFragmentManager.findFragmentById(android.R.id.content)
                     as PermissionsFragment
-            val allowAllPreference =
-                fragment.preferenceScreen.findPreference("allow_all_preference")
-                    as HealthMainSwitchPreference?
+            allowAllPreference = fragment.preferenceScreen.findPreference("allow_all_preference")
             allowAllPreference?.isChecked =
                 false // makes sure the preference is on so OnPreferenceChecked is triggered
-
-            allowAllPreference?.isChecked = true
-
-            verify(viewModel).updateMedicalPermissions(eq(true))
-            // TODO (b/325680041) this is not triggered?
-            //
-            // verify(healthConnectLogger).logInteraction(PermissionsElement.ALLOW_ALL_SWITCH,
-            // UIAction.ACTION_TOGGLE_ON)
         }
+
+        onView(withText(allowAllPreference?.title?.toString())).perform(click())
+
+        verify(viewModel).updateMedicalPermissions(eq(true))
+        // TODO (b/325680041) this is not triggered?
+        //
+        // verify(healthConnectLogger).logInteraction(PermissionsElement.ALLOW_ALL_SWITCH,
+        // UIAction.ACTION_TOGGLE_ON)
     }
 
     @Test
@@ -339,20 +338,19 @@ class MedicalPermissionsFragmentTest {
         }
         val activityScenario = launchFragment<MedicalPermissionsFragment>(bundleOf())
 
+        var allowAllPreference: HealthMainSwitchPreference? = null
         activityScenario.onActivity { activity: TestActivity ->
             val fragment =
                 activity.supportFragmentManager.findFragmentById(android.R.id.content)
                     as PermissionsFragment
-            val allowAllPreference =
-                fragment.preferenceScreen.findPreference("allow_all_preference")
-                    as HealthMainSwitchPreference?
+            allowAllPreference = fragment.preferenceScreen.findPreference("allow_all_preference")
             allowAllPreference?.isChecked =
                 true // makes sure the preference is on so OnPreferenceChecked is triggered
-
-            allowAllPreference?.isChecked = false
-
-            assertThat(viewModel.grantedMedicalPermissions.value).isEmpty()
         }
+
+        onView(withText(allowAllPreference?.title?.toString())).perform(click())
+
+        assertThat(viewModel.grantedMedicalPermissions.value).isEmpty()
     }
 
     @Test

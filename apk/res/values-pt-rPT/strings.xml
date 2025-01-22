@@ -22,7 +22,7 @@
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Autorizações e dados"</string>
     <string name="home_subtitle" msgid="2154213430054477787">"Faça a gestão dos dados de saúde e fitness no seu dispositivo e defina que apps podem aceder a estes"</string>
     <string name="data_title" msgid="4456619761533380816">"Dados e acesso"</string>
-    <string name="browse_medical_data" msgid="6963802956096683273">"Procurar registos de saúde"</string>
+    <string name="browse_medical_data" msgid="6963802956096683273">"Explorar registos de saúde"</string>
     <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"Veja os seus registos de saúde e que apps podem aceder a estes"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Todas as categorias"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Ver todas as categorias"</string>

@@ -226,6 +226,7 @@ android_test {
         "cts-healthconnect-phr-lib",
         "cts-install-lib",
         "cts-healthconnect-utils",
+        "aconfig_settingstheme_exported_flags_java_lib",
     ],
     min_sdk_version: "34",
     sdk_version: "test_current",

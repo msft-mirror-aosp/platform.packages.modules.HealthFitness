@@ -361,7 +361,7 @@
     <string name="request_permissions_allow" msgid="4201324235711040631">"Թույլատրել"</string>
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Թույլատրել բոլորը"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Չթույլատրել"</string>
-    <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Ընտրեք, թե ինչ տվյալներ այս հավելվածը կարդա կամ գրանցի Health Connect-ում"</string>
+    <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Ընտրեք, թե այս հավելվածը ինչ տվյալներ կարդա կամ գրանցի Health Connect-ում"</string>
     <string name="request_permissions_data_access_type_read" msgid="6005792244220381045">"Ընտրեք, թե ինչ տվյալներ այս հավելվածը կարդա Health Connect-ից"</string>
     <string name="request_permissions_data_access_type_write" msgid="6369810467678676337">"Ընտրեք, թե ինչ տվյալներ այս հավելվածը գրանցի Health Connect-ում"</string>
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Եթե տրամադրեք կարդալու թույլտվություն, այս հավելվածը կկարողանա կարդալ նոր և նախորդ 30 օրվա տվյալները"</string>

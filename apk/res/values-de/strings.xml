@@ -37,8 +37,8 @@
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Keine"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Eintragsdetails"</string>
     <string name="browse_data_title" msgid="5232691805953326097">"Daten durchsuchen"</string>
-    <string name="browse_data_subtitle" msgid="7025164374898103993">"Daten sehen und feststellen, welche Apps darauf zugreifen können"</string>
-    <string name="manage_data_summary" msgid="8537870912521944449">"Automatische Löschung, Datenquellen, Sicherung und Wiederherstellung"</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"Daten und Apps ansehen, die darauf zugreifen können"</string>
+    <string name="manage_data_summary" msgid="8537870912521944449">"Automatisches Löschen, Datenquellen, Sicherung und Wiederherstellung"</string>
     <string name="backup_title" msgid="211503191266235085">"Backup machen"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Datenquellen und Priorität"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Einheiten festlegen"</string>
@@ -64,8 +64,8 @@
     <string name="sleep_category_lowercase" msgid="842609634386839011">"Schlaf"</string>
     <string name="vitals_category_uppercase" msgid="8982333138032938623">"Vitalparameter"</string>
     <string name="vitals_category_lowercase" msgid="4664457787866407963">"Vitalparameter"</string>
-    <string name="cycle_tracking_category_uppercase" msgid="4723200714782660489">"Zyklustracking"</string>
-    <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"Zyklustracking"</string>
+    <string name="cycle_tracking_category_uppercase" msgid="4723200714782660489">"Zyklus-Tracking"</string>
+    <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"Zyklus-Tracking"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"Ernährung"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"Ernährung"</string>
     <string name="wellness_category_uppercase" msgid="5900304317921557780">"Wellness"</string>
@@ -319,17 +319,17 @@
     <string name="allergies_intolerances_uppercase_label" msgid="2458552115947636884">"Allergien"</string>
     <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"Allergien"</string>
     <string name="allergies_intolerances_content_description" msgid="7954532940667325068">"Nutzerdaten zu Allergien lesen"</string>
-    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Daten zu Krankheiten"</string>
-    <string name="conditions_lowercase_label" msgid="2678248918552246997">"Daten zu Krankheiten"</string>
-    <string name="conditions_content_description" msgid="3230552343616193829">"Daten zu Krankheiten lesen"</string>
+    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Erkrankungen"</string>
+    <string name="conditions_lowercase_label" msgid="2678248918552246997">"Erkrankungen"</string>
+    <string name="conditions_content_description" msgid="3230552343616193829">"Daten zu Erkrankungen lesen"</string>
     <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Impfungen"</string>
     <string name="vaccines_lowercase_label" msgid="4991324441768127447">"Impfungen"</string>
     <string name="vaccines_content_description" msgid="7152741514791951684">"Nutzerdaten zu Impfungen lesen"</string>
     <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Laborergebnisse"</string>
     <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"Laborergebnisse"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"Nutzerdaten zu Laborergebnissen lesen"</string>
-    <string name="medications_uppercase_label" msgid="4783281053427990225">"Daten zu Medikamenten"</string>
-    <string name="medications_lowercase_label" msgid="7808038774503092207">"Daten zu Medikamenten"</string>
+    <string name="medications_uppercase_label" msgid="4783281053427990225">"Medikamente"</string>
+    <string name="medications_lowercase_label" msgid="7808038774503092207">"Medikamente"</string>
     <string name="medications_content_description" msgid="6165382876281780190">"Daten zu Medikamenten lesen"</string>
     <string name="personal_details_uppercase_label" msgid="7241635933310394120">"Personenbezogene Daten"</string>
     <string name="personal_details_lowercase_label" msgid="1907848447611775151">"personenbezogene Daten"</string>
@@ -337,17 +337,17 @@
     <string name="practitioner_details_uppercase_label" msgid="2940667649808082510">"Daten zu Ärzten"</string>
     <string name="practitioner_details_lowercase_label" msgid="8195591077717971542">"Daten zu Ärzten"</string>
     <string name="practitioner_details_content_description" msgid="8775396516928504185">"Daten zu Ärzten lesen"</string>
-    <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"Schwangerschaftsinformationen"</string>
-    <string name="pregnancy_lowercase_label" msgid="810439290131044517">"Schwangerschaftsinformationen"</string>
-    <string name="pregnancy_content_description" msgid="3436773729243586287">"Schwangerschaftsinformationen lesen"</string>
-    <string name="procedures_uppercase_label" msgid="9176087520132593261">"Verfahren"</string>
-    <string name="procedures_lowercase_label" msgid="5320804313946273234">"Verfahren"</string>
-    <string name="procedures_content_description" msgid="1086900373141440005">"Verfahren lesen"</string>
+    <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"Schwangerschaft"</string>
+    <string name="pregnancy_lowercase_label" msgid="810439290131044517">"Schwangerschaft"</string>
+    <string name="pregnancy_content_description" msgid="3436773729243586287">"Daten zur Schwangerschaft lesen"</string>
+    <string name="procedures_uppercase_label" msgid="9176087520132593261">"Medizinische Verfahren"</string>
+    <string name="procedures_lowercase_label" msgid="5320804313946273234">"medizinische Verfahren"</string>
+    <string name="procedures_content_description" msgid="1086900373141440005">"Daten zu medizinischen Verfahren lesen"</string>
     <string name="social_history_uppercase_label" msgid="4119611299449533999">"Sozialanamnese"</string>
     <string name="social_history_lowercase_label" msgid="9027541979445736412">"Sozialanamnese"</string>
     <string name="social_history_content_description" msgid="7187059309389849831">"Sozialanamnese lesen"</string>
-    <string name="visits_uppercase_label" msgid="8532619758336375886">"Daten zu Arztbesuchen"</string>
-    <string name="visits_lowercase_label" msgid="2545887061364564151">"Daten zu Arztbesuchen"</string>
+    <string name="visits_uppercase_label" msgid="8532619758336375886">"Arztbesuche"</string>
+    <string name="visits_lowercase_label" msgid="2545887061364564151">"Arztbesuche"</string>
     <string name="visits_content_description" msgid="6336796415049565697">"Daten zu Arztbesuchen lesen"</string>
     <string name="vital_signs_uppercase_label" msgid="289862347143374640">"Vitalparameter"</string>
     <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"Vitalparameter"</string>
@@ -374,7 +374,7 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Wenn du der App Zugriff gewährst, kann sie Daten zu Allergien, Laborergebnissen, Impfungen und mehr lesen und schreiben\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Wenn du der App Zugriff gewährst, kann sie Daten zu Allergien, Laborergebnissen, Impfungen und mehr lesen\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"Informationen zu Gesundheitsdaten"</string>
-    <string name="medical_request_data_to_share" msgid="6778034304921873317">"Beispiele für zu teilende Daten"</string>
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"Beispiele für Daten, die geteilt werden können:"</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"Mit dieser Erlaubnis kann „<xliff:g id="APP_NAME">%1$s</xliff:g>“ deine Gesundheitsdaten mit Health Connect teilen."</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"Du kannst deine Gesundheitsdaten aus verschiedenen Apps und Quellen synchronisieren lassen, um sie an einem Ort zu speichern"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Alle Berechtigungen entfernen?"</string>
@@ -447,7 +447,7 @@
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"Bewegung, Schlaf, Ernährung und mehr"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"Gesundheitsdaten"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"Gesundheitsdaten"</string>
-    <string name="medical_permissions_summary" msgid="5526004634109548577">"Laborergebnisse, Medikamente, Impfungen usw."</string>
+    <string name="medical_permissions_summary" msgid="5526004634109548577">"Laborergebnisse, Medikamente, Impfungen und mehr"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"App-Berechtigungen entfernt"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect hat Berechtigungen für <xliff:g id="APP_DATA">%s</xliff:g> entfernt"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect hat Berechtigungen für <xliff:g id="APP_DATA_0">%1$s</xliff:g> und <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> entfernt"</string>

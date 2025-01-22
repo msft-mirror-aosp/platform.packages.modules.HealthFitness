@@ -35,10 +35,13 @@ import android.healthconnect.cts.lib.UiTestUtils.waitForObjectNotFound
 import android.healthconnect.cts.utils.PermissionHelper.getGrantedHealthPermissions
 import android.healthconnect.cts.utils.TestUtils
 import android.healthconnect.cts.utils.TestUtils.readAllRecords
+import android.platform.test.annotations.RequiresFlagsDisabled
+import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import androidx.test.uiautomator.By
 import com.android.healthfitness.flags.AconfigFlagHelper
+import com.android.settingslib.widget.theme.flags.Flags.FLAG_IS_EXPRESSIVE_DESIGN_ENABLED
 import com.google.common.truth.Truth.assertThat
 import java.time.Duration.ofSeconds
 import org.junit.After
@@ -177,9 +180,19 @@ abstract class BaseDataTypeTest<T : Record> : HealthConnectBaseTest() {
     }
 
     @Test
-    fun seeAllRecentAccess_showsDataCategory() {
+    @RequiresFlagsDisabled(FLAG_IS_EXPRESSIVE_DESIGN_ENABLED)
+    fun legacySeeAllRecentAccess_showsDataCategory() {
         context.launchMainActivity {
             findTextAndClick("See all recent access")
+            findText("Write: ${dataCategoryString}")
+        }
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_IS_EXPRESSIVE_DESIGN_ENABLED)
+    fun expressiveSeeAllRecentAccess_showsDataCategory() {
+        context.launchMainActivity {
+            findTextAndClick("View all")
             findText("Write: ${dataCategoryString}")
         }
     }

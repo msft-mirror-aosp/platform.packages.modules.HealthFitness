@@ -423,7 +423,7 @@
     <string name="no_apps_allowed" msgid="5794833581324128108">"未允許任何應用程式"</string>
     <string name="no_apps_denied" msgid="743327680286446017">"未拒絕任何應用程式"</string>
     <string name="permissions_disconnect_all_dialog_title" msgid="27474286046207122">"要移除所有應用程式的存取權嗎？"</string>
-    <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"所有應用程式將無法存取 Health Connect，亦無法在當中新增資料。系統並不會刪除任何現有資料。\n\n此操作不會影響此應用程式可能擁有的位置、相機或麥克風等其他權限。"</string>
+    <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"所有應用程式將無法存取「健康資料同步」，亦無法在當中新增資料。系統並不會刪除任何現有資料。\n\n此操作不會影響此應用程式可能擁有的位置、相機或麥克風等其他權限。"</string>
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"全部移除"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"管理應用程式"</string>
     <string name="see_app_data" msgid="3951030076195119476">"查看應用程式資料"</string>
@@ -1122,7 +1122,7 @@
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"尋找更多可透過「健康資料同步」與「<xliff:g id="APP_NAME">%s</xliff:g>」同步的應用程式"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"在應用程式商店上查看"</string>
     <string name="lock_screen_banner_title" msgid="5384381892985739755">"設定螢幕鎖定"</string>
-    <string name="lock_screen_banner_content" msgid="3392527073622152481">"為提高健康資料安全性，請為此裝置設定 PIN、圖案或密碼"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"為進一步保障健康資料安全，請為此裝置設定 PIN、圖案或密碼"</string>
     <string name="lock_screen_banner_button" msgid="2537090011380728122">"設定螢幕鎖定"</string>
     <string name="select_all" msgid="837499881590001166">"全部選取"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"已連結的應用程式將無法在「健康資料同步」中讀取這些資料"</string>

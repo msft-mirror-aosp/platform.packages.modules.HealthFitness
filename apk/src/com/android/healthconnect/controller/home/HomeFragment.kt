@@ -216,6 +216,9 @@ class HomeFragment : Hilt_HomeFragment() {
                 is RecentAccessState.WithData -> {
                     updateRecentApps(recentAppsState.recentAccessEntries)
                 }
+                is RecentAccessState.Error -> {
+                    updateRecentAppsWithError()
+                }
                 else -> {
                     updateRecentApps(emptyList())
                 }
@@ -332,6 +335,7 @@ class HomeFragment : Hilt_HomeFragment() {
         }
     }
 
+    // region Banners
     private fun maybeShowExportErrorBanner(scheduledExportUiState: ScheduledExportUiState) {
         if (
             preferenceScreen.findPreference<Preference>(EXPORT_ERROR_BANNER_PREFERENCE_KEY) != null
@@ -405,7 +409,6 @@ class HomeFragment : Hilt_HomeFragment() {
         }
     }
 
-    // Onboarding banners
     private fun getStartUsingHealthConnectBanner(): BannerPreference {
         return BannerPreference(requireContext(), UnknownGenericElement.UNKNOWN_BANNER).also {
             banner ->
@@ -544,6 +547,8 @@ class HomeFragment : Hilt_HomeFragment() {
         }
     }
 
+    // endregion
+
     private fun navigateToSecuritySettings() {
         startActivity(securitySettingsIntent)
     }
@@ -659,6 +664,19 @@ class HomeFragment : Hilt_HomeFragment() {
             }
             mRecentAccessPreference.addPreference(getSeeAllPreference())
         }
+    }
+
+    private fun updateRecentAppsWithError() {
+        noRecentAccessPreference.isVisible = false
+        mRecentAccessPreference.isVisible = true
+        mRecentAccessPreference.removeAll()
+        mRecentAccessPreference.addPreference(
+            HealthPreference(requireContext()).also {
+                it.title = getString(R.string.recent_access_error)
+                it.isSelectable = false
+                it.setIcon(AttributeResolver.getResource(requireContext(), R.attr.warningIcon))
+            }
+        )
     }
 
     private fun getSeeAllPreference(): Preference {

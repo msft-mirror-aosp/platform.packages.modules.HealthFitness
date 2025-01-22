@@ -136,7 +136,7 @@
     <string name="history_read_access_description" msgid="800722432229526128">"Salli sovellukselle pääsy Health Connectin dataan, joka on lisätty ennen <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="history_read_access_description_fallback" msgid="4151538305657852010">"Salli sovellukselle pääsy aiempaan Health Connectin dataan"</string>
     <string name="history_read_medical_access_read_warning" msgid="8878271647163400440">"Liikuntadataa ei tällä hetkellä lueta, koska <xliff:g id="APP_NAME">%1$s</xliff:g> ei ole saanut luvaluvat:"</string>
-    <string name="additional_access_medical_read_footer" msgid="4640796038121080343">"<xliff:g id="APP_NAME">%1$s</xliff:g> voi jo nyt käyttää aiempaa terveystietojesi dataa. Jos haluat muuttaa tätä, laita sovelluksen terveystietojen käyttöoikeudet pois päältä"</string>
+    <string name="additional_access_medical_read_footer" msgid="4640796038121080343">"<xliff:g id="APP_NAME">%1$s</xliff:g> voi jo nyt käyttää aiempaa terveystietojesi dataa. Jos haluat muuttaa tätä, laita sovelluksen terveystietojen käyttöluvat pois päältä"</string>
     <string name="additional_access_medical_read_footer_link" msgid="2797623091827504856">"Ylläpidä terveystietolupia"</string>
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Ota käyttöön vähintään yksi lukuoikeus, jotta taustakäyttöoikeudet tai aiemmat pääsyoikeudet dataan voidaan laittaa päälle tälle sovellukselle"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Ota käyttöön vähintään yksi lukuoikeus, jotta taustakäyttöoikeudet voidaan laittaa päälle tälle sovellukselle"</string>
@@ -361,7 +361,7 @@
     <string name="request_permissions_allow" msgid="4201324235711040631">"Salli"</string>
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Salli kaikki"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Älä salli"</string>
-    <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Valitse, mitä Health Connect dataa‑ haluat sovelluksen kirjoittavan tai lukevan"</string>
+    <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Valitse, mitä Health Connect -dataa haluat sovelluksen kirjoittavan tai lukevan"</string>
     <string name="request_permissions_data_access_type_read" msgid="6005792244220381045">"Valitse, mitä Health Connect dataa haluat sovelluksen lukevan"</string>
     <string name="request_permissions_data_access_type_write" msgid="6369810467678676337">"Valitse, mitä dataa haluat sovelluksen kirjoittavan Health Connectiin"</string>
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Jos annat lukupääsyoikeudet, sovellus voi lukea uutta dataa ja dataa 30 viime päivältä"</string>

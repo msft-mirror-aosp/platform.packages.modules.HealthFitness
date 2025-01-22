@@ -359,7 +359,7 @@
     <string name="read_permission_category" msgid="6002099618259628632">"Permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> lea"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> escriba"</string>
     <string name="request_permissions_allow" msgid="4201324235711040631">"Permitir"</string>
-    <string name="request_permissions_allow_all" msgid="3419414351406638770">"Permitir todos"</string>
+    <string name="request_permissions_allow_all" msgid="3419414351406638770">"Permitir todo"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"No permitir"</string>
     <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Selecciona los datos que quieres que esta aplicación lea o escriba en Salud conectada"</string>
     <string name="request_permissions_data_access_type_read" msgid="6005792244220381045">"Selecciona los datos que quieres que esta aplicación lea en Salud conectada"</string>
@@ -427,7 +427,7 @@
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"Quitar todos"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"Gestionar aplicación"</string>
     <string name="see_app_data" msgid="3951030076195119476">"Ver datos de la aplicación"</string>
-    <string name="remove_access_for_this_app" msgid="7701101420310711833">"Quitar acceso a esta aplicación"</string>
+    <string name="remove_access_for_this_app" msgid="7701101420310711833">"Quitar acceso de esta aplicación"</string>
     <string name="delete_app_data" msgid="6890357774873859952">"Eliminar datos de la aplicación"</string>
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"Aplicaciones inactivas"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Estas aplicaciones ya no tienen acceso, pero siguen teniendo datos almacenados en Salud conectada"</string>

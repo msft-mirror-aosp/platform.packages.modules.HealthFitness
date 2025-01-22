@@ -209,8 +209,41 @@ android_library {
     },
 }
 
+// Opt-out config for optimizing the HealthConnectController target using R8.
+// Disabled via `export EMMA_INSTRUMENT=false`, or explicitly in Make via
+// `EMMA_INSTRUMENT := false`.
+soong_config_module_type {
+    name: "healthconnectcontroller_optimized_java_defaults",
+    module_type: "java_defaults",
+    config_namespace: "ANDROID",
+    bool_variables: ["EMMA_INSTRUMENT"],
+    properties: ["optimize"],
+}
+
+healthconnectcontroller_optimized_java_defaults {
+    name: "HealthConnectController_optimized_defaults",
+    soong_config_variables: {
+        EMMA_INSTRUMENT: {
+            optimize: {
+                optimize: false,
+                shrink_resources: true,
+            },
+            conditions_default: {
+                optimize: {
+                    enabled: true,
+                    optimize: true,
+                    shrink_resources: true,
+                },
+            },
+        },
+    },
+}
+
 android_app {
     name: "HealthConnectController",
+    defaults: [
+        "HealthConnectController_optimized_defaults",
+    ],
     srcs: ["src/**/HealthConnectApplication.kt"],
     sdk_version: "module_current",
     min_sdk_version: "34",
@@ -236,10 +269,6 @@ android_app {
         "framework-healthfitness.stubs.module_lib",
         "framework-annotations-lib",
     ],
-    optimize: {
-        optimize: true,
-        shrink_resources: true,
-    },
     apex_available: ["com.android.healthfitness"],
     flags_packages: [
         "healthfitness-aconfig-flags",

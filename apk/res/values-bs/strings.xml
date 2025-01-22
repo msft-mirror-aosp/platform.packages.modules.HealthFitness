@@ -371,7 +371,7 @@
     <string name="request_permissions_rationale" msgid="2642076968583316986">"Možete saznati kako aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> obrađuje vaše podatke u dokumentu \"<xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>\""</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"pravilima privatnosti"</string>
     <string name="medical_request_header" msgid="2300521519021510027">"Dozvoliti aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> da pristupa zdravstvenim evidencijama?"</string>
-    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Ako joj odobrite pristup, aplikacija može čitati i pisati podatke kao što su podaci o alergijama, laboratorijskim nalazima, vakcinama i drugo\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Ako joj odobrite pristup, aplikacija može čitati i zapisivati podatke kao što su podaci o alergijama, laboratorijskim nalazima, vakcinama i drugo\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Ako joj odobrite pristup, aplikacija može čitati podatke kao što su podaci o alergijama, laboratorijskim nalazima, vakcinama i drugo\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"O zdravstvenim evidencijama"</string>
     <string name="medical_request_data_to_share" msgid="6778034304921873317">"Podaci za dijeljenje uključuju"</string>
@@ -540,7 +540,7 @@
     <string name="onboarding_title" msgid="8550656211291180188">"Počnite koristiti Health Connect"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect pohranjuje vaše podatke o zdravlju i fitnesu i pruža vam jednostavan način da sinhronizirate različite aplikacije na uređaju"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect pohranjuje i sinhronizira vaše podatke o zdravlju i fitnesu iz raznih aplikacija.\n\n"<b>"Podaci o fitnesu i wellnessu,"</b>" uključujući sesije vježbanja, korake, prehranu, spavanje i druge \n\n"<b>"zdravstvene evidencije,"</b>" uključujući vakcine, laboratorijske nalaze i drugo"</string>
-    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Uz Health Connecta možete raditi sljedeće"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Uz Health Connect možete raditi sljedeće"</string>
     <string name="share_data_text" msgid="6898398345784931678"><b>"Dijelite podatke s aplikacijama"</b>\n"Odaberite podatke koje svaka aplikacija može čitati ili zapisivati u Health Connectu"</string>
     <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Upravljajte postavkama i privatnošću"</b>\n"Promijenite odobrenja za aplikaciju i upravljajte podacima bilo kada"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Nazad"</string>

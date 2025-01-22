@@ -65,6 +65,7 @@ import com.android.healthconnect.controller.permissions.app.AppPermissionViewMod
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
+import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel
 import com.android.healthconnect.controller.selectabledeletion.DeletionDataViewModel
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus
@@ -109,7 +110,9 @@ class TrampolineActivityTest {
     val appPermissionViewModel: AppPermissionViewModel = mock(AppPermissionViewModel::class.java)
     @BindValue val allDataViewModel: AllDataViewModel = Mockito.mock(AllDataViewModel::class.java)
     @BindValue val homeViewModel: HomeViewModel = mock(HomeViewModel::class.java)
-
+    @BindValue
+    val recentAccessViewModel: RecentAccessViewModel =
+        Mockito.mock(RecentAccessViewModel::class.java)
     private val context = InstrumentationRegistry.getInstrumentation().context
 
     @Before
@@ -213,6 +216,9 @@ class TrampolineActivityTest {
         whenever(homeViewModel.showLockScreenBanner).then {
             MediatorLiveData(HomeViewModel.LockScreenBannerState.NoBanner)
         }
+        whenever(recentAccessViewModel.recentAccessApps).then {
+            MutableLiveData(RecentAccessViewModel.RecentAccessState.WithData(listOf()))
+        }
     }
 
     @Test
@@ -254,7 +260,9 @@ class TrampolineActivityTest {
         if (SettingsThemeHelper.isExpressiveTheme(context)) {
             onView(withText("No recent access")).perform(scrollTo()).check(matches(isDisplayed()))
         } else {
-            onView(withText("Recent access")).perform(scrollTo()).check(matches(isDisplayed()))
+            onView(withText("No apps recently accessed Health\u00A0Connect"))
+                .perform(scrollTo())
+                .check(matches(isDisplayed()))
         }
         onView(withText("Permissions and data")).check(matches(isDisplayed()))
     }

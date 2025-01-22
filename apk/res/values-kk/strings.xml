@@ -108,7 +108,7 @@
     <string name="background_read_medical_combined_request_title_both_types_granted" msgid="4225111383019900451">"Фондық режимде барлық деректі пайдалану"</string>
     <string name="background_read_medical_combined_request_title_medical_granted" msgid="7245376864667067106">"Фондық режимде денсаулық туралы ақпаратты пайдалану"</string>
     <string name="background_read_medical_combined_request_title_fitness_granted" msgid="2639416977416876229">"Фондық режимде фитнес пен сауықтыру деректерін пайдалану"</string>
-    <string name="background_read_medical_combined_request_description_both_types_granted" msgid="8812552783934180223">"Бұл қолданбаға сіз оны пайдаланбаған кезде, фитнес пен сауықтыру және денсаулық туралы ақпаратты пайдалануға рұқсат беріңіз."</string>
+    <string name="background_read_medical_combined_request_description_both_types_granted" msgid="8812552783934180223">"Бұл қолданбаға сіз оны пайдаланбаған кезде де фитнес пен сауықтыру және денсаулық туралы ақпаратты пайдалануға рұқсат беріңіз."</string>
     <string name="background_read_medical_combined_request_description_medical_granted" msgid="5140647084504657934">"Бұл қолданбаға сіз оны пайдаланбаған кезде, осы деректерді пайдалануға рұқсат беріңіз."</string>
     <string name="background_read_medical_combined_request_description_fitness_granted" msgid="919785628751851996">"Бұл қолданбаға сіз оны пайдаланбаған кезде, осы деректерді пайдалануға рұқсат беріңіз."</string>
     <string name="background_read_combined_request_title" msgid="4184649296697480520">"Фондағы деректерді пайдалану"</string>
@@ -124,7 +124,7 @@
     <string name="background_read_medical_access_title_both_types_granted" msgid="4475972082863444603">"Фондық режимде барлық деректі пайдалану"</string>
     <string name="background_read_medical_access_title_medical_granted" msgid="7852915238347056139">"Фондық режимде денсаулық туралы ақпаратты пайдалану"</string>
     <string name="background_read_medical_access_title_fitness_granted" msgid="8691675952190647227">"Фондық режимде фитнес пен сауықтыру деректерін пайдалану"</string>
-    <string name="background_read_medical_access_description_both_types_granted" msgid="7193350031798606366">"Бұл қолданбаға сіз оны пайдаланбаған кезде, фитнес пен сауықтыру және денсаулық туралы ақпаратты пайдалануға рұқсат беріңіз."</string>
+    <string name="background_read_medical_access_description_both_types_granted" msgid="7193350031798606366">"Бұл қолданбаға сіз оны пайдаланбаған кезде де фитнес пен сауықтыру және денсаулық туралы ақпаратты пайдалануға рұқсат беріңіз."</string>
     <string name="background_read_medical_access_description_medical_granted" msgid="8570683510275055450">"Бұл қолданбаға сіз оны пайдаланбаған кезде, осы деректерді пайдалануға рұқсат беріңіз."</string>
     <string name="background_read_medical_access_description_fitness_granted" msgid="2584567718805499407">"Бұл қолданбаға сіз оны пайдаланбаған кезде, осы деректерді пайдалануға рұқсат беріңіз."</string>
     <string name="background_read_access_title" msgid="4184498185599147117">"Фондағы деректерді пайдалану"</string>
