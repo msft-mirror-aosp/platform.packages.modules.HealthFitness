@@ -26,6 +26,7 @@ import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
 import org.mockito.kotlin.any
+import org.mockito.kotlin.verifyZeroInteractions
 import org.mockito.kotlin.whenever
 
 class GetHealthPermissionsFlagsUseCaseTest {
@@ -49,6 +50,17 @@ class GetHealthPermissionsFlagsUseCaseTest {
                 "TEST_APP",
                 listOf("PERMISSION_1", "PERMISSION_2", "PERMISSION_3"),
             )
+    }
+
+    @Test
+    fun invoke_emptyRequest_doesNotCallManager_resultEmpty() {
+        whenever(healthPermissionManager.getHealthPermissionsFlags(any(), any()))
+            .thenThrow(RuntimeException("Exception"))
+
+        val result = useCase.invoke("TEST_APP", listOf())
+
+        verifyZeroInteractions(healthPermissionManager)
+        assertThat(result).isEmpty()
     }
 
     @Test

@@ -37,28 +37,40 @@ constructor(
     private val loadDeclaredHealthPermissionUseCase: LoadDeclaredHealthPermissionUseCase,
     private val getHealthPermissionsFlagsUseCase: GetHealthPermissionsFlagsUseCase,
     private val getGrantedHealthPermissionsUseCase: IGetGrantedHealthPermissionsUseCase,
-    @IoDispatcher dispatcher: CoroutineDispatcher
+    @IoDispatcher dispatcher: CoroutineDispatcher,
 ) : BaseUseCase<String, ExerciseRouteState>(dispatcher), ILoadExerciseRoutePermissionUseCase {
 
     override suspend fun execute(input: String): ExerciseRouteState {
         val grantedPermissions = getGrantedHealthPermissionsUseCase(input)
         val appPermissions = loadDeclaredHealthPermissionUseCase(input)
         val permissionFlags =
-            getHealthPermissionsFlagsUseCase(input, listOf(READ_EXERCISE_ROUTES, READ_EXERCISE))
+            getHealthPermissionsFlagsUseCase(
+                input,
+                listOf(READ_EXERCISE_ROUTES, READ_EXERCISE).filter { appPermissions.contains(it) },
+            )
         return ExerciseRouteState(
             exerciseRoutePermissionState =
                 getPermissionState(
-                    READ_EXERCISE_ROUTES, grantedPermissions, appPermissions, permissionFlags),
+                    READ_EXERCISE_ROUTES,
+                    grantedPermissions,
+                    appPermissions,
+                    permissionFlags,
+                ),
             exercisePermissionState =
                 getPermissionState(
-                    READ_EXERCISE, grantedPermissions, appPermissions, permissionFlags))
+                    READ_EXERCISE,
+                    grantedPermissions,
+                    appPermissions,
+                    permissionFlags,
+                ),
+        )
     }
 
     private fun getPermissionState(
         permission: String,
         grantedPermissions: List<String>,
         appPermissions: List<String>,
-        permissionFlags: Map<String, Int>
+        permissionFlags: Map<String, Int>,
     ): PermissionUiState {
 
         if (grantedPermissions.contains(permission)) {
@@ -80,14 +92,14 @@ constructor(
 
 data class ExerciseRouteState(
     val exerciseRoutePermissionState: PermissionUiState,
-    val exercisePermissionState: PermissionUiState
+    val exercisePermissionState: PermissionUiState,
 )
 
 enum class PermissionUiState {
     NOT_DECLARED,
     ASK_EVERY_TIME,
     ALWAYS_ALLOW,
-    NEVER_ALLOW
+    NEVER_ALLOW,
 }
 
 interface ILoadExerciseRoutePermissionUseCase {
