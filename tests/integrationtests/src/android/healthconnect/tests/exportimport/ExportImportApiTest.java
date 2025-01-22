@@ -50,6 +50,8 @@ import android.healthconnect.cts.utils.TestUtils;
 import android.net.Uri;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.annotations.RequiresFlagsEnabled;
+import android.platform.test.flag.junit.CheckFlagsRule;
+import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 import android.util.Slog;
 
 import androidx.test.core.app.ApplicationProvider;
@@ -95,6 +97,9 @@ public class ExportImportApiTest {
             new AssumptionCheckerRule(
                     TestUtils::isHealthConnectFullySupported,
                     "Tests should run on supported hardware only.");
+
+    @Rule
+    public final CheckFlagsRule mCheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule();
 
     @Before
     public void setUp() throws Exception {
