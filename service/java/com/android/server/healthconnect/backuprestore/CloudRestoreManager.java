@@ -32,6 +32,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -86,7 +87,19 @@ public class CloudRestoreManager {
                         mDeviceInfoHelper,
                         mAppInfoHelper);
         mTransactionManager.insertAllRecords(mAppInfoHelper, null, upsertRequest);
-        mAppInfoHelper.syncAppInfoRecordTypesUsed();
+
+        records.stream()
+                .collect(
+                        Collectors.groupingBy(
+                                Record::getPackageName,
+                                LinkedHashMap::new,
+                                Collectors.mapping(
+                                        mRecordProtoConverter::getRecordTypeId,
+                                        Collectors.toSet())))
+                .forEach(
+                        (packageName, recordTypes) ->
+                                mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                                        recordTypes, packageName));
     }
 
     private Record toRecord(RestoreChange backupChange) {

@@ -168,8 +168,8 @@ public final class RecordProtoConverter {
                     InvocationTargetException,
                     InstantiationException,
                     IllegalAccessException {
-        int recordId = getRecordId(recordProto);
-        Class<? extends RecordInternal<?>> recordClass = mDataTypeClassMap.get(recordId);
+        int recordTypeId = getRecordTypeId(recordProto);
+        Class<? extends RecordInternal<?>> recordClass = mDataTypeClassMap.get(recordTypeId);
         Objects.requireNonNull(recordClass);
         RecordInternal<?> recordInternal = recordClass.getConstructor().newInstance();
         populateRecordInternal(recordProto, recordInternal);
@@ -1821,7 +1821,7 @@ public final class RecordProtoConverter {
     }
 
     @RecordTypeIdentifier.RecordType
-    private int getRecordId(Record protoRecord) {
+    int getRecordTypeId(Record protoRecord) {
         if (protoRecord.hasIntervalRecord()) {
             return getIntervalRecordId(protoRecord.getIntervalRecord());
         }
