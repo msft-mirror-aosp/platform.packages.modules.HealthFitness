@@ -353,8 +353,15 @@ public final class HealthConnectPermissionHelper {
                                 HealthPermissions.READ_HEART_RATE,
                                 HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND)
                         : List.of(HealthPermissions.READ_HEART_RATE);
-        Map<String, Integer> permissionFlags =
+        Map<String, Integer> permissionFlags;
+        try {
+            permissionFlags =
                 getHealthPermissionsFlags(packageName, userHandle, permissionsToCheck);
+        } catch (IllegalArgumentException e) {
+            // If the package can't be found, default to consider as not containing split
+            // permission.
+            return false;
+        }
 
         // If the request contains READ_HEALTH_DATA_IN_BACKGROUND, check that it's
         // from a split-permission.
