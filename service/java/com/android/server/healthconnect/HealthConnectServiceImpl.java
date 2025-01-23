@@ -398,7 +398,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 mChangeLogsRequestHelper,
                                 mHealthDataCategoryPriorityHelper,
                                 mPreferenceHelper,
-                                mExportImportSettingsStorage,
                                 mReadAccessLogsHelper)
                         : null;
         mCloudRestoreManager =

@@ -17,9 +17,14 @@ message SettingsRecord {
   HeightUnitProto height_unit_setting = 6;
   WeightUnitProto weight_unit_setting = 7;
   DistanceUnitProto distance_unit_setting = 8;
+  map<string, AppInfo> app_info = 9;
 
   message PrioritizedAppIds {
     repeated int64 app_id = 1;
+  }
+
+  message AppInfo {
+    optional string app_name = 1;
   }
 
   message ExportSettingsProto {
