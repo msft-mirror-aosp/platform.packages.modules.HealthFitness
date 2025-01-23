@@ -66,6 +66,7 @@ import com.android.healthconnect.controller.utils.logging.DataRestoreElement
 import com.android.healthconnect.controller.utils.logging.HomePageElement
 import com.android.healthconnect.controller.utils.logging.MigrationElement
 import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthconnect.controller.utils.logging.RecentAccessElement
 import com.android.healthconnect.controller.utils.logging.UnknownGenericElement
 import com.android.healthconnect.controller.utils.pref
 import com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled
@@ -710,6 +711,7 @@ class HomeFragment : Hilt_HomeFragment() {
     private fun getRecentAccessPreference(recentApp: RecentAccessEntry): HealthPreference {
         return if (expressiveThemingHelper.isExpressiveTheme(requireContext())) {
             HealthPreference(requireContext()).also { newPreference ->
+                newPreference.logName = RecentAccessElement.RECENT_ACCESS_ENTRY_BUTTON
                 newPreference.title = recentApp.metadata.appName
                 newPreference.icon = recentApp.metadata.icon
                 newPreference.summary =
