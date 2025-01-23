@@ -59,7 +59,6 @@ public final class CloudBackupManager {
     private final BackupDatabaseHelper mDatabaseHelper;
     private final HealthDataCategoryPriorityHelper mPriorityHelper;
     private final PreferenceHelper mPreferenceHelper;
-    private final ExportImportSettingsStorage mExportImportSettingsStorage;
 
     public CloudBackupManager(
             TransactionManager transactionManager,
@@ -77,7 +76,6 @@ public final class CloudBackupManager {
         mTransactionManager = transactionManager;
         mPriorityHelper = priorityHelper;
         mPreferenceHelper = preferenceHelper;
-        mExportImportSettingsStorage = exportImportSettingsStorage;
         mDatabaseHelper =
                 new BackupDatabaseHelper(
                         transactionManager,
@@ -144,8 +142,7 @@ public final class CloudBackupManager {
     public GetSettingsForBackupResponse getSettingsForBackup() {
         Slog.i(TAG, "Formatting user settings for export.");
         BackupSettingsHelper backupSettingsHelper =
-                new BackupSettingsHelper(
-                        mPriorityHelper, mPreferenceHelper, mExportImportSettingsStorage);
+                new BackupSettingsHelper(mPriorityHelper, mPreferenceHelper);
 
         int version = 0;
         byte[] data = backupSettingsHelper.collectUserSettings().toByteArray();
