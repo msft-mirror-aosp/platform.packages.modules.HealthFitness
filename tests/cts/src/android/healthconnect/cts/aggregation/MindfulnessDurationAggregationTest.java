@@ -22,18 +22,15 @@ import static android.healthconnect.cts.lib.RecordFactory.newEmptyMetadata;
 
 import android.health.connect.HealthDataCategory;
 import android.health.connect.datatypes.MindfulnessSessionRecord;
-import android.platform.test.annotations.RequiresFlagsEnabled;
 
 import androidx.annotation.Nullable;
 
 import com.android.compatibility.common.util.ApiTest;
-import com.android.healthfitness.flags.Flags;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
 
-@RequiresFlagsEnabled(Flags.FLAG_MINDFULNESS)
 @ApiTest(
         apis = {
             "android.health.connect.datatypes.MindfulnessSessionRecord.MINDFULNESS_DURATION_TOTAL"

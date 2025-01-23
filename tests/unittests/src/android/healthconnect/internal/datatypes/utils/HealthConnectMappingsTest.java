@@ -203,7 +203,6 @@ public class HealthConnectMappingsTest {
         }
     }
 
-    @EnableFlags(Flags.FLAG_MINDFULNESS)
     @Test
     public void getWriteHealthPermissionsFor() {
         HealthConnectMappings healthConnectMappings = new HealthConnectMappings();
