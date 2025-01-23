@@ -124,7 +124,7 @@ public class ImportManager {
     public synchronized void runImport(UserHandle userHandle, Uri uri) {
         Slog.i(TAG, "Import started.");
         long startTimeMillis = mClock != null ? mClock.millis() : -1;
-        mExportImportSettingsStorage.setImportOngoing(true);
+        mExportImportSettingsStorage.setImportState(DATA_IMPORT_STARTED);
         mNotificationSender.sendNotificationAsUser(
                 NOTIFICATION_TYPE_IMPORT_IN_PROGRESS, userHandle);
 
@@ -228,7 +228,6 @@ public class ImportManager {
             // Delete the staged db as we are done merging.
             Slog.i(TAG, "Deleting staged db after merging");
             SQLiteDatabase.deleteDatabase(importDbFile);
-            mExportImportSettingsStorage.setImportOngoing(false);
         }
     }
 
@@ -322,7 +321,7 @@ public class ImportManager {
             long startTimeMillis,
             int originalDataSizeKb,
             int compressedDataSizeKb) {
-        mExportImportSettingsStorage.setLastImportError(importStatus);
+        mExportImportSettingsStorage.setImportState(importStatus);
         if (!Flags.exportImportFastFollow()) return;
         // Convert to int to save on logs storage, int can hold about 68 years
         int timeToErrorMillis = mClock != null ? (int) (mClock.millis() - startTimeMillis) : -1;
@@ -332,7 +331,7 @@ public class ImportManager {
 
     private void recordSuccess(
             long startTimeMillis, int originalDataSizeKb, int compressedDataSizeKb) {
-        mExportImportSettingsStorage.setLastImportError(DATA_IMPORT_ERROR_NONE);
+        mExportImportSettingsStorage.setImportState(DATA_IMPORT_ERROR_NONE);
         if (!Flags.exportImportFastFollow()) return;
         // Convert to int to save on logs storage, int can hold about 68 years
         int timeToErrorMillis = mClock != null ? (int) (mClock.millis() - startTimeMillis) : -1;

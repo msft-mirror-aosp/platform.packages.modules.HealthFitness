@@ -31,6 +31,10 @@ constructor(private val healthPermissionManager: HealthPermissionManager) {
     }
 
     operator fun invoke(packageName: String, permissions: List<String>): Map<String, Int> {
+        if (permissions.isEmpty()) {
+            return emptyMap()
+        }
+
         return try {
             healthPermissionManager.getHealthPermissionsFlags(packageName, permissions)
         } catch (e: Exception) {

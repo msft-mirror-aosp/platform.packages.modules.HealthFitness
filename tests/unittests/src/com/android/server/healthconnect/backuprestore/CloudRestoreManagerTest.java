@@ -58,6 +58,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /** Unit test for class {@link CloudRestoreManager}. */
@@ -172,5 +173,11 @@ public class CloudRestoreManagerTest {
                                 .clearAppName()
                                 .setLastModifiedTime(records.get(1).getLastModifiedTime())
                                 .build());
+        assertThat(mAppInfoHelper.getRecordTypesToContributingPackagesMap())
+                .containsExactly(
+                        RecordTypeIdentifier.RECORD_TYPE_STEPS,
+                        Set.of(stepsRecord.getPackageName()),
+                        RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE,
+                        Set.of(bloodPressureRecord.getPackageName()));
     }
 }
