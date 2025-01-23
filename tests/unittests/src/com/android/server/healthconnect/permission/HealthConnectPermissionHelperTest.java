@@ -125,6 +125,18 @@ public class HealthConnectPermissionHelperTest {
 
     @Test
     @EnableFlags({Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED})
+    public void shouldEnforcePermissionUsageIntent_noPackageFound_shouldEnforce()
+            throws PackageManager.NameNotFoundException {
+        when(mPackageManager.getPackageInfo(eq(TEST_PACKAGE_NAME), any()))
+                .thenThrow(new PackageManager.NameNotFoundException("Cannot find the app name"));
+
+        assertTrue(
+                mPermissionHelper.shouldEnforcePermissionUsageIntent(
+                        TEST_PACKAGE_NAME, CURRENT_USER));
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED})
     public void shouldEnforcePermissionUsageIntent_noReadHrRequested_shouldEnforce()
             throws PackageManager.NameNotFoundException {
         PackageInfo mockPackageInfo = new PackageInfo();
@@ -167,6 +179,24 @@ public class HealthConnectPermissionHelperTest {
         when(mPackageManager.getPermissionFlags(
                         HealthPermissions.READ_HEART_RATE, TEST_PACKAGE_NAME, CURRENT_USER))
                 .thenReturn(PackageManager.FLAG_PERMISSION_USER_SET);
+
+        assertTrue(
+                mPermissionHelper.shouldEnforcePermissionUsageIntent(
+                        TEST_PACKAGE_NAME, CURRENT_USER));
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED})
+    public void shouldEnforcePermissionUsageIntent_exceptionDuringGetPermissionFlags_shouldEnforce()
+            throws PackageManager.NameNotFoundException {
+        PackageInfo mockPackageInfo = new PackageInfo();
+        mockPackageInfo.requestedPermissions = new String[] {HealthPermissions.READ_HEART_RATE};
+        // There is a second package lookup during the permission flag query.
+        // Simulate the package being uninstalled before this second lookup.
+        when(mPackageManager.getPackageInfo(eq(TEST_PACKAGE_NAME), any()))
+                .thenReturn(mockPackageInfo)
+                .thenThrow(new PackageManager.NameNotFoundException("Cannot find the app name"));
+        verify(mPackageManager, never()).getPermissionFlags(any(), any(), any());
 
         assertTrue(
                 mPermissionHelper.shouldEnforcePermissionUsageIntent(
