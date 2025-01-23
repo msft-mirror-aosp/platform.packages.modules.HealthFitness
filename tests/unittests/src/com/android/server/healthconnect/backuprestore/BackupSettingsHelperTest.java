@@ -46,9 +46,10 @@ import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.proto.backuprestore.SettingsRecord;
+import com.android.server.healthconnect.proto.backuprestore.SettingsRecord.AppInfo;
 import com.android.server.healthconnect.proto.backuprestore.SettingsRecord.ExportSettingsProto;
 import com.android.server.healthconnect.proto.backuprestore.SettingsRecord.PrioritizedAppIds;
-import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.testing.fakes.FakePreferenceHelper;
@@ -71,11 +72,15 @@ import java.util.Map;
 public class BackupSettingsHelperTest {
 
     private static final String TEST_PACKAGE_NAME = "package.name";
+    private static final String TEST_NEW_PACKAGE_NAME = "new.package.name";
+    private static final String TEST_APP_NAME = "app.name";
     private static final String TEST_PACKAGE_NAME_2 = "other.app";
     private static final Uri TEST_URI = Uri.parse("content://exports/hcbackup.zip");
 
     private PreferenceHelper mPreferenceHelper;
     private HealthDataCategoryPriorityHelper mPriorityHelper;
+
+    private AppInfoHelper mAppInfoHelper;
     private BackupSettingsHelper mBackupSettingsHelper;
 
     @Rule(order = 1)
@@ -85,7 +90,6 @@ public class BackupSettingsHelperTest {
                     .setStrictness(Strictness.LENIENT)
                     .build();
 
-    @Mock private ExportImportSettingsStorage mExportImportSettingsStorage;
     // TODO(b/373322447): Remove the mock FirstGrantTimeManager
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
     // TODO(b/373322447): Remove the mock HealthPermissionIntentAppsTracker
@@ -103,7 +107,6 @@ public class BackupSettingsHelperTest {
                         .setPreferenceHelper(mPreferenceHelper)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
-                        .setExportImportSettingsStorage(mExportImportSettingsStorage)
                         .build();
 
         TransactionTestUtils transactionTestUtils = new TransactionTestUtils(healthConnectInjector);
@@ -111,7 +114,9 @@ public class BackupSettingsHelperTest {
         transactionTestUtils.insertApp(TEST_PACKAGE_NAME_2);
 
         mPriorityHelper = healthConnectInjector.getHealthDataCategoryPriorityHelper();
-        mBackupSettingsHelper = new BackupSettingsHelper(mPriorityHelper, mPreferenceHelper);
+        mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
+        mBackupSettingsHelper =
+                new BackupSettingsHelper(mPriorityHelper, mPreferenceHelper, mAppInfoHelper);
     }
 
     @Test
@@ -146,6 +151,28 @@ public class BackupSettingsHelperTest {
         SettingsRecord userSettings = mBackupSettingsHelper.collectUserSettings();
 
         assertThat(userSettings.getPriorityListMap()).isEqualTo(expectedPriorityList);
+    }
+
+    @Test
+    public void appInfoPresent_setsAppInfoCorrectly() {
+        mAppInfoHelper.addOrUpdateAppInfoIfNoAppInfoEntryExists(
+                TEST_NEW_PACKAGE_NAME, TEST_APP_NAME);
+
+        SettingsRecord userSettings = mBackupSettingsHelper.collectUserSettings();
+
+        Map<String, AppInfo> appInfoMap = userSettings.getAppInfoMap();
+
+        // The first two packages are inserted during the setup.
+        Map<String, AppInfo> expectedAppInfoMap =
+                Map.of(
+                        TEST_PACKAGE_NAME,
+                        AppInfo.getDefaultInstance(),
+                        TEST_PACKAGE_NAME_2,
+                        AppInfo.getDefaultInstance(),
+                        TEST_NEW_PACKAGE_NAME,
+                        AppInfo.newBuilder().setAppName(TEST_APP_NAME).build());
+
+        assertThat(appInfoMap).isEqualTo(expectedAppInfoMap);
     }
 
     @Test

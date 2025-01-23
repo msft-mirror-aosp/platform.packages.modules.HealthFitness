@@ -652,7 +652,7 @@ public final class AppInfoHelper extends DatabaseHelper {
         return recordTypeContributingPackagesMap;
     }
 
-    private Map<String, AppInfoInternal> getAppInfoMap() {
+    public Map<String, AppInfoInternal> getAppInfoMap() {
         return getAppInfoMap(Optional.empty());
     }
 

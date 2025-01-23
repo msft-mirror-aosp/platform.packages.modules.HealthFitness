@@ -41,7 +41,6 @@ import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
-import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.HealthConnectContext;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
@@ -121,8 +120,6 @@ public class CloudBackupManagerTest {
         ChangeLogsHelper changeLogsHelper = healthConnectInjector.getChangeLogsHelper();
         ChangeLogsRequestHelper changeLogsRequestHelper =
                 healthConnectInjector.getChangeLogsRequestHelper();
-        ExportImportSettingsStorage exportImportSettingsStorage =
-                healthConnectInjector.getExportImportSettingsStorage();
 
         mCloudBackupManager =
                 new CloudBackupManager(
@@ -136,7 +133,6 @@ public class CloudBackupManagerTest {
                         changeLogsRequestHelper,
                         priorityHelper,
                         preferenceHelper,
-                        exportImportSettingsStorage,
                         healthConnectInjector.getReadAccessLogsHelper());
     }
 

@@ -21,8 +21,8 @@ import static com.android.server.healthconnect.storage.ExportImportSettingsStora
 
 import android.util.Slog;
 
-import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.proto.backuprestore.SettingsRecord;
+import com.android.server.healthconnect.proto.backuprestore.SettingsRecord.AppInfo;
 import com.android.server.healthconnect.proto.backuprestore.SettingsRecord.AutoDeleteFrequencyProto;
 import com.android.server.healthconnect.proto.backuprestore.SettingsRecord.DistanceUnitProto;
 import com.android.server.healthconnect.proto.backuprestore.SettingsRecord.EnergyUnitProto;
@@ -31,6 +31,7 @@ import com.android.server.healthconnect.proto.backuprestore.SettingsRecord.Heigh
 import com.android.server.healthconnect.proto.backuprestore.SettingsRecord.PrioritizedAppIds;
 import com.android.server.healthconnect.proto.backuprestore.SettingsRecord.TemperatureUnitProto;
 import com.android.server.healthconnect.proto.backuprestore.SettingsRecord.WeightUnitProto;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
@@ -49,6 +50,8 @@ public final class BackupSettingsHelper {
     private final HealthDataCategoryPriorityHelper mPriorityHelper;
     private final PreferenceHelper mPreferenceHelper;
 
+    private final AppInfoHelper mAppInfoHelper;
+
     public static final String TAG = "BackupSettingsHelper";
 
     public static final String ENERGY_UNIT_PREF_KEY = "ENERGY_UNIT_KEY";
@@ -59,9 +62,12 @@ public final class BackupSettingsHelper {
     public static final String AUTO_DELETE_PREF_KEY = "auto_delete_range_picker";
 
     public BackupSettingsHelper(
-            HealthDataCategoryPriorityHelper priorityHelper, PreferenceHelper preferenceHelper) {
+            HealthDataCategoryPriorityHelper priorityHelper,
+            PreferenceHelper preferenceHelper,
+            AppInfoHelper appInfoHelper) {
         mPriorityHelper = priorityHelper;
         mPreferenceHelper = preferenceHelper;
+        mAppInfoHelper = appInfoHelper;
     }
 
     /**
@@ -73,6 +79,7 @@ public final class BackupSettingsHelper {
         SettingsRecord.Builder builder =
                 SettingsRecord.newBuilder()
                         .putAllPriorityList(getPriorityList())
+                        .putAllAppInfo(getAppInfo())
                         .setAutoDeleteFrequency(getAutoDeleteSetting())
                         .setEnergyUnitSetting(getEnergyPreference())
                         .setTemperatureUnitSetting(getTemperaturePreference())
@@ -84,7 +91,6 @@ public final class BackupSettingsHelper {
         return builder.build();
     }
 
-    @VisibleForTesting
     private Map<Integer, PrioritizedAppIds> getPriorityList() {
         Map<Integer, List<Long>> priorityListMap =
                 mPriorityHelper.getHealthDataCategoryToAppIdPriorityMapImmutable();
@@ -99,6 +105,19 @@ public final class BackupSettingsHelper {
             protoFormattedPriorityList.put(categoryRecord.getKey(), formattedAppIds);
         }
         return protoFormattedPriorityList;
+    }
+
+    private Map<String, AppInfo> getAppInfo() {
+        Map<String, AppInfo> appInfoMap = new HashMap<>();
+        for (var appInfoEntry : mAppInfoHelper.getAppInfoMap().entrySet()) {
+            String appName = appInfoEntry.getValue().getName();
+            AppInfo.Builder appInfoBuilder = AppInfo.newBuilder();
+            if (appName != null) {
+                appInfoBuilder.setAppName(appName);
+            }
+            appInfoMap.putIfAbsent(appInfoEntry.getKey(), appInfoBuilder.build());
+        }
+        return appInfoMap;
     }
 
     private AutoDeleteFrequencyProto getAutoDeleteSetting() {
