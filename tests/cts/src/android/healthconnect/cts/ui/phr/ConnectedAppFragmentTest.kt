@@ -27,6 +27,7 @@ import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD
 import com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
@@ -60,6 +61,7 @@ class ConnectedAppFragmentTest : HealthConnectBaseTest() {
     }
 
     @Test
+    @Ignore("b/391460826 - Elements size too large on expressive devices")
     fun appWithFitnessPermissionsOnly_showsFitnessPermissionsScreen() {
         context.launchMainActivity {
             scrollDownToAndFindText("App permissions")
