@@ -78,9 +78,10 @@ public class UpsertTransactionRequest {
                 recordInternals,
                 deviceInfoHelper,
                 appInfoHelper,
-                true /* isInsertRequest */,
-                true /* shouldGenerateAccessLogs */,
-                true /* shouldPreferNewRecord */,
+                /* isInsertRequest= */ true,
+                /* shouldGenerateAccessLogs= */ true,
+                /* shouldPreferNewRecord= */ true,
+                /* updateLastModifiedTime= */ true,
                 extraPermsStateMap);
     }
 
@@ -103,9 +104,10 @@ public class UpsertTransactionRequest {
                 recordInternals,
                 deviceInfoHelper,
                 appInfoHelper,
-                false /* isInsertRequest */,
-                true /* shouldGenerateAccessLogs */,
-                true /* shouldPreferNewRecord */,
+                /* isInsertRequest= */ false,
+                /* shouldGenerateAccessLogs= */ true,
+                /* shouldPreferNewRecord= */ true,
+                /* updateLastModifiedTime= */ true,
                 extraPermsStateMap);
     }
 
@@ -123,10 +125,11 @@ public class UpsertTransactionRequest {
                 recordInternals,
                 deviceInfoHelper,
                 appInfoHelper,
-                true /* isInsertRequest */,
-                false /* shouldGenerateAccessLogs */,
-                false /* shouldPreferNewRecord */,
-                null /* extraPermsStateMap */);
+                /* isInsertRequest= */ true,
+                /* shouldGenerateAccessLogs= */ false,
+                /* shouldPreferNewRecord= */ false,
+                /* updateLastModifiedTime= */ false,
+                /* extraPermsStateMap= */ null);
     }
 
     private UpsertTransactionRequest(
@@ -137,6 +140,7 @@ public class UpsertTransactionRequest {
             boolean isInsertRequest,
             boolean shouldGenerateAccessLogs,
             boolean shouldPreferNewRecord,
+            boolean updateLastModifiedTime,
             @Nullable ArrayMap<String, Boolean> extraPermsStateMap) {
         if (shouldGenerateAccessLogs) {
             Objects.requireNonNull(packageName);
@@ -146,7 +150,9 @@ public class UpsertTransactionRequest {
             appInfoHelper.populateAppInfoId(recordInternal, /* requireAllFields= */ true);
             deviceInfoHelper.populateDeviceInfoId(recordInternal);
             mRecordTypes.add(recordInternal.getRecordType());
-            recordInternal.setLastModifiedTime(Instant.now().toEpochMilli());
+            if (updateLastModifiedTime) {
+                recordInternal.setLastModifiedTime(Instant.now().toEpochMilli());
+            }
             addRequest(recordInternal, isInsertRequest, extraPermsStateMap);
         }
         mShouldGenerateAccessLogs = shouldGenerateAccessLogs;
