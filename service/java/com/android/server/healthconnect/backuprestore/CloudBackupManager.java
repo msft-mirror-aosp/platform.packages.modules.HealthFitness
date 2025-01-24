@@ -30,7 +30,6 @@ import android.health.connect.backuprestore.GetSettingsForBackupResponse;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.util.Slog;
 
-import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
@@ -59,7 +58,7 @@ public final class CloudBackupManager {
     private final BackupDatabaseHelper mDatabaseHelper;
     private final HealthDataCategoryPriorityHelper mPriorityHelper;
     private final PreferenceHelper mPreferenceHelper;
-    private final ExportImportSettingsStorage mExportImportSettingsStorage;
+    private final AppInfoHelper mAppInfoHelper;
 
     public CloudBackupManager(
             TransactionManager transactionManager,
@@ -72,12 +71,11 @@ public final class CloudBackupManager {
             ChangeLogsRequestHelper changeLogsRequestHelper,
             HealthDataCategoryPriorityHelper priorityHelper,
             PreferenceHelper preferenceHelper,
-            ExportImportSettingsStorage exportImportSettingsStorage,
             ReadAccessLogsHelper readAccessLogsHelper) {
         mTransactionManager = transactionManager;
         mPriorityHelper = priorityHelper;
         mPreferenceHelper = preferenceHelper;
-        mExportImportSettingsStorage = exportImportSettingsStorage;
+        mAppInfoHelper = appInfoHelper;
         mDatabaseHelper =
                 new BackupDatabaseHelper(
                         transactionManager,
@@ -144,8 +142,7 @@ public final class CloudBackupManager {
     public GetSettingsForBackupResponse getSettingsForBackup() {
         Slog.i(TAG, "Formatting user settings for export.");
         BackupSettingsHelper backupSettingsHelper =
-                new BackupSettingsHelper(
-                        mPriorityHelper, mPreferenceHelper, mExportImportSettingsStorage);
+                new BackupSettingsHelper(mPriorityHelper, mPreferenceHelper, mAppInfoHelper);
 
         int version = 0;
         byte[] data = backupSettingsHelper.collectUserSettings().toByteArray();

@@ -37,6 +37,7 @@ java_library {
     },
     srcs: [
         "backup_data.proto",
+        "backup_settings.proto",
     ],
     static_libs: ["libprotobuf-java-lite"],
     apex_available: ["com.android.healthfitness"],

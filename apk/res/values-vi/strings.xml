@@ -19,7 +19,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_label" msgid="4768580772453324183">"Health Connect"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"Quản lý quyền truy cập của ứng dụng vào dữ liệu sức khoẻ"</string>
-    <string name="permissions_and_data_header" msgid="4406105506837487805">"Quyền truy cập và dữ liệu"</string>
+    <string name="permissions_and_data_header" msgid="4406105506837487805">"Quyền và dữ liệu"</string>
     <string name="home_subtitle" msgid="2154213430054477787">"Quản lý dữ liệu về sức khoẻ và thể dục trên thiết bị của bạn, đồng thời kiểm soát ứng dụng nào có thể truy cập vào dữ liệu đó"</string>
     <string name="data_title" msgid="4456619761533380816">"Dữ liệu và quyền truy cập"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"Duyệt xem hồ sơ sức khoẻ"</string>
@@ -56,6 +56,14 @@
     <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Quản lý quyền"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Thời gian: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
+    <!-- no translation found for recent_access_empty_state_title (4767157641389217682) -->
+    <skip />
+    <!-- no translation found for recent_access_empty_state_description (6334951450158128989) -->
+    <skip />
+    <!-- no translation found for recent_access_view_all_button (825946958049641541) -->
+    <skip />
+    <!-- no translation found for recent_access_error (2258399573560888960) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"Hoạt động"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"hoạt động"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Số đo cơ thể"</string>
@@ -70,7 +78,7 @@
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"dinh dưỡng"</string>
     <string name="wellness_category_uppercase" msgid="5900304317921557780">"Sức khoẻ"</string>
     <string name="wellness_category_lowercase" msgid="1327642415424743588">"sức khoẻ"</string>
-    <string name="browse_data_category" msgid="4813955610391357638">"Duyệt qua dữ liệu"</string>
+    <string name="browse_data_category" msgid="4813955610391357638">"Duyệt xem dữ liệu"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"Quản lý dữ liệu"</string>
     <string name="export_data_button" msgid="7783329820434117744">"Xuất dữ liệu"</string>
     <string name="delete_all_data_button" msgid="7238755635416521487">"Xoá mọi dữ liệu"</string>
@@ -172,8 +180,8 @@
     <string name="floors_climbed_lowercase_label" msgid="5326072443481377299">"số tầng đã leo"</string>
     <string name="floors_climbed_read_content_description" msgid="4730764877684911752">"Đọc dữ liệu về số tầng đã leo"</string>
     <string name="floors_climbed_write_content_description" msgid="3480340610185615655">"Ghi dữ liệu về số tầng đã leo"</string>
-    <string name="power_uppercase_label" msgid="8027219480901448660">"Năng lượng"</string>
-    <string name="power_lowercase_label" msgid="3893286148577044369">"năng lượng"</string>
+    <string name="power_uppercase_label" msgid="8027219480901448660">"Sức mạnh"</string>
+    <string name="power_lowercase_label" msgid="3893286148577044369">"sức mạnh"</string>
     <string name="power_read_content_description" msgid="6821797135406643841">"Đọc dữ liệu về năng lượng"</string>
     <string name="power_write_content_description" msgid="8091584558688087392">"Ghi dữ liệu về năng lượng"</string>
     <string name="speed_uppercase_label" msgid="3307049861007518587">"Tốc độ"</string>
@@ -974,7 +982,7 @@
     <string name="things_to_try" msgid="8200374691546152703">"Hành động bạn có thể thử"</string>
     <string name="check_for_updates" msgid="3841090978657783101">"Kiểm tra để tìm bản cập nhật"</string>
     <string name="check_for_updates_description" msgid="1347667778199095160">"Đảm bảo các ứng dụng đã cài đặt là bản mới nhất"</string>
-    <string name="see_all_compatible_apps" msgid="6791146164535475726">"Xem tất cả các ứng dụng tương thích"</string>
+    <string name="see_all_compatible_apps" msgid="6791146164535475726">"Xem tất cả những ứng dụng tương thích"</string>
     <string name="see_all_compatible_apps_description" msgid="2092325337403254491">"Tìm các ứng dụng trên Google Play"</string>
     <string name="send_feedback" msgid="7756927746070096780">"Gửi ý kiến phản hồi"</string>
     <string name="send_feedback_description" msgid="2887207112856240778">"Hãy cho chúng tôi biết bạn muốn tích hợp ứng dụng sức khoẻ và thể dục nào với Health Connect"</string>

@@ -56,6 +56,14 @@
     <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"권한 관리"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"시간: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
+    <!-- no translation found for recent_access_empty_state_title (4767157641389217682) -->
+    <skip />
+    <!-- no translation found for recent_access_empty_state_description (6334951450158128989) -->
+    <skip />
+    <!-- no translation found for recent_access_view_all_button (825946958049641541) -->
+    <skip />
+    <!-- no translation found for recent_access_error (2258399573560888960) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"활동"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"활동"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"신체 측정"</string>
@@ -304,8 +312,8 @@
     <string name="respiratory_rate_lowercase_label" msgid="8138249029197360098">"호흡수"</string>
     <string name="respiratory_rate_read_content_description" msgid="8545898979648419722">"호흡수 읽기"</string>
     <string name="respiratory_rate_write_content_description" msgid="7689533746809591931">"호흡수 쓰기"</string>
-    <string name="resting_heart_rate_uppercase_label" msgid="5700827752396195453">"안정시 심박수"</string>
-    <string name="resting_heart_rate_lowercase_label" msgid="4533866739695973169">"안정시 심박수"</string>
+    <string name="resting_heart_rate_uppercase_label" msgid="5700827752396195453">"안정 시 심박수"</string>
+    <string name="resting_heart_rate_lowercase_label" msgid="4533866739695973169">"안정 시 심박수"</string>
     <string name="resting_heart_rate_read_content_description" msgid="1068160055773401020">"안정시 심박수 읽기"</string>
     <string name="resting_heart_rate_write_content_description" msgid="8848198128082739995">"안정시 심박수 쓰기"</string>
     <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"피부 온도"</string>

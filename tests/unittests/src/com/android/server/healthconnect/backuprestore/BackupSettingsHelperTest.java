@@ -22,25 +22,19 @@ import static com.android.server.healthconnect.backuprestore.BackupSettingsHelpe
 import static com.android.server.healthconnect.backuprestore.BackupSettingsHelper.HEIGHT_UNIT_PREF_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupSettingsHelper.TEMPERATURE_UNIT_PREF_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupSettingsHelper.WEIGHT_UNIT_PREF_KEY;
-import static com.android.server.healthconnect.backuprestore.CloudBackupSettings.AutoDeleteFrequency;
-import static com.android.server.healthconnect.backuprestore.CloudBackupSettings.DEFAULT_DISTANCE_UNIT;
-import static com.android.server.healthconnect.backuprestore.CloudBackupSettings.DEFAULT_ENERGY_UNIT;
-import static com.android.server.healthconnect.backuprestore.CloudBackupSettings.DEFAULT_HEIGHT_UNIT;
-import static com.android.server.healthconnect.backuprestore.CloudBackupSettings.DEFAULT_TEMPERATURE_UNIT;
-import static com.android.server.healthconnect.backuprestore.CloudBackupSettings.DEFAULT_WEIGHT_UNIT;
-import static com.android.server.healthconnect.backuprestore.CloudBackupSettings.DistanceUnit;
-import static com.android.server.healthconnect.backuprestore.CloudBackupSettings.EnergyUnit;
-import static com.android.server.healthconnect.backuprestore.CloudBackupSettings.HeightUnit;
-import static com.android.server.healthconnect.backuprestore.CloudBackupSettings.TemperatureUnit;
-import static com.android.server.healthconnect.backuprestore.CloudBackupSettings.WeightUnit;
+import static com.android.server.healthconnect.proto.backuprestore.SettingsRecord.AutoDeleteFrequencyProto;
+import static com.android.server.healthconnect.proto.backuprestore.SettingsRecord.DistanceUnitProto;
+import static com.android.server.healthconnect.proto.backuprestore.SettingsRecord.EnergyUnitProto;
+import static com.android.server.healthconnect.proto.backuprestore.SettingsRecord.HeightUnitProto;
+import static com.android.server.healthconnect.proto.backuprestore.SettingsRecord.TemperatureUnitProto;
+import static com.android.server.healthconnect.proto.backuprestore.SettingsRecord.WeightUnitProto;
+import static com.android.server.healthconnect.storage.ExportImportSettingsStorage.EXPORT_PERIOD_PREFERENCE_KEY;
+import static com.android.server.healthconnect.storage.ExportImportSettingsStorage.EXPORT_URI_PREFERENCE_KEY;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import static org.mockito.Mockito.when;
-
 import android.content.Context;
 import android.health.connect.HealthDataCategory;
-import android.health.connect.exportimport.ScheduledExportSettings;
 import android.net.Uri;
 
 import androidx.test.core.app.ApplicationProvider;
@@ -51,7 +45,11 @@ import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
-import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
+import com.android.server.healthconnect.proto.backuprestore.SettingsRecord;
+import com.android.server.healthconnect.proto.backuprestore.SettingsRecord.AppInfo;
+import com.android.server.healthconnect.proto.backuprestore.SettingsRecord.ExportSettingsProto;
+import com.android.server.healthconnect.proto.backuprestore.SettingsRecord.PrioritizedAppIds;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.testing.fakes.FakePreferenceHelper;
@@ -66,7 +64,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.quality.Strictness;
 
-import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -74,11 +72,15 @@ import java.util.Map;
 public class BackupSettingsHelperTest {
 
     private static final String TEST_PACKAGE_NAME = "package.name";
+    private static final String TEST_NEW_PACKAGE_NAME = "new.package.name";
+    private static final String TEST_APP_NAME = "app.name";
     private static final String TEST_PACKAGE_NAME_2 = "other.app";
     private static final Uri TEST_URI = Uri.parse("content://exports/hcbackup.zip");
 
     private PreferenceHelper mPreferenceHelper;
     private HealthDataCategoryPriorityHelper mPriorityHelper;
+
+    private AppInfoHelper mAppInfoHelper;
     private BackupSettingsHelper mBackupSettingsHelper;
 
     @Rule(order = 1)
@@ -88,7 +90,6 @@ public class BackupSettingsHelperTest {
                     .setStrictness(Strictness.LENIENT)
                     .build();
 
-    @Mock private ExportImportSettingsStorage mExportImportSettingsStorage;
     // TODO(b/373322447): Remove the mock FirstGrantTimeManager
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
     // TODO(b/373322447): Remove the mock HealthPermissionIntentAppsTracker
@@ -106,7 +107,6 @@ public class BackupSettingsHelperTest {
                         .setPreferenceHelper(mPreferenceHelper)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
-                        .setExportImportSettingsStorage(mExportImportSettingsStorage)
                         .build();
 
         TransactionTestUtils transactionTestUtils = new TransactionTestUtils(healthConnectInjector);
@@ -114,11 +114,9 @@ public class BackupSettingsHelperTest {
         transactionTestUtils.insertApp(TEST_PACKAGE_NAME_2);
 
         mPriorityHelper = healthConnectInjector.getHealthDataCategoryPriorityHelper();
+        mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
         mBackupSettingsHelper =
-                new BackupSettingsHelper(
-                        mPriorityHelper, mPreferenceHelper, mExportImportSettingsStorage);
-
-        when(mExportImportSettingsStorage.getUri()).thenReturn(TEST_URI);
+                new BackupSettingsHelper(mPriorityHelper, mPreferenceHelper, mAppInfoHelper);
     }
 
     @Test
@@ -127,146 +125,196 @@ public class BackupSettingsHelperTest {
                 mPriorityHelper.getHealthDataCategoryToAppIdPriorityMapImmutable();
         assertThat(priorityMapImmutable).isEmpty();
 
-        CloudBackupSettings userSettings = mBackupSettingsHelper.collectUserSettings();
+        SettingsRecord userSettings = mBackupSettingsHelper.collectUserSettings();
 
-        Map<Integer, List<Long>> actualResult = userSettings.getPriorityListMapSetting();
+        Map<Integer, PrioritizedAppIds> actualResult = userSettings.getPriorityListMap();
 
         assertThat(actualResult).isEmpty();
     }
 
     @Test
-    public void oneCategoryPriorityList_setsPriorityListCorrectly() throws IOException {
+    public void oneCategoryPriorityList_setsPriorityListCorrectly() {
         mPriorityHelper.setPriorityOrder(
                 HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME, TEST_PACKAGE_NAME_2));
-        Map<Integer, List<Long>> expectedPriorityList =
-                mPriorityHelper.getHealthDataCategoryToAppIdPriorityMapImmutable();
+        Map<Integer, PrioritizedAppIds> expectedPriorityList = new HashMap<>();
+        mPriorityHelper
+                .getHealthDataCategoryToAppIdPriorityMapImmutable()
+                .forEach(
+                        (category, appIdList) -> {
+                            expectedPriorityList.put(
+                                    category,
+                                    PrioritizedAppIds.newBuilder().addAllAppId(appIdList).build());
+                        });
+
         assertThat(expectedPriorityList).isNotEmpty();
 
-        CloudBackupSettings userSettings = mBackupSettingsHelper.collectUserSettings();
+        SettingsRecord userSettings = mBackupSettingsHelper.collectUserSettings();
 
-        Map<Integer, List<Long>> actualPriorityList = userSettings.getPriorityListMapSetting();
+        assertThat(userSettings.getPriorityListMap()).isEqualTo(expectedPriorityList);
+    }
 
-        assertThat(actualPriorityList).isEqualTo(expectedPriorityList);
+    @Test
+    public void appInfoPresent_setsAppInfoCorrectly() {
+        mAppInfoHelper.addOrUpdateAppInfoIfNoAppInfoEntryExists(
+                TEST_NEW_PACKAGE_NAME, TEST_APP_NAME);
+
+        SettingsRecord userSettings = mBackupSettingsHelper.collectUserSettings();
+
+        Map<String, AppInfo> appInfoMap = userSettings.getAppInfoMap();
+
+        // The first two packages are inserted during the setup.
+        Map<String, AppInfo> expectedAppInfoMap =
+                Map.of(
+                        TEST_PACKAGE_NAME,
+                        AppInfo.getDefaultInstance(),
+                        TEST_PACKAGE_NAME_2,
+                        AppInfo.getDefaultInstance(),
+                        TEST_NEW_PACKAGE_NAME,
+                        AppInfo.newBuilder().setAppName(TEST_APP_NAME).build());
+
+        assertThat(appInfoMap).isEqualTo(expectedAppInfoMap);
     }
 
     @Test
     public void defaultUnitPreferences_setsUnitPreferencesCorrectly() {
         mPreferenceHelper.insertOrReplacePreference(
-                TEMPERATURE_UNIT_PREF_KEY, DEFAULT_TEMPERATURE_UNIT.toString());
+                TEMPERATURE_UNIT_PREF_KEY, TemperatureUnitProto.CELSIUS.toString());
         mPreferenceHelper.insertOrReplacePreference(
-                ENERGY_UNIT_PREF_KEY, DEFAULT_ENERGY_UNIT.toString());
+                ENERGY_UNIT_PREF_KEY, EnergyUnitProto.CALORIE.toString());
         mPreferenceHelper.insertOrReplacePreference(
-                HEIGHT_UNIT_PREF_KEY, DEFAULT_HEIGHT_UNIT.toString());
+                HEIGHT_UNIT_PREF_KEY, HeightUnitProto.CENTIMETERS.toString());
         mPreferenceHelper.insertOrReplacePreference(
-                WEIGHT_UNIT_PREF_KEY, DEFAULT_WEIGHT_UNIT.toString());
+                WEIGHT_UNIT_PREF_KEY, WeightUnitProto.POUND.toString());
         mPreferenceHelper.insertOrReplacePreference(
-                DISTANCE_UNIT_PREF_KEY, DEFAULT_DISTANCE_UNIT.toString());
+                DISTANCE_UNIT_PREF_KEY, DistanceUnitProto.KILOMETERS.toString());
 
-        CloudBackupSettings userSettings = mBackupSettingsHelper.collectUserSettings();
+        SettingsRecord userSettings = mBackupSettingsHelper.collectUserSettings();
 
-        assertThat(userSettings.getTemperatureUnitSetting()).isEqualTo(DEFAULT_TEMPERATURE_UNIT);
-        assertThat(userSettings.getEnergyUnitSetting()).isEqualTo(DEFAULT_ENERGY_UNIT);
-        assertThat(userSettings.getWeightUnitSetting()).isEqualTo(DEFAULT_WEIGHT_UNIT);
-        assertThat(userSettings.getHeightUnitSetting()).isEqualTo(DEFAULT_HEIGHT_UNIT);
-        assertThat(userSettings.getDistanceUnitSetting()).isEqualTo(DEFAULT_DISTANCE_UNIT);
+        assertThat(userSettings.getTemperatureUnitSetting())
+                .isEqualTo(TemperatureUnitProto.CELSIUS);
+        assertThat(userSettings.getEnergyUnitSetting()).isEqualTo(EnergyUnitProto.CALORIE);
+        assertThat(userSettings.getWeightUnitSetting()).isEqualTo(WeightUnitProto.POUND);
+        assertThat(userSettings.getHeightUnitSetting()).isEqualTo(HeightUnitProto.CENTIMETERS);
+        assertThat(userSettings.getDistanceUnitSetting()).isEqualTo(DistanceUnitProto.KILOMETERS);
     }
 
     @Test
     public void nonDefaultUnitPreference_setsUnitPreferencesCorrectly() {
         mPreferenceHelper.insertOrReplacePreference(
-                TEMPERATURE_UNIT_PREF_KEY, TemperatureUnit.KELVIN.toString());
+                TEMPERATURE_UNIT_PREF_KEY, TemperatureUnitProto.KELVIN.toString());
         mPreferenceHelper.insertOrReplacePreference(
-                ENERGY_UNIT_PREF_KEY, EnergyUnit.KILOJOULE.toString());
+                ENERGY_UNIT_PREF_KEY, EnergyUnitProto.KILOJOULE.toString());
         mPreferenceHelper.insertOrReplacePreference(
-                HEIGHT_UNIT_PREF_KEY, HeightUnit.FEET.toString());
+                HEIGHT_UNIT_PREF_KEY, HeightUnitProto.FEET.toString());
         mPreferenceHelper.insertOrReplacePreference(
-                WEIGHT_UNIT_PREF_KEY, WeightUnit.POUND.toString());
+                WEIGHT_UNIT_PREF_KEY, WeightUnitProto.POUND.toString());
         mPreferenceHelper.insertOrReplacePreference(
-                DISTANCE_UNIT_PREF_KEY, DistanceUnit.MILES.toString());
+                DISTANCE_UNIT_PREF_KEY, DistanceUnitProto.MILES.toString());
 
-        CloudBackupSettings userSettings = mBackupSettingsHelper.collectUserSettings();
+        SettingsRecord userSettings = mBackupSettingsHelper.collectUserSettings();
 
-        assertThat(userSettings.getTemperatureUnitSetting()).isEqualTo(TemperatureUnit.KELVIN);
-        assertThat(userSettings.getEnergyUnitSetting()).isEqualTo(EnergyUnit.KILOJOULE);
-        assertThat(userSettings.getWeightUnitSetting()).isEqualTo(WeightUnit.POUND);
-        assertThat(userSettings.getHeightUnitSetting()).isEqualTo(HeightUnit.FEET);
-        assertThat(userSettings.getDistanceUnitSetting()).isEqualTo(DistanceUnit.MILES);
+        assertThat(userSettings.getTemperatureUnitSetting()).isEqualTo(TemperatureUnitProto.KELVIN);
+        assertThat(userSettings.getEnergyUnitSetting()).isEqualTo(EnergyUnitProto.KILOJOULE);
+        assertThat(userSettings.getWeightUnitSetting()).isEqualTo(WeightUnitProto.POUND);
+        assertThat(userSettings.getHeightUnitSetting()).isEqualTo(HeightUnitProto.FEET);
+        assertThat(userSettings.getDistanceUnitSetting()).isEqualTo(DistanceUnitProto.MILES);
     }
 
     @Test
     public void exportSettingsDaily_setsExportSettingsCorrectly() {
-        when(mExportImportSettingsStorage.getScheduledExportPeriodInDays()).thenReturn(1);
+        mPreferenceHelper.insertOrReplacePreference(EXPORT_URI_PREFERENCE_KEY, TEST_URI.toString());
+        mPreferenceHelper.insertOrReplacePreference(EXPORT_PERIOD_PREFERENCE_KEY, "1");
 
-        CloudBackupSettings userSettings = mBackupSettingsHelper.collectUserSettings();
+        SettingsRecord userSettings = mBackupSettingsHelper.collectUserSettings();
 
-        ScheduledExportSettings expectedSettings =
-                new ScheduledExportSettings.Builder().setPeriodInDays(1).setUri(TEST_URI).build();
-        ScheduledExportSettings actualSettings = userSettings.getScheduledExportSettings();
+        ExportSettingsProto exportSettingsProto =
+                ExportSettingsProto.newBuilder()
+                        .setUri(TEST_URI.toString())
+                        .setFrequency(1)
+                        .build();
+
+        assertThat(userSettings.hasExportSettings()).isTrue();
+
+        ExportSettingsProto actualSettings = userSettings.getExportSettings();
 
         assertThat(actualSettings).isNotNull();
-        assertThat(actualSettings).isEqualTo(expectedSettings);
+        assertThat(actualSettings).isEqualTo(exportSettingsProto);
     }
 
     @Test
     public void exportSettingsWeekly_setsExportSettingsCorrectly() {
-        when(mExportImportSettingsStorage.getScheduledExportPeriodInDays()).thenReturn(7);
+        mPreferenceHelper.insertOrReplacePreference(EXPORT_URI_PREFERENCE_KEY, TEST_URI.toString());
+        mPreferenceHelper.insertOrReplacePreference(EXPORT_PERIOD_PREFERENCE_KEY, "7");
 
-        CloudBackupSettings userSettings = mBackupSettingsHelper.collectUserSettings();
+        SettingsRecord userSettings = mBackupSettingsHelper.collectUserSettings();
 
-        ScheduledExportSettings expectedSettings =
-                new ScheduledExportSettings.Builder().setPeriodInDays(7).setUri(TEST_URI).build();
-        ScheduledExportSettings actualSettings = userSettings.getScheduledExportSettings();
+        ExportSettingsProto exportSettingsProto =
+                ExportSettingsProto.newBuilder()
+                        .setUri(TEST_URI.toString())
+                        .setFrequency(7)
+                        .build();
+
+        assertThat(userSettings.hasExportSettings()).isTrue();
+
+        ExportSettingsProto actualSettings = userSettings.getExportSettings();
 
         assertThat(actualSettings).isNotNull();
-        assertThat(actualSettings).isEqualTo(expectedSettings);
+        assertThat(actualSettings).isEqualTo(exportSettingsProto);
     }
 
     @Test
     public void exportSettingsMonthly_setsExportSettingsCorrectly() {
-        when(mExportImportSettingsStorage.getScheduledExportPeriodInDays()).thenReturn(30);
+        mPreferenceHelper.insertOrReplacePreference(EXPORT_URI_PREFERENCE_KEY, TEST_URI.toString());
+        mPreferenceHelper.insertOrReplacePreference(EXPORT_PERIOD_PREFERENCE_KEY, "30");
 
-        CloudBackupSettings userSettings = mBackupSettingsHelper.collectUserSettings();
+        SettingsRecord userSettings = mBackupSettingsHelper.collectUserSettings();
 
-        ScheduledExportSettings expectedSettings =
-                new ScheduledExportSettings.Builder().setPeriodInDays(30).setUri(TEST_URI).build();
-        ScheduledExportSettings actualSettings = userSettings.getScheduledExportSettings();
+        ExportSettingsProto exportSettingsProto =
+                ExportSettingsProto.newBuilder()
+                        .setUri(TEST_URI.toString())
+                        .setFrequency(30)
+                        .build();
+
+        assertThat(userSettings.hasExportSettings()).isTrue();
+
+        ExportSettingsProto actualSettings = userSettings.getExportSettings();
 
         assertThat(actualSettings).isNotNull();
-        assertThat(actualSettings).isEqualTo(expectedSettings);
+        assertThat(actualSettings).isEqualTo(exportSettingsProto);
     }
 
     @Test
     public void autoDeleteSettingsOff_setsAutoDeleteSettingsCorrectly() {
         mPreferenceHelper.insertOrReplacePreference(
-                AUTO_DELETE_PREF_KEY, AutoDeleteFrequency.AUTO_DELETE_RANGE_NEVER.toString());
+                AUTO_DELETE_PREF_KEY, AutoDeleteFrequencyProto.AUTO_DELETE_RANGE_NEVER.toString());
 
-        CloudBackupSettings userSettings = mBackupSettingsHelper.collectUserSettings();
+        SettingsRecord userSettings = mBackupSettingsHelper.collectUserSettings();
 
-        assertThat(userSettings.getAutoDeleteSetting())
-                .isEqualTo(AutoDeleteFrequency.AUTO_DELETE_RANGE_NEVER);
+        assertThat(userSettings.getAutoDeleteFrequency())
+                .isEqualTo(AutoDeleteFrequencyProto.AUTO_DELETE_RANGE_NEVER);
     }
 
     @Test
     public void autoDeleteSettingsThreeMonths_setsAutoDeleteSettingsCorrectly() {
         mPreferenceHelper.insertOrReplacePreference(
                 AUTO_DELETE_PREF_KEY,
-                AutoDeleteFrequency.AUTO_DELETE_RANGE_THREE_MONTHS.toString());
+                AutoDeleteFrequencyProto.AUTO_DELETE_RANGE_THREE_MONTHS.toString());
 
-        CloudBackupSettings userSettings = mBackupSettingsHelper.collectUserSettings();
+        SettingsRecord userSettings = mBackupSettingsHelper.collectUserSettings();
 
-        assertThat(userSettings.getAutoDeleteSetting())
-                .isEqualTo(AutoDeleteFrequency.AUTO_DELETE_RANGE_THREE_MONTHS);
+        assertThat(userSettings.getAutoDeleteFrequency())
+                .isEqualTo(AutoDeleteFrequencyProto.AUTO_DELETE_RANGE_THREE_MONTHS);
     }
 
     @Test
     public void autoDeleteSettingsEighteenMonths_setsAutoDeleteSettingsCorrectly() {
         mPreferenceHelper.insertOrReplacePreference(
                 AUTO_DELETE_PREF_KEY,
-                AutoDeleteFrequency.AUTO_DELETE_RANGE_EIGHTEEN_MONTHS.toString());
+                AutoDeleteFrequencyProto.AUTO_DELETE_RANGE_EIGHTEEN_MONTHS.toString());
 
-        CloudBackupSettings userSettings = mBackupSettingsHelper.collectUserSettings();
+        SettingsRecord userSettings = mBackupSettingsHelper.collectUserSettings();
 
-        assertThat(userSettings.getAutoDeleteSetting())
-                .isEqualTo(AutoDeleteFrequency.AUTO_DELETE_RANGE_EIGHTEEN_MONTHS);
+        assertThat(userSettings.getAutoDeleteFrequency())
+                .isEqualTo(AutoDeleteFrequencyProto.AUTO_DELETE_RANGE_EIGHTEEN_MONTHS);
     }
 }

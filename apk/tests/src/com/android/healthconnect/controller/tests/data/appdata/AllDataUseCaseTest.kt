@@ -41,7 +41,6 @@ import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_DATA_SOURCE
 import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_DATA_SOURCE_2
 import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_DATA_SOURCE_DIFFERENT_APP
 import com.android.healthconnect.controller.tests.utils.getDataOrigin
-import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -108,7 +107,7 @@ class AllDataUseCaseTest {
 
         val expected =
             Success(
-                listOfNotNull(
+                listOf(
                     PermissionTypesPerCategory(
                         HealthDataCategory.ACTIVITY,
                         listOf(FitnessPermissionType.STEPS),
@@ -121,9 +120,7 @@ class AllDataUseCaseTest {
                         HealthDataCategory.VITALS,
                         listOf(FitnessPermissionType.HEART_RATE),
                     ),
-                    PermissionTypesPerCategory(HealthDataCategory.WELLNESS, listOf()).takeIf {
-                        Flags.mindfulness()
-                    },
+                    PermissionTypesPerCategory(HealthDataCategory.WELLNESS, listOf()),
                 )
             )
         assertThat(allDataUseCase.loadFitnessAppData(TEST_APP_PACKAGE_NAME)).isEqualTo(expected)
@@ -161,7 +158,7 @@ class AllDataUseCaseTest {
 
         val expected =
             Success(
-                listOfNotNull(
+                listOf(
                     PermissionTypesPerCategory(
                         HealthDataCategory.ACTIVITY,
                         listOf(FitnessPermissionType.STEPS),
@@ -177,9 +174,7 @@ class AllDataUseCaseTest {
                         HealthDataCategory.VITALS,
                         listOf(FitnessPermissionType.HEART_RATE),
                     ),
-                    PermissionTypesPerCategory(HealthDataCategory.WELLNESS, listOf()).takeIf {
-                        Flags.mindfulness()
-                    },
+                    PermissionTypesPerCategory(HealthDataCategory.WELLNESS, listOf()),
                 )
             )
         assertThat(allDataUseCase.loadAllFitnessData()).isEqualTo(expected)
@@ -387,12 +382,7 @@ class AllDataUseCaseTest {
     @Test
     fun loadHasAnyMedicalAppData_noData_returnFalse() = runTest {
         val medicalResourceTypeResources: List<MedicalResourceTypeInfo> =
-            listOf(
-                MedicalResourceTypeInfo(
-                    MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES,
-                    setOf(),
-                )
-            )
+            listOf(MedicalResourceTypeInfo(MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES, setOf()))
         Mockito.doAnswer(prepareAnswer(medicalResourceTypeResources))
             .`when`(healthConnectManager)
             .queryAllMedicalResourceTypeInfos(Matchers.any(), Matchers.any())

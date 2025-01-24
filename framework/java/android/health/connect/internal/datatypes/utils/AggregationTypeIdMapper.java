@@ -162,12 +162,9 @@ public final class AggregationTypeIdMapper {
                                 WHEEL_CHAIR_PUSHES_COUNT_TOTAL,
                                 HEART_MEASUREMENTS_COUNT,
                                 SLEEP_DURATION_TOTAL,
-                                EXERCISE_DURATION_TOTAL));
+                                EXERCISE_DURATION_TOTAL,
+                                MINDFULNESS_DURATION_TOTAL));
         List<AggregationType<?>> durationAggregations = new ArrayList<>();
-
-        if (Flags.mindfulness()) {
-            longAggregations.add(MINDFULNESS_DURATION_TOTAL);
-        }
 
         // Redundantly explicitly checking the flag to satisfy the linter.
         if (Flags.activityIntensity() && AconfigFlagHelper.isActivityIntensityEnabled()) {
