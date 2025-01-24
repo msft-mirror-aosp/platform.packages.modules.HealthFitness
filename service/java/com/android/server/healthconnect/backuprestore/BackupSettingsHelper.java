@@ -21,6 +21,7 @@ import static com.android.server.healthconnect.storage.ExportImportSettingsStora
 
 import android.util.Slog;
 
+import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.proto.backuprestore.SettingsRecord;
 import com.android.server.healthconnect.proto.backuprestore.SettingsRecord.AppInfo;
 import com.android.server.healthconnect.proto.backuprestore.SettingsRecord.AutoDeleteFrequencyProto;
@@ -39,6 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * Class that manages compiling the user settings into a SettingsRecord object.
@@ -49,7 +51,6 @@ public final class BackupSettingsHelper {
 
     private final HealthDataCategoryPriorityHelper mPriorityHelper;
     private final PreferenceHelper mPreferenceHelper;
-
     private final AppInfoHelper mAppInfoHelper;
 
     public static final String TAG = "BackupSettingsHelper";
@@ -89,6 +90,93 @@ public final class BackupSettingsHelper {
         Optional<ExportSettingsProto> exportSettings = getExportSettings();
         exportSettings.ifPresent(builder::setExportSettings);
         return builder.build();
+    }
+
+    /**
+     * Override the current settings with the provided new user settings, with the exception of the
+     * priority list which should be a merged version of the old and new priority list.
+     */
+    public void restoreUserSettings(SettingsRecord newUserSettings) {
+        mergePriorityLists(
+                mPriorityHelper.getHealthDataCategoryToAppIdPriorityMapImmutable(),
+                fromProtoToPriorityList(newUserSettings.getPriorityListMap()));
+        if (newUserSettings.hasExportSettings()) {
+            mPreferenceHelper.insertOrReplacePreference(
+                    EXPORT_URI_PREFERENCE_KEY, newUserSettings.getExportSettings().getUri());
+            mPreferenceHelper.insertOrReplacePreference(
+                    EXPORT_PERIOD_PREFERENCE_KEY,
+                    String.valueOf(newUserSettings.getExportSettings().getFrequency()));
+        }
+        AutoDeleteFrequencyProto newAutoDeleteFrequency = newUserSettings.getAutoDeleteFrequency();
+        if (newAutoDeleteFrequency != AutoDeleteFrequencyProto.AUTO_DELETE_RANGE_UNSPECIFIED) {
+            mPreferenceHelper.insertOrReplacePreference(
+                    AUTO_DELETE_PREF_KEY, newAutoDeleteFrequency.name());
+        }
+        EnergyUnitProto newEnergyUnit = newUserSettings.getEnergyUnitSetting();
+        if (newEnergyUnit != EnergyUnitProto.ENERGY_UNIT_UNSPECIFIED) {
+            mPreferenceHelper.insertOrReplacePreference(ENERGY_UNIT_PREF_KEY, newEnergyUnit.name());
+        }
+        TemperatureUnitProto newTemperatureUnit = newUserSettings.getTemperatureUnitSetting();
+        if (newTemperatureUnit != TemperatureUnitProto.TEMPERATURE_UNIT_UNSPECIFIED) {
+            mPreferenceHelper.insertOrReplacePreference(
+                    TEMPERATURE_UNIT_PREF_KEY, newTemperatureUnit.name());
+        }
+        HeightUnitProto newHeightUnit = newUserSettings.getHeightUnitSetting();
+        if (newHeightUnit != HeightUnitProto.HEIGHT_UNIT_UNSPECIFIED) {
+            mPreferenceHelper.insertOrReplacePreference(HEIGHT_UNIT_PREF_KEY, newHeightUnit.name());
+        }
+        WeightUnitProto newWeightUnit = newUserSettings.getWeightUnitSetting();
+        if (newWeightUnit != WeightUnitProto.WEIGHT_UNIT_UNSPECIFIED) {
+            mPreferenceHelper.insertOrReplacePreference(WEIGHT_UNIT_PREF_KEY, newWeightUnit.name());
+        }
+        DistanceUnitProto newDistanceUnit = newUserSettings.getDistanceUnitSetting();
+        if (newDistanceUnit != DistanceUnitProto.DISTANCE_UNIT_UNSPECIFIED) {
+            mPreferenceHelper.insertOrReplacePreference(
+                    DISTANCE_UNIT_PREF_KEY, newDistanceUnit.name());
+        }
+    }
+
+    /**
+     * Converts a priority list from the proto format (entries of type {@code PrioritizedAppIds}) to
+     * the standard format (entries of type {@code List<long>}).
+     *
+     * @param priorityListProto the proto-formatted priority list
+     * @return the converted priority list
+     */
+    @VisibleForTesting
+    Map<Integer, List<Long>> fromProtoToPriorityList(
+            Map<Integer, PrioritizedAppIds> priorityListProto) {
+        Map<Integer, List<Long>> parsedPriorityList = new HashMap<>();
+        for (var priorityRecord : priorityListProto.entrySet()) {
+            parsedPriorityList.put(
+                    priorityRecord.getKey(), priorityRecord.getValue().getAppIdList());
+        }
+        return parsedPriorityList;
+    }
+
+    /**
+     * Take two priority lists and merge them, removing any duplicate entries, and replace the
+     * existing priority list settings with this newly merged version.
+     *
+     * @param current the priority list currently stored in settings
+     * @param imported the new priority list being restored
+     */
+    @VisibleForTesting
+    void mergePriorityLists(Map<Integer, List<Long>> current, Map<Integer, List<Long>> imported) {
+        imported.forEach(
+                (category, appIdList) -> {
+                    if (appIdList.isEmpty()) {
+                        return;
+                    }
+                    List<Long> currentPriorities =
+                            Optional.ofNullable(current.get(category)).orElse(List.of());
+                    List<Long> mergedPrioritisedAppIds =
+                            Stream.concat(currentPriorities.stream(), appIdList.stream())
+                                    .distinct()
+                                    .toList();
+                    mPriorityHelper.setPriorityOrder(
+                            category, mAppInfoHelper.getPackageNames(mergedPrioritisedAppIds));
+                });
     }
 
     private Map<Integer, PrioritizedAppIds> getPriorityList() {

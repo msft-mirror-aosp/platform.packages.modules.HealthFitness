@@ -75,6 +75,7 @@ public class BackupSettingsHelperTest {
     private static final String TEST_NEW_PACKAGE_NAME = "new.package.name";
     private static final String TEST_APP_NAME = "app.name";
     private static final String TEST_PACKAGE_NAME_2 = "other.app";
+    private static final String TEST_PACKAGE_NAME_3 = "another.app";
     private static final Uri TEST_URI = Uri.parse("content://exports/hcbackup.zip");
 
     private PreferenceHelper mPreferenceHelper;
@@ -112,6 +113,7 @@ public class BackupSettingsHelperTest {
         TransactionTestUtils transactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         transactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         transactionTestUtils.insertApp(TEST_PACKAGE_NAME_2);
+        transactionTestUtils.insertApp(TEST_PACKAGE_NAME_3);
 
         mPriorityHelper = healthConnectInjector.getHealthDataCategoryPriorityHelper();
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
@@ -136,21 +138,18 @@ public class BackupSettingsHelperTest {
     public void oneCategoryPriorityList_setsPriorityListCorrectly() {
         mPriorityHelper.setPriorityOrder(
                 HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME, TEST_PACKAGE_NAME_2));
-        Map<Integer, PrioritizedAppIds> expectedPriorityList = new HashMap<>();
-        mPriorityHelper
-                .getHealthDataCategoryToAppIdPriorityMapImmutable()
-                .forEach(
-                        (category, appIdList) -> {
-                            expectedPriorityList.put(
-                                    category,
-                                    PrioritizedAppIds.newBuilder().addAllAppId(appIdList).build());
-                        });
+        Map<Integer, List<Long>> expectedPriorityList =
+                mPriorityHelper.getHealthDataCategoryToAppIdPriorityMapImmutable();
 
         assertThat(expectedPriorityList).isNotEmpty();
 
         SettingsRecord userSettings = mBackupSettingsHelper.collectUserSettings();
 
-        assertThat(userSettings.getPriorityListMap()).isEqualTo(expectedPriorityList);
+        Map<Integer, PrioritizedAppIds> actualPriorityList = userSettings.getPriorityListMap();
+        Map<Integer, List<Long>> parsedPriorityList =
+                mBackupSettingsHelper.fromProtoToPriorityList(actualPriorityList);
+
+        assertThat(parsedPriorityList).isEqualTo(expectedPriorityList);
     }
 
     @Test
@@ -168,6 +167,8 @@ public class BackupSettingsHelperTest {
                         TEST_PACKAGE_NAME,
                         AppInfo.getDefaultInstance(),
                         TEST_PACKAGE_NAME_2,
+                        AppInfo.getDefaultInstance(),
+                        TEST_PACKAGE_NAME_3,
                         AppInfo.getDefaultInstance(),
                         TEST_NEW_PACKAGE_NAME,
                         AppInfo.newBuilder().setAppName(TEST_APP_NAME).build());
@@ -316,5 +317,31 @@ public class BackupSettingsHelperTest {
 
         assertThat(userSettings.getAutoDeleteFrequency())
                 .isEqualTo(AutoDeleteFrequencyProto.AUTO_DELETE_RANGE_EIGHTEEN_MONTHS);
+    }
+
+    @Test
+    public void priorityListsMergedCorrectly() {
+        mPriorityHelper.setPriorityOrder(HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME));
+        Map<Integer, List<Long>> currentPriorityList =
+                mPriorityHelper.getHealthDataCategoryToAppIdPriorityMapImmutable();
+
+        long testPackageAppId = mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME);
+        long testPackageAppId2 = mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME_2);
+
+        Map<Integer, List<Long>> importedPriorityList = new HashMap<>();
+        importedPriorityList.put(HealthDataCategory.ACTIVITY, List.of(testPackageAppId2));
+        importedPriorityList.put(
+                HealthDataCategory.BODY_MEASUREMENTS, List.of(testPackageAppId2, testPackageAppId));
+
+        Map<Integer, List<Long>> expectedMerged = new HashMap<>();
+        expectedMerged.put(
+                HealthDataCategory.ACTIVITY, List.of(testPackageAppId, testPackageAppId2));
+        expectedMerged.put(
+                HealthDataCategory.BODY_MEASUREMENTS, List.of(testPackageAppId2, testPackageAppId));
+
+        mBackupSettingsHelper.mergePriorityLists(currentPriorityList, importedPriorityList);
+
+        assertThat(mPriorityHelper.getHealthDataCategoryToAppIdPriorityMapImmutable())
+                .isEqualTo(expectedMerged);
     }
 }
