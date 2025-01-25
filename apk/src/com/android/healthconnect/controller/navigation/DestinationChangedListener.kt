@@ -19,6 +19,7 @@ import android.os.Bundle
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import com.android.settingslib.collapsingtoolbar.CollapsingToolbarBaseActivity
+import com.android.settingslib.widget.SettingsThemeHelper
 
 class DestinationChangedListener(private val activity: CollapsingToolbarBaseActivity) :
     NavController.OnDestinationChangedListener {
@@ -27,11 +28,6 @@ class DestinationChangedListener(private val activity: CollapsingToolbarBaseActi
         destination: NavDestination,
         arguments: Bundle?
     ) {
-        // Prevent header from being collapsed between fragments.
-        activity.appBarLayout?.setExpanded(true)
-        activity.appBarLayout?.let {
-            activity.collapsingToolbarLayout?.setContentScrimColor(it.solidColor)
-        }
         activity.setTitle(destination.label)
     }
 }
