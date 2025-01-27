@@ -58,7 +58,6 @@ import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW;
-import static com.android.server.healthconnect.testing.TestUtils.waitForAllScheduledTasksToComplete;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.DATA_DOWNLOAD_STATE_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.DATA_RESTORE_STATE_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.INTERNAL_RESTORE_STATE_STAGING_DONE;
@@ -73,6 +72,7 @@ import static com.android.server.healthconnect.logging.HealthConnectServiceLogge
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.READ_MEDICAL_RESOURCES_BY_REQUESTS;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.UPSERT_MEDICAL_RESOURCES;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.MEDICAL_RESOURCE_TYPE_NOT_ASSIGNED_DEFAULT_VALUE;
+import static com.android.server.healthconnect.testing.TestUtils.waitForAllScheduledTasksToComplete;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
@@ -372,7 +372,6 @@ public class HealthConnectServiceImplTest {
                         .setMedicalResourceHelper(mMedicalResourceHelper)
                         .setMigrationStateManager(mMigrationStateManager)
                         .setMigrationUiStateManager(mMigrationUiStateManager)
-                        .setAppInfoHelper(mAppInfoHelper)
                         .setAppInfoHelper(mAppInfoHelper)
                         .setTimeSource(mFakeTimeSource)
                         .build();
