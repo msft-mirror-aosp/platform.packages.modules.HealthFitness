@@ -17,6 +17,9 @@
 package android.healthconnect.cts.aggregation;
 
 import static android.health.connect.HealthDataCategory.ACTIVITY;
+import static android.health.connect.datatypes.PowerRecord.POWER_AVG;
+import static android.health.connect.datatypes.PowerRecord.POWER_MAX;
+import static android.health.connect.datatypes.PowerRecord.POWER_MIN;
 import static android.health.connect.datatypes.SpeedRecord.SPEED_AVG;
 import static android.health.connect.datatypes.SpeedRecord.SPEED_MAX;
 import static android.health.connect.datatypes.SpeedRecord.SPEED_MIN;
@@ -37,7 +40,9 @@ import android.content.Context;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.TimeInstantRangeFilter;
+import android.health.connect.datatypes.PowerRecord;
 import android.health.connect.datatypes.SpeedRecord;
+import android.health.connect.datatypes.units.Power;
 import android.health.connect.datatypes.units.Velocity;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
@@ -112,6 +117,39 @@ public class SeriesAggregationTest {
         assertDoubleWithTolerance(response.get(SPEED_AVG).getInMetersPerSecond(), 22);
     }
 
+    @Test
+    public void aggregateWithInstantFilter_power() throws Exception {
+        Instant time = Instant.now().minus(3, DAYS);
+        insertRecords(
+                List.of(
+                        getPowerRecord(
+                                time,
+                                time.plus(2, HOURS),
+                                UTC,
+                                getPowerRecordSample(Power.fromWatts(120), time),
+                                getPowerRecordSample(Power.fromWatts(30), time.plus(5, MINUTES)),
+                                getPowerRecordSample(Power.fromWatts(4), time.plus(20, MINUTES)),
+                                getPowerRecordSample(Power.fromWatts(70), time.plus(60, MINUTES)),
+                                getPowerRecordSample(Power.fromWatts(12), time.plus(119, MINUTES)),
+                                getPowerRecordSample(
+                                        Power.fromWatts(90), time.plus(120, MINUTES)))));
+
+        TimeInstantRangeFilter timeFilter =
+                getTimeFilter(time.plus(1, MINUTES), time.plus(120, MINUTES));
+        AggregateRecordsRequest<Power> aggregateRecordsRequest =
+                new AggregateRecordsRequest.Builder<Power>(timeFilter)
+                        .addAggregationType(POWER_MAX)
+                        .addAggregationType(POWER_MIN)
+                        .addAggregationType(POWER_AVG)
+                        .build();
+
+        AggregateRecordsResponse<Power> response = getAggregateResponse(aggregateRecordsRequest);
+        assertDoubleWithTolerance(response.get(POWER_MAX).getInWatts(), 70);
+        assertDoubleWithTolerance(response.get(POWER_MIN).getInWatts(), 4);
+        // Expect (30+4+70+12)/4=29
+        assertDoubleWithTolerance(response.get(POWER_AVG).getInWatts(), 29);
+    }
+
     private static SpeedRecord getSpeedRecord(
             Instant start,
             Instant end,
@@ -123,8 +161,23 @@ public class SeriesAggregationTest {
                 .build();
     }
 
+    private static PowerRecord getPowerRecord(
+            Instant start,
+            Instant end,
+            ZoneOffset offset,
+            PowerRecord.PowerRecordSample... samples) {
+        return new PowerRecord.Builder(getEmptyMetadata(), start, end, Arrays.asList(samples))
+                .setStartZoneOffset(offset)
+                .setEndZoneOffset(offset)
+                .build();
+    }
+
     private static SpeedRecord.SpeedRecordSample getSpeedRecordSample(
             Velocity velocity, Instant time) {
         return new SpeedRecord.SpeedRecordSample(velocity, time);
+    }
+
+    private static PowerRecord.PowerRecordSample getPowerRecordSample(Power power, Instant time) {
+        return new PowerRecord.PowerRecordSample(power, time);
     }
 }
