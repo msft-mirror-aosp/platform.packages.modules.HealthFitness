@@ -100,6 +100,7 @@ public final class BackupSettingsHelper {
         mergePriorityLists(
                 mPriorityHelper.getHealthDataCategoryToAppIdPriorityMapImmutable(),
                 fromProtoToPriorityList(newUserSettings.getPriorityListMap()));
+        restoreAppInfo(newUserSettings.getAppInfoMap());
         if (newUserSettings.hasExportSettings()) {
             mPreferenceHelper.insertOrReplacePreference(
                     EXPORT_URI_PREFERENCE_KEY, newUserSettings.getExportSettings().getUri());
@@ -133,6 +134,24 @@ public final class BackupSettingsHelper {
         if (newDistanceUnit != DistanceUnitProto.DISTANCE_UNIT_UNSPECIFIED) {
             mPreferenceHelper.insertOrReplacePreference(
                     DISTANCE_UNIT_PREF_KEY, newDistanceUnit.name());
+        }
+    }
+
+    /**
+     * Restores a user's AppInfo settings from the passed in {@code Map<String, AppInfo>} object.
+     *
+     * @param appInfoMap the AppInfo being restored
+     */
+    @VisibleForTesting
+    public void restoreAppInfo(Map<String, AppInfo> appInfoMap) {
+        for (var appInfoEntry : appInfoMap.entrySet()) {
+            String packageName = appInfoEntry.getKey();
+            AppInfo appInfo = appInfoEntry.getValue();
+            String appName = null;
+            if (appInfo.hasAppName()) {
+                appName = appInfo.getAppName();
+            }
+            mAppInfoHelper.addOrUpdateAppInfoIfNoAppInfoEntryExists(packageName, appName);
         }
     }
 

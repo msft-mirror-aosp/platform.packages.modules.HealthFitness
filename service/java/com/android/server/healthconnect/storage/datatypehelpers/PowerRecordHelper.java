@@ -84,6 +84,11 @@ public class PowerRecordHelper
         return TABLE_NAME;
     }
 
+    @Override
+    public String getSeriesTimestampColumnName() {
+        return EPOCH_MILLIS_COLUMN_NAME;
+    }
+
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override
     final AggregateParams getAggregateParams(AggregationType<?> aggregateRequest) {

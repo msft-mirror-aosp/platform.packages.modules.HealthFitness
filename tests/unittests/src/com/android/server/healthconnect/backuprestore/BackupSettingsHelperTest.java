@@ -76,6 +76,7 @@ public class BackupSettingsHelperTest {
     private static final String TEST_APP_NAME = "app.name";
     private static final String TEST_PACKAGE_NAME_2 = "other.app";
     private static final String TEST_PACKAGE_NAME_3 = "another.app";
+    private static final String TEST_PACKAGE_NAME_4 = "not.installed.app";
     private static final Uri TEST_URI = Uri.parse("content://exports/hcbackup.zip");
 
     private PreferenceHelper mPreferenceHelper;
@@ -174,6 +175,29 @@ public class BackupSettingsHelperTest {
                         AppInfo.newBuilder().setAppName(TEST_APP_NAME).build());
 
         assertThat(appInfoMap).isEqualTo(expectedAppInfoMap);
+    }
+
+    @Test
+    public void appInfoCleared_restoresAppInfoCorrectly() {
+        Map<String, AppInfo> appInfoToRestore =
+                Map.of(
+                        TEST_PACKAGE_NAME,
+                        AppInfo.getDefaultInstance(),
+                        TEST_PACKAGE_NAME_2,
+                        AppInfo.getDefaultInstance(),
+                        TEST_PACKAGE_NAME_3,
+                        AppInfo.getDefaultInstance(),
+                        TEST_PACKAGE_NAME_4,
+                        AppInfo.getDefaultInstance(),
+                        TEST_NEW_PACKAGE_NAME,
+                        AppInfo.newBuilder().setAppName(TEST_APP_NAME).build());
+
+        mBackupSettingsHelper.restoreAppInfo(appInfoToRestore);
+
+        Map<String, AppInfo> restoredAppInfo =
+                mBackupSettingsHelper.collectUserSettings().getAppInfoMap();
+
+        assertThat(restoredAppInfo).isEqualTo(appInfoToRestore);
     }
 
     @Test
