@@ -19,7 +19,11 @@ package com.android.server.healthconnect.phr.validations;
 import static android.health.connect.datatypes.FhirResource.FhirResourceType;
 import static android.health.connect.datatypes.FhirResource.validateFhirResourceType;
 
+import static com.android.server.healthconnect.proto.Kind.KIND_COMPLEX_TYPE;
+import static com.android.server.healthconnect.proto.Kind.KIND_PRIMITIVE_TYPE;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_ELEMENT;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_EXTENSION;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_RESOURCE;
 
 import android.annotation.Nullable;
@@ -27,6 +31,7 @@ import android.health.connect.datatypes.FhirVersion;
 import android.util.ArrayMap;
 
 import com.android.healthfitness.flags.Flags;
+import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.proto.FhirComplexTypeConfig;
 import com.android.server.healthconnect.proto.FhirDataType;
 import com.android.server.healthconnect.proto.FhirResourceSpec;
@@ -45,6 +50,9 @@ import java.util.Set;
  * @hide
  */
 public class FhirSpecProvider {
+    // The data type of primitive type extensions.
+    public static final R4FhirType FHIR_TYPE_PRIMITIVE_EXTENSION = R4_FHIR_TYPE_ELEMENT;
+
     private static final String R4_FHIR_SPEC_FILE_NAME = "fhirspec-r4.binarypb";
 
     // The list of complex types for which no FhirComplexTypeConfig exists in this spec provider.
@@ -55,10 +63,18 @@ public class FhirSpecProvider {
                     // TODO: b/376462255 - Implement validation of "Resource" data type when
                     //  supporting contained resources.
                     R4_FHIR_TYPE_RESOURCE,
-                    // TODO: b/377704968 - Implement validation of "BackboneElement" and "Element"
-                    // types that are used to define child types of Resources and Complex types
-                    // respectively.
-                    R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION);
+                    // TODO: b/377704968 - Implement validation of child types. This is the
+                    // placeholder type of all child definitions, which we don't validate yet.
+                    // Resource types that define their own children, such as Patient.contact use
+                    // the type "BackboneElement" and type definitions use "Element".
+                    R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION,
+                    // TODO: b/377706021 - Validate Extension.
+                    // The extension data type does have a config, but in R4B there are additional
+                    // data types, such as CodeableReference and RatioRange, meaning that the
+                    // Extension.valueCodeableReference and Extension.valueRatioRange fields are
+                    // valid. Skipping validation for now, until we can handle the additional R4B
+                    // fields.
+                    R4_FHIR_TYPE_EXTENSION);
 
     private Map<Integer, FhirComplexTypeConfig> mResourceTypeIntToFhirSpecMap = new ArrayMap<>();
 
@@ -67,36 +83,27 @@ public class FhirSpecProvider {
     private Set<R4FhirType> mPrimitiveTypes = new HashSet<>();
 
     /**
-     * Parses the {@link FhirResourceSpec} proto file for the provided {@link FhirVersion} *
+     * Parses the {@link FhirResourceSpec} proto file for the provided {@link FhirVersion}.
      *
      * @throws IllegalArgumentException if the file cannot be read or if the provided {@code
      *     fhirVersion} is not supported.
      * @hide
      */
     public FhirSpecProvider(FhirVersion fhirVersion) {
-        if (!fhirVersion.isSupportedFhirVersion() || fhirVersion.getMajor() != 4) {
-            throw new IllegalArgumentException("Fhir version not supported in validator.");
-        }
+        this(loadFhirResourceSpec(fhirVersion));
+    }
 
-        FhirResourceSpec r4FhirResourceSpec;
-        try (InputStream stream =
-                this.getClass().getClassLoader().getResourceAsStream(R4_FHIR_SPEC_FILE_NAME)) {
-            if (stream == null) {
-                throw new IllegalStateException(R4_FHIR_SPEC_FILE_NAME + " not found.");
-            }
-            r4FhirResourceSpec = FhirResourceSpec.parseFrom(stream);
-        } catch (IOException e) {
-            throw new IllegalStateException("Could not parse file");
-        }
+    @VisibleForTesting
+    FhirSpecProvider(FhirResourceSpec fhirSpec) {
         Map<Integer, FhirComplexTypeConfig> resourceTypeToConfig =
-                r4FhirResourceSpec.getResourceTypeToConfigMap();
+                fhirSpec.getResourceTypeToConfigMap();
         resourceTypeToConfig.forEach(
                 (resourceType, config) -> {
                     validateFhirResourceType(resourceType);
                     mResourceTypeIntToFhirSpecMap.put(resourceType, config);
                 });
 
-        for (FhirDataType dataTypeConfig : r4FhirResourceSpec.getFhirDataTypeConfigsList()) {
+        for (FhirDataType dataTypeConfig : fhirSpec.getFhirDataTypeConfigsList()) {
             R4FhirType fhirType = dataTypeConfig.getFhirType();
             switch (dataTypeConfig.getKind()) {
                 case KIND_PRIMITIVE_TYPE:
@@ -166,5 +173,26 @@ public class FhirSpecProvider {
 
         // TODO(b/377701407) After we extract a complex type config - throw exception if the spec is
         //  not aware of the type.
+    }
+
+    private static FhirResourceSpec loadFhirResourceSpec(FhirVersion fhirVersion) {
+        if (!fhirVersion.isSupportedFhirVersion() || fhirVersion.getMajor() != 4) {
+            throw new IllegalArgumentException("Fhir version not supported in validator.");
+        }
+
+        FhirResourceSpec r4FhirResourceSpec;
+        try (InputStream stream =
+                FhirSpecProvider.class
+                        .getClassLoader()
+                        .getResourceAsStream(R4_FHIR_SPEC_FILE_NAME)) {
+            if (stream == null) {
+                throw new IllegalStateException(R4_FHIR_SPEC_FILE_NAME + " not found.");
+            }
+            r4FhirResourceSpec = FhirResourceSpec.parseFrom(stream);
+        } catch (IOException e) {
+            throw new IllegalStateException("Could not parse file");
+        }
+
+        return r4FhirResourceSpec;
     }
 }

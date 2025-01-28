@@ -16,14 +16,21 @@
 
 package com.android.server.healthconnect.phr.validations;
 
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
 
 import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION;
+import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION;
 import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION;
+import static com.android.server.healthconnect.proto.Kind.KIND_COMPLEX_TYPE;
+import static com.android.server.healthconnect.proto.Kind.KIND_PRIMITIVE_TYPE;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_ANNOTATION;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_BOOLEAN;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_CODE;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_CODEABLE_CONCEPT;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_CODING;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_DATE_TIME;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_ELEMENT;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_ID;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_IDENTIFIER;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_STRING;
@@ -31,8 +38,6 @@ import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_STR
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
@@ -40,16 +45,18 @@ import android.platform.test.flag.junit.SetFlagsRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.server.healthconnect.proto.FhirComplexTypeConfig;
+import com.android.server.healthconnect.proto.FhirDataType;
 import com.android.server.healthconnect.proto.FhirFieldConfig;
+import com.android.server.healthconnect.proto.FhirResourceSpec;
 import com.android.server.healthconnect.proto.MultiTypeFieldConfig;
 import com.android.server.healthconnect.proto.R4FhirType;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
@@ -62,97 +69,184 @@ public class FhirObjectTypeValidatorTest {
 
     @Rule public final MockitoRule mMockitoRule = MockitoJUnit.rule();
 
-    @Mock FhirSpecProvider mFhirSpec;
+    private static final FhirComplexTypeConfig DEFAULT_IMMUNIZATION_COMPLEX_TYPE_CONFIG =
+            FhirComplexTypeConfig.newBuilder()
+                    .addRequiredFields("status")
+                    .putAllAllowedFieldNamesToConfig(
+                            Map.ofEntries(
+                                    Map.entry("id", createFhirFieldConfig(false, R4_FHIR_TYPE_ID)),
+                                    Map.entry(
+                                            "resourceType",
+                                            createFhirFieldConfig(false, R4_FHIR_TYPE_STRING)),
+                                    Map.entry(
+                                            "identifier",
+                                            createFhirFieldConfig(true, R4_FHIR_TYPE_IDENTIFIER)),
+                                    Map.entry(
+                                            "status",
+                                            createFhirFieldConfig(false, R4_FHIR_TYPE_CODE)),
+                                    Map.entry(
+                                            "statusReason",
+                                            createFhirFieldConfig(
+                                                    false, R4_FHIR_TYPE_CODEABLE_CONCEPT)),
+                                    Map.entry(
+                                            "primarySource",
+                                            createFhirFieldConfig(false, R4_FHIR_TYPE_BOOLEAN))))
+                    .build();
+
+    private static final FhirDataType FHIR_DATA_TYPE_IDENTIFIER =
+            FhirDataType.newBuilder()
+                    .setFhirType(R4_FHIR_TYPE_IDENTIFIER)
+                    .setKind(KIND_COMPLEX_TYPE)
+                    .setFhirComplexTypeConfig(
+                            FhirComplexTypeConfig.newBuilder()
+                                    .putAllAllowedFieldNamesToConfig(
+                                            Map.ofEntries(
+                                                    Map.entry(
+                                                            "use",
+                                                            createFhirFieldConfig(
+                                                                    false, R4_FHIR_TYPE_CODE)),
+                                                    Map.entry(
+                                                            "value",
+                                                            createFhirFieldConfig(
+                                                                    false, R4_FHIR_TYPE_STRING)))))
+                    .build();
+
+    private static final FhirDataType FHIR_DATA_TYPE_CODEABLE_CONCEPT =
+            FhirDataType.newBuilder()
+                    .setFhirType(R4_FHIR_TYPE_CODEABLE_CONCEPT)
+                    .setKind(KIND_COMPLEX_TYPE)
+                    .setFhirComplexTypeConfig(
+                            FhirComplexTypeConfig.newBuilder()
+                                    .putAllAllowedFieldNamesToConfig(
+                                            Map.ofEntries(
+                                                    Map.entry(
+                                                            "id",
+                                                            createFhirFieldConfig(
+                                                                    false, R4_FHIR_TYPE_ID)),
+                                                    Map.entry(
+                                                            "coding",
+                                                            createFhirFieldConfig(
+                                                                    true, R4_FHIR_TYPE_CODING)),
+                                                    Map.entry(
+                                                            "text",
+                                                            createFhirFieldConfig(
+                                                                    false, R4_FHIR_TYPE_STRING)))))
+                    .build();
+
+    private static final FhirDataType FHIR_DATA_TYPE_CODING =
+            FhirDataType.newBuilder()
+                    .setFhirType(R4_FHIR_TYPE_CODING)
+                    .setKind(KIND_COMPLEX_TYPE)
+                    .setFhirComplexTypeConfig(
+                            FhirComplexTypeConfig.newBuilder()
+                                    .putAllAllowedFieldNamesToConfig(
+                                            Map.ofEntries(
+                                                    Map.entry(
+                                                            "display",
+                                                            createFhirFieldConfig(
+                                                                    false, R4_FHIR_TYPE_STRING)))))
+                    .build();
+
+    private static final FhirDataType FHIR_DATA_TYPE_ELEMENT =
+            FhirDataType.newBuilder()
+                    .setFhirType(R4_FHIR_TYPE_ELEMENT)
+                    .setKind(KIND_COMPLEX_TYPE)
+                    .setFhirComplexTypeConfig(
+                            FhirComplexTypeConfig.newBuilder()
+                                    .putAllAllowedFieldNamesToConfig(
+                                            Map.ofEntries(
+                                                    Map.entry(
+                                                            "id",
+                                                            createFhirFieldConfig(
+                                                                    false, R4_FHIR_TYPE_STRING)))))
+                    .build();
+
+    private static final FhirDataType FHIR_DATA_TYPE_STRING =
+            FhirDataType.newBuilder()
+                    .setFhirType(R4_FHIR_TYPE_STRING)
+                    .setKind(KIND_PRIMITIVE_TYPE)
+                    .build();
+
+    private static final FhirDataType FHIR_DATA_TYPE_CODE =
+            FhirDataType.newBuilder()
+                    .setFhirType(R4_FHIR_TYPE_CODE)
+                    .setKind(KIND_PRIMITIVE_TYPE)
+                    .build();
+
+    private static final FhirDataType FHIR_DATA_TYPE_DATE_TIME =
+            FhirDataType.newBuilder()
+                    .setFhirType(R4_FHIR_TYPE_DATE_TIME)
+                    .setKind(KIND_PRIMITIVE_TYPE)
+                    .build();
+
+    private static final FhirDataType FHIR_DATA_TYPE_ID =
+            FhirDataType.newBuilder()
+                    .setFhirType(R4_FHIR_TYPE_ID)
+                    .setKind(KIND_PRIMITIVE_TYPE)
+                    .build();
+
+    private static final FhirDataType FHIR_DATA_TYPE_BOOLEAN =
+            FhirDataType.newBuilder()
+                    .setFhirType(R4_FHIR_TYPE_BOOLEAN)
+                    .setKind(KIND_PRIMITIVE_TYPE)
+                    .build();
+
+    private static final String DEFAULT_IMMUNIZATION_JSON =
+            """
+            {
+                \"resourceType\": \"Immunization\",
+                \"id\": \"immunization-1\",
+                \"status\": \"completed\",
+                \"identifier\": [{
+                    \"use\": \"secondary\",
+                    \"value\": \"123\"
+                }]
+            }
+            """;
+
+    private static final List<FhirDataType> DEFAULT_IMMUNIZATION_DATA_TYPE_CONFIGS =
+            List.of(
+                    FHIR_DATA_TYPE_IDENTIFIER,
+                    FHIR_DATA_TYPE_CODEABLE_CONCEPT,
+                    FHIR_DATA_TYPE_CODING,
+                    FHIR_DATA_TYPE_ID,
+                    FHIR_DATA_TYPE_STRING,
+                    FHIR_DATA_TYPE_DATE_TIME,
+                    FHIR_DATA_TYPE_CODE,
+                    FHIR_DATA_TYPE_BOOLEAN,
+                    FHIR_DATA_TYPE_ELEMENT);
 
     @Test
     public void testValidate_byImmunizationResourceType_succeeds() throws JSONException {
-        FhirObjectTypeValidator validator = new FhirObjectTypeValidator(mFhirSpec);
-        when(mFhirSpec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_IMMUNIZATION))
-                .thenReturn(
-                        FhirComplexTypeConfig.newBuilder()
-                                .addRequiredFields("status")
-                                .addMultiTypeFields(
-                                        MultiTypeFieldConfig.newBuilder()
-                                                .setName("occurrence[x]")
-                                                .addAllTypedFieldNames(
-                                                        List.of(
-                                                                "occurrenceDateTime",
-                                                                "occurrenceString"))
-                                                .setIsRequired(true))
-                                .putAllAllowedFieldNamesToConfig(
-                                        Map.ofEntries(
-                                                Map.entry(
-                                                        "id",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_ID)),
-                                                Map.entry(
-                                                        "resourceType",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_STRING)),
-                                                Map.entry(
-                                                        "identifier",
-                                                        createFhirFieldConfig(
-                                                                true, R4_FHIR_TYPE_IDENTIFIER)),
-                                                Map.entry(
-                                                        "status",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_CODE)),
-                                                Map.entry(
-                                                        "occurrenceDateTime",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_DATE_TIME)),
-                                                Map.entry(
-                                                        "occurrenceString",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_STRING))))
-                                .build());
-        when(mFhirSpec.isPrimitiveType(any())).thenReturn(true);
-        when(mFhirSpec.isPrimitiveType(R4_FHIR_TYPE_IDENTIFIER)).thenReturn(false);
-        JSONObject immunizationJson =
-                new JSONObject(
-                        "{"
-                                + "  \"resourceType\": \"Immunization\","
-                                + "  \"id\": \"immunization-1\","
-                                + "  \"status\": \"completed\","
-                                + "  \"occurrenceDateTime\": \"2018-05-21\","
-                                + "  \"identifier\": [{"
-                                + "    \"use\": \"secondary\","
-                                + "    \"value\": \"123\""
-                                + "  }]"
-                                + "}");
+        FhirResourceSpec fhirSpec =
+                FhirResourceSpec.newBuilder()
+                        .putResourceTypeToConfig(
+                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                DEFAULT_IMMUNIZATION_COMPLEX_TYPE_CONFIG)
+                        .addAllFhirDataTypeConfigs(DEFAULT_IMMUNIZATION_DATA_TYPE_CONFIGS)
+                        .build();
+        FhirObjectTypeValidator validator =
+                new FhirObjectTypeValidator(new FhirSpecProvider(fhirSpec));
+        JSONObject immunizationJson = new JSONObject(DEFAULT_IMMUNIZATION_JSON);
 
         validator.validate(immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION);
     }
 
     @Test
     public void testValidate_missingRequiredPrimitiveField_throws() throws JSONException {
-        FhirObjectTypeValidator validator = new FhirObjectTypeValidator(mFhirSpec);
-        when(mFhirSpec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_IMMUNIZATION))
-                .thenReturn(
-                        FhirComplexTypeConfig.newBuilder()
-                                .addRequiredFields("status")
-                                .putAllAllowedFieldNamesToConfig(
-                                        Map.ofEntries(
-                                                Map.entry(
-                                                        "id",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_ID)),
-                                                Map.entry(
-                                                        "resourceType",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_STRING)),
-                                                Map.entry(
-                                                        "status",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_CODE))))
-                                .build());
-        when(mFhirSpec.isPrimitiveType(any())).thenReturn(true);
-        JSONObject immunizationJson =
-                new JSONObject(
-                        "{"
-                                + "  \"resourceType\": \"Immunization\","
-                                + "  \"id\": \"immunization-1\""
-                                + "}");
+        FhirResourceSpec fhirSpec =
+                FhirResourceSpec.newBuilder()
+                        .putResourceTypeToConfig(
+                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                DEFAULT_IMMUNIZATION_COMPLEX_TYPE_CONFIG.toBuilder()
+                                        .addRequiredFields("status")
+                                        .build())
+                        .addAllFhirDataTypeConfigs(DEFAULT_IMMUNIZATION_DATA_TYPE_CONFIGS)
+                        .build();
+        FhirObjectTypeValidator validator =
+                new FhirObjectTypeValidator(new FhirSpecProvider(fhirSpec));
+        JSONObject immunizationJson = new JSONObject(DEFAULT_IMMUNIZATION_JSON);
+        immunizationJson.remove("status");
 
         IllegalArgumentException exception =
                 assertThrows(
@@ -166,40 +260,24 @@ public class FhirObjectTypeValidatorTest {
 
     @Test
     public void testValidate_missingRequiredComplexTypeField_throws() throws JSONException {
-        FhirObjectTypeValidator validator = new FhirObjectTypeValidator(mFhirSpec);
-        when(mFhirSpec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_IMMUNIZATION))
-                .thenReturn(
-                        FhirComplexTypeConfig.newBuilder()
-                                .addAllRequiredFields(List.of("status", "vaccineCode"))
-                                .putAllAllowedFieldNamesToConfig(
-                                        Map.ofEntries(
-                                                Map.entry(
-                                                        "id",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_ID)),
-                                                Map.entry(
-                                                        "resourceType",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_STRING)),
-                                                Map.entry(
-                                                        "status",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_CODE)),
-                                                Map.entry(
-                                                        "vaccineCode",
-                                                        createFhirFieldConfig(
-                                                                false,
-                                                                R4_FHIR_TYPE_CODEABLE_CONCEPT))))
-                                .build());
-        when(mFhirSpec.isPrimitiveType(any())).thenReturn(true);
-        when(mFhirSpec.isPrimitiveType(R4_FHIR_TYPE_CODEABLE_CONCEPT)).thenReturn(false);
-        JSONObject immunizationJson =
-                new JSONObject(
-                        "{"
-                                + "  \"resourceType\": \"Immunization\","
-                                + "  \"id\": \"immunization-1\","
-                                + "  \"status\": \"completed\""
-                                + "}");
+        FhirResourceSpec fhirSpec =
+                FhirResourceSpec.newBuilder()
+                        .putResourceTypeToConfig(
+                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                DEFAULT_IMMUNIZATION_COMPLEX_TYPE_CONFIG.toBuilder()
+                                        .addRequiredFields("vaccineCode")
+                                        .putAllowedFieldNamesToConfig(
+                                                "vaccineCode",
+                                                createFhirFieldConfig(
+                                                        false, R4_FHIR_TYPE_CODEABLE_CONCEPT))
+                                        .build())
+                        .addAllFhirDataTypeConfigs(DEFAULT_IMMUNIZATION_DATA_TYPE_CONFIGS)
+                        .addFhirDataTypeConfigs(FHIR_DATA_TYPE_CODEABLE_CONCEPT)
+                        .build();
+        FhirObjectTypeValidator validator =
+                new FhirObjectTypeValidator(new FhirSpecProvider(fhirSpec));
+        JSONObject immunizationJson = new JSONObject(DEFAULT_IMMUNIZATION_JSON);
+        immunizationJson.remove("vaccineCode");
 
         IllegalArgumentException exception =
                 assertThrows(
@@ -214,123 +292,83 @@ public class FhirObjectTypeValidatorTest {
     @Test
     public void testValidate_primitiveTypeExtensionForRequiredField_succeeds()
             throws JSONException {
-        FhirObjectTypeValidator validator = new FhirObjectTypeValidator(mFhirSpec);
-        when(mFhirSpec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_IMMUNIZATION))
-                .thenReturn(
-                        FhirComplexTypeConfig.newBuilder()
-                                .addRequiredFields("status")
-                                .putAllAllowedFieldNamesToConfig(
-                                        Map.ofEntries(
-                                                Map.entry(
-                                                        "id",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_ID)),
-                                                Map.entry(
-                                                        "resourceType",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_STRING)),
-                                                Map.entry(
-                                                        "status",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_CODE))))
-                                .build());
-        when(mFhirSpec.isPrimitiveType(any())).thenReturn(true);
+        FhirResourceSpec fhirSpec =
+                FhirResourceSpec.newBuilder()
+                        .putResourceTypeToConfig(
+                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                DEFAULT_IMMUNIZATION_COMPLEX_TYPE_CONFIG)
+                        .addAllFhirDataTypeConfigs(DEFAULT_IMMUNIZATION_DATA_TYPE_CONFIGS)
+                        .build();
+        FhirObjectTypeValidator validator =
+                new FhirObjectTypeValidator(new FhirSpecProvider(fhirSpec));
         JSONObject immunizationJson =
-                new JSONObject(
-                        "{"
-                                + "  \"resourceType\": \"Immunization\","
-                                + "  \"id\": \"immunization-1\","
-                                + "  \"_status\": {\"id\": \"123\"}"
-                                + "}");
+                new JSONObject(DEFAULT_IMMUNIZATION_JSON)
+                        .put("_status", new JSONObject("{\"id\": \"123\"}"));
 
         validator.validate(immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION);
     }
 
     @Test
     public void testValidate_oneRequiredMultiTypeFieldPresent_succeeds() throws JSONException {
-        FhirObjectTypeValidator validator = new FhirObjectTypeValidator(mFhirSpec);
-        when(mFhirSpec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_IMMUNIZATION))
-                .thenReturn(
-                        FhirComplexTypeConfig.newBuilder()
-                                .addMultiTypeFields(
-                                        MultiTypeFieldConfig.newBuilder()
-                                                .setName("occurrence[x]")
-                                                .addAllTypedFieldNames(
-                                                        List.of(
-                                                                "occurrenceDateTime",
-                                                                "occurrenceString"))
-                                                .setIsRequired(true))
-                                .putAllAllowedFieldNamesToConfig(
-                                        Map.ofEntries(
-                                                Map.entry(
-                                                        "id",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_ID)),
-                                                Map.entry(
-                                                        "resourceType",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_STRING)),
-                                                Map.entry(
-                                                        "occurrenceString",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_STRING)),
-                                                Map.entry(
-                                                        "occurrenceDateTime",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_DATE_TIME))))
-                                .build());
-        when(mFhirSpec.isPrimitiveType(any())).thenReturn(true);
+        FhirResourceSpec fhirSpec =
+                FhirResourceSpec.newBuilder()
+                        .putResourceTypeToConfig(
+                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                DEFAULT_IMMUNIZATION_COMPLEX_TYPE_CONFIG.toBuilder()
+                                        .addMultiTypeFields(
+                                                MultiTypeFieldConfig.newBuilder()
+                                                        .setName("occurrence[x]")
+                                                        .addAllTypedFieldNames(
+                                                                List.of(
+                                                                        "occurrenceDateTime",
+                                                                        "occurrenceString"))
+                                                        .setIsRequired(true))
+                                        .putAllowedFieldNamesToConfig(
+                                                "occurrenceString",
+                                                createFhirFieldConfig(false, R4_FHIR_TYPE_STRING))
+                                        .putAllowedFieldNamesToConfig(
+                                                "occurrenceDateTime",
+                                                createFhirFieldConfig(
+                                                        false, R4_FHIR_TYPE_DATE_TIME))
+                                        .build())
+                        .addAllFhirDataTypeConfigs(DEFAULT_IMMUNIZATION_DATA_TYPE_CONFIGS)
+                        .build();
+        FhirObjectTypeValidator validator =
+                new FhirObjectTypeValidator(new FhirSpecProvider(fhirSpec));
         JSONObject immunizationJson =
-                new JSONObject(
-                        "{"
-                                + "  \"resourceType\": \"Immunization\","
-                                + "  \"id\": \"immunization-1\","
-                                + "  \"occurrenceString\": \"2024\""
-                                + "}");
+                new JSONObject(DEFAULT_IMMUNIZATION_JSON).put("occurrenceString", "2024");
 
         validator.validate(immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION);
     }
 
     @Test
     public void testValidate_requiredMultiTypeFieldMissing_throws() throws JSONException {
-        FhirObjectTypeValidator validator = new FhirObjectTypeValidator(mFhirSpec);
-        when(mFhirSpec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_IMMUNIZATION))
-                .thenReturn(
-                        FhirComplexTypeConfig.newBuilder()
-                                .addMultiTypeFields(
-                                        MultiTypeFieldConfig.newBuilder()
-                                                .setName("occurrence[x]")
-                                                .addAllTypedFieldNames(
-                                                        List.of(
-                                                                "occurrenceDateTime",
-                                                                "occurrenceString"))
-                                                .setIsRequired(true))
-                                .putAllAllowedFieldNamesToConfig(
-                                        Map.ofEntries(
-                                                Map.entry(
-                                                        "id",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_ID)),
-                                                Map.entry(
-                                                        "resourceType",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_STRING)),
-                                                Map.entry(
-                                                        "occurrenceString",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_STRING)),
-                                                Map.entry(
-                                                        "occurrenceDateTime",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_DATE_TIME))))
-                                .build());
-        when(mFhirSpec.isPrimitiveType(any())).thenReturn(true);
-        JSONObject immunizationJson =
-                new JSONObject(
-                        "{"
-                                + "  \"resourceType\": \"Immunization\","
-                                + "  \"id\": \"immunization-1\""
-                                + "}");
+        FhirResourceSpec fhirSpec =
+                FhirResourceSpec.newBuilder()
+                        .putResourceTypeToConfig(
+                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                DEFAULT_IMMUNIZATION_COMPLEX_TYPE_CONFIG.toBuilder()
+                                        .addMultiTypeFields(
+                                                MultiTypeFieldConfig.newBuilder()
+                                                        .setName("occurrence[x]")
+                                                        .addAllTypedFieldNames(
+                                                                List.of(
+                                                                        "occurrenceDateTime",
+                                                                        "occurrenceString"))
+                                                        .setIsRequired(true))
+                                        .putAllowedFieldNamesToConfig(
+                                                "occurrenceString",
+                                                createFhirFieldConfig(false, R4_FHIR_TYPE_STRING))
+                                        .putAllowedFieldNamesToConfig(
+                                                "occurrenceDateTime",
+                                                createFhirFieldConfig(
+                                                        false, R4_FHIR_TYPE_DATE_TIME))
+                                        .build())
+                        .addAllFhirDataTypeConfigs(DEFAULT_IMMUNIZATION_DATA_TYPE_CONFIGS)
+                        .build();
+        FhirObjectTypeValidator validator =
+                new FhirObjectTypeValidator(new FhirSpecProvider(fhirSpec));
+        JSONObject immunizationJson = new JSONObject(DEFAULT_IMMUNIZATION_JSON);
 
         IllegalArgumentException exception =
                 assertThrows(
@@ -344,46 +382,35 @@ public class FhirObjectTypeValidatorTest {
 
     @Test
     public void testValidate_moreThanOneMultiTypeFieldPresent_throws() throws JSONException {
-        FhirObjectTypeValidator validator = new FhirObjectTypeValidator(mFhirSpec);
-        when(mFhirSpec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_IMMUNIZATION))
-                .thenReturn(
-                        FhirComplexTypeConfig.newBuilder()
-                                .addMultiTypeFields(
-                                        MultiTypeFieldConfig.newBuilder()
-                                                .setName("occurrence[x]")
-                                                .addAllTypedFieldNames(
-                                                        List.of(
-                                                                "occurrenceDateTime",
-                                                                "occurrenceString"))
-                                                .setIsRequired(true))
-                                .putAllAllowedFieldNamesToConfig(
-                                        Map.ofEntries(
-                                                Map.entry(
-                                                        "id",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_ID)),
-                                                Map.entry(
-                                                        "resourceType",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_STRING)),
-                                                Map.entry(
-                                                        "occurrenceString",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_STRING)),
-                                                Map.entry(
-                                                        "occurrenceDateTime",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_DATE_TIME))))
-                                .build());
-        when(mFhirSpec.isPrimitiveType(any())).thenReturn(true);
+        FhirResourceSpec fhirSpec =
+                FhirResourceSpec.newBuilder()
+                        .putResourceTypeToConfig(
+                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                DEFAULT_IMMUNIZATION_COMPLEX_TYPE_CONFIG.toBuilder()
+                                        .addMultiTypeFields(
+                                                MultiTypeFieldConfig.newBuilder()
+                                                        .setName("occurrence[x]")
+                                                        .addAllTypedFieldNames(
+                                                                List.of(
+                                                                        "occurrenceDateTime",
+                                                                        "occurrenceString"))
+                                                        .setIsRequired(true))
+                                        .putAllowedFieldNamesToConfig(
+                                                "occurrenceString",
+                                                createFhirFieldConfig(false, R4_FHIR_TYPE_STRING))
+                                        .putAllowedFieldNamesToConfig(
+                                                "occurrenceDateTime",
+                                                createFhirFieldConfig(
+                                                        false, R4_FHIR_TYPE_DATE_TIME))
+                                        .build())
+                        .addAllFhirDataTypeConfigs(DEFAULT_IMMUNIZATION_DATA_TYPE_CONFIGS)
+                        .build();
+        FhirObjectTypeValidator validator =
+                new FhirObjectTypeValidator(new FhirSpecProvider(fhirSpec));
         JSONObject immunizationJson =
-                new JSONObject(
-                        "{"
-                                + "  \"resourceType\": \"Immunization\","
-                                + "  \"id\": \"immunization-1\","
-                                + "  \"occurrenceString\": \"November 2024\","
-                                + "  \"occurrenceDateTime\": \"2024-11\""
-                                + "}");
+                new JSONObject(DEFAULT_IMMUNIZATION_JSON)
+                        .put("occurrenceString", "2024")
+                        .put("occurrenceDateTime", "2024-11");
 
         IllegalArgumentException exception =
                 assertThrows(
@@ -399,29 +426,17 @@ public class FhirObjectTypeValidatorTest {
 
     @Test
     public void testValidate_unknownField_throws() throws JSONException {
-        FhirObjectTypeValidator validator = new FhirObjectTypeValidator(mFhirSpec);
-        when(mFhirSpec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_IMMUNIZATION))
-                .thenReturn(
-                        FhirComplexTypeConfig.newBuilder()
-                                .putAllAllowedFieldNamesToConfig(
-                                        Map.ofEntries(
-                                                Map.entry(
-                                                        "id",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_ID)),
-                                                Map.entry(
-                                                        "resourceType",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_STRING))))
-                                .build());
-        when(mFhirSpec.isPrimitiveType(any())).thenReturn(true);
+        FhirResourceSpec fhirSpec =
+                FhirResourceSpec.newBuilder()
+                        .putResourceTypeToConfig(
+                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                DEFAULT_IMMUNIZATION_COMPLEX_TYPE_CONFIG)
+                        .addAllFhirDataTypeConfigs(DEFAULT_IMMUNIZATION_DATA_TYPE_CONFIGS)
+                        .build();
+        FhirObjectTypeValidator validator =
+                new FhirObjectTypeValidator(new FhirSpecProvider(fhirSpec));
         JSONObject immunizationJson =
-                new JSONObject(
-                        "{"
-                                + "  \"resourceType\": \"Immunization\","
-                                + "  \"id\": \"immunization-1\","
-                                + "  \"unknown_field\": \"test\""
-                                + "}");
+                new JSONObject(DEFAULT_IMMUNIZATION_JSON).put("unknown_field", "test");
 
         IllegalArgumentException exception =
                 assertThrows(
@@ -436,35 +451,17 @@ public class FhirObjectTypeValidatorTest {
     @EnableFlags(FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION)
     @Test
     public void testValidate_complexTypeFieldNotJsonObject_throws() throws JSONException {
-        FhirObjectTypeValidator validator = new FhirObjectTypeValidator(mFhirSpec);
-        when(mFhirSpec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_IMMUNIZATION))
-                .thenReturn(
-                        FhirComplexTypeConfig.newBuilder()
-                                .putAllAllowedFieldNamesToConfig(
-                                        Map.ofEntries(
-                                                Map.entry(
-                                                        "id",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_ID)),
-                                                Map.entry(
-                                                        "resourceType",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_STRING)),
-                                                Map.entry(
-                                                        "statusReason",
-                                                        createFhirFieldConfig(
-                                                                false,
-                                                                R4_FHIR_TYPE_CODEABLE_CONCEPT))))
-                                .build());
-        when(mFhirSpec.isPrimitiveType(any())).thenReturn(true);
-        when(mFhirSpec.isPrimitiveType(R4_FHIR_TYPE_CODEABLE_CONCEPT)).thenReturn(false);
+        FhirResourceSpec fhirSpec =
+                FhirResourceSpec.newBuilder()
+                        .putResourceTypeToConfig(
+                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                DEFAULT_IMMUNIZATION_COMPLEX_TYPE_CONFIG)
+                        .addAllFhirDataTypeConfigs(DEFAULT_IMMUNIZATION_DATA_TYPE_CONFIGS)
+                        .build();
+        FhirObjectTypeValidator validator =
+                new FhirObjectTypeValidator(new FhirSpecProvider(fhirSpec));
         JSONObject immunizationJson =
-                new JSONObject(
-                        "{"
-                                + "  \"resourceType\": \"Immunization\","
-                                + "  \"id\": \"immunization-1\","
-                                + "  \"statusReason\": \"simple_string\""
-                                + "}");
+                new JSONObject(DEFAULT_IMMUNIZATION_JSON).put("statusReason", "simple_string");
 
         IllegalArgumentException exception =
                 assertThrows(
@@ -481,35 +478,17 @@ public class FhirObjectTypeValidatorTest {
     @EnableFlags(FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION)
     @Test
     public void testValidate_complexTypeFieldIsNull_throws() throws JSONException {
-        FhirObjectTypeValidator validator = new FhirObjectTypeValidator(mFhirSpec);
-        when(mFhirSpec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_IMMUNIZATION))
-                .thenReturn(
-                        FhirComplexTypeConfig.newBuilder()
-                                .putAllAllowedFieldNamesToConfig(
-                                        Map.ofEntries(
-                                                Map.entry(
-                                                        "id",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_ID)),
-                                                Map.entry(
-                                                        "resourceType",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_STRING)),
-                                                Map.entry(
-                                                        "statusReason",
-                                                        createFhirFieldConfig(
-                                                                false,
-                                                                R4_FHIR_TYPE_CODEABLE_CONCEPT))))
-                                .build());
-        when(mFhirSpec.isPrimitiveType(any())).thenReturn(true);
-        when(mFhirSpec.isPrimitiveType(R4_FHIR_TYPE_CODEABLE_CONCEPT)).thenReturn(false);
+        FhirResourceSpec fhirSpec =
+                FhirResourceSpec.newBuilder()
+                        .putResourceTypeToConfig(
+                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                DEFAULT_IMMUNIZATION_COMPLEX_TYPE_CONFIG)
+                        .addAllFhirDataTypeConfigs(DEFAULT_IMMUNIZATION_DATA_TYPE_CONFIGS)
+                        .build();
+        FhirObjectTypeValidator validator =
+                new FhirObjectTypeValidator(new FhirSpecProvider(fhirSpec));
         JSONObject immunizationJson =
-                new JSONObject(
-                        "{"
-                                + "  \"resourceType\": \"Immunization\","
-                                + "  \"id\": \"immunization-1\","
-                                + "  \"statusReason\": null"
-                                + "}");
+                new JSONObject(DEFAULT_IMMUNIZATION_JSON).put("statusReason", JSONObject.NULL);
 
         IllegalArgumentException exception =
                 assertThrows(
@@ -524,33 +503,17 @@ public class FhirObjectTypeValidatorTest {
     @EnableFlags(FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION)
     @Test
     public void testValidate_primitiveTypeExtensionNotJsonObject_throws() throws JSONException {
-        FhirObjectTypeValidator validator = new FhirObjectTypeValidator(mFhirSpec);
-        when(mFhirSpec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_IMMUNIZATION))
-                .thenReturn(
-                        FhirComplexTypeConfig.newBuilder()
-                                .putAllAllowedFieldNamesToConfig(
-                                        Map.ofEntries(
-                                                Map.entry(
-                                                        "id",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_ID)),
-                                                Map.entry(
-                                                        "resourceType",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_STRING)),
-                                                Map.entry(
-                                                        "status",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_CODE))))
-                                .build());
-        when(mFhirSpec.isPrimitiveType(any())).thenReturn(true);
+        FhirResourceSpec fhirSpec =
+                FhirResourceSpec.newBuilder()
+                        .putResourceTypeToConfig(
+                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                DEFAULT_IMMUNIZATION_COMPLEX_TYPE_CONFIG)
+                        .addAllFhirDataTypeConfigs(DEFAULT_IMMUNIZATION_DATA_TYPE_CONFIGS)
+                        .build();
+        FhirObjectTypeValidator validator =
+                new FhirObjectTypeValidator(new FhirSpecProvider(fhirSpec));
         JSONObject immunizationJson =
-                new JSONObject(
-                        "{"
-                                + "  \"resourceType\": \"Immunization\","
-                                + "  \"id\": \"immunization-1\","
-                                + "  \"_status\": \"completed\""
-                                + "}");
+                new JSONObject(DEFAULT_IMMUNIZATION_JSON).put("_status", "completed");
 
         IllegalArgumentException exception =
                 assertThrows(
@@ -566,40 +529,29 @@ public class FhirObjectTypeValidatorTest {
 
     @Test
     public void testValidate_arrayField_succeeds() throws JSONException {
-        FhirObjectTypeValidator validator = new FhirObjectTypeValidator(mFhirSpec);
-        when(mFhirSpec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_IMMUNIZATION))
-                .thenReturn(
-                        FhirComplexTypeConfig.newBuilder()
-                                .putAllAllowedFieldNamesToConfig(
-                                        Map.ofEntries(
-                                                Map.entry(
-                                                        "id",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_ID)),
-                                                Map.entry(
-                                                        "resourceType",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_STRING)),
-                                                Map.entry(
-                                                        "identifier",
-                                                        createFhirFieldConfig(
-                                                                true, R4_FHIR_TYPE_IDENTIFIER))))
-                                .build());
-        when(mFhirSpec.isPrimitiveType(any())).thenReturn(true);
-        when(mFhirSpec.isPrimitiveType(R4_FHIR_TYPE_IDENTIFIER)).thenReturn(false);
+        FhirResourceSpec fhirSpec =
+                FhirResourceSpec.newBuilder()
+                        .putResourceTypeToConfig(
+                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                DEFAULT_IMMUNIZATION_COMPLEX_TYPE_CONFIG)
+                        .addAllFhirDataTypeConfigs(DEFAULT_IMMUNIZATION_DATA_TYPE_CONFIGS)
+                        .build();
+        FhirObjectTypeValidator validator =
+                new FhirObjectTypeValidator(new FhirSpecProvider(fhirSpec));
         JSONObject immunizationJson =
-                new JSONObject(
-                        "{"
-                                + "  \"resourceType\": \"Immunization\","
-                                + "  \"id\": \"immunization-1\","
-                                + "  \"identifier\": [{"
-                                + "    \"use\": \"secondary\","
-                                + "    \"value\": \"123\""
-                                + "  }, {"
-                                + "    \"use\": \"secondary\","
-                                + "    \"value\": \"456\""
-                                + "  }]"
-                                + "}");
+                new JSONObject(DEFAULT_IMMUNIZATION_JSON)
+                        .put(
+                                "identifier",
+                                new JSONArray(
+                                        """
+                                        [{
+                                            \"use\": \"secondary\",
+                                            \"value\": \"123\"
+                                         }, {
+                                            \"use\": \"secondary\",
+                                            \"value\": \"456\"
+                                        }]
+                                        """));
 
         validator.validate(immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION);
     }
@@ -607,35 +559,30 @@ public class FhirObjectTypeValidatorTest {
     @Test
     public void testValidate_primitiveTypeExtensionArrayForArrayField_canContainNull()
             throws JSONException {
-        FhirObjectTypeValidator validator = new FhirObjectTypeValidator(mFhirSpec);
-        when(mFhirSpec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_IMMUNIZATION))
-                .thenReturn(
-                        FhirComplexTypeConfig.newBuilder()
-                                .putAllAllowedFieldNamesToConfig(
-                                        Map.ofEntries(
-                                                Map.entry(
-                                                        "id",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_ID)),
-                                                Map.entry(
-                                                        "resourceType",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_STRING)),
-                                                Map.entry(
-                                                        "primitiveArrayField",
-                                                        createFhirFieldConfig(
-                                                                true, R4_FHIR_TYPE_STRING))))
-                                .build());
-        when(mFhirSpec.isPrimitiveType(any())).thenReturn(true);
+        FhirResourceSpec fhirSpec =
+                FhirResourceSpec.newBuilder()
+                        .putResourceTypeToConfig(
+                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                DEFAULT_IMMUNIZATION_COMPLEX_TYPE_CONFIG.toBuilder()
+                                        .putAllowedFieldNamesToConfig(
+                                                "primitiveArrayField",
+                                                createFhirFieldConfig(true, R4_FHIR_TYPE_STRING))
+                                        .build())
+                        .addAllFhirDataTypeConfigs(DEFAULT_IMMUNIZATION_DATA_TYPE_CONFIGS)
+                        .build();
+        FhirObjectTypeValidator validator =
+                new FhirObjectTypeValidator(new FhirSpecProvider(fhirSpec));
         JSONObject immunizationJson =
-                new JSONObject(
-                        "{"
-                                + "  \"resourceType\": \"Immunization\","
-                                + "  \"id\": \"immunization-1\","
-                                + "  \"_primitiveArrayField\": [{"
-                                + "    \"id\": \"123\""
-                                + "  }, null ]"
-                                + "}");
+                new JSONObject(DEFAULT_IMMUNIZATION_JSON)
+                        .put(
+                                "_primitiveArrayField",
+                                new JSONArray(
+                                        """
+                                        [{
+                                            \"id\": \"123\"
+                                         }, null
+                                         ]
+                                        """));
 
         validator.validate(immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION);
     }
@@ -643,37 +590,26 @@ public class FhirObjectTypeValidatorTest {
     @EnableFlags(FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION)
     @Test
     public void testValidate_arrayFieldIsNotArray_throws() throws JSONException {
-        FhirObjectTypeValidator validator = new FhirObjectTypeValidator(mFhirSpec);
-        when(mFhirSpec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_IMMUNIZATION))
-                .thenReturn(
-                        FhirComplexTypeConfig.newBuilder()
-                                .putAllAllowedFieldNamesToConfig(
-                                        Map.ofEntries(
-                                                Map.entry(
-                                                        "id",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_ID)),
-                                                Map.entry(
-                                                        "resourceType",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_STRING)),
-                                                Map.entry(
-                                                        "identifier",
-                                                        createFhirFieldConfig(
-                                                                true, R4_FHIR_TYPE_IDENTIFIER))))
-                                .build());
-        when(mFhirSpec.isPrimitiveType(any())).thenReturn(true);
-        when(mFhirSpec.isPrimitiveType(R4_FHIR_TYPE_IDENTIFIER)).thenReturn(false);
+        FhirResourceSpec fhirSpec =
+                FhirResourceSpec.newBuilder()
+                        .putResourceTypeToConfig(
+                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                DEFAULT_IMMUNIZATION_COMPLEX_TYPE_CONFIG)
+                        .addAllFhirDataTypeConfigs(DEFAULT_IMMUNIZATION_DATA_TYPE_CONFIGS)
+                        .build();
+        FhirObjectTypeValidator validator =
+                new FhirObjectTypeValidator(new FhirSpecProvider(fhirSpec));
         JSONObject immunizationJson =
-                new JSONObject(
-                        "{"
-                                + "  \"resourceType\": \"Immunization\","
-                                + "  \"id\": \"immunization-1\","
-                                + "  \"identifier\": {"
-                                + "    \"use\": \"secondary\","
-                                + "    \"value\": \"123\""
-                                + "  }"
-                                + "}");
+                new JSONObject(DEFAULT_IMMUNIZATION_JSON)
+                        .put(
+                                "identifier",
+                                new JSONObject(
+                                        """
+                                        {
+                                            \"use\": \"secondary\",
+                                            \"value\": \"123\"
+                                         }
+                                        """));
 
         IllegalArgumentException exception =
                 assertThrows(
@@ -690,37 +626,27 @@ public class FhirObjectTypeValidatorTest {
     @EnableFlags(FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION)
     @Test
     public void testValidate_complexTypeArrayItemNotJsonObject_throws() throws JSONException {
-        FhirObjectTypeValidator validator = new FhirObjectTypeValidator(mFhirSpec);
-        when(mFhirSpec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_IMMUNIZATION))
-                .thenReturn(
-                        FhirComplexTypeConfig.newBuilder()
-                                .putAllAllowedFieldNamesToConfig(
-                                        Map.ofEntries(
-                                                Map.entry(
-                                                        "id",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_ID)),
-                                                Map.entry(
-                                                        "resourceType",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_STRING)),
-                                                Map.entry(
-                                                        "identifier",
-                                                        createFhirFieldConfig(
-                                                                true, R4_FHIR_TYPE_IDENTIFIER))))
-                                .build());
-        when(mFhirSpec.isPrimitiveType(any())).thenReturn(true);
-        when(mFhirSpec.isPrimitiveType(R4_FHIR_TYPE_IDENTIFIER)).thenReturn(false);
+        FhirResourceSpec fhirSpec =
+                FhirResourceSpec.newBuilder()
+                        .putResourceTypeToConfig(
+                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                DEFAULT_IMMUNIZATION_COMPLEX_TYPE_CONFIG)
+                        .addAllFhirDataTypeConfigs(DEFAULT_IMMUNIZATION_DATA_TYPE_CONFIGS)
+                        .build();
+        FhirObjectTypeValidator validator =
+                new FhirObjectTypeValidator(new FhirSpecProvider(fhirSpec));
         JSONObject immunizationJson =
-                new JSONObject(
-                        "{"
-                                + "  \"resourceType\": \"Immunization\","
-                                + "  \"id\": \"immunization-1\","
-                                + "  \"identifier\": [{"
-                                + "    \"use\": \"secondary\","
-                                + "    \"value\": \"123\""
-                                + "  }, \"simple_string_not_array\"]"
-                                + "}");
+                new JSONObject(DEFAULT_IMMUNIZATION_JSON)
+                        .put(
+                                "identifier",
+                                new JSONArray(
+                                        """
+                                        [{
+                                            \"use\": \"secondary\",
+                                            \"value\": \"123\"
+                                         }, \"simple_string_not_array\"
+                                         ]
+                                        """));
 
         IllegalArgumentException exception =
                 assertThrows(
@@ -737,33 +663,18 @@ public class FhirObjectTypeValidatorTest {
     @EnableFlags({FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION})
     @Test
     public void testValidate_primitiveTypeFieldIsJsonObject_throws() throws JSONException {
-        FhirObjectTypeValidator validator = new FhirObjectTypeValidator(mFhirSpec);
-        when(mFhirSpec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_IMMUNIZATION))
-                .thenReturn(
-                        FhirComplexTypeConfig.newBuilder()
-                                .putAllAllowedFieldNamesToConfig(
-                                        Map.ofEntries(
-                                                Map.entry(
-                                                        "id",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_ID)),
-                                                Map.entry(
-                                                        "resourceType",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_STRING)),
-                                                Map.entry(
-                                                        "primarySource",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_BOOLEAN))))
-                                .build());
-        when(mFhirSpec.isPrimitiveType(any())).thenReturn(true);
+        FhirResourceSpec fhirSpec =
+                FhirResourceSpec.newBuilder()
+                        .putResourceTypeToConfig(
+                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                DEFAULT_IMMUNIZATION_COMPLEX_TYPE_CONFIG)
+                        .addAllFhirDataTypeConfigs(DEFAULT_IMMUNIZATION_DATA_TYPE_CONFIGS)
+                        .build();
+        FhirObjectTypeValidator validator =
+                new FhirObjectTypeValidator(new FhirSpecProvider(fhirSpec));
         JSONObject immunizationJson =
-                new JSONObject(
-                        "{"
-                                + "  \"resourceType\": \"Immunization\","
-                                + "  \"id\": \"immunization-1\","
-                                + "  \"primarySource\": {\"id\": \"123\"}"
-                                + "}");
+                new JSONObject(DEFAULT_IMMUNIZATION_JSON)
+                        .put("primarySource", new JSONObject("{\"id\": \"123\"}"));
 
         IllegalArgumentException exception =
                 assertThrows(
@@ -782,33 +693,17 @@ public class FhirObjectTypeValidatorTest {
     @EnableFlags({FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION})
     @Test
     public void testValidate_primitiveTypeFieldIsNull_throws() throws JSONException {
-        FhirObjectTypeValidator validator = new FhirObjectTypeValidator(mFhirSpec);
-        when(mFhirSpec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_IMMUNIZATION))
-                .thenReturn(
-                        FhirComplexTypeConfig.newBuilder()
-                                .putAllAllowedFieldNamesToConfig(
-                                        Map.ofEntries(
-                                                Map.entry(
-                                                        "id",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_ID)),
-                                                Map.entry(
-                                                        "resourceType",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_STRING)),
-                                                Map.entry(
-                                                        "primarySource",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_BOOLEAN))))
-                                .build());
-        when(mFhirSpec.isPrimitiveType(any())).thenReturn(true);
+        FhirResourceSpec fhirSpec =
+                FhirResourceSpec.newBuilder()
+                        .putResourceTypeToConfig(
+                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                DEFAULT_IMMUNIZATION_COMPLEX_TYPE_CONFIG)
+                        .addAllFhirDataTypeConfigs(DEFAULT_IMMUNIZATION_DATA_TYPE_CONFIGS)
+                        .build();
+        FhirObjectTypeValidator validator =
+                new FhirObjectTypeValidator(new FhirSpecProvider(fhirSpec));
         JSONObject immunizationJson =
-                new JSONObject(
-                        "{"
-                                + "  \"resourceType\": \"Immunization\","
-                                + "  \"id\": \"immunization-1\","
-                                + "  \"primarySource\": null"
-                                + "}");
+                new JSONObject(DEFAULT_IMMUNIZATION_JSON).put("primarySource", JSONObject.NULL);
 
         IllegalArgumentException exception =
                 assertThrows(
@@ -826,33 +721,18 @@ public class FhirObjectTypeValidatorTest {
     })
     @Test
     public void testValidate_primitiveTypeFieldIsArray_throws() throws JSONException {
-        FhirObjectTypeValidator validator = new FhirObjectTypeValidator(mFhirSpec);
-        when(mFhirSpec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_IMMUNIZATION))
-                .thenReturn(
-                        FhirComplexTypeConfig.newBuilder()
-                                .putAllAllowedFieldNamesToConfig(
-                                        Map.ofEntries(
-                                                Map.entry(
-                                                        "id",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_ID)),
-                                                Map.entry(
-                                                        "resourceType",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_STRING)),
-                                                Map.entry(
-                                                        "primarySource",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_BOOLEAN))))
-                                .build());
-        when(mFhirSpec.isPrimitiveType(any())).thenReturn(true);
+        FhirResourceSpec fhirSpec =
+                FhirResourceSpec.newBuilder()
+                        .putResourceTypeToConfig(
+                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                DEFAULT_IMMUNIZATION_COMPLEX_TYPE_CONFIG)
+                        .addAllFhirDataTypeConfigs(DEFAULT_IMMUNIZATION_DATA_TYPE_CONFIGS)
+                        .build();
+        FhirObjectTypeValidator validator =
+                new FhirObjectTypeValidator(new FhirSpecProvider(fhirSpec));
         JSONObject immunizationJson =
-                new JSONObject(
-                        "{"
-                                + "  \"resourceType\": \"Immunization\","
-                                + "  \"id\": \"immunization-1\","
-                                + "  \"primarySource\": [True]"
-                                + "}");
+                new JSONObject(DEFAULT_IMMUNIZATION_JSON)
+                        .put("primarySource", new JSONArray("[True]"));
 
         IllegalArgumentException exception =
                 assertThrows(
@@ -874,33 +754,17 @@ public class FhirObjectTypeValidatorTest {
     })
     @Test
     public void testValidate_primitiveTypeFieldIsWrongType_throws() throws JSONException {
-        FhirObjectTypeValidator validator = new FhirObjectTypeValidator(mFhirSpec);
-        when(mFhirSpec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_IMMUNIZATION))
-                .thenReturn(
-                        FhirComplexTypeConfig.newBuilder()
-                                .putAllAllowedFieldNamesToConfig(
-                                        Map.ofEntries(
-                                                Map.entry(
-                                                        "id",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_ID)),
-                                                Map.entry(
-                                                        "resourceType",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_STRING)),
-                                                Map.entry(
-                                                        "primarySource",
-                                                        createFhirFieldConfig(
-                                                                false, R4_FHIR_TYPE_BOOLEAN))))
-                                .build());
-        when(mFhirSpec.isPrimitiveType(any())).thenReturn(true);
+        FhirResourceSpec fhirSpec =
+                FhirResourceSpec.newBuilder()
+                        .putResourceTypeToConfig(
+                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                DEFAULT_IMMUNIZATION_COMPLEX_TYPE_CONFIG)
+                        .addAllFhirDataTypeConfigs(DEFAULT_IMMUNIZATION_DATA_TYPE_CONFIGS)
+                        .build();
+        FhirObjectTypeValidator validator =
+                new FhirObjectTypeValidator(new FhirSpecProvider(fhirSpec));
         JSONObject immunizationJson =
-                new JSONObject(
-                        "{"
-                                + "  \"resourceType\": \"Immunization\","
-                                + "  \"id\": \"immunization-1\","
-                                + "  \"primarySource\": \"yes\""
-                                + "}");
+                new JSONObject(DEFAULT_IMMUNIZATION_JSON).put("primarySource", "yes");
 
         IllegalArgumentException exception =
                 assertThrows(
@@ -914,6 +778,122 @@ public class FhirObjectTypeValidatorTest {
                 .contains(
                         "Invalid resource structure. Found non boolean object in field:"
                                 + " primarySource");
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION})
+    @Test
+    public void testValidate_unexpectedFieldInNestedType_throws() throws JSONException {
+        FhirResourceSpec fhirSpec =
+                FhirResourceSpec.newBuilder()
+                        .putResourceTypeToConfig(
+                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                DEFAULT_IMMUNIZATION_COMPLEX_TYPE_CONFIG)
+                        .addAllFhirDataTypeConfigs(DEFAULT_IMMUNIZATION_DATA_TYPE_CONFIGS)
+                        .build();
+        FhirObjectTypeValidator validator =
+                new FhirObjectTypeValidator(new FhirSpecProvider(fhirSpec));
+        JSONObject immunizationJson =
+                new JSONObject(DEFAULT_IMMUNIZATION_JSON)
+                        .put(
+                                "statusReason",
+                                new JSONObject(
+                                        """
+                                        {
+                                            \"coding\": [{
+                                                \"display\" : \"display_string\",
+                                                \"unexpected\": \"unexpected_field\"
+                                            }],
+                                            \"text\": \"123\"
+                                        }
+                                        """));
+
+        IllegalArgumentException exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                validator.validate(
+                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+
+        assertThat(exception)
+                .hasMessageThat()
+                .contains("Found unexpected field statusReason.coding.unexpected");
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION})
+    @Test
+    public void testValidate_moreThanOneOneOfFieldSetInNestedType_throws() throws JSONException {
+        FhirComplexTypeConfig annotationComplexTypeConfig =
+                FhirComplexTypeConfig.newBuilder()
+                        .addMultiTypeFields(
+                                MultiTypeFieldConfig.newBuilder()
+                                        .setName("author[x]")
+                                        .addAllTypedFieldNames(
+                                                List.of("authorDateTime", "authorString")))
+                        .putAllAllowedFieldNamesToConfig(
+                                Map.ofEntries(
+                                        Map.entry(
+                                                "authorDateTime",
+                                                createFhirFieldConfig(
+                                                        false, R4_FHIR_TYPE_DATE_TIME)),
+                                        Map.entry(
+                                                "authorString",
+                                                createFhirFieldConfig(false, R4_FHIR_TYPE_STRING))))
+                        .build();
+        FhirResourceSpec fhirSpec =
+                FhirResourceSpec.newBuilder()
+                        .putResourceTypeToConfig(
+                                FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                                FhirComplexTypeConfig.newBuilder()
+                                        .putAllAllowedFieldNamesToConfig(
+                                                Map.ofEntries(
+                                                        Map.entry(
+                                                                "id",
+                                                                createFhirFieldConfig(
+                                                                        false, R4_FHIR_TYPE_ID)),
+                                                        Map.entry(
+                                                                "resourceType",
+                                                                createFhirFieldConfig(
+                                                                        false,
+                                                                        R4_FHIR_TYPE_STRING)),
+                                                        Map.entry(
+                                                                "note",
+                                                                createFhirFieldConfig(
+                                                                        true,
+                                                                        R4_FHIR_TYPE_ANNOTATION))))
+                                        .build())
+                        .addFhirDataTypeConfigs(FHIR_DATA_TYPE_ID)
+                        .addFhirDataTypeConfigs(FHIR_DATA_TYPE_STRING)
+                        .addFhirDataTypeConfigs(
+                                FhirDataType.newBuilder()
+                                        .setFhirType(R4_FHIR_TYPE_ANNOTATION)
+                                        .setKind(KIND_COMPLEX_TYPE)
+                                        .setFhirComplexTypeConfig(annotationComplexTypeConfig))
+                        .build();
+        FhirObjectTypeValidator validator =
+                new FhirObjectTypeValidator(new FhirSpecProvider(fhirSpec));
+        JSONObject allergyJson =
+                new JSONObject(
+                        """
+                                {
+                                    \"resourceType\": \"AllergyIntolerance\",
+                                    \"id\": \"allergy-1\",
+                                    \"note\": [{
+                                        \"authorDateTime\": \"2024-12-01\",
+                                        \"authorString\": \"yesterday\"
+                                    }]
+                                }
+                        """);
+
+        IllegalArgumentException exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                validator.validate(
+                                        allergyJson, FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE));
+
+        assertThat(exception)
+                .hasMessageThat()
+                .contains("Only one type should be set for field note.author[x]");
     }
 
     private static FhirFieldConfig createFhirFieldConfig(boolean isArray, R4FhirType r4Type) {
