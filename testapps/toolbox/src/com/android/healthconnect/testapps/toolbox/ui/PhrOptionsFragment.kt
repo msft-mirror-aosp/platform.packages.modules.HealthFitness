@@ -105,7 +105,7 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
             executeAndShowMessage {
                 createMedicalDataSource(
                     view,
-                    Uri.parse("example.fhir.com/R4/123"),
+                    Uri.parse("https://example.fhir.com/R4/123"),
                     "My Hospital " + (0..1000).random(),
                     FhirVersion.parseFhirVersion("4.0.1"),
                 )
