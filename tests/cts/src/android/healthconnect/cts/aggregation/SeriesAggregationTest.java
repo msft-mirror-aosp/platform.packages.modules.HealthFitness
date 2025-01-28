@@ -17,6 +17,10 @@
 package android.healthconnect.cts.aggregation;
 
 import static android.health.connect.HealthDataCategory.ACTIVITY;
+import static android.health.connect.datatypes.HeartRateRecord.BPM_AVG;
+import static android.health.connect.datatypes.HeartRateRecord.BPM_MAX;
+import static android.health.connect.datatypes.HeartRateRecord.BPM_MIN;
+import static android.health.connect.datatypes.HeartRateRecord.HEART_MEASUREMENTS_COUNT;
 import static android.health.connect.datatypes.PowerRecord.POWER_AVG;
 import static android.health.connect.datatypes.PowerRecord.POWER_MAX;
 import static android.health.connect.datatypes.PowerRecord.POWER_MIN;
@@ -31,6 +35,8 @@ import static android.healthconnect.cts.utils.TestUtils.getAggregateResponse;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
 import static android.healthconnect.cts.utils.TestUtils.setupAggregation;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import static java.time.ZoneOffset.UTC;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.HOURS;
@@ -40,6 +46,7 @@ import android.content.Context;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.TimeInstantRangeFilter;
+import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.PowerRecord;
 import android.health.connect.datatypes.SpeedRecord;
 import android.health.connect.datatypes.units.Power;
@@ -90,6 +97,7 @@ public class SeriesAggregationTest {
                                 time,
                                 time.plus(8, HOURS),
                                 UTC,
+                                getSpeedRecordSample(Velocity.fromMetersPerSecond(12), time),
                                 getSpeedRecordSample(
                                         Velocity.fromMetersPerSecond(50), time.plus(1, HOURS)),
                                 getSpeedRecordSample(
@@ -102,7 +110,7 @@ public class SeriesAggregationTest {
                                         Velocity.fromMetersPerSecond(12), time.plus(5, HOURS)))));
 
         TimeInstantRangeFilter timeFilter =
-                getTimeFilter(time, time.plus(3, HOURS).plus(1, MINUTES));
+                getTimeFilter(time.plus(1, MINUTES), time.plus(3, HOURS).plus(1, MINUTES));
         AggregateRecordsRequest<Velocity> aggregateRecordsRequest =
                 new AggregateRecordsRequest.Builder<Velocity>(timeFilter)
                         .addAggregationType(SPEED_MIN)
@@ -150,6 +158,39 @@ public class SeriesAggregationTest {
         assertDoubleWithTolerance(response.get(POWER_AVG).getInWatts(), 29);
     }
 
+    @Test
+    public void aggregateWithInstantFilter_heartRate() throws Exception {
+        Instant time = Instant.now().minus(1, DAYS);
+        insertRecords(
+                List.of(
+                        getHeartRateRecord(
+                                time,
+                                time.plus(8, HOURS),
+                                UTC,
+                                getHeartRateRecordSample(62, time.plus(30, MINUTES)),
+                                getHeartRateRecordSample(65, time.plus(1, HOURS)),
+                                getHeartRateRecordSample(75, time.plus(2, HOURS)),
+                                getHeartRateRecordSample(60, time.plus(3, HOURS)),
+                                getHeartRateRecordSample(49, time.plus(4, HOURS)),
+                                getHeartRateRecordSample(200, time.plus(6, HOURS)))));
+
+        TimeInstantRangeFilter timeFilter =
+                getTimeFilter(time.plus(31, MINUTES), time.plus(4, HOURS));
+        AggregateRecordsRequest<Long> aggregateRecordsRequest =
+                new AggregateRecordsRequest.Builder<Long>(timeFilter)
+                        .addAggregationType(BPM_MIN)
+                        .addAggregationType(BPM_MAX)
+                        .addAggregationType(BPM_AVG)
+                        .addAggregationType(HEART_MEASUREMENTS_COUNT)
+                        .build();
+
+        AggregateRecordsResponse<Long> response = getAggregateResponse(aggregateRecordsRequest);
+        assertThat(response.get(BPM_MIN)).isEqualTo(60);
+        assertThat(response.get(BPM_MAX)).isEqualTo(75);
+        assertThat(response.get(BPM_AVG)).isEqualTo(66);
+        assertThat(response.get(HEART_MEASUREMENTS_COUNT)).isEqualTo(3);
+    }
+
     private static SpeedRecord getSpeedRecord(
             Instant start,
             Instant end,
@@ -179,5 +220,21 @@ public class SeriesAggregationTest {
 
     private static PowerRecord.PowerRecordSample getPowerRecordSample(Power power, Instant time) {
         return new PowerRecord.PowerRecordSample(power, time);
+    }
+
+    private static HeartRateRecord getHeartRateRecord(
+            Instant start,
+            Instant end,
+            ZoneOffset offset,
+            HeartRateRecord.HeartRateSample... samples) {
+        return new HeartRateRecord.Builder(getEmptyMetadata(), start, end, Arrays.asList(samples))
+                .setStartZoneOffset(offset)
+                .setEndZoneOffset(offset)
+                .build();
+    }
+
+    private static HeartRateRecord.HeartRateSample getHeartRateRecordSample(
+            long rate, Instant time) {
+        return new HeartRateRecord.HeartRateSample(rate, time);
     }
 }
