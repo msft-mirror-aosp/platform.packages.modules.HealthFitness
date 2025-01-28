@@ -43,7 +43,6 @@ import com.android.healthconnect.controller.permissions.data.FitnessPermissionTy
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.launchFragment
-import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -66,12 +65,6 @@ class DeletionFragmentTest {
     fun setup() {
         hiltRule.inject()
         whenever(viewModel.isInactiveApp).then { false }
-        toggleAnimation(false)
-    }
-
-    @After
-    fun tearDown() {
-        toggleAnimation(true)
     }
 
     // Delete all data flow
