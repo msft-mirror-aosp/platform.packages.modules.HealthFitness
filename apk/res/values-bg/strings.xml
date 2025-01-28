@@ -59,8 +59,7 @@
     <string name="recent_access_empty_state_title" msgid="4767157641389217682">"Няма скорошен достъп"</string>
     <string name="recent_access_empty_state_description" msgid="6334951450158128989">"Приложенията, които наскоро са осъществили достъп до данните ви, ще се показват тук автоматично"</string>
     <string name="recent_access_view_all_button" msgid="825946958049641541">"Преглед на всички"</string>
-    <!-- no translation found for recent_access_error (2258399573560888960) -->
-    <skip />
+    <string name="recent_access_error" msgid="2258399573560888960">"Скорошният достъп не бе зареден"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Активност"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"активност"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Мерки на тялото"</string>
@@ -1191,5 +1190,5 @@
     <string name="current_allow_mode" msgid="6716206063077569218">"Понастоящем <xliff:g id="APP_NAME">%1$s</xliff:g> има достъп до данните за физическата активност и благосъстоянието <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
     <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Да се разреши ли на <xliff:g id="APP_NAME">%1$s</xliff:g> достъп до данните за физическата активност и благосъстоянието по всяко време?"</string>
     <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> има достъп до <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
-    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Управление на разрешенията за физическата активност и благосъстоянието"</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Управл. на разрешенията за физ. активност и благосъстоянието"</string>
 </resources>

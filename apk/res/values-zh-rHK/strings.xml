@@ -59,8 +59,7 @@
     <string name="recent_access_empty_state_title" msgid="4767157641389217682">"最近沒有存取記錄"</string>
     <string name="recent_access_empty_state_description" msgid="6334951450158128989">"最近曾存取你資料的應用程式會自動在此顯示"</string>
     <string name="recent_access_view_all_button" msgid="825946958049641541">"查看全部"</string>
-    <!-- no translation found for recent_access_error (2258399573560888960) -->
-    <skip />
+    <string name="recent_access_error" msgid="2258399573560888960">"無法載入近期存取記錄"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"活動"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"活動"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"身體測量數據"</string>

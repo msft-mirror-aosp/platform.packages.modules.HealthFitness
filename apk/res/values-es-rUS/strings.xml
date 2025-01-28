@@ -59,8 +59,7 @@
     <string name="recent_access_empty_state_title" msgid="4767157641389217682">"No hay accesos recientes"</string>
     <string name="recent_access_empty_state_description" msgid="6334951450158128989">"Las apps que accedieron a tus datos hace poco se mostrarán automáticamente aquí"</string>
     <string name="recent_access_view_all_button" msgid="825946958049641541">"Ver todo"</string>
-    <!-- no translation found for recent_access_error (2258399573560888960) -->
-    <skip />
+    <string name="recent_access_error" msgid="2258399573560888960">"No se pudo cargar el acceso reciente"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Actividad"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"actividad"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Medidas corporales"</string>

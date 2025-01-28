@@ -56,14 +56,10 @@
     <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Spravovat oprávnění"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Čas: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
-    <!-- no translation found for recent_access_empty_state_title (4767157641389217682) -->
-    <skip />
-    <!-- no translation found for recent_access_empty_state_description (6334951450158128989) -->
-    <skip />
-    <!-- no translation found for recent_access_view_all_button (825946958049641541) -->
-    <skip />
-    <!-- no translation found for recent_access_error (2258399573560888960) -->
-    <skip />
+    <string name="recent_access_empty_state_title" msgid="4767157641389217682">"Žádný nedávný přístup"</string>
+    <string name="recent_access_empty_state_description" msgid="6334951450158128989">"Tady se automaticky zobrazí aplikace, které nedávno přistupovaly k vašim datům"</string>
+    <string name="recent_access_view_all_button" msgid="825946958049641541">"Zobrazit vše"</string>
+    <string name="recent_access_error" msgid="2258399573560888960">"Nedávný přístup nelze načíst"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Aktivita"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"aktivita"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Tělesné míry"</string>
@@ -220,10 +216,10 @@
     <string name="body_water_mass_lowercase_label" msgid="9196249948631920955">"objem vody v těle"</string>
     <string name="body_water_mass_read_content_description" msgid="1468266374858854184">"Číst objem vody v těle"</string>
     <string name="body_water_mass_write_content_description" msgid="8485284654932647383">"Zapisovat objem vody v těle"</string>
-    <string name="bone_mass_uppercase_label" msgid="6815438946872228501">"Objem kostí"</string>
-    <string name="bone_mass_lowercase_label" msgid="5127378263122564055">"objem kostí"</string>
-    <string name="bone_mass_read_content_description" msgid="8401070346821477225">"Číst objem kostí"</string>
-    <string name="bone_mass_write_content_description" msgid="8711285422751587975">"Zapisovat objem kostí"</string>
+    <string name="bone_mass_uppercase_label" msgid="6815438946872228501">"Kostní hmota"</string>
+    <string name="bone_mass_lowercase_label" msgid="5127378263122564055">"kostní hmota"</string>
+    <string name="bone_mass_read_content_description" msgid="8401070346821477225">"Číst kostní hmotu"</string>
+    <string name="bone_mass_write_content_description" msgid="8711285422751587975">"Zapisovat kostní hmotu"</string>
     <string name="height_uppercase_label" msgid="6839543632311723181">"Výška"</string>
     <string name="height_lowercase_label" msgid="6232582306436492752">"výška"</string>
     <string name="height_read_content_description" msgid="7107217731605127715">"Číst výšku"</string>

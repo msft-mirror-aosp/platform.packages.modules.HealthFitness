@@ -56,14 +56,10 @@
     <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Կառավարել թույլտվությունները"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Ժամանակը՝ <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
-    <!-- no translation found for recent_access_empty_state_title (4767157641389217682) -->
-    <skip />
-    <!-- no translation found for recent_access_empty_state_description (6334951450158128989) -->
-    <skip />
-    <!-- no translation found for recent_access_view_all_button (825946958049641541) -->
-    <skip />
-    <!-- no translation found for recent_access_error (2258399573560888960) -->
-    <skip />
+    <string name="recent_access_empty_state_title" msgid="4767157641389217682">"Վերջերս օգտագործված տվյալներ չկան"</string>
+    <string name="recent_access_empty_state_description" msgid="6334951450158128989">"Այն հավելվածները, որոնք վերջերս օգտագործել են ձեր տվյալները, կցուցադրվեն այստեղ"</string>
+    <string name="recent_access_view_all_button" msgid="825946958049641541">"Դիտել բոլորը"</string>
+    <string name="recent_access_error" msgid="2258399573560888960">"Չհաջողվեց բեռնել հասանելիության մասին վերջին տվյալները"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Ակտիվություն"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"ակտիվություն"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Մարմնի պարամետրեր"</string>
@@ -1194,5 +1190,5 @@
     <string name="current_allow_mode" msgid="6716206063077569218">"Ներկայումս <xliff:g id="APP_NAME">%1$s</xliff:g>-ին <xliff:g id="ALLOW_MODE">%2$s</xliff:g> հասանելի են ֆիթնեսի և առողջության վերաբերյալ ձեր տվյալները"</string>
     <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Թույլ տա՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին միշտ օգտագործել ֆիթնեսի և առողջության վերաբերյալ տվյալները"</string>
     <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին հասանելի են հետևյալ տվյալները՝ <xliff:g id="DATA_TYPES">%2$s</xliff:g>"</string>
-    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Կառավարել ֆիթնեսի և առողջության մասին տվյալների հասանելիությունը"</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Ֆիթնեսի և առողջության մասին տվյալներ"</string>
 </resources>

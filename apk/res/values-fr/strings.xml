@@ -56,14 +56,10 @@
     <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Gérer les autorisations"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Heure : <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
-    <!-- no translation found for recent_access_empty_state_title (4767157641389217682) -->
-    <skip />
-    <!-- no translation found for recent_access_empty_state_description (6334951450158128989) -->
-    <skip />
-    <!-- no translation found for recent_access_view_all_button (825946958049641541) -->
-    <skip />
-    <!-- no translation found for recent_access_error (2258399573560888960) -->
-    <skip />
+    <string name="recent_access_empty_state_title" msgid="4767157641389217682">"Aucun accès récent"</string>
+    <string name="recent_access_empty_state_description" msgid="6334951450158128989">"Les applis qui ont récemment accédé à vos données s\'afficheront automatiquement ici"</string>
+    <string name="recent_access_view_all_button" msgid="825946958049641541">"Tout afficher"</string>
+    <string name="recent_access_error" msgid="2258399573560888960">"Impossible de charger l\'accès récent"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Activité"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"activité"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Données corporelles"</string>
@@ -1194,5 +1190,5 @@
     <string name="current_allow_mode" msgid="6716206063077569218">"Actuellement, <xliff:g id="APP_NAME">%1$s</xliff:g> peut accéder à vos données de fitness et de bien-être <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
     <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Toujours autoriser <xliff:g id="APP_NAME">%1$s</xliff:g> à accéder à vos données de fitness et de bien-être ?"</string>
     <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> peut accéder aux données suivantes : <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
-    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Gérer les autorisations liées au fitness et au bien-être"</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Gérer les autorisations fitness et bien-être"</string>
 </resources>

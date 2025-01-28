@@ -59,8 +59,7 @@
     <string name="recent_access_empty_state_title" msgid="4767157641389217682">"Tidak ada akses terbaru"</string>
     <string name="recent_access_empty_state_description" msgid="6334951450158128989">"Aplikasi yang baru-baru ini mengakses data Anda akan otomatis ditampilkan di sini"</string>
     <string name="recent_access_view_all_button" msgid="825946958049641541">"Lihat semua"</string>
-    <!-- no translation found for recent_access_error (2258399573560888960) -->
-    <skip />
+    <string name="recent_access_error" msgid="2258399573560888960">"Tidak dapat memuat akses terbaru"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Aktivitas"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"aktivitas"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Pengukuran tubuh"</string>
