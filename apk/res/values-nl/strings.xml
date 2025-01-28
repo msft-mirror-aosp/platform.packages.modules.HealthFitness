@@ -59,8 +59,7 @@
     <string name="recent_access_empty_state_title" msgid="4767157641389217682">"Geen recente toegang"</string>
     <string name="recent_access_empty_state_description" msgid="6334951450158128989">"Apps die recent toegang tot je gegevens hebben gehad, worden hier automatisch getoond"</string>
     <string name="recent_access_view_all_button" msgid="825946958049641541">"Alles bekijken"</string>
-    <!-- no translation found for recent_access_error (2258399573560888960) -->
-    <skip />
+    <string name="recent_access_error" msgid="2258399573560888960">"Kan recente toegang niet laden"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Activiteit"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"activiteit"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Lichaamsmetingen"</string>
@@ -348,9 +347,9 @@
     <string name="procedures_uppercase_label" msgid="9176087520132593261">"Procedures"</string>
     <string name="procedures_lowercase_label" msgid="5320804313946273234">"procedures"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"Procedures lezen"</string>
-    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Sociale geschiedenis"</string>
-    <string name="social_history_lowercase_label" msgid="9027541979445736412">"sociale geschiedenis"</string>
-    <string name="social_history_content_description" msgid="7187059309389849831">"Sociale geschiedenis lezen"</string>
+    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Sociale context"</string>
+    <string name="social_history_lowercase_label" msgid="9027541979445736412">"sociale context"</string>
+    <string name="social_history_content_description" msgid="7187059309389849831">"Sociale context lezen"</string>
     <string name="visits_uppercase_label" msgid="8532619758336375886">"Bezoeken"</string>
     <string name="visits_lowercase_label" msgid="2545887061364564151">"bezoeken"</string>
     <string name="visits_content_description" msgid="6336796415049565697">"Bezoeken lezen"</string>

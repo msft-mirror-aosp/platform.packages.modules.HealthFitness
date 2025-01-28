@@ -59,8 +59,7 @@
     <string name="recent_access_empty_state_title" msgid="4767157641389217682">"Žiadny nedávny prístup"</string>
     <string name="recent_access_empty_state_description" msgid="6334951450158128989">"Aplikácie, ktoré nedávno získali prístup k vašim údajom, sa budú automaticky zobrazovať tu"</string>
     <string name="recent_access_view_all_button" msgid="825946958049641541">"Zobraziť všetko"</string>
-    <!-- no translation found for recent_access_error (2258399573560888960) -->
-    <skip />
+    <string name="recent_access_error" msgid="2258399573560888960">"Nedávny prístup sa nepodarilo načítať"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Aktivita"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"aktivita"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Telesné miery"</string>
