@@ -27,7 +27,6 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME_2
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME_3
 import com.android.healthconnect.controller.tests.utils.isAbove
 import com.android.healthconnect.controller.tests.utils.launchFragment
-import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.utils.logging.AppPermissionsElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
@@ -63,13 +62,11 @@ class SearchAppsFragmentTest {
         hiltRule.inject()
         context = InstrumentationRegistry.getInstrumentation().context
         navHostController = TestNavHostController(context)
-        toggleAnimation(false)
     }
 
     @After
     fun teardown() {
         reset(healthConnectLogger)
-        toggleAnimation(true)
     }
 
     @Test
