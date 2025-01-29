@@ -131,7 +131,10 @@ public class FhirSpecProviderTest {
                     R4_FHIR_TYPE_XHTML);
 
     private static final Set<R4FhirType> R4_COMPLEX_TYPES_WITHOUT_VALIDATION =
-            Set.of(R4_FHIR_TYPE_RESOURCE, R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION);
+            Set.of(
+                    R4_FHIR_TYPE_RESOURCE,
+                    R4_FHIR_TYPE_EXTENSION,
+                    R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION);
 
     private static final Correspondence<MultiTypeFieldConfig, MultiTypeFieldConfig>
             MULTI_TYPE_CONFIG_EQUIVALENCE =

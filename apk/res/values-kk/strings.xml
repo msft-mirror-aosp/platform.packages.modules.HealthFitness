@@ -59,8 +59,7 @@
     <string name="recent_access_empty_state_title" msgid="4767157641389217682">"Жақында пайдаланылмаған"</string>
     <string name="recent_access_empty_state_description" msgid="6334951450158128989">"Жақында деректеріңізді пайдаланған қолданбалар осы жерде автоматты түрде көрсетіледі."</string>
     <string name="recent_access_view_all_button" msgid="825946958049641541">"Барлығын көру"</string>
-    <!-- no translation found for recent_access_error (2258399573560888960) -->
-    <skip />
+    <string name="recent_access_error" msgid="2258399573560888960">"Соңғы пайдалану уақытын жүктеу мүмкін болмады."</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Қимыл"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"Қимыл"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Дене өлшемдері"</string>
@@ -1185,7 +1184,7 @@
     <string name="allowed" msgid="4158456017482263737">"Рұқсат берілген"</string>
     <string name="not_allowed" msgid="6092523505093372147">"Рұқсат берілмеген"</string>
     <string name="access_sensor_note" msgid="7949933977197789634">"Осы рұқсат берілген қолданбалар құрылғыңыздың датчиктерінен алынған <xliff:g id="DATA_TYPE">%s</xliff:g> деректерін пайдалана алады."</string>
-    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Сағатыңызда барлық қолданба үшін <xliff:g id="DATA_TYPE">%s</xliff:g> пайдалану рұқсатын өшіру керек пе?"</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Сағатыңыздағы барлық қолданба үшін \"<xliff:g id="DATA_TYPE">%s</xliff:g>\" дерегін пайдалану рұқсатын өшіру керек пе?"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"Құсбелгі"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"Айқас белгі"</string>
     <string name="current_allow_mode" msgid="6716206063077569218">"<xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасы фитнес пен сауықтыру деректеріне <xliff:g id="ALLOW_MODE">%2$s</xliff:g> кіре алады."</string>

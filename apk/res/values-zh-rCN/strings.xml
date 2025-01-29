@@ -59,8 +59,7 @@
     <string name="recent_access_empty_state_title" msgid="4767157641389217682">"近期未访问"</string>
     <string name="recent_access_empty_state_description" msgid="6334951450158128989">"近期访问过您数据的应用会自动显示在此处"</string>
     <string name="recent_access_view_all_button" msgid="825946958049641541">"查看全部"</string>
-    <!-- no translation found for recent_access_error (2258399573560888960) -->
-    <skip />
+    <string name="recent_access_error" msgid="2258399573560888960">"无法加载最近的访问记录"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"活动"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"活动"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"身体测量数据"</string>
@@ -177,10 +176,10 @@
     <string name="floors_climbed_lowercase_label" msgid="5326072443481377299">"爬楼层数"</string>
     <string name="floors_climbed_read_content_description" msgid="4730764877684911752">"读取爬楼层数数据"</string>
     <string name="floors_climbed_write_content_description" msgid="3480340610185615655">"写入爬楼层数数据"</string>
-    <string name="power_uppercase_label" msgid="8027219480901448660">"动力"</string>
-    <string name="power_lowercase_label" msgid="3893286148577044369">"动力"</string>
+    <string name="power_uppercase_label" msgid="8027219480901448660">"体能"</string>
+    <string name="power_lowercase_label" msgid="3893286148577044369">"体能"</string>
     <string name="power_read_content_description" msgid="6821797135406643841">"读取动力数据"</string>
-    <string name="power_write_content_description" msgid="8091584558688087392">"写入动力数据"</string>
+    <string name="power_write_content_description" msgid="8091584558688087392">"写入体能数据"</string>
     <string name="speed_uppercase_label" msgid="3307049861007518587">"速度"</string>
     <string name="speed_lowercase_label" msgid="3462529886150464647">"速度"</string>
     <string name="speed_read_content_description" msgid="9097089387385110692">"读取速度数据"</string>
@@ -189,8 +188,8 @@
     <string name="steps_lowercase_label" msgid="706153549312838582">"步数"</string>
     <string name="steps_read_content_description" msgid="7839297670092769964">"读取步数数据"</string>
     <string name="steps_write_content_description" msgid="6360223825799711659">"写入步数数据"</string>
-    <string name="total_calories_burned_uppercase_label" msgid="2749855864302679314">"消耗的总卡路里"</string>
-    <string name="total_calories_burned_lowercase_label" msgid="3185370725975873922">"消耗的总卡路里"</string>
+    <string name="total_calories_burned_uppercase_label" msgid="2749855864302679314">"消耗的卡路里总数"</string>
+    <string name="total_calories_burned_lowercase_label" msgid="3185370725975873922">"消耗的卡路里总数"</string>
     <string name="total_calories_burned_read_content_description" msgid="1569722345910293531">"读取消耗的总卡路里数据"</string>
     <string name="total_calories_burned_write_content_description" msgid="2727752180681851608">"写入消耗的总卡路里数据"</string>
     <string name="vo2_max_uppercase_label" msgid="6614391499711390476">"最大摄氧量"</string>

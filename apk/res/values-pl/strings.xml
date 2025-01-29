@@ -59,8 +59,7 @@
     <string name="recent_access_empty_state_title" msgid="4767157641389217682">"Brak ostatniego dostępu"</string>
     <string name="recent_access_empty_state_description" msgid="6334951450158128989">"Tutaj automatycznie będą się wyświetlać aplikacje, które ostatnio miały dostęp do Twoich danych"</string>
     <string name="recent_access_view_all_button" msgid="825946958049641541">"Wyświetl wszystkie"</string>
-    <!-- no translation found for recent_access_error (2258399573560888960) -->
-    <skip />
+    <string name="recent_access_error" msgid="2258399573560888960">"Nie udało się wczytać ostatniego dostępu"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Aktywność"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"aktywność"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Pomiary ciała"</string>
@@ -1191,5 +1190,5 @@
     <string name="current_allow_mode" msgid="6716206063077569218">"Obecnie <xliff:g id="APP_NAME">%1$s</xliff:g> ma dostęp do danych dotyczących aktywności fizycznej i samopoczucia <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
     <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Zezwolić aplikacji <xliff:g id="APP_NAME">%1$s</xliff:g> na stały dostęp do danych dotyczących aktywności fizycznej i samopoczucia?"</string>
     <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> ma dostęp do tych danych: <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
-    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Zarządzaj uprawnieniami dotyczącymi aktywności fizycznej i samopoczucia"</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Zarządzaj uprawnieniami dot. aktywności fizycznej i samopoczucia"</string>
 </resources>

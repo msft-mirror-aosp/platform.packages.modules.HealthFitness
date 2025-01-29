@@ -56,12 +56,9 @@
     <string name="separator" msgid="5521285473288943819">"، "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"إدارة الأذونات"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"الوقت: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
-    <!-- no translation found for recent_access_empty_state_title (4767157641389217682) -->
-    <skip />
-    <!-- no translation found for recent_access_empty_state_description (6334951450158128989) -->
-    <skip />
-    <!-- no translation found for recent_access_view_all_button (825946958049641541) -->
-    <skip />
+    <string name="recent_access_empty_state_title" msgid="4767157641389217682">"ما من تطبيقات وصلت مؤخرًا إلى بياناتك"</string>
+    <string name="recent_access_empty_state_description" msgid="6334951450158128989">"ستظهر هنا تلقائيًا التطبيقات التي وصلت مؤخرًا إلى بياناتك"</string>
+    <string name="recent_access_view_all_button" msgid="825946958049641541">"عرض الكل"</string>
     <!-- no translation found for recent_access_error (2258399573560888960) -->
     <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"النشاط"</string>
@@ -1123,8 +1120,8 @@
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"بدء استخدام Health Connect"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"مزامنة التطبيقات الرئيسية لمشاركة بيانات الصحة واللياقة البدنية بينها"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"إعداد"</string>
-    <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"ربط المزيد من التطبيقات"</string>
-    <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"بدء مشاركة البيانات بين \"<xliff:g id="APP_NAME">%s</xliff:g>\" والتطبيقات المختصّة بالصحة على هاتفك"</string>
+    <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"ننصحك بربط المزيد من التطبيقات"</string>
+    <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"ما عليك سوى مشاركة البيانات بين \"<xliff:g id="APP_NAME">%s</xliff:g>\" والتطبيقات المختصّة بالصحة على هاتفك"</string>
     <string name="connect_more_apps_set_up_button" msgid="4491201768717567269">"إعداد"</string>
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"عرض التطبيقات المتوافقة"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"العثور على المزيد من التطبيقات لمزامنة البيانات مع \"<xliff:g id="APP_NAME">%s</xliff:g>\" من خلال تطبيق Health Connect"</string>

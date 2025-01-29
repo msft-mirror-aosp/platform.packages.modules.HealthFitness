@@ -92,14 +92,14 @@ public class FhirPrimitiveTypeValidator {
             Pattern.compile(
                     "urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}");
 
-    static void validate(Object fieldObject, String fieldName, R4FhirType type) {
+    static void validate(Object fieldObject, String fullFieldName, R4FhirType type) {
         if (!Flags.phrFhirPrimitiveTypeValidation()) {
             throw new UnsupportedOperationException(
                     "Validating FHIR primitive types is not supported.");
         }
         if (fieldObject == null) {
             throw new IllegalStateException(
-                    "The fieldObject cannot be null in primitive kind field: " + fieldName);
+                    "The fieldObject cannot be null in primitive kind field: " + fullFieldName);
         }
         populateR4PrimitiveIntegerTypeToMinValueMap();
         populateR4PrimitiveStringTypeToPatternMap();
@@ -107,19 +107,19 @@ public class FhirPrimitiveTypeValidator {
                 // TODO: b/385736773 - Handle xhtml type here before enabling object type
                 // validation.
             case R4_FHIR_TYPE_BOOLEAN:
-                validateBooleanType(fieldObject, fieldName);
+                validateBooleanType(fieldObject, fullFieldName);
                 break;
             case R4_FHIR_TYPE_DECIMAL:
-                validateDecimalType(fieldObject, fieldName);
+                validateDecimalType(fieldObject, fullFieldName);
                 break;
             case R4_FHIR_TYPE_INTEGER:
             case R4_FHIR_TYPE_POSITIVE_INT:
             case R4_FHIR_TYPE_UNSIGNED_INT:
-                validateIntegerType(fieldObject, fieldName);
+                validateIntegerType(fieldObject, fullFieldName);
                 validateIntegerValueRange(
                         (Integer) fieldObject,
                         sR4PrimitiveIntegerTypeToMinValueMap.get(type),
-                        fieldName);
+                        fullFieldName);
                 break;
             case R4_FHIR_TYPE_BASE64_BINARY:
             case R4_FHIR_TYPE_CANONICAL:
@@ -135,27 +135,30 @@ public class FhirPrimitiveTypeValidator {
             case R4_FHIR_TYPE_URI:
             case R4_FHIR_TYPE_URL:
             case R4_FHIR_TYPE_UUID:
-                validateStringType(fieldObject, fieldName);
+                validateStringType(fieldObject, fullFieldName);
                 validateStringValuePattern(
-                        fieldObject.toString(), getR4PrimitiveStringTypePattern(type), fieldName);
+                        fieldObject.toString(),
+                        getR4PrimitiveStringTypePattern(type),
+                        fullFieldName);
                 break;
             default:
                 throw new IllegalStateException(
                         "Type is not supported. Found unexpected type "
                                 + type.name()
                                 + " in primitive kind field: "
-                                + fieldName);
+                                + fullFieldName);
         }
     }
 
-    private static void validateBooleanType(Object fieldObject, String fieldName) {
+    private static void validateBooleanType(Object fieldObject, String fullFieldName) {
         if (!(fieldObject instanceof Boolean)) {
             throw new IllegalArgumentException(
-                    "Invalid resource structure. Found non boolean object in field: " + fieldName);
+                    "Invalid resource structure. Found non boolean object in field: "
+                            + fullFieldName);
         }
     }
 
-    private static void validateDecimalType(Object fieldObject, String fieldName) {
+    private static void validateDecimalType(Object fieldObject, String fullFieldName) {
         // According to the decimal regex and description from
         // https://hl7.org/fhir/R4/datatypes.html#decimal, the decimal data type allows values
         // without a decimal point, which means the valid values can then be parsed as an Integer,
@@ -163,42 +166,45 @@ public class FhirPrimitiveTypeValidator {
         // an instance of "Number" here.
         if (!(fieldObject instanceof Number)) {
             throw new IllegalArgumentException(
-                    "Invalid resource structure. Found non decimal object in field: " + fieldName);
+                    "Invalid resource structure. Found non decimal object in field: "
+                            + fullFieldName);
         }
     }
 
-    private static void validateIntegerType(Object fieldObject, String fieldName) {
+    private static void validateIntegerType(Object fieldObject, String fullFieldName) {
         if (!(fieldObject instanceof Integer)) {
             throw new IllegalArgumentException(
-                    "Invalid resource structure. Found non integer object in field: " + fieldName);
+                    "Invalid resource structure. Found non integer object in field: "
+                            + fullFieldName);
         }
     }
 
-    private static void validateStringType(Object fieldObject, String fieldName) {
+    private static void validateStringType(Object fieldObject, String fullFieldName) {
         if (!(fieldObject instanceof String)) {
             throw new IllegalArgumentException(
-                    "Invalid resource structure. Found non string object in field: " + fieldName);
+                    "Invalid resource structure. Found non string object in field: "
+                            + fullFieldName);
         }
     }
 
     private static void validateIntegerValueRange(
-            Integer value, @Nullable Integer min, String fieldName) {
+            Integer value, @Nullable Integer min, String fullFieldName) {
         if (min != null && value < min) {
             throw new IllegalArgumentException(
                     "Found invalid field value in primitive field: "
-                            + fieldName
+                            + fullFieldName
                             + ". The value found is: "
                             + value);
         }
     }
 
     private static void validateStringValuePattern(
-            String value, Pattern pattern, String fieldName) {
+            String value, Pattern pattern, String fullFieldName) {
         Matcher matcher = pattern.matcher(value);
         if (!matcher.matches()) {
             throw new IllegalArgumentException(
                     "Found invalid field value in primitive field: "
-                            + fieldName
+                            + fullFieldName
                             + ". The value found is: "
                             + value);
         }

@@ -59,8 +59,7 @@
     <string name="recent_access_empty_state_title" msgid="4767157641389217682">"किसी ऐप्लिकेशन ने हाल ही में, स्वास्थ्य से जुड़ा डेटा ऐक्सेस नहीं किया है"</string>
     <string name="recent_access_empty_state_description" msgid="6334951450158128989">"हाल ही में, आपके स्वास्थ्य से जुड़ा डेटा ऐक्सेस करने वाले ऐप्लिकेशन, यहां अपने-आप दिखेंगे"</string>
     <string name="recent_access_view_all_button" msgid="825946958049641541">"पूरी जानकारी देखें"</string>
-    <!-- no translation found for recent_access_error (2258399573560888960) -->
-    <skip />
+    <string name="recent_access_error" msgid="2258399573560888960">"हाल ही में ऐक्सेस किए गए डेटा को लोड नहीं किया जा सका"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"गतिविधि का डेटा"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"गतिविधि"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"शरीर की माप"</string>

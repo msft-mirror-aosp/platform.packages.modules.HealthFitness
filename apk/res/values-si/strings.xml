@@ -59,8 +59,7 @@
     <string name="recent_access_empty_state_title" msgid="4767157641389217682">"මෑත ප්‍රවේශයක් නැත"</string>
     <string name="recent_access_empty_state_description" msgid="6334951450158128989">"මෑතකදී ඔබේ දත්ත වෙත ප්‍රවේශ වූ යෙදුම් ස්වයංක්‍රීයව මෙහි පෙන්වනු ඇත"</string>
     <string name="recent_access_view_all_button" msgid="825946958049641541">"සියල්ල බලන්න"</string>
-    <!-- no translation found for recent_access_error (2258399573560888960) -->
-    <skip />
+    <string name="recent_access_error" msgid="2258399573560888960">"මෑත ප්‍රවේශය පූරණය කිරීමට නොහැකි විය"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"ක්‍රියාකාරකම"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"ක්‍රියාකාරකම"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"ශරීර මිනුම්"</string>
