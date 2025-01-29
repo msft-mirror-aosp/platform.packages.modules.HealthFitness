@@ -34,45 +34,45 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint(ComponentActivity::class)
 class WearViewAppInfoPermissionsActivity : Hilt_WearViewAppInfoPermissionsActivity() {
 
-  companion object {
-    private const val TAG = "WearViewAppInfoPermissionsActivity"
-  }
-
-  private val viewModel: AppPermissionViewModel by viewModels()
-
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-
-    if (
-      !getPackageManager().hasSystemFeature(PackageManager.FEATURE_WATCH) ||
-      !Flags.replaceBodySensorPermissionEnabled()
-    ) {
-      Log.e(
-        TAG,
-        "Health connect is not available on watch, activity should not have been started, " +
-          "finishing!",
-      )
-      finish()
-      return
+    companion object {
+        private const val TAG = "WearViewAppInfoPermissionsActivity"
     }
 
-    // This flag ensures a non system app cannot show an overlay on Health Connect. b/313425281
-    window.addSystemFlags(SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
+    private val viewModel: AppPermissionViewModel by viewModels()
 
-    val packageName = getPackageNameExtra()
-    if (packageName.isEmpty()) {
-      Log.e(TAG, "empty packageName extra from intent, unable to load permissions")
-      finish()
-      return
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        if (
+            !getPackageManager().hasSystemFeature(PackageManager.FEATURE_WATCH) ||
+                !Flags.replaceBodySensorPermissionEnabled()
+        ) {
+            Log.e(
+                TAG,
+                "Health connect is not available on watch, activity should not have been started, " +
+                    "finishing!",
+            )
+            finish()
+            return
+        }
+
+        // This flag ensures a non system app cannot show an overlay on Health Connect. b/313425281
+        window.addSystemFlags(SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
+
+        val packageName = getPackageNameExtra()
+        if (packageName.isEmpty()) {
+            Log.e(TAG, "empty packageName extra from intent, unable to load permissions")
+            finish()
+            return
+        }
+        viewModel.loadPermissionsForPackage(getPackageNameExtra())
+
+        val root = ComposeView(this)
+        root.setContent { WearViewAppPermissionsScreen(viewModel) }
+        setContentView(root)
     }
-    viewModel.loadPermissionsForPackage(getPackageNameExtra())
 
-    val root = ComposeView(this)
-    root.setContent { WearViewAppPermissionsScreen(viewModel) }
-    setContentView(root)
-  }
-
-  private fun getPackageNameExtra(): String {
-    return intent.getStringExtra(EXTRA_PACKAGE_NAME).orEmpty()
-  }
+    private fun getPackageNameExtra(): String {
+        return intent.getStringExtra(EXTRA_PACKAGE_NAME).orEmpty()
+    }
 }

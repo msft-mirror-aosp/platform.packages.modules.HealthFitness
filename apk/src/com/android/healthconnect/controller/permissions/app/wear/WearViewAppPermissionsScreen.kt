@@ -50,146 +50,149 @@ import com.android.healthconnect.controller.shared.app.AppMetadata
  */
 @Composable
 fun WearViewAppPermissionsScreen(viewModel: AppPermissionViewModel) {
-  val res = LocalContext.current.resources
-  val appMetadata: State<AppMetadata?> = viewModel.appInfo.observeAsState(null)
-  val appName = appMetadata.value?.appName ?: ""
-  val packageName = appMetadata.value?.packageName ?: ""
-  val allFitnessPermissionsGranted by viewModel.allFitnessPermissionsGranted.observeAsState(false)
-  val grantedFitnessPermissions by viewModel.grantedFitnessPermissions.observeAsState(emptyList())
-  val allFitnessPermissions = viewModel.fitnessPermissions.observeAsState(emptyList())
-  val allDataTypes =
-    allFitnessPermissions.value.map { permission ->
-      stringResource(
-        FitnessPermissionStrings.fromPermissionType(permission.fitnessPermissionType).uppercaseLabel
-      )
-    }
-  val checkedStates =
-    remember(allFitnessPermissions.value) { // Recalculate when permissions change
-      mutableStateListOf<Boolean>(
-        *(allFitnessPermissions.value)
-          .map { perm ->
-            grantedFitnessPermissions.any { grantedPerm ->
-              perm.fitnessPermissionType == grantedPerm.fitnessPermissionType
+    val res = LocalContext.current.resources
+    val appMetadata: State<AppMetadata?> = viewModel.appInfo.observeAsState(null)
+    val appName = appMetadata.value?.appName ?: ""
+    val packageName = appMetadata.value?.packageName ?: ""
+    val allFitnessPermissionsGranted by viewModel.allFitnessPermissionsGranted.observeAsState(false)
+    val grantedFitnessPermissions by viewModel.grantedFitnessPermissions.observeAsState(emptyList())
+    val allFitnessPermissions = viewModel.fitnessPermissions.observeAsState(emptyList())
+    val allDataTypes =
+        allFitnessPermissions.value.map { permission ->
+            stringResource(
+                FitnessPermissionStrings.fromPermissionType(permission.fitnessPermissionType)
+                    .uppercaseLabel
+            )
+        }
+    val checkedStates =
+        remember(allFitnessPermissions.value) { // Recalculate when permissions change
+            mutableStateListOf<Boolean>(
+                *(allFitnessPermissions.value)
+                    .map { perm ->
+                        grantedFitnessPermissions.any { grantedPerm ->
+                            perm.fitnessPermissionType == grantedPerm.fitnessPermissionType
+                        }
+                    }
+                    .toTypedArray()
+            )
+        }
+
+    // Background read permission state.
+    val grantedAdditionalPermissions by
+        viewModel.grantedAdditionalPermissions.observeAsState(emptyList())
+    val allowAllTheTime by
+        remember(grantedAdditionalPermissions) {
+            derivedStateOf { grantedAdditionalPermissions.any { it.isBackgroundReadPermission() } }
+        }
+
+    ScrollableScreen(showTimeText = false, title = res.getString(R.string.fitness_and_wellness)) {
+        // Allow all toggle.
+        item {
+            var isAllowAllChecked by remember { mutableStateOf(allFitnessPermissionsGranted) }
+            val allDataTypesSelected by
+                remember(checkedStates) { derivedStateOf { checkedStates.all { it } } }
+            // Update isAllowAllChecked when allFitnessPermissionsGranted changes.
+            LaunchedEffect(allFitnessPermissionsGranted) {
+                isAllowAllChecked = allFitnessPermissionsGranted
             }
-          }
-          .toTypedArray()
-      )
-    }
+            SwitchButton(
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text(res.getString(R.string.request_permissions_allow_all)) },
+                checked = isAllowAllChecked,
+                onCheckedChange = { isChecked ->
+                    isAllowAllChecked = isChecked
+                    for (i in checkedStates.indices) {
+                        checkedStates[i] = isChecked
+                    }
+                    if (isChecked) {
+                        viewModel.grantAllFitnessPermissions(packageName)
+                    } else {
+                        viewModel.revokeAllFitnessAndMaybeAdditionalPermissions(packageName)
+                    }
+                },
+                enabled = true,
+            )
+        }
 
-  // Background read permission state.
-  val grantedAdditionalPermissions by
-  viewModel.grantedAdditionalPermissions.observeAsState(emptyList())
-  val allowAllTheTime by
-  remember(grantedAdditionalPermissions) {
-    derivedStateOf { grantedAdditionalPermissions.any { it.isBackgroundReadPermission() } }
-  }
+        // Granular data type toggles.
+        item {
+            Row(horizontalArrangement = Arrangement.Start) {
+                Text(res.getString(R.string.allowed_to_read))
+            }
+        }
+        items(allDataTypes.size) { index ->
+            val dataType = allDataTypes[index]
+            val isChecked = checkedStates[index]
+            SwitchButton(
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text(dataType) },
+                checked = isChecked,
+                onCheckedChange = { newCheckedValue ->
+                    checkedStates[index] = newCheckedValue
+                    viewModel.updatePermission(
+                        packageName,
+                        allFitnessPermissions.value[index],
+                        newCheckedValue as Boolean,
+                    )
+                },
+                enabled = true,
+            )
+        }
+        item {
+            Row(horizontalArrangement = Arrangement.Start) {
+                Text(res.getString(R.string.give_permission_prompt, appName))
+            }
+        }
 
-  ScrollableScreen(showTimeText = false, title = res.getString(R.string.fitness_and_wellness)) {
-    // Allow all toggle.
-    item {
-      var isAllowAllChecked by remember { mutableStateOf(allFitnessPermissionsGranted) }
-      val allDataTypesSelected by
-      remember(checkedStates) { derivedStateOf { checkedStates.all { it } } }
-      // Update isAllowAllChecked when allFitnessPermissionsGranted changes.
-      LaunchedEffect(allFitnessPermissionsGranted) {
-        isAllowAllChecked = allFitnessPermissionsGranted
-      }
-      SwitchButton(
-        modifier = Modifier.fillMaxWidth(),
-        label = { Text(res.getString(R.string.request_permissions_allow_all)) },
-        checked = isAllowAllChecked,
-        onCheckedChange = { isChecked ->
-          isAllowAllChecked = isChecked
-          for (i in checkedStates.indices) { checkedStates[i] = isChecked }
-          if (isChecked) {
-            viewModel.grantAllFitnessPermissions(packageName)
-          } else {
-            viewModel.revokeAllFitnessAndMaybeAdditionalPermissions(packageName)
-          }
-        },
-        enabled = true,
-      )
-    }
+        // Background permission.
+        // Allow all the time.
+        item {
+            Row(horizontalArrangement = Arrangement.Start) {
+                Text(res.getString(R.string.allowed_to_access))
+            }
+        }
+        item {
+            RadioButton(
+                modifier = Modifier.fillMaxWidth(),
+                enabled = true,
+                selected = allowAllTheTime,
+                onSelect = {
+                    viewModel.updateAdditionalPermission(
+                        packageName,
+                        AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND,
+                        true,
+                    )
+                },
+                label = { Text(res.getString(R.string.view_permissions_all_the_time_cap)) },
+            )
+        }
+        // Allow while in use. (Deny background read permission.)
+        item {
+            RadioButton(
+                modifier = Modifier.fillMaxWidth(),
+                enabled = true,
+                selected = !allowAllTheTime,
+                onSelect = {
+                    viewModel.updateAdditionalPermission(
+                        packageName,
+                        AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND,
+                        false,
+                    )
+                },
+                label = { Text(res.getString(R.string.view_permissions_while_in_use_cap)) },
+            )
+        }
 
-    // Granular data type toggles.
-    item {
-      Row(horizontalArrangement = Arrangement.Start) {
-        Text(res.getString(R.string.allowed_to_read))
-      }
+        item {
+            Row(horizontalArrangement = Arrangement.Start) {
+                val accessText =
+                    if (allowAllTheTime) {
+                        res.getString(R.string.view_permissions_all_the_time)
+                    } else {
+                        res.getString(R.string.view_permissions_while_in_use)
+                    }
+                Text(res.getString(R.string.view_permissions_mode, appName, accessText))
+            }
+        }
     }
-    items(allDataTypes.size) { index ->
-      val dataType = allDataTypes[index]
-      val isChecked = checkedStates[index]
-      SwitchButton(
-        modifier = Modifier.fillMaxWidth(),
-        label = { Text(dataType) },
-        checked = isChecked,
-        onCheckedChange = { newCheckedValue ->
-          checkedStates[index] = newCheckedValue
-          viewModel.updatePermission(
-            packageName,
-            allFitnessPermissions.value[index],
-            newCheckedValue as Boolean,
-          )
-        },
-        enabled = true,
-      )
-    }
-    item {
-      Row(horizontalArrangement = Arrangement.Start) {
-        Text(res.getString(R.string.give_permission_prompt, appName))
-      }
-    }
-
-    // Background permission.
-    // Allow all the time.
-    item {
-      Row(horizontalArrangement = Arrangement.Start) {
-        Text(res.getString(R.string.allowed_to_access))
-      }
-    }
-    item {
-      RadioButton(
-        modifier = Modifier.fillMaxWidth(),
-        enabled = true,
-        selected = allowAllTheTime,
-        onSelect = {
-          viewModel.updateAdditionalPermission(
-            packageName,
-            AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND,
-            true,
-          )
-        },
-        label = { Text(res.getString(R.string.view_permissions_all_the_time_cap)) },
-      )
-    }
-    // Allow while in use. (Deny background read permission.)
-    item {
-      RadioButton(
-        modifier = Modifier.fillMaxWidth(),
-        enabled = true,
-        selected = !allowAllTheTime,
-        onSelect = {
-          viewModel.updateAdditionalPermission(
-            packageName,
-            AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND,
-            false,
-          )
-        },
-        label = { Text(res.getString(R.string.view_permissions_while_in_use_cap)) },
-      )
-    }
-
-    item {
-      Row(horizontalArrangement = Arrangement.Start) {
-        val accessText =
-          if (allowAllTheTime) {
-            res.getString(R.string.view_permissions_all_the_time)
-          } else {
-            res.getString(R.string.view_permissions_while_in_use)
-          }
-        Text(res.getString(R.string.view_permissions_mode, appName, accessText))
-      }
-    }
-  }
 }
