@@ -17,6 +17,9 @@
 package android.healthconnect.cts.aggregation;
 
 import static android.health.connect.HealthDataCategory.ACTIVITY;
+import static android.health.connect.datatypes.CyclingPedalingCadenceRecord.RPM_AVG;
+import static android.health.connect.datatypes.CyclingPedalingCadenceRecord.RPM_MAX;
+import static android.health.connect.datatypes.CyclingPedalingCadenceRecord.RPM_MIN;
 import static android.health.connect.datatypes.HeartRateRecord.BPM_AVG;
 import static android.health.connect.datatypes.HeartRateRecord.BPM_MAX;
 import static android.health.connect.datatypes.HeartRateRecord.BPM_MIN;
@@ -46,6 +49,7 @@ import android.content.Context;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.TimeInstantRangeFilter;
+import android.health.connect.datatypes.CyclingPedalingCadenceRecord;
 import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.PowerRecord;
 import android.health.connect.datatypes.SpeedRecord;
@@ -191,6 +195,37 @@ public class SeriesAggregationTest {
         assertThat(response.get(HEART_MEASUREMENTS_COUNT)).isEqualTo(3);
     }
 
+    @Test
+    public void aggregateWithInstantFilter_cyclingPedalingCadence() throws Exception {
+        Instant time = Instant.now().minus(3, DAYS);
+        insertRecords(
+                List.of(
+                        getCyclingPedalingCadenceRecord(
+                                time,
+                                time.plus(8, HOURS),
+                                UTC,
+                                getCyclingPedalingCadenceSample(100, time),
+                                getCyclingPedalingCadenceSample(63, time.plus(1, HOURS)),
+                                getCyclingPedalingCadenceSample(20, time.plus(2, HOURS)),
+                                getCyclingPedalingCadenceSample(30, time.plus(3, HOURS)),
+                                getCyclingPedalingCadenceSample(5, time.plus(4, HOURS)),
+                                getCyclingPedalingCadenceSample(50, time.plus(6, HOURS)))));
+
+        TimeInstantRangeFilter timeFilter =
+                getTimeFilter(time.plus(1, MINUTES), time.plus(3, HOURS));
+        AggregateRecordsRequest<Double> aggregateRecordsRequest =
+                new AggregateRecordsRequest.Builder<Double>(timeFilter)
+                        .addAggregationType(RPM_AVG)
+                        .addAggregationType(RPM_MIN)
+                        .addAggregationType(RPM_MAX)
+                        .build();
+
+        AggregateRecordsResponse<Double> response = getAggregateResponse(aggregateRecordsRequest);
+        assertDoubleWithTolerance(response.get(RPM_AVG), 41.5);
+        assertDoubleWithTolerance(response.get(RPM_MIN), 20);
+        assertDoubleWithTolerance(response.get(RPM_MAX), 63);
+    }
+
     private static SpeedRecord getSpeedRecord(
             Instant start,
             Instant end,
@@ -202,6 +237,11 @@ public class SeriesAggregationTest {
                 .build();
     }
 
+    private static SpeedRecord.SpeedRecordSample getSpeedRecordSample(
+            Velocity velocity, Instant time) {
+        return new SpeedRecord.SpeedRecordSample(velocity, time);
+    }
+
     private static PowerRecord getPowerRecord(
             Instant start,
             Instant end,
@@ -211,11 +251,6 @@ public class SeriesAggregationTest {
                 .setStartZoneOffset(offset)
                 .setEndZoneOffset(offset)
                 .build();
-    }
-
-    private static SpeedRecord.SpeedRecordSample getSpeedRecordSample(
-            Velocity velocity, Instant time) {
-        return new SpeedRecord.SpeedRecordSample(velocity, time);
     }
 
     private static PowerRecord.PowerRecordSample getPowerRecordSample(Power power, Instant time) {
@@ -236,5 +271,23 @@ public class SeriesAggregationTest {
     private static HeartRateRecord.HeartRateSample getHeartRateRecordSample(
             long rate, Instant time) {
         return new HeartRateRecord.HeartRateSample(rate, time);
+    }
+
+    private static CyclingPedalingCadenceRecord getCyclingPedalingCadenceRecord(
+            Instant start,
+            Instant end,
+            ZoneOffset offset,
+            CyclingPedalingCadenceRecord.CyclingPedalingCadenceRecordSample... samples) {
+        return new CyclingPedalingCadenceRecord.Builder(
+                        getEmptyMetadata(), start, end, Arrays.asList(samples))
+                .setStartZoneOffset(offset)
+                .setEndZoneOffset(offset)
+                .build();
+    }
+
+    private static CyclingPedalingCadenceRecord.CyclingPedalingCadenceRecordSample
+            getCyclingPedalingCadenceSample(double revolutionsPerMinute, Instant time) {
+        return new CyclingPedalingCadenceRecord.CyclingPedalingCadenceRecordSample(
+                revolutionsPerMinute, time);
     }
 }
