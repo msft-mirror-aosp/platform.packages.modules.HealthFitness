@@ -22,6 +22,7 @@ import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_I
 import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION;
 import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION;
 import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION;
+import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_VALIDATION_DISALLOW_EMPTY_OBJECTS_ARRAYS;
 import static com.android.server.healthconnect.proto.Kind.KIND_COMPLEX_TYPE;
 import static com.android.server.healthconnect.proto.Kind.KIND_PRIMITIVE_TYPE;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_ANNOTATION;
@@ -99,16 +100,15 @@ public class FhirObjectTypeValidatorTest {
                     .setKind(KIND_COMPLEX_TYPE)
                     .setFhirComplexTypeConfig(
                             FhirComplexTypeConfig.newBuilder()
-                                    .putAllAllowedFieldNamesToConfig(
-                                            Map.ofEntries(
-                                                    Map.entry(
-                                                            "use",
-                                                            createFhirFieldConfig(
-                                                                    false, R4_FHIR_TYPE_CODE)),
-                                                    Map.entry(
-                                                            "value",
-                                                            createFhirFieldConfig(
-                                                                    false, R4_FHIR_TYPE_STRING)))))
+                                    .putAllowedFieldNamesToConfig(
+                                            "use", createFhirFieldConfig(false, R4_FHIR_TYPE_CODE))
+                                    .putAllowedFieldNamesToConfig(
+                                            "value",
+                                            createFhirFieldConfig(false, R4_FHIR_TYPE_STRING))
+                                    .putAllowedFieldNamesToConfig(
+                                            "type",
+                                            createFhirFieldConfig(
+                                                    false, R4_FHIR_TYPE_CODEABLE_CONCEPT)))
                     .build();
 
     private static final FhirDataType FHIR_DATA_TYPE_CODEABLE_CONCEPT =
@@ -715,10 +715,7 @@ public class FhirObjectTypeValidatorTest {
         assertThat(exception).hasMessageThat().contains("Found null value in field: primarySource");
     }
 
-    @EnableFlags({
-        FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION,
-        FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION
-    })
+    @EnableFlags({FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION})
     @Test
     public void testValidate_primitiveTypeFieldIsArray_throws() throws JSONException {
         FhirResourceSpec fhirSpec =
@@ -780,7 +777,10 @@ public class FhirObjectTypeValidatorTest {
                                 + " primarySource");
     }
 
-    @EnableFlags({FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION})
+    @EnableFlags({
+        FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION,
+        FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION
+    })
     @Test
     public void testValidate_unexpectedFieldInNestedType_throws() throws JSONException {
         FhirResourceSpec fhirSpec =
@@ -819,7 +819,10 @@ public class FhirObjectTypeValidatorTest {
                 .contains("Found unexpected field statusReason.coding.unexpected");
     }
 
-    @EnableFlags({FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION})
+    @EnableFlags({
+        FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION,
+        FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION
+    })
     @Test
     public void testValidate_moreThanOneOneOfFieldSetInNestedType_throws() throws JSONException {
         FhirComplexTypeConfig annotationComplexTypeConfig =
@@ -894,6 +897,146 @@ public class FhirObjectTypeValidatorTest {
         assertThat(exception)
                 .hasMessageThat()
                 .contains("Only one type should be set for field note.author[x]");
+    }
+
+    @EnableFlags({
+        FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION,
+        FLAG_PHR_FHIR_VALIDATION_DISALLOW_EMPTY_OBJECTS_ARRAYS
+    })
+    @Test
+    public void testValidate_emptyComplexTypeObject_throws() throws JSONException {
+        FhirResourceSpec fhirSpec =
+                FhirResourceSpec.newBuilder()
+                        .putResourceTypeToConfig(
+                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                DEFAULT_IMMUNIZATION_COMPLEX_TYPE_CONFIG)
+                        .addAllFhirDataTypeConfigs(DEFAULT_IMMUNIZATION_DATA_TYPE_CONFIGS)
+                        .build();
+        FhirObjectTypeValidator validator =
+                new FhirObjectTypeValidator(new FhirSpecProvider(fhirSpec));
+        JSONObject immunizationJson =
+                new JSONObject(DEFAULT_IMMUNIZATION_JSON).put("statusReason", new JSONObject());
+
+        IllegalArgumentException exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                validator.validate(
+                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+
+        assertThat(exception)
+                .hasMessageThat()
+                .contains("Found empty object in field: statusReason");
+    }
+
+    @EnableFlags({
+        FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION,
+        FLAG_PHR_FHIR_VALIDATION_DISALLOW_EMPTY_OBJECTS_ARRAYS
+    })
+    @Test
+    public void testValidate_emptyArray_throws() throws JSONException {
+        FhirResourceSpec fhirSpec =
+                FhirResourceSpec.newBuilder()
+                        .putResourceTypeToConfig(
+                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                DEFAULT_IMMUNIZATION_COMPLEX_TYPE_CONFIG)
+                        .addAllFhirDataTypeConfigs(DEFAULT_IMMUNIZATION_DATA_TYPE_CONFIGS)
+                        .build();
+        FhirObjectTypeValidator validator =
+                new FhirObjectTypeValidator(new FhirSpecProvider(fhirSpec));
+        JSONObject immunizationJson =
+                new JSONObject(DEFAULT_IMMUNIZATION_JSON).put("identifier", new JSONArray());
+
+        IllegalArgumentException exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                validator.validate(
+                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+
+        assertThat(exception).hasMessageThat().contains("Found empty array in field: identifier");
+    }
+
+    @EnableFlags({
+        FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION,
+        FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION,
+        FLAG_PHR_FHIR_VALIDATION_DISALLOW_EMPTY_OBJECTS_ARRAYS
+    })
+    @Test
+    public void testValidate_emptyNestedObject_throws() throws JSONException {
+        FhirResourceSpec fhirSpec =
+                FhirResourceSpec.newBuilder()
+                        .putResourceTypeToConfig(
+                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                DEFAULT_IMMUNIZATION_COMPLEX_TYPE_CONFIG)
+                        .addAllFhirDataTypeConfigs(DEFAULT_IMMUNIZATION_DATA_TYPE_CONFIGS)
+                        .build();
+        FhirObjectTypeValidator validator =
+                new FhirObjectTypeValidator(new FhirSpecProvider(fhirSpec));
+        JSONObject immunizationJson =
+                new JSONObject(DEFAULT_IMMUNIZATION_JSON)
+                        .put(
+                                "identifier",
+                                new JSONArray(
+                                        """
+                                        [
+                                            {
+                                              \"value\":
+                                                \"urn:oid:1.3.6.1.4.1.21367.2005.3.7.1234\",
+                                              \"type\": {}
+                                            }
+                                        ]
+                                        """));
+
+        IllegalArgumentException exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                validator.validate(
+                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+
+        assertThat(exception)
+                .hasMessageThat()
+                .contains("Found empty object in field: identifier.type");
+    }
+
+    @EnableFlags({
+        FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION,
+        FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION,
+        FLAG_PHR_FHIR_VALIDATION_DISALLOW_EMPTY_OBJECTS_ARRAYS
+    })
+    @Test
+    public void testValidate_emptyNestedArray_throws() throws JSONException {
+        FhirResourceSpec fhirSpec =
+                FhirResourceSpec.newBuilder()
+                        .putResourceTypeToConfig(
+                                FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                DEFAULT_IMMUNIZATION_COMPLEX_TYPE_CONFIG)
+                        .addAllFhirDataTypeConfigs(DEFAULT_IMMUNIZATION_DATA_TYPE_CONFIGS)
+                        .build();
+        FhirObjectTypeValidator validator =
+                new FhirObjectTypeValidator(new FhirSpecProvider(fhirSpec));
+        JSONObject immunizationJson =
+                new JSONObject(DEFAULT_IMMUNIZATION_JSON)
+                        .put(
+                                "statusReason",
+                                new JSONObject(
+                                        """
+                                        {
+                                          \"coding\": [{}]
+                                        }
+                                        """));
+
+        IllegalArgumentException exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                validator.validate(
+                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+
+        assertThat(exception)
+                .hasMessageThat()
+                .contains("Found empty object in field: statusReason.coding");
     }
 
     private static FhirFieldConfig createFhirFieldConfig(boolean isArray, R4FhirType r4Type) {

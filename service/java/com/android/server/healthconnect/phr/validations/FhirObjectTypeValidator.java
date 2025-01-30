@@ -296,7 +296,7 @@ public class FhirObjectTypeValidator {
 
                 List<Object> objectsToValidate =
                         fieldConfig.getIsArray()
-                                ? validateIsArrayAndGetContents(fieldObject, fullFieldName)
+                                ? validateIsNonEmptyArrayAndGetContents(fieldObject, fullFieldName)
                                 : List.of(fieldObject);
                 boolean fieldIsPrimitiveTypeExtension =
                         fieldIsPrimitiveType && fieldStartsWithUnderscore;
@@ -313,7 +313,8 @@ public class FhirObjectTypeValidator {
                         // fields.
                         validatePrimitiveTypeField(object, fullFieldName, fieldType);
                     } else {
-                        JSONObject jsonObject = validateObjectIsJSONObject(object, fullFieldName);
+                        JSONObject jsonObject =
+                                validateObjectIsNonEmptyJSONObject(object, fullFieldName);
                         nestedObjectsToValidate.add(
                                 new FhirComplexTypeJsonObject(
                                         fullFieldName,
@@ -330,13 +331,16 @@ public class FhirObjectTypeValidator {
         return nestedObjectsToValidate;
     }
 
-    private static List<Object> validateIsArrayAndGetContents(
+    private static List<Object> validateIsNonEmptyArrayAndGetContents(
             Object fieldObject, String fullFieldName) {
         if (!(fieldObject instanceof JSONArray)) {
             throw new IllegalArgumentException(
                     "Invalid resource structure. Expected array for field: " + fullFieldName);
         }
         JSONArray jsonArray = (JSONArray) fieldObject;
+        if (Flags.phrFhirValidationDisallowEmptyObjectsArrays() && jsonArray.length() == 0) {
+            throw new IllegalArgumentException("Found empty array in field: " + fullFieldName);
+        }
         List<Object> arrayObjects = new ArrayList<>();
 
         for (int i = 0; i < jsonArray.length(); i++) {
@@ -357,7 +361,8 @@ public class FhirObjectTypeValidator {
         return arrayObjects;
     }
 
-    private static JSONObject validateObjectIsJSONObject(Object fieldObject, String fullFieldName) {
+    private static JSONObject validateObjectIsNonEmptyJSONObject(
+            Object fieldObject, String fullFieldName) {
         if (fieldObject.equals(JSONObject.NULL)) {
             throw new IllegalArgumentException("Found null value in field: " + fullFieldName);
         }
@@ -365,7 +370,12 @@ public class FhirObjectTypeValidator {
             throw new IllegalArgumentException(
                     "Invalid resource structure. Expected object in field: " + fullFieldName);
         }
-        return (JSONObject) fieldObject;
+        JSONObject jsonObject = (JSONObject) fieldObject;
+        if (Flags.phrFhirValidationDisallowEmptyObjectsArrays() && jsonObject.length() == 0) {
+            throw new IllegalArgumentException("Found empty object in field: " + fullFieldName);
+        }
+
+        return jsonObject;
     }
 
     private static void validatePrimitiveTypeField(

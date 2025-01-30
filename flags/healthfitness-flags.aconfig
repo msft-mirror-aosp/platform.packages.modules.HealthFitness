@@ -178,6 +178,15 @@ flag {
 }
 
 flag {
+    name: "phr_fhir_validation_disallow_empty_objects_arrays"
+    namespace: "health_fitness_aconfig"
+    description: "Flag for disallowing empty objects and arrays."
+    bug: "382469576"
+    is_fixed_read_only: true
+    is_exported: true
+}
+
+flag {
     name: "phr_upsert_fix_parcel_size_calculation"
     namespace: "health_fitness_aconfig"
     description: "Flag for fixing the UpsertMedicalResourceRequest parcel size calculation."
