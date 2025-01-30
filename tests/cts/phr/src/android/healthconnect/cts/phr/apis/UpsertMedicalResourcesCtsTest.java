@@ -909,6 +909,41 @@ public class UpsertMedicalResourcesCtsTest {
     }
 
     @Test
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PHR_FHIR_STRUCTURAL_VALIDATION,
+        FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION,
+        FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION,
+    })
+    public void testUpsertMedicalResources_childTypeHasUnknownField_throws() throws Exception {
+        MedicalDataSource dataSource = mUtil.createDataSource(getCreateMedicalDataSourceRequest());
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        // The "performer" field is a child type defined by the Immunization resource
+        String immunizationResource =
+                new ImmunizationBuilder()
+                        .set(
+                                "performer",
+                                new JSONArray(
+                                        """
+                                        [{
+                                            \"unknown_field\": \"test\"
+                                        }]
+                                        """))
+                        .toJson();
+        UpsertMedicalResourceRequest request =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSource.getId(), FHIR_VERSION_R4, immunizationResource)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(request), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testUpsertMedicalResources_dataSourceOwnedByOtherApp_throws() throws Exception {
         // Create data source with different package name
