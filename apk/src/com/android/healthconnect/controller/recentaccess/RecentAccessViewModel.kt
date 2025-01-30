@@ -62,7 +62,6 @@ constructor(
         get() = _recentAccessApps
 
     fun loadRecentAccessApps(maxNumEntries: Int = -1) {
-        _recentAccessApps.postValue(RecentAccessState.Error)
         // Don't show loading if data was loaded before just refresh.
         if (_recentAccessApps.value !is RecentAccessState.WithData) {
             _recentAccessApps.postValue(Loading)

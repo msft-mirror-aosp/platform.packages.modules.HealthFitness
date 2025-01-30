@@ -92,7 +92,7 @@ class HomeFragment : Hilt_HomeFragment() {
         private const val MIGRATION_BANNER_PREFERENCE_KEY = "migration_banner"
         private const val DATA_RESTORE_BANNER_PREFERENCE_KEY = "data_restore_banner"
         private const val MANAGE_DATA_PREFERENCE_KEY = "manage_data"
-        private const val BROSE_MEDICAL_DATA_PREFERENCE_KEY = "medical_data"
+        private const val BROWSE_MEDICAL_DATA_PREFERENCE_KEY = "medical_data"
         private const val EXPORT_ERROR_BANNER_PREFERENCE_KEY = "export_error_banner"
         private const val HOME_FRAGMENT_BANNER_ORDER = 1
         private const val START_USING_HC_BANNER_KEY = "start_using_hc"
@@ -130,7 +130,7 @@ class HomeFragment : Hilt_HomeFragment() {
     private val mManageDataPreference: HealthPreference by pref(MANAGE_DATA_PREFERENCE_KEY)
 
     private val mBrowseMedicalDataPreference: HealthPreference by
-        pref(BROSE_MEDICAL_DATA_PREFERENCE_KEY)
+        pref(BROWSE_MEDICAL_DATA_PREFERENCE_KEY)
 
     private val dateFormatter: LocalDateTimeFormatter by lazy {
         LocalDateTimeFormatter(requireContext())
@@ -185,7 +185,7 @@ class HomeFragment : Hilt_HomeFragment() {
             mBrowseMedicalDataPreference.isVisible = false
             mBrowseMedicalDataPreference.logName = HomePageElement.BROWSE_HEALTH_RECORDS_BUTTON
         } else {
-            preferenceScreen.removePreferenceRecursively(BROSE_MEDICAL_DATA_PREFERENCE_KEY)
+            preferenceScreen.removePreferenceRecursively(BROWSE_MEDICAL_DATA_PREFERENCE_KEY)
         }
 
         migrationBannerSummary = getString(R.string.resume_migration_banner_description_fallback)
