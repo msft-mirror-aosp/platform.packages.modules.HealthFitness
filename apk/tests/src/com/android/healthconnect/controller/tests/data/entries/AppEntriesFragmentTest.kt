@@ -63,6 +63,7 @@ import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_RESOURCE_IM
 import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_RESOURCE_IMMUNIZATION_3
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
+import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.tests.utils.withIndex
 import com.android.healthconnect.controller.utils.logging.DataEntriesElement
 import com.android.healthconnect.controller.utils.logging.EntriesElement
@@ -108,6 +109,7 @@ class AppEntriesFragmentTest {
     @Before
     fun setup() {
         hiltRule.inject()
+        toggleAnimation(false)
         context = InstrumentationRegistry.getInstrumentation().context
         context.setLocale(Locale.UK)
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
@@ -138,6 +140,7 @@ class AppEntriesFragmentTest {
     @After
     fun tearDown() {
         reset(healthConnectLogger)
+        toggleAnimation(true)
     }
 
     @Test
