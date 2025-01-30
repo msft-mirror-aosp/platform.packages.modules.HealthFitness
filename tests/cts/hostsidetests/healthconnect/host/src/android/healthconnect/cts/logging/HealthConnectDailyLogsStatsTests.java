@@ -51,7 +51,9 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class HealthConnectDailyLogsStatsTests extends DeviceTestCase implements IBuildReceiver {
 
@@ -404,13 +406,19 @@ public class HealthConnectDailyLogsStatsTests extends DeviceTestCase implements 
         List<StatsLog.EventMetricData> data =
                 getEventMetricDataList(/* testName= */ null, NUMBER_OF_RETRIES);
         assertThat(data.size()).isAtLeast(1);
-        HealthConnectPermissionStats atom =
-                data.get(data.size() - 1)
-                        .getAtom()
-                        .getExtension(ApiExtensionAtoms.healthConnectPermissionStats);
 
-        assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
-        assertThat(atom.getPermissionNameList()).isEqualTo(testAppPermissions);
+        // This is needed as test device might have multiple apps connected to HC.
+        Map<String, List<String>> appNameToPermissions = new HashMap<>();
+        for (StatsLog.EventMetricData metricData : data) {
+            HealthConnectPermissionStats atom =
+                    metricData
+                            .getAtom()
+                            .getExtension(ApiExtensionAtoms.healthConnectPermissionStats);
+            appNameToPermissions.put(
+                    atom.getPackageName(), atom.getPermissionNameList().stream().toList());
+        }
+
+        assertThat(appNameToPermissions).containsEntry(TEST_APP_PKG_NAME, testAppPermissions);
     }
 
     private List<StatsLog.EventMetricData> getEventMetricDataList(String testName, int retryCount)
