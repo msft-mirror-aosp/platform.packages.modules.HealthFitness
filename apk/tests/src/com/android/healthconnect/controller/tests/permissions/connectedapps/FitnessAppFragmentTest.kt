@@ -65,7 +65,6 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
-import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.utils.logging.AppAccessElement
 import com.android.healthconnect.controller.utils.logging.DisconnectAppDialogElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -143,9 +142,6 @@ class FitnessAppFragmentTest {
             MutableLiveData(AdditionalAccessViewModel.State())
         }
         whenever(viewModel.lastReadPermissionDisconnected).then { MutableLiveData(false) }
-
-        // disable animations
-        toggleAnimation(false)
         Intents.init()
     }
 
@@ -155,8 +151,6 @@ class FitnessAppFragmentTest {
         reset(viewModel)
         reset(additionalAccessViewModel)
         reset(healthPermissionReader)
-        // enable animations
-        toggleAnimation(true)
         Intents.release()
     }
 

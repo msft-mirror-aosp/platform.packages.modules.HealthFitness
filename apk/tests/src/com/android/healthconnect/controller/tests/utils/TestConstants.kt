@@ -487,19 +487,6 @@ fun getMixedRecordsAcrossThreeDays(timeSource: TimeSource): List<Record> {
 
 // test data constants - end
 
-// Enables or disables animations in a test
-fun toggleAnimation(isEnabled: Boolean) {
-    with(UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())) {
-        executeShellCommand(
-            "settings put global transition_animation_scale ${if (isEnabled) 1 else 0}"
-        )
-        executeShellCommand("settings put global window_animation_scale ${if (isEnabled) 1 else 0}")
-        executeShellCommand(
-            "settings put global animator_duration_scale ${if (isEnabled) 1 else 0}"
-        )
-    }
-}
-
 // Used for matching arguments for [RequestPermissionViewModel]
 fun <T> any(type: Class<T>): T = Mockito.any<T>(type)
 
