@@ -32,8 +32,9 @@ import androidx.wear.compose.material3.RadioButton
 import androidx.wear.compose.material3.Text
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission.Companion.fromPermissionString
-import com.android.healthconnect.controller.permissions.request.wear.elements.Chip
-import com.android.healthconnect.controller.permissions.request.wear.elements.ScrollableScreen
+import com.android.permissioncontroller.wear.permission.components.ScrollableScreen
+import com.android.permissioncontroller.wear.permission.components.material3.WearPermissionButton
+import com.android.permissioncontroller.wear.permission.components.theme.ResourceHelper
 
 /** Wear Settings Permissions Screen to allow/disallow a single data type permission for an app. */
 @Composable
@@ -44,6 +45,7 @@ fun ControlSingleDataTypeForSingleAppScreen(
     packageName: String,
     onAdditionalPermissionClick: (String) -> Unit,
 ) {
+    val materialUIVersion = ResourceHelper.materialUIVersionInApp
     val healthPermission = fromPermissionString(permissionStr)
 
     // Get app metadata. PackageName is passed from allowed/denied apps page and must be in the
@@ -59,7 +61,12 @@ fun ControlSingleDataTypeForSingleAppScreen(
     val backgroundReadStatus by viewModel.appToBackgroundReadStatus.collectAsState()
     val isBackgroundPermissionRequested = appMetadata!! in backgroundReadStatus
 
-    ScrollableScreen(showTimeText = false, title = appMetadata!!.appName) {
+    ScrollableScreen(
+        materialUIVersion = materialUIVersion,
+        asScalingList = true,
+        showTimeText = false,
+        title = appMetadata!!.appName,
+    ) {
         // Data type text.
         item { Row(horizontalArrangement = Arrangement.Start) { Text(dataTypeStr) } }
 
@@ -93,7 +100,7 @@ fun ControlSingleDataTypeForSingleAppScreen(
 
         // Button to allow/disallow background permission.
         item {
-            Chip(
+            WearPermissionButton(
                 label = stringResource(R.string.additional_access_label),
                 labelMaxLines = 3,
                 onClick = { onAdditionalPermissionClick(packageName) },

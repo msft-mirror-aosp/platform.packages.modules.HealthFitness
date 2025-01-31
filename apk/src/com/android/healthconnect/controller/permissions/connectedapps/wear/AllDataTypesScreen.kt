@@ -31,8 +31,9 @@ import androidx.wear.compose.material3.Text
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings
 import com.android.healthconnect.controller.permissions.data.HealthPermission
-import com.android.healthconnect.controller.permissions.request.wear.elements.Chip
-import com.android.healthconnect.controller.permissions.request.wear.elements.ScrollableScreen
+import com.android.permissioncontroller.wear.permission.components.ScrollableScreen
+import com.android.permissioncontroller.wear.permission.components.material3.WearPermissionButton
+import com.android.permissioncontroller.wear.permission.components.theme.ResourceHelper
 
 /** Wear Settings Permissions Screen to see allowed/disallowed status for all apps. */
 @Composable
@@ -42,6 +43,7 @@ fun AllDataTypesScreen(
     onClick: (String, String) -> Unit,
 ) {
     val res = LocalContext.current.resources
+    val materialUIVersion = ResourceHelper.materialUIVersionInApp
     val connectedApps by viewModel.connectedApps.collectAsState()
     val dataTypeToAllowedApps by viewModel.dataTypeToAllowedApps.collectAsState()
     val dataTypeToDeniedApps by viewModel.dataTypeToDeniedApps.collectAsState()
@@ -49,7 +51,12 @@ fun AllDataTypesScreen(
     val systemHealthPermissions by viewModel.systemHealthPermissions.collectAsState()
     val nTotalApps = connectedApps.size
 
-    ScrollableScreen(showTimeText = false, title = stringResource(R.string.fitness_and_wellness)) {
+    ScrollableScreen(
+        materialUIVersion = materialUIVersion,
+        asScalingList = true,
+        showTimeText = false,
+        title = stringResource(R.string.fitness_and_wellness),
+    ) {
         item {
             Row(horizontalArrangement = Arrangement.Start) {
                 Text(stringResource(R.string.vitals_category_uppercase))
@@ -94,7 +101,7 @@ fun AllDataTypesScreen(
                         stringResource(R.string.not_used_in_past_24_hours)
                     else -> stringResource(R.string.no_apps_requesting)
                 }
-            Chip(
+            WearPermissionButton(
                 label = strDataType,
                 labelMaxLines = 3,
                 secondaryLabel = message,

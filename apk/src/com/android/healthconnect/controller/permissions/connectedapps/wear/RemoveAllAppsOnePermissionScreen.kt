@@ -32,7 +32,8 @@ import androidx.wear.compose.material3.Icon
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission.Companion.fromPermissionString
-import com.android.healthconnect.controller.permissions.request.wear.elements.ScrollableScreen
+import com.android.permissioncontroller.wear.permission.components.ScrollableScreen
+import com.android.permissioncontroller.wear.permission.components.theme.ResourceHelper
 
 /** Wear Settings Permissions Screen to remove access to a data type for all apps. */
 @Composable
@@ -42,8 +43,11 @@ fun RemoveAllAppsOnePermissionScreen(
     dataTypeStr: String,
     onBackClick: () -> Unit,
 ) {
+    val materialUIVersion = ResourceHelper.materialUIVersionInApp
     val healthPermission = fromPermissionString(permissionStr)
     ScrollableScreen(
+        materialUIVersion = materialUIVersion,
+        asScalingList = true,
         showTimeText = false,
         title = stringResource(R.string.remove_one_permission_for_all, dataTypeStr),
     ) {
