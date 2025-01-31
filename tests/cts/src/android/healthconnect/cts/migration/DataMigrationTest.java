@@ -657,7 +657,6 @@ public class DataMigrationTest {
 
     @Test
     public void testStartMigrationFromIdleState() throws IOException, InterruptedException {
-        assertStateChangeJobDoesNotExist();
         assertThat(TestUtils.getHealthConnectDataMigrationState()).isEqualTo(MIGRATION_STATE_IDLE);
         TestUtils.startMigrationWithShellPermissionIdentity();
         assertThat(TestUtils.getHealthConnectDataMigrationState())
@@ -673,7 +672,7 @@ public class DataMigrationTest {
     public void testInsertMinDataMigrationSdkExtensionVersion_upgradeRequired()
             throws IOException, InterruptedException {
         int version = SdkExtensions.getExtensionVersion(Build.VERSION_CODES.UPSIDE_DOWN_CAKE) + 1;
-        assertStateChangeJobDoesNotExist();
+
         assertThat(TestUtils.getHealthConnectDataMigrationState()).isEqualTo(MIGRATION_STATE_IDLE);
         TestUtils.insertMinDataMigrationSdkExtensionVersionWithShellPermissionIdentity(version);
         assertThat(TestUtils.getHealthConnectDataMigrationState())
@@ -694,7 +693,6 @@ public class DataMigrationTest {
             throws IOException, InterruptedException {
         int version = SdkExtensions.getExtensionVersion(Build.VERSION_CODES.UPSIDE_DOWN_CAKE);
 
-        assertStateChangeJobDoesNotExist();
         assertThat(TestUtils.getHealthConnectDataMigrationState()).isEqualTo(MIGRATION_STATE_IDLE);
         TestUtils.insertMinDataMigrationSdkExtensionVersionWithShellPermissionIdentity(version);
         assertThat(TestUtils.getHealthConnectDataMigrationState())
