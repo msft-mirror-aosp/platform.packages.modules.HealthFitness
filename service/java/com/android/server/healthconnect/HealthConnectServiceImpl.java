@@ -3224,10 +3224,12 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         if (mCloudBackupManager == null) return;
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
+        final UserHandle userHandle = Binder.getCallingUserHandle();
         final ErrorCallback errorCallback = callback::onError;
         HealthConnectThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
+                        enforceIsForegroundUser(userHandle);
                         mContext.enforcePermission(
                                 BACKUP_HEALTH_CONNECT_DATA_AND_SETTINGS,
                                 pid,
@@ -3247,10 +3249,12 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         checkParamsNonNull(callback);
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
+        final UserHandle userHandle = Binder.getCallingUserHandle();
         final ErrorCallback errorCallback = callback::onError;
         HealthConnectThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
+                        enforceIsForegroundUser(userHandle);
                         mContext.enforcePermission(
                                 BACKUP_HEALTH_CONNECT_DATA_AND_SETTINGS,
                                 pid,
@@ -3273,10 +3277,12 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         checkParamsNonNull(callback);
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
+        final UserHandle userHandle = Binder.getCallingUserHandle();
         final ErrorCallback errorCallback = callback::onError;
         HealthConnectThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
+                        enforceIsForegroundUser(userHandle);
                         mContext.enforcePermission(
                                 RESTORE_HEALTH_CONNECT_DATA_AND_SETTINGS,
                                 pid,
@@ -3297,10 +3303,12 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         checkParamsNonNull(dataVersion);
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
+        final UserHandle userHandle = Binder.getCallingUserHandle();
         final ErrorCallback errorCallback = callback::onError;
         HealthConnectThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
+                        enforceIsForegroundUser(userHandle);
                         if (Flags.cloudBackupAndRestore()) {
                             mContext.enforcePermission(
                                     RESTORE_HEALTH_CONNECT_DATA_AND_SETTINGS,
@@ -3323,10 +3331,12 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         checkParamsNonNull(changes);
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
+        final UserHandle userHandle = Binder.getCallingUserHandle();
         final ErrorCallback errorCallback = callback::onError;
         HealthConnectThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
+                        enforceIsForegroundUser(userHandle);
                         if (Flags.cloudBackupAndRestore()) {
                             mContext.enforcePermission(
                                     RESTORE_HEALTH_CONNECT_DATA_AND_SETTINGS,
