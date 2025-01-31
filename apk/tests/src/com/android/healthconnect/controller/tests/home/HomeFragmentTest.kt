@@ -74,7 +74,6 @@ import com.android.healthconnect.controller.tests.utils.di.FakeDeviceInfoUtils
 import com.android.healthconnect.controller.tests.utils.di.FakeExpressiveTheming
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
-import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
 import com.android.healthconnect.controller.utils.NavigationUtils
@@ -189,9 +188,6 @@ class HomeFragmentTest {
         (deviceInfoUtils as FakeDeviceInfoUtils).setIntentHandlerAvailability(true)
 
         Intents.init()
-
-        // disable animations
-        toggleAnimation(false)
         setStartUsingHcBannerSeen(context, false)
     }
 
@@ -199,8 +195,6 @@ class HomeFragmentTest {
     fun teardown() {
         timeSource.reset()
         Intents.release()
-        // enable animations
-        toggleAnimation(true)
         reset(healthConnectLogger)
         (expressiveThemingHelper as FakeExpressiveTheming).setIsExpressiveTheme(false)
     }
