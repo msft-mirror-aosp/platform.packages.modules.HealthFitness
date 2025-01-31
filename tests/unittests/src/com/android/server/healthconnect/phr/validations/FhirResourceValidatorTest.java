@@ -18,6 +18,8 @@ package com.android.server.healthconnect.phr.validations;
 
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_MEDICATION_REQUEST;
+import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_OBSERVATION;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 
 import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION;
@@ -31,6 +33,8 @@ import static org.junit.Assert.assertThrows;
 
 import android.healthconnect.cts.phr.utils.AllergyBuilder;
 import android.healthconnect.cts.phr.utils.ImmunizationBuilder;
+import android.healthconnect.cts.phr.utils.MedicationsBuilder;
+import android.healthconnect.cts.phr.utils.ObservationBuilder;
 import android.platform.test.annotations.DisableFlags;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
@@ -113,6 +117,71 @@ public class FhirResourceValidatorTest {
                                 .toJson());
 
         validator.validateFhirResource(immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION);
+    }
+
+    @EnableFlags({
+        FLAG_PHR_FHIR_STRUCTURAL_VALIDATION,
+        FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION,
+        FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION
+    })
+    @Test
+    public void testValidateFhirResource_resourceWithDoubleChildType_succeeds()
+            throws JSONException {
+        FhirResourceValidator validator = new FhirResourceValidator();
+        // The "dispenseRequest" is a type defined by the MedicationRequest resource, which has a
+        // another nested child type "initialFill".
+        JSONObject medicationRequestJson =
+                new JSONObject(
+                        new MedicationsBuilder.MedicationRequestBuilder()
+                                .set(
+                                        "dispenseRequest",
+                                        new JSONObject(
+                                                """
+                                                {
+                                                    \"initialFill\": {
+                                                        \"quantity\": {
+                                                            \"value\": 1.3
+                                                        }
+                                                    },
+                                                    \"numberOfRepeatsAllowed\": 3
+                                                }
+                                                """))
+                                .toJson());
+
+        validator.validateFhirResource(
+                medicationRequestJson, FHIR_RESOURCE_TYPE_MEDICATION_REQUEST);
+    }
+
+    @EnableFlags({
+        FLAG_PHR_FHIR_STRUCTURAL_VALIDATION,
+        FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION,
+        FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION
+    })
+    @Test
+    public void testValidateFhirResource_resourceComplexTypeWithChildType_succeeds()
+            throws JSONException {
+        FhirResourceValidator validator = new FhirResourceValidator();
+        // The "effectiveTiming" field is of type "Timing", which defines a child type in the
+        // "repeat" field.
+        JSONObject observationJson =
+                new JSONObject(
+                        new ObservationBuilder()
+                                .removeAllEffectiveMultiTypeFields()
+                                .set(
+                                        "effectiveTiming",
+                                        new JSONObject(
+                                                """
+                                                {
+                                                    \"repeat\": {
+                                                        \"boundsDuration\": {
+                                                            \"value\": 10
+                                                        }
+                                                    }
+                                                },
+                                                """))
+                                .toJson());
+
+        validator.validateFhirResource(observationJson, FHIR_RESOURCE_TYPE_OBSERVATION);
     }
 
     @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION})
@@ -951,6 +1020,80 @@ public class FhirResourceValidatorTest {
                 .contains(
                         "Invalid resource structure. Found non string object in field:"
                                 + " vaccineCode.text");
+    }
+
+    @EnableFlags({
+        FLAG_PHR_FHIR_STRUCTURAL_VALIDATION,
+        FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION,
+        FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION
+    })
+    @Test
+    public void testValidateFhirResource_childTypeHasUnknownField_throws() throws JSONException {
+        FhirResourceValidator validator = new FhirResourceValidator();
+        // The "performer" field is a type defined by the Immunization resource
+        JSONObject immunizationJson =
+                new JSONObject(
+                        new ImmunizationBuilder()
+                                .set(
+                                        "performer",
+                                        new JSONArray(
+                                                """
+                                                [{
+                                                    \"actor\": {
+                                                        \"reference\": \"123\"
+                                                    },
+                                                    \"unknown_field\": \"test\"
+                                                }]
+                                                """))
+                                .toJson());
+
+        Throwable thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                validator.validateFhirResource(
+                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+        assertThat(thrown)
+                .hasMessageThat()
+                .contains("Found unexpected field performer.unknown_field");
+    }
+
+    @EnableFlags({
+        FLAG_PHR_FHIR_STRUCTURAL_VALIDATION,
+        FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION,
+        FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION
+    })
+    @Test
+    public void testValidateFhirResource_childTypeInComplexTypeHasUnknownField_throws()
+            throws JSONException {
+        FhirResourceValidator validator = new FhirResourceValidator();
+        // The "effectiveTiming" field is of type "Timing", which defines a child type in the
+        // "repeat" field.
+        JSONObject observationJson =
+                new JSONObject(
+                        new ObservationBuilder()
+                                .removeAllEffectiveMultiTypeFields()
+                                .set(
+                                        "effectiveTiming",
+                                        new JSONObject(
+                                                """
+                                                {
+                                                    \"repeat\": {
+                                                        \"unknown_field\": \"test\"
+                                                    }
+                                                },
+                                                """))
+                                .toJson());
+
+        Throwable thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                validator.validateFhirResource(
+                                        observationJson, FHIR_RESOURCE_TYPE_OBSERVATION));
+        assertThat(thrown)
+                .hasMessageThat()
+                .contains("Found unexpected field effectiveTiming.repeat");
     }
 
     @EnableFlags({

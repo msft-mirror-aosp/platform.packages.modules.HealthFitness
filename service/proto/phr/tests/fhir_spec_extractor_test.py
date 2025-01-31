@@ -166,6 +166,20 @@ class FhirSpecExtractorTest(unittest.TestCase):
                   }]
                 },
                 {
+                  "id" : "Immunization.performer.actor",
+                  "path" : "Immunization.performer.actor",
+                  "min" : 1,
+                  "max" : "1",
+                  "base" : {
+                    "path" : "Immunization.performer.actor",
+                    "min" : 1,
+                    "max" : "1"
+                  },
+                  "type" : [{
+                    "code" : "Reference"
+                  }]
+                },
+                {
                   "id" : "Immunization.contained",
                   "path" : "Immunization.contained",
                   "min" : 0,
@@ -918,6 +932,38 @@ class FhirSpecExtractorTest(unittest.TestCase):
       }
     },
     {
+      "fullUrl" : "http://hl7.org/fhir/StructureDefinition/Reference",
+      "resource" : {
+        "resourceType" : "StructureDefinition",
+        "id" : "Reference",
+        "url" : "http://hl7.org/fhir/StructureDefinition/Reference",
+        "version" : "4.0.1",
+        "name" : "Reference",
+        "fhirVersion" : "4.0.1",
+        "kind" : "complex-type",
+        "type" : "Reference",
+        "baseDefinition" : "http://hl7.org/fhir/StructureDefinition/Element",
+        "snapshot" : {
+          "element" : [
+            {
+            "id" : "Reference.reference",
+            "path" : "Reference.reference",
+            "min" : 0,
+            "max" : "1",
+            "base" : {
+              "path" : "Reference.reference",
+              "min" : 0,
+              "max" : "1"
+            },
+            "type" : [{
+              "code" : "string"
+            }]
+          }
+        ]
+        }
+      }
+    },
+    {
       "fullUrl": "http://hl7.org/fhir/StructureDefinition/OtherType",
       "resource": {
         "resourceType": "StructureDefinition",
@@ -1019,7 +1065,7 @@ class FhirSpecExtractorTest(unittest.TestCase):
             ),
             "performer": fhirspec_pb2.FhirFieldConfig(
                 is_array=True,
-                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+                r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_IMMUNIZATION_PERFORMER
             ),
             "contained": fhirspec_pb2.FhirFieldConfig(
                 is_array=True,
@@ -1179,10 +1225,6 @@ class FhirSpecExtractorTest(unittest.TestCase):
             self.BUNDLE_WITH_IMMUNIZATION_AND_PATIENT_STRUCTURE_DEFINITION, {"Immunization"})
         expected_complex_type_configs = [
             fhirspec_pb2.FhirDataType(
-                fhir_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION,
-                kind=fhirspec_pb2.Kind.KIND_COMPLEX_TYPE,
-            ),
-            fhirspec_pb2.FhirDataType(
                 fhir_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_RESOURCE,
                 kind=fhirspec_pb2.Kind.KIND_COMPLEX_TYPE,
             ),
@@ -1309,7 +1351,42 @@ class FhirSpecExtractorTest(unittest.TestCase):
             fhirspec_pb2.FhirDataType(
                 fhir_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_URI,
                 kind=fhirspec_pb2.Kind.KIND_PRIMITIVE_TYPE,
-            )]
+            ),
+            # Expected because this is the definition of the BackboneElement child type, defined in
+            # the Immunization resource "performer" field.
+            fhirspec_pb2.FhirDataType(
+                fhir_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_IMMUNIZATION_PERFORMER,
+                kind=fhirspec_pb2.Kind.KIND_COMPLEX_TYPE,
+                fhir_complex_type_config=fhirspec_pb2.FhirComplexTypeConfig(
+                    allowed_field_names_to_config={
+                        "id": fhirspec_pb2.FhirFieldConfig(
+                            is_array=False,
+                            r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_STRING
+                        ),
+                        "extension": fhirspec_pb2.FhirFieldConfig(
+                            is_array=True,
+                            r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_EXTENSION
+                        ),
+                        "actor": fhirspec_pb2.FhirFieldConfig(
+                            is_array=False,
+                            r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_REFERENCE
+                        ),
+                    },
+                    required_fields=["actor"]),
+            ),
+            # Expected because this is a type required by the IMMUNIZATION_PERFORMER child type.
+            fhirspec_pb2.FhirDataType(
+                fhir_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_REFERENCE,
+                kind=fhirspec_pb2.Kind.KIND_COMPLEX_TYPE,
+                fhir_complex_type_config=fhirspec_pb2.FhirComplexTypeConfig(
+                    allowed_field_names_to_config={
+                        "reference": fhirspec_pb2.FhirFieldConfig(
+                            is_array=False,
+                            r4_type=fhirspec_pb2.R4FhirType.R4_FHIR_TYPE_STRING
+                        )
+                    }),
+            ),
+        ]
 
         generated_spec = fhir_spec_extractor.generate_r4_fhir_spec_proto_message(
             self.BUNDLE_WITH_TYPE_STRUCTURE_DEFINITIONS)

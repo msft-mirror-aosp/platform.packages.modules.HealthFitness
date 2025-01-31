@@ -19,9 +19,6 @@ package com.android.server.healthconnect.phr.validations;
 import static android.health.connect.datatypes.FhirResource.FhirResourceType;
 import static android.health.connect.datatypes.FhirResource.validateFhirResourceType;
 
-import static com.android.server.healthconnect.proto.Kind.KIND_COMPLEX_TYPE;
-import static com.android.server.healthconnect.proto.Kind.KIND_PRIMITIVE_TYPE;
-import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_ELEMENT;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_EXTENSION;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_RESOURCE;
@@ -63,11 +60,6 @@ public class FhirSpecProvider {
                     // TODO: b/376462255 - Implement validation of "Resource" data type when
                     //  supporting contained resources.
                     R4_FHIR_TYPE_RESOURCE,
-                    // TODO: b/377704968 - Implement validation of child types. This is the
-                    // placeholder type of all child definitions, which we don't validate yet.
-                    // Resource types that define their own children, such as Patient.contact use
-                    // the type "BackboneElement" and type definitions use "Element".
-                    R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION,
                     // TODO: b/377706021 - Validate Extension.
                     // The extension data type does have a config, but in R4B there are additional
                     // data types, such as CodeableReference and RatioRange, meaning that the
