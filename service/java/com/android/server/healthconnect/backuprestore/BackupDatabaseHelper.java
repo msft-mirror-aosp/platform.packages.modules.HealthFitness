@@ -16,7 +16,7 @@
 package com.android.server.healthconnect.backuprestore;
 
 import static android.health.connect.Constants.DEFAULT_LONG;
-import static android.health.connect.Constants.MAXIMUM_PAGE_SIZE;
+import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
 import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 
 import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTORE;
@@ -153,7 +153,7 @@ public class BackupDatabaseHelper {
 
         List<BackupChange> backupChanges = new ArrayList<>();
         long nextDataTablePageToken = dataTablePageToken;
-        int pageSize = MAXIMUM_PAGE_SIZE;
+        int pageSize = DEFAULT_PAGE_SIZE;
         String nextDataTableName = dataTableName;
 
         for (var recordType : recordTypes) {
@@ -199,7 +199,7 @@ public class BackupDatabaseHelper {
                                 /* shouldRecordAccessLog= */ false);
                 backupChanges.addAll(convertRecordsToBackupChange(readResult.first));
                 nextDataTablePageToken = readResult.second.encode();
-                pageSize = MAXIMUM_PAGE_SIZE - backupChanges.size();
+                pageSize = DEFAULT_PAGE_SIZE - backupChanges.size();
                 nextDataTableName = recordHelper.getMainTableName();
                 if (nextDataTablePageToken == EMPTY_PAGE_TOKEN.encode()) {
                     int recordIndex = recordTypes.indexOf(recordType);

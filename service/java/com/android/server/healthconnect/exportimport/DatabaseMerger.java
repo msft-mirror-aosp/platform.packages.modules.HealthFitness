@@ -17,7 +17,7 @@
 package com.android.server.healthconnect.exportimport;
 
 import static android.health.connect.Constants.DEFAULT_LONG;
-import static android.health.connect.Constants.MAXIMUM_PAGE_SIZE;
+import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
 import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_PLANNED_EXERCISE_SESSION;
@@ -174,37 +174,19 @@ public final class DatabaseMerger {
         // Migrate special case records in their defined order.
         for (List<Integer> recordTypeMigrationGroup : RECORD_TYPE_MIGRATION_ORDERING_OVERRIDES) {
             for (int recordTypeToMigrate : recordTypeMigrationGroup) {
-                mergeRecordsOfType(
-                        stagedDatabase,
-                        stagedPackageNamesByAppIds,
-                        recordTypeToMigrate,
-                        mHealthConnectMappings
-                                .getRecordIdToExternalRecordClassMap()
-                                .get(recordTypeToMigrate));
+                mergeRecordsOfType(stagedDatabase, stagedPackageNamesByAppIds, recordTypeToMigrate);
             }
             // Delete records within a group together, once all records within that group
             // have been migrated. This ensures referential integrity is preserved during
             // migration.
             for (int recordTypeToMigrate : recordTypeMigrationGroup) {
-                deleteRecordsOfType(
-                        stagedDatabase,
-                        recordTypeToMigrate,
-                        mHealthConnectMappings
-                                .getRecordIdToExternalRecordClassMap()
-                                .get(recordTypeToMigrate));
+                deleteRecordsOfType(stagedDatabase, recordTypeToMigrate);
             }
         }
         // Migrate remaining record types in no particular order.
         for (Integer recordTypeToMigrate : recordTypesWithoutOrderingOverrides) {
-            Class<? extends Record> recordClass =
-                    mHealthConnectMappings
-                            .getRecordIdToExternalRecordClassMap()
-                            .get(recordTypeToMigrate);
-
-            mergeRecordsOfType(
-                    stagedDatabase, stagedPackageNamesByAppIds, recordTypeToMigrate, recordClass);
-
-            deleteRecordsOfType(stagedDatabase, recordTypeToMigrate, recordClass);
+            mergeRecordsOfType(stagedDatabase, stagedPackageNamesByAppIds, recordTypeToMigrate);
+            deleteRecordsOfType(stagedDatabase, recordTypeToMigrate);
         }
 
         Slog.i(TAG, "Syncing app info records after restored data merge");
@@ -358,9 +340,9 @@ public final class DatabaseMerger {
             SQLiteDatabase stagedDatabase, PhrPageTokenWrapper pageTokenWrapper) {
         ReadTableRequest readTableRequest =
                 MedicalResourceHelper.getReadTableRequestUsingRequestFilters(
-                        pageTokenWrapper, MAXIMUM_PAGE_SIZE);
+                        pageTokenWrapper, DEFAULT_PAGE_SIZE);
         return MedicalResourceHelper.getMedicalResources(
-                stagedDatabase, readTableRequest, pageTokenWrapper, MAXIMUM_PAGE_SIZE);
+                stagedDatabase, readTableRequest, pageTokenWrapper, DEFAULT_PAGE_SIZE);
     }
 
     private void mergePriorityList(
@@ -402,17 +384,18 @@ public final class DatabaseMerger {
                 });
     }
 
-    private <T extends Record> void mergeRecordsOfType(
+    private void mergeRecordsOfType(
             HealthConnectDatabase stagedDatabase,
             Map<Long, String> stagedPackageNamesByAppIds,
-            int recordType,
-            Class<T> recordTypeClass) {
+            int recordType) {
         RecordHelper<?> recordHelper = mInternalHealthConnectMappings.getRecordHelper(recordType);
         if (!checkTableExists(
                 stagedDatabase.getReadableDatabase(), recordHelper.getMainTableName())) {
             return;
         }
 
+        Class<? extends Record> recordTypeClass =
+                mHealthConnectMappings.getRecordIdToExternalRecordClassMap().get(recordType);
         // Read all the records of the given type from the staged db and insert them into the
         // existing healthconnect db.
         PageTokenWrapper currentToken = EMPTY_PAGE_TOKEN;
@@ -421,7 +404,7 @@ public final class DatabaseMerger {
                     getRecordsToMerge(
                             stagedDatabase,
                             stagedPackageNamesByAppIds,
-                            recordTypeClass,
+                            requireNonNull(recordTypeClass),
                             currentToken,
                             recordHelper);
             List<RecordInternal<?>> records = recordsToMergeAndToken.first;
@@ -470,8 +453,7 @@ public final class DatabaseMerger {
         } while (!currentToken.isEmpty());
     }
 
-    private <T extends Record> void deleteRecordsOfType(
-            HealthConnectDatabase stagedDatabase, int recordType, Class<T> recordTypeClass) {
+    private void deleteRecordsOfType(HealthConnectDatabase stagedDatabase, int recordType) {
         RecordHelper<?> recordHelper = mInternalHealthConnectMappings.getRecordHelper(recordType);
         if (!checkTableExists(
                 stagedDatabase.getReadableDatabase(), recordHelper.getMainTableName())) {
@@ -480,6 +462,8 @@ public final class DatabaseMerger {
 
         // Passing -1 for startTime and endTime as we don't want to have time based filtering in the
         // final query.
+        Class<? extends Record> recordTypeClass =
+                mHealthConnectMappings.getRecordIdToExternalRecordClassMap().get(recordType);
         Slog.d(TAG, "Deleting table for: " + recordTypeClass);
         @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
         DeleteTableRequest deleteTableRequest =
@@ -493,15 +477,15 @@ public final class DatabaseMerger {
         stagedDatabase.getWritableDatabase().execSQL(deleteTableRequest.getDeleteCommand());
     }
 
-    private <T extends Record> Pair<List<RecordInternal<?>>, PageTokenWrapper> getRecordsToMerge(
+    private Pair<List<RecordInternal<?>>, PageTokenWrapper> getRecordsToMerge(
             HealthConnectDatabase stagedDatabase,
             Map<Long, String> stagedPackageNamesByAppIds,
-            Class<T> recordTypeClass,
+            Class<? extends Record> recordTypeClass,
             PageTokenWrapper requestToken,
             RecordHelper<?> recordHelper) {
-        ReadRecordsRequestUsingFilters<T> readRecordsRequest =
+        ReadRecordsRequestUsingFilters<?> readRecordsRequest =
                 new ReadRecordsRequestUsingFilters.Builder<>(recordTypeClass)
-                        .setPageSize(MAXIMUM_PAGE_SIZE)
+                        .setPageSize(DEFAULT_PAGE_SIZE)
                         .setPageToken(requestToken.encode())
                         .build();
 
@@ -531,7 +515,7 @@ public final class DatabaseMerger {
                     recordHelper.getNextInternalRecordsPageAndToken(
                             mDeviceInfoHelper,
                             cursor,
-                            readTransactionRequest.getPageSize().orElse(MAXIMUM_PAGE_SIZE),
+                            readTransactionRequest.getPageSize().orElse(DEFAULT_PAGE_SIZE),
                             requireNonNull(readTransactionRequest.getPageToken()),
                             stagedPackageNamesByAppIds,
                             mAppInfoHelper);
