@@ -37,7 +37,6 @@ import com.android.healthconnect.controller.categories.HealthDataCategoryViewMod
 import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel.CategoriesFragmentState
 import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel.CategoriesFragmentState.WithData
 import com.android.healthconnect.controller.tests.utils.launchFragment
-import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.utils.logging.CategoriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
@@ -86,12 +85,10 @@ class HealthDataCategoriesFragmentTest {
         hiltRule.inject()
         context = InstrumentationRegistry.getInstrumentation().context
         navHostController = TestNavHostController(context)
-        toggleAnimation(false)
     }
 
     @After
     fun tearDown() {
-        toggleAnimation(true)
         reset(healthConnectLogger)
     }
 

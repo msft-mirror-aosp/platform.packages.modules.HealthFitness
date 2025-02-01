@@ -97,3 +97,13 @@ def extract_element_definitions_from_structure_def(structure_definition):
     contains the spec for a path / field of the type.
     """
     return structure_definition["snapshot"]["element"]
+
+def generate_fhir_type_string_for_child_type_path(path):
+    """Generates a type string from a path to be used to get the child type enum.
+
+    The resulting string can be used in the same way as the type.code field in a
+    StructureDefinition.
+
+    For example, a path "Immunization.performer" will be turned into "ImmunizationPerformer".
+    """
+    return path.replace('.', ' ').title().replace(' ', '')

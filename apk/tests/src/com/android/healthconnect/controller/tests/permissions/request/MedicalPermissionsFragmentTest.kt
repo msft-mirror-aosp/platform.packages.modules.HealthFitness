@@ -59,7 +59,6 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.any
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
-import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
@@ -134,13 +133,11 @@ class MedicalPermissionsFragmentTest {
         whenever(viewModel.grantedMedicalPermissions).then {
             MutableLiveData(emptySet<MedicalPermission>())
         }
-        toggleAnimation(false)
     }
 
     @After
     fun teardown() {
         reset(healthConnectLogger)
-        toggleAnimation(true)
     }
 
     @Test
