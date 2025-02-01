@@ -43,6 +43,7 @@ import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.ExerciseSessionRecord;
 import android.health.connect.datatypes.ExerciseSessionType;
 import android.health.connect.datatypes.Metadata;
+import android.health.connect.datatypes.NutritionRecord;
 import android.health.connect.datatypes.PlannedExerciseSessionRecord;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.StepsRecord;
@@ -63,6 +64,9 @@ public class TestAppReceiver extends BroadcastReceiver {
     public static final String ACTION_INSERT_EXERCISE_RECORD = "action.INSERT_EXERCISE_RECORD";
     public static final String ACTION_INSERT_PLANNED_EXERCISE_RECORD =
             "action.INSERT_PLANNED_EXERCISE_RECORD";
+
+    public static final String ACTION_INSERT_NUTRITION_IRON_RECORD =
+            "action.INSERT_NUTRITION_IRON_RECORD";
     public static final String ACTION_READ_STEPS_RECORDS_USING_FILTERS =
             "action.READ_STEPS_RECORDS_USING_FILTERS";
     public static final String ACTION_READ_STEPS_RECORDS_USING_RECORD_IDS =
@@ -119,6 +123,8 @@ public class TestAppReceiver extends BroadcastReceiver {
             case ACTION_INSERT_PLANNED_EXERCISE_RECORD:
                 insertPlannedExerciseRecord(context, intent);
                 break;
+            case ACTION_INSERT_NUTRITION_IRON_RECORD:
+                insertNutritionIronRecord(context, intent);
             case ACTION_READ_STEPS_RECORDS_USING_FILTERS:
                 readStepsRecordsUsingFilters(context, intent);
                 break;
@@ -168,6 +174,14 @@ public class TestAppReceiver extends BroadcastReceiver {
                         List.of(createPlannedExerciseRecord(intent)),
                         newSingleThreadExecutor(),
                         outcome);
+        sendInsertRecordsResult(context, intent, outcome);
+    }
+
+    private static void insertNutritionIronRecord(Context context, Intent intent) {
+        DefaultOutcomeReceiver<InsertRecordsResponse> outcome = new DefaultOutcomeReceiver<>();
+        getHealthConnectManager(context)
+                .insertRecords(
+                        createNutritionIronRecord(intent), newSingleThreadExecutor(), outcome);
         sendInsertRecordsResult(context, intent, outcome);
     }
 
@@ -407,6 +421,30 @@ public class TestAppReceiver extends BroadcastReceiver {
                         new Metadata.Builder().setClientRecordId(clientId).build(),
                         time,
                         Mass.fromGrams(weight))
+                .build();
+    }
+
+    private static List<Record> createNutritionIronRecord(Intent intent) {
+        List<Instant> startTimes = getTimes(intent, EXTRA_TIMES);
+        List<Instant> endTimes = getTimes(intent, EXTRA_END_TIMES);
+        String[] clientIds = intent.getStringArrayExtra(EXTRA_RECORD_CLIENT_IDS);
+        long[] values = intent.getLongArrayExtra(EXTRA_RECORD_VALUES);
+
+        List<Record> result = new ArrayList<>();
+        for (int i = 0; i < startTimes.size(); i++) {
+            result.add(
+                    createNutritionIronRecord(
+                            startTimes.get(i), endTimes.get(i), clientIds[i], values[i]));
+        }
+        return result;
+    }
+
+    private static NutritionRecord createNutritionIronRecord(
+            Instant startTime, Instant endTime, String clientId, long ironGrams) {
+        Metadata.Builder metadataBuilder = new Metadata.Builder();
+        metadataBuilder.setClientRecordId(clientId);
+        return new NutritionRecord.Builder(metadataBuilder.build(), startTime, endTime)
+                .setIron(Mass.fromGrams((double) ironGrams))
                 .build();
     }
 
