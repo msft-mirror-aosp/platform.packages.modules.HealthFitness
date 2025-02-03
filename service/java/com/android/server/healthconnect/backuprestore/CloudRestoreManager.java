@@ -95,9 +95,6 @@ public class CloudRestoreManager {
     /** Restores backup data changes. */
     public void pushChangesForRestore(List<RestoreChange> changes) {
         List<Record> records = changes.stream().map(this::toRecord).toList();
-        records.stream()
-                .collect(Collectors.toMap(Record::getPackageName, Record::getAppName, (a, b) -> b))
-                .forEach(mAppInfoHelper::addOrUpdateAppInfoIfNoAppInfoEntryExists);
         UpsertTransactionRequest upsertRequest =
                 UpsertTransactionRequest.createForRestore(
                         records.stream().map(this::toRecordInternal).toList(),

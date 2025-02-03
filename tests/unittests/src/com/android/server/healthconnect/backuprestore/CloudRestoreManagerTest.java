@@ -172,6 +172,7 @@ public class CloudRestoreManagerTest {
                                 .setRecord(bloodPressureRecord)
                                 .build()
                                 .toByteArray());
+        mTransactionTestUtils.insertApp("packageName");
 
         mCloudRestoreManager.pushChangesForRestore(List.of(stepsChange, bloodPressureChange));
 
@@ -191,11 +192,9 @@ public class CloudRestoreManagerTest {
                         mReadAccessLogsHelper,
                         /* shouldRecordAccessLog= */ false);
         assertThat(records).hasSize(2);
-        // TODO: b/369801384 - Handle missing app name
-        assertThat(mRecordProtoConverter.toRecordProto(records.get(0)))
-                .isEqualTo(stepsRecord.toBuilder().clearAppName().build());
+        assertThat(mRecordProtoConverter.toRecordProto(records.get(0))).isEqualTo(stepsRecord);
         assertThat(mRecordProtoConverter.toRecordProto(records.get(1)))
-                .isEqualTo(bloodPressureRecord.toBuilder().clearAppName().build());
+                .isEqualTo(bloodPressureRecord);
         assertThat(mAppInfoHelper.getRecordTypesToContributingPackagesMap())
                 .containsExactly(
                         RecordTypeIdentifier.RECORD_TYPE_STEPS,
