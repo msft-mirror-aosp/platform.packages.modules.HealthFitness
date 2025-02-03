@@ -52,6 +52,7 @@ import com.android.healthconnect.controller.tests.utils.atPosition
 import com.android.healthconnect.controller.tests.utils.di.FakeAppUtils
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
+import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.utils.logging.DataSourcesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
@@ -96,12 +97,14 @@ class DataSourcesFragmentTest {
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
         hiltRule.inject()
         whenever(dataSourcesViewModel.getCurrentSelection()).then { HealthDataCategory.ACTIVITY }
+        toggleAnimation(false)
     }
 
     @After
     fun tearDown() {
         (appUtils as FakeAppUtils).reset()
         reset(healthConnectLogger)
+        toggleAnimation(true)
     }
 
     @Test

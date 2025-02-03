@@ -27,7 +27,6 @@ import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
 import androidx.preference.PreferenceCategory
 import androidx.test.core.app.ActivityScenario
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -62,6 +61,7 @@ import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_DATA_SOURCE
 import com.android.healthconnect.controller.tests.utils.getDataOrigin
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
+import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.utils.logging.AllDataElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
@@ -109,6 +109,7 @@ class AllDataFragmentTest {
     @Before
     fun setup() {
         hiltRule.inject()
+        toggleAnimation(false)
         context = InstrumentationRegistry.getInstrumentation().context
         navHostController = TestNavHostController(context)
         context.setLocale(Locale.US)
@@ -116,6 +117,7 @@ class AllDataFragmentTest {
 
     @After
     fun tearDown() {
+        toggleAnimation(true)
         reset(healthConnectLogger)
     }
 
@@ -147,9 +149,6 @@ class AllDataFragmentTest {
 
         launchMedicalAllDataFragment()
 
-        // To prevent a race condition, wait for the screen elements to display before using
-        // the logger in the test, as it might not yet be available in the dependency tree.
-        onIdle()
         verify(healthConnectLogger, atLeast(1)).setPageId(PageName.ALL_MEDICAL_DATA_PAGE)
         verify(healthConnectLogger).logPageImpression()
     }
