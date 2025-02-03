@@ -286,13 +286,16 @@ public final class PermissionHelper {
     public static <T> T runWithUserFixedPermission(
             String packageName, String permission, ThrowingSupplier<T> supplier) throws Exception {
         SystemUtil.runShellCommand(
-                String.format("pm set-permission-flags %s %s user-fixed", packageName, permission));
+                String.format(
+                        "pm set-permission-flags --user %d %s %s user-fixed",
+                        UserHandle.myUserId(), packageName, permission));
         try {
             return supplier.get();
         } finally {
             SystemUtil.runShellCommand(
                     String.format(
-                            "pm clear-permission-flags %s %s user-fixed", packageName, permission));
+                            "pm clear-permission-flags --user %d %s %s user-fixed",
+                            UserHandle.myUserId(), packageName, permission));
         }
     }
 }
