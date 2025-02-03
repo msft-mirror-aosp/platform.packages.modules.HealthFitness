@@ -22,12 +22,12 @@ import static com.android.server.healthconnect.backuprestore.BackupSettingsHelpe
 import static com.android.server.healthconnect.backuprestore.BackupSettingsHelper.HEIGHT_UNIT_PREF_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupSettingsHelper.TEMPERATURE_UNIT_PREF_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupSettingsHelper.WEIGHT_UNIT_PREF_KEY;
-import static com.android.server.healthconnect.proto.backuprestore.SettingsRecord.AutoDeleteFrequencyProto;
-import static com.android.server.healthconnect.proto.backuprestore.SettingsRecord.DistanceUnitProto;
-import static com.android.server.healthconnect.proto.backuprestore.SettingsRecord.EnergyUnitProto;
-import static com.android.server.healthconnect.proto.backuprestore.SettingsRecord.HeightUnitProto;
-import static com.android.server.healthconnect.proto.backuprestore.SettingsRecord.TemperatureUnitProto;
-import static com.android.server.healthconnect.proto.backuprestore.SettingsRecord.WeightUnitProto;
+import static com.android.server.healthconnect.proto.backuprestore.Settings.AutoDeleteFrequencyProto;
+import static com.android.server.healthconnect.proto.backuprestore.Settings.DistanceUnitProto;
+import static com.android.server.healthconnect.proto.backuprestore.Settings.EnergyUnitProto;
+import static com.android.server.healthconnect.proto.backuprestore.Settings.HeightUnitProto;
+import static com.android.server.healthconnect.proto.backuprestore.Settings.TemperatureUnitProto;
+import static com.android.server.healthconnect.proto.backuprestore.Settings.WeightUnitProto;
 import static com.android.server.healthconnect.storage.ExportImportSettingsStorage.EXPORT_PERIOD_PREFERENCE_KEY;
 import static com.android.server.healthconnect.storage.ExportImportSettingsStorage.EXPORT_URI_PREFERENCE_KEY;
 
@@ -45,10 +45,10 @@ import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
-import com.android.server.healthconnect.proto.backuprestore.SettingsRecord;
-import com.android.server.healthconnect.proto.backuprestore.SettingsRecord.AppInfo;
-import com.android.server.healthconnect.proto.backuprestore.SettingsRecord.ExportSettingsProto;
-import com.android.server.healthconnect.proto.backuprestore.SettingsRecord.PrioritizedAppIds;
+import com.android.server.healthconnect.proto.backuprestore.Settings;
+import com.android.server.healthconnect.proto.backuprestore.Settings.AppInfo;
+import com.android.server.healthconnect.proto.backuprestore.Settings.ExportSettingsProto;
+import com.android.server.healthconnect.proto.backuprestore.Settings.PrioritizedAppIds;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
@@ -128,7 +128,7 @@ public class BackupSettingsHelperTest {
                 mPriorityHelper.getHealthDataCategoryToAppIdPriorityMapImmutable();
         assertThat(priorityMapImmutable).isEmpty();
 
-        SettingsRecord userSettings = mBackupSettingsHelper.collectUserSettings();
+        Settings userSettings = mBackupSettingsHelper.collectUserSettings();
 
         Map<Integer, PrioritizedAppIds> actualResult = userSettings.getPriorityListMap();
 
@@ -144,7 +144,7 @@ public class BackupSettingsHelperTest {
 
         assertThat(expectedPriorityList).isNotEmpty();
 
-        SettingsRecord userSettings = mBackupSettingsHelper.collectUserSettings();
+        Settings userSettings = mBackupSettingsHelper.collectUserSettings();
 
         Map<Integer, PrioritizedAppIds> actualPriorityList = userSettings.getPriorityListMap();
         Map<Integer, List<Long>> parsedPriorityList =
@@ -158,7 +158,7 @@ public class BackupSettingsHelperTest {
         mAppInfoHelper.addOrUpdateAppInfoIfNoAppInfoEntryExists(
                 TEST_NEW_PACKAGE_NAME, TEST_APP_NAME);
 
-        SettingsRecord userSettings = mBackupSettingsHelper.collectUserSettings();
+        Settings userSettings = mBackupSettingsHelper.collectUserSettings();
 
         Map<String, AppInfo> appInfoMap = userSettings.getAppInfoMap();
 
@@ -213,7 +213,7 @@ public class BackupSettingsHelperTest {
         mPreferenceHelper.insertOrReplacePreference(
                 DISTANCE_UNIT_PREF_KEY, DistanceUnitProto.KILOMETERS.toString());
 
-        SettingsRecord userSettings = mBackupSettingsHelper.collectUserSettings();
+        Settings userSettings = mBackupSettingsHelper.collectUserSettings();
 
         assertThat(userSettings.getTemperatureUnitSetting())
                 .isEqualTo(TemperatureUnitProto.CELSIUS);
@@ -236,7 +236,7 @@ public class BackupSettingsHelperTest {
         mPreferenceHelper.insertOrReplacePreference(
                 DISTANCE_UNIT_PREF_KEY, DistanceUnitProto.MILES.toString());
 
-        SettingsRecord userSettings = mBackupSettingsHelper.collectUserSettings();
+        Settings userSettings = mBackupSettingsHelper.collectUserSettings();
 
         assertThat(userSettings.getTemperatureUnitSetting()).isEqualTo(TemperatureUnitProto.KELVIN);
         assertThat(userSettings.getEnergyUnitSetting()).isEqualTo(EnergyUnitProto.KILOJOULE);
@@ -250,7 +250,7 @@ public class BackupSettingsHelperTest {
         mPreferenceHelper.insertOrReplacePreference(EXPORT_URI_PREFERENCE_KEY, TEST_URI.toString());
         mPreferenceHelper.insertOrReplacePreference(EXPORT_PERIOD_PREFERENCE_KEY, "1");
 
-        SettingsRecord userSettings = mBackupSettingsHelper.collectUserSettings();
+        Settings userSettings = mBackupSettingsHelper.collectUserSettings();
 
         ExportSettingsProto exportSettingsProto =
                 ExportSettingsProto.newBuilder()
@@ -271,7 +271,7 @@ public class BackupSettingsHelperTest {
         mPreferenceHelper.insertOrReplacePreference(EXPORT_URI_PREFERENCE_KEY, TEST_URI.toString());
         mPreferenceHelper.insertOrReplacePreference(EXPORT_PERIOD_PREFERENCE_KEY, "7");
 
-        SettingsRecord userSettings = mBackupSettingsHelper.collectUserSettings();
+        Settings userSettings = mBackupSettingsHelper.collectUserSettings();
 
         ExportSettingsProto exportSettingsProto =
                 ExportSettingsProto.newBuilder()
@@ -292,7 +292,7 @@ public class BackupSettingsHelperTest {
         mPreferenceHelper.insertOrReplacePreference(EXPORT_URI_PREFERENCE_KEY, TEST_URI.toString());
         mPreferenceHelper.insertOrReplacePreference(EXPORT_PERIOD_PREFERENCE_KEY, "30");
 
-        SettingsRecord userSettings = mBackupSettingsHelper.collectUserSettings();
+        Settings userSettings = mBackupSettingsHelper.collectUserSettings();
 
         ExportSettingsProto exportSettingsProto =
                 ExportSettingsProto.newBuilder()
@@ -313,7 +313,7 @@ public class BackupSettingsHelperTest {
         mPreferenceHelper.insertOrReplacePreference(
                 AUTO_DELETE_PREF_KEY, AutoDeleteFrequencyProto.AUTO_DELETE_RANGE_NEVER.toString());
 
-        SettingsRecord userSettings = mBackupSettingsHelper.collectUserSettings();
+        Settings userSettings = mBackupSettingsHelper.collectUserSettings();
 
         assertThat(userSettings.getAutoDeleteFrequency())
                 .isEqualTo(AutoDeleteFrequencyProto.AUTO_DELETE_RANGE_NEVER);
@@ -325,7 +325,7 @@ public class BackupSettingsHelperTest {
                 AUTO_DELETE_PREF_KEY,
                 AutoDeleteFrequencyProto.AUTO_DELETE_RANGE_THREE_MONTHS.toString());
 
-        SettingsRecord userSettings = mBackupSettingsHelper.collectUserSettings();
+        Settings userSettings = mBackupSettingsHelper.collectUserSettings();
 
         assertThat(userSettings.getAutoDeleteFrequency())
                 .isEqualTo(AutoDeleteFrequencyProto.AUTO_DELETE_RANGE_THREE_MONTHS);
@@ -337,7 +337,7 @@ public class BackupSettingsHelperTest {
                 AUTO_DELETE_PREF_KEY,
                 AutoDeleteFrequencyProto.AUTO_DELETE_RANGE_EIGHTEEN_MONTHS.toString());
 
-        SettingsRecord userSettings = mBackupSettingsHelper.collectUserSettings();
+        Settings userSettings = mBackupSettingsHelper.collectUserSettings();
 
         assertThat(userSettings.getAutoDeleteFrequency())
                 .isEqualTo(AutoDeleteFrequencyProto.AUTO_DELETE_RANGE_EIGHTEEN_MONTHS);

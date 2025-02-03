@@ -22,16 +22,16 @@ import static com.android.server.healthconnect.storage.ExportImportSettingsStora
 import android.util.Slog;
 
 import com.android.internal.annotations.VisibleForTesting;
-import com.android.server.healthconnect.proto.backuprestore.SettingsRecord;
-import com.android.server.healthconnect.proto.backuprestore.SettingsRecord.AppInfo;
-import com.android.server.healthconnect.proto.backuprestore.SettingsRecord.AutoDeleteFrequencyProto;
-import com.android.server.healthconnect.proto.backuprestore.SettingsRecord.DistanceUnitProto;
-import com.android.server.healthconnect.proto.backuprestore.SettingsRecord.EnergyUnitProto;
-import com.android.server.healthconnect.proto.backuprestore.SettingsRecord.ExportSettingsProto;
-import com.android.server.healthconnect.proto.backuprestore.SettingsRecord.HeightUnitProto;
-import com.android.server.healthconnect.proto.backuprestore.SettingsRecord.PrioritizedAppIds;
-import com.android.server.healthconnect.proto.backuprestore.SettingsRecord.TemperatureUnitProto;
-import com.android.server.healthconnect.proto.backuprestore.SettingsRecord.WeightUnitProto;
+import com.android.server.healthconnect.proto.backuprestore.Settings;
+import com.android.server.healthconnect.proto.backuprestore.Settings.AppInfo;
+import com.android.server.healthconnect.proto.backuprestore.Settings.AutoDeleteFrequencyProto;
+import com.android.server.healthconnect.proto.backuprestore.Settings.DistanceUnitProto;
+import com.android.server.healthconnect.proto.backuprestore.Settings.EnergyUnitProto;
+import com.android.server.healthconnect.proto.backuprestore.Settings.ExportSettingsProto;
+import com.android.server.healthconnect.proto.backuprestore.Settings.HeightUnitProto;
+import com.android.server.healthconnect.proto.backuprestore.Settings.PrioritizedAppIds;
+import com.android.server.healthconnect.proto.backuprestore.Settings.TemperatureUnitProto;
+import com.android.server.healthconnect.proto.backuprestore.Settings.WeightUnitProto;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
@@ -43,7 +43,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
- * Class that manages compiling the user settings into a SettingsRecord object.
+ * Class that manages compiling the user settings into a proto.
  *
  * @hide
  */
@@ -74,11 +74,11 @@ public final class BackupSettingsHelper {
     /**
      * Collate the user's priority list and unit preferences into a single object.
      *
-     * @return the user's settings as a {@code SettingsRecord} object
+     * @return the user's settings as a {@code Settings} object
      */
-    public SettingsRecord collectUserSettings() {
-        SettingsRecord.Builder builder =
-                SettingsRecord.newBuilder()
+    public Settings collectUserSettings() {
+        Settings.Builder builder =
+                Settings.newBuilder()
                         .putAllPriorityList(getPriorityList())
                         .putAllAppInfo(getAppInfo())
                         .setAutoDeleteFrequency(getAutoDeleteSetting())
@@ -96,7 +96,7 @@ public final class BackupSettingsHelper {
      * Override the current settings with the provided new user settings, with the exception of the
      * priority list which should be a merged version of the old and new priority list.
      */
-    public void restoreUserSettings(SettingsRecord newUserSettings) {
+    public void restoreUserSettings(Settings newUserSettings) {
         mergePriorityLists(
                 mPriorityHelper.getHealthDataCategoryToAppIdPriorityMapImmutable(),
                 fromProtoToPriorityList(newUserSettings.getPriorityListMap()));
