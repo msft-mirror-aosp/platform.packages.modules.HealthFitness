@@ -16,6 +16,7 @@
 package com.android.server.healthconnect.backuprestore;
 
 import static android.health.connect.Constants.DEFAULT_LONG;
+import static android.health.connect.Constants.MAXIMUM_PAGE_SIZE;
 import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 
 import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTORE;
@@ -37,7 +38,6 @@ import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.util.Pair;
 
-import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.proto.backuprestore.BackupData;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
@@ -78,8 +78,6 @@ public class BackupDatabaseHelper {
     private final ReadAccessLogsHelper mReadAccessLogsHelper;
     private final RecordProtoConverter mRecordProtoConverter = new RecordProtoConverter();
 
-    // TODO: b/377648858 - maybe also allow client passes its own page size.
-    @VisibleForTesting static final int MAXIMUM_PAGE_SIZE = 5000;
     private static final String TAG = "BackupRestoreDatabaseHelper";
 
     public BackupDatabaseHelper(
