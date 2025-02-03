@@ -37,7 +37,6 @@ import android.healthconnect.cts.ui.HealthConnectBaseTest
 import android.platform.test.annotations.RequiresFlagsDisabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
-import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
 import com.google.common.truth.Truth.assertThat
 import org.junit.After
 import org.junit.Rule
@@ -53,20 +52,6 @@ class ManageAppHealthPermissionUITest : HealthConnectBaseTest() {
             navigateToManageAppPermissions()
 
             scrollDownToAndFindText("Height")
-        }
-    }
-
-    @Test
-    @RequiresFlagsDisabled(FLAG_NEW_INFORMATION_ARCHITECTURE)
-    fun showsAdditionalPermissions() {
-        context.launchMainActivity {
-            navigateToManageAppPermissions()
-
-            scrollDownToAndFindText("Delete app data")
-            scrollDownToAndFindText("Additional access")
-            clickOnTextAndWaitForNewWindow("Additional access")
-            scrollDownToAndFindText("Access past data")
-            scrollDownToAndFindText("Access data in the background")
         }
     }
 
