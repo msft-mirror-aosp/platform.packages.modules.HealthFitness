@@ -91,22 +91,7 @@ class HomeFragmentTest : HealthConnectBaseTest() {
     }
 
     @Test
-    @RequiresFlagsDisabled(FLAG_NEW_INFORMATION_ARCHITECTURE)
-    fun homeFragment_oldIa_opensDataManagement() {
-        context.launchMainActivity {
-            scrollDownToAndFindText("Data and access")
-            clickOnTextAndWaitForNewWindow("Data and access")
-
-            scrollDownToAndFindText("Browse data")
-            scrollDownToAndFindText("Manage data")
-
-            scrollDownToAndFindText("Delete all data")
-        }
-    }
-
-    @Test
-    @RequiresFlagsEnabled(FLAG_NEW_INFORMATION_ARCHITECTURE)
-    fun homeFragment_newIa_opensDataManagement() {
+    fun homeFragment_opensDataManagement() {
         context.launchMainActivity {
             scrollDownToAndFindText("Data and access")
             clickOnTextAndWaitForNewWindow("Data and access")

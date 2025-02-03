@@ -18,7 +18,6 @@ package com.android.healthconnect.controller.tests.permissions.connectedapps
 
 import android.platform.test.annotations.EnableFlags
 import android.platform.test.flag.junit.SetFlagsRule
-import com.android.healthconnect.controller.deletion.api.DeleteAppDataUseCase as OldDeleteAppDataUseCase
 import com.android.healthconnect.controller.permissions.additionalaccess.ExerciseRouteState
 import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState
 import com.android.healthconnect.controller.permissions.api.GrantHealthPermissionUseCase
@@ -85,7 +84,6 @@ class AppPermissionViewModelTest {
     private val getGrantedHealthPermissionsUseCase = FakeGetGrantedHealthPermissionsUseCase()
     private val loadAccessDateUseCase: LoadAccessDateUseCase = mock()
     private val deleteAppDataUseCase: DeleteAppDataUseCase = mock()
-    private val oldDeleteAppDataUseCase: OldDeleteAppDataUseCase = mock()
     private val revokeAllHealthPermissionsUseCase: RevokeAllHealthPermissionsUseCase = mock()
     private val revokePermissionStatusUseCase: RevokeHealthPermissionUseCase = mock()
     private val grantPermissionsUseCase: GrantHealthPermissionUseCase = mock()
@@ -134,7 +132,6 @@ class AppPermissionViewModelTest {
                 revokePermissionStatusUseCase,
                 revokeAllHealthPermissionsUseCase,
                 deleteAppDataUseCase,
-                oldDeleteAppDataUseCase,
                 loadAccessDateUseCase,
                 getGrantedHealthPermissionsUseCase,
                 loadExerciseRoutePermissionUseCase,
