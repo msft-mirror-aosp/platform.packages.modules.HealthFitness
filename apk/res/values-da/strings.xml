@@ -390,7 +390,7 @@
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Slet også <xliff:g id="APP_NAME">%1$s</xliff:g>-data fra Health Connect"</string>
     <string name="disconnect_all_fitness_permissions_title" msgid="7612364222525900592">"Vil du fjerne alle tilladelser for træning og sundhed?"</string>
     <string name="disconnect_all_fitness_permissions_dialog_checkbox" msgid="8808559689899914478">"Slet også træningsdata fra <xliff:g id="APP_NAME">%1$s</xliff:g> i Health Connect"</string>
-    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"Vil du fjerne alle tilladelser for sundhedsoplysninger?"</string>
+    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"Vil du fjerne alle tilladelser for sundhedsjournal?"</string>
     <string name="disconnect_all_medical_permissions_dialog_checkbox" msgid="7782158941871987263">"Slet også sundhedsoplysninger fra <xliff:g id="APP_NAME">%1$s</xliff:g> i Health Connect"</string>
     <string name="disconnect_all_fitness_or_medical_no_additional_permissions_dialog_message" msgid="6610810945930258582">"<xliff:g id="APP_NAME">%1$s</xliff:g> vil ikke længere kunne læse eller skrive disse data i Health Connect.\n\nDette påvirker ikke appens andre tilladelser, f.eks. adgang til kamera, mikrofon eller lokation."</string>
     <string name="disconnect_all_fitness_or_medical_and_background_permissions_dialog_message" msgid="7138878481421234556">"<xliff:g id="APP_NAME">%1$s</xliff:g> vil ikke længere kunne læse eller skrive disse data i Health Connect, herunder baggrundsdata.\n\nDette påvirker ikke appens andre tilladelser, f.eks. adgang til kamera, mikrofon eller lokation."</string>

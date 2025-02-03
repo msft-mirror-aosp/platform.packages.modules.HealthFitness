@@ -544,7 +544,7 @@
     <string name="onboarding_title" msgid="8550656211291180188">"Kom i gang med Health Connect"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect lagrer helse- og treningsdataene dine, slik at du enkelt kan synkronisere de forskjellige appene på enheten"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect lagrer og synkroniserer helse- og treningsdataene dine fra forskjellige apper.\n\n"<b>"Trenings- og velværedata,"</b>" inkludert treningsøkter, skritt, ernæring, søvn med mer\n\n"<b>"Helsejournaler,"</b>" inkludert vaksiner, laboratorieresultater med mer"</string>
-    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Med Health Connect kan du"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Med Health Connect kan du gjøre dette:"</string>
     <string name="share_data_text" msgid="6898398345784931678"><b>"Del data med appene dine"</b>\n"Velg dataene hver app kan lese eller skrive til Health Connect"</string>
     <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Administrer innstillingene dine og personvernet ditt"</b>\n"Endre apptillatelser og administrer dataene dine når som helst"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Gå tilbake"</string>

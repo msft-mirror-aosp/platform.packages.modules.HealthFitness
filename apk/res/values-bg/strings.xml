@@ -72,8 +72,8 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"проследяване на месечния цикъл"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"Хранене"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"хранене"</string>
-    <string name="wellness_category_uppercase" msgid="5900304317921557780">"Физическо благосъстояние"</string>
-    <string name="wellness_category_lowercase" msgid="1327642415424743588">"физическо благосъстояние"</string>
+    <string name="wellness_category_uppercase" msgid="5900304317921557780">"Уелнес"</string>
+    <string name="wellness_category_lowercase" msgid="1327642415424743588">"уелнес"</string>
     <string name="browse_data_category" msgid="4813955610391357638">"Разглеждане на данните"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"Управление на данните"</string>
     <string name="export_data_button" msgid="7783329820434117744">"Експортиране на данни"</string>
@@ -447,7 +447,7 @@
     <string name="additional_access_summary" msgid="1076197455435130191">"Минали данни, данни на заден план"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Допълнителните разрешения са премахнати за това приложение"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Разрешения"</string>
-    <string name="fitness_permissions" msgid="586264186537460254">"Физическа активност и благосъстояние"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"Физическа активност и уелнес"</string>
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"Упражнения, сън, хранене и др."</string>
     <string name="medical_permissions" msgid="1224097151249321566">"Здравни картони"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"здравни досиета"</string>
@@ -1011,7 +1011,7 @@
     <string name="reorder_button_content_description" msgid="2685032520710743533">"Бутон за плъзгане и пренареждане на <xliff:g id="SELECTED_APP">%s</xliff:g> в приоритетния списък"</string>
     <string name="remove_button_content_description" msgid="6170490900032612048">"Бутон за премахване на <xliff:g id="SELECTED_APP">%s</xliff:g> от приоритетния списък"</string>
     <string name="reorder_button_action_description" msgid="5197462036756192214">"Докоснете два пъти и плъзнете, за да пренаредите"</string>
-    <string name="search_keywords_home" msgid="5386515593026555327">"фитнес, благосъстояние"</string>
+    <string name="search_keywords_home" msgid="5386515593026555327">"физическа активност, уелнес"</string>
     <string name="search_keywords_permissions" msgid="7821010295153350533">"разрешения"</string>
     <string name="search_keywords_data" msgid="5359602744325490523">"Health Connect, здравни данни, здравни категории, достъп до данни, активност, мерки на тялото, проследяване на цикъла, хранене, сън, жизнени показатели"</string>
     <string name="search_breadcrumbs_permissions" msgid="2667471090347475796">"Health Connect &gt; Разрешения за приложението"</string>
@@ -1170,7 +1170,7 @@
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Да се разреши ли на <xliff:g id="APP_NAME">%1$s</xliff:g> достъп до данните за физическата активност и благосъстоянието?"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> иска достъп до <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nМожете да изберете да разрешите всички или да ги контролирате поотделно."</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Да се разреши ли на <xliff:g id="APP_NAME">%1$s</xliff:g> достъп до <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
-    <string name="fitness_and_wellness" msgid="2002316898861559748">"Физическа активност и благосъстояние"</string>
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"Физическа активност и уелнес"</string>
     <string name="view_permissions_all_the_time" msgid="6899702815770193290">"през цялото време"</string>
     <string name="view_permissions_while_in_use" msgid="2031627107397429473">"при използване"</string>
     <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"През цялото време"</string>
