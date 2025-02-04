@@ -1837,13 +1837,20 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
         mContext.enforceCallingPermission(
                 DELETE_STAGED_HEALTH_CONNECT_REMOTE_DATA_PERMISSION, null);
-        mBackupRestore.deleteAndResetEverything(userHandle);
-        mMigrationStateManager.clearCaches(mContext);
-        mDatabaseHelpers.clearAllData(mTransactionManager);
-        RateLimiter.clearCache();
-        String[] packageNames = mContext.getPackageManager().getPackagesForUid(getCallingUid());
-        for (String packageName : packageNames) {
-            mFirstGrantTimeManager.setFirstGrantTime(packageName, Instant.now(), userHandle);
+
+        int uid = Binder.getCallingUid();
+        long token = Binder.clearCallingIdentity();
+        try {
+            mBackupRestore.deleteAndResetEverything(userHandle);
+            mMigrationStateManager.clearCaches(mContext);
+            mDatabaseHelpers.clearAllData(mTransactionManager);
+            RateLimiter.clearCache();
+            String[] packageNames = mContext.getPackageManager().getPackagesForUid(uid);
+            for (String packageName : packageNames) {
+                mFirstGrantTimeManager.setFirstGrantTime(packageName, Instant.now(), userHandle);
+            }
+        } finally {
+            Binder.restoreCallingIdentity(token);
         }
     }
 
