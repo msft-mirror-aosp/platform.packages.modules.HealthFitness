@@ -23,9 +23,10 @@ import android.health.connect.datatypes.StepsRecord
 import android.healthconnect.cts.lib.ActivityLauncher.launchMainActivity
 import android.healthconnect.cts.lib.RecordFactory.newEmptyMetadata
 import android.healthconnect.cts.lib.TestAppProxy
-import android.healthconnect.cts.lib.UiTestUtils.clickOnTextAndWaitForNewWindow
 import android.healthconnect.cts.lib.UiTestUtils.findObject
 import android.healthconnect.cts.lib.UiTestUtils.findText
+import android.healthconnect.cts.lib.UiTestUtils.navigateToNewPage
+import android.healthconnect.cts.lib.UiTestUtils.navigateToSeeAppData
 import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndFindText
 import android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_ALLERGY
 import android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION
@@ -44,10 +45,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-@RequiresFlagsEnabled(
-    FLAG_PERSONAL_HEALTH_RECORD,
-    FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
-)
+@RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
 class MedicalAppDataFragmentTest : HealthConnectBaseTest() {
 
     @get:Rule val mCheckFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
@@ -78,13 +76,7 @@ class MedicalAppDataFragmentTest : HealthConnectBaseTest() {
     @Test
     fun medicalAppData_showsAvailableDataTypes() {
         context.launchMainActivity {
-            scrollDownToAndFindText("App permissions")
-            clickOnTextAndWaitForNewWindow("App permissions")
-            scrollDownToAndFindText("CtsHealthConnectTestAppAWithNormalReadWritePermission")
-            clickOnTextAndWaitForNewWindow("CtsHealthConnectTestAppAWithNormalReadWritePermission")
-
-            scrollDownToAndFindText("See app data")
-            clickOnTextAndWaitForNewWindow("See app data")
+            navigateToSeeAppData("CtsHealthConnectTestAppAWithNormalReadWritePermission")
 
             findText("CtsHealthConnectTestAppAWithNormalReadWritePermission")
             scrollDownToAndFindText("Allergies")
@@ -112,14 +104,7 @@ class MedicalAppDataFragmentTest : HealthConnectBaseTest() {
                 as List<Record>?
         )
         context.launchMainActivity {
-            scrollDownToAndFindText("App permissions")
-            clickOnTextAndWaitForNewWindow("App permissions")
-            scrollDownToAndFindText("CtsHealthConnectTestAppAWithNormalReadWritePermission")
-            clickOnTextAndWaitForNewWindow("CtsHealthConnectTestAppAWithNormalReadWritePermission")
-
-            scrollDownToAndFindText("See app data")
-            clickOnTextAndWaitForNewWindow("See app data")
-
+            navigateToSeeAppData("CtsHealthConnectTestAppAWithNormalReadWritePermission")
             findText("CtsHealthConnectTestAppAWithNormalReadWritePermission")
 
             scrollDownToAndFindText("Activity")
@@ -138,17 +123,10 @@ class MedicalAppDataFragmentTest : HealthConnectBaseTest() {
     @Test
     fun clickOnMedicalAppDataType_navigatesToMedicalAppEntries() {
         context.launchMainActivity {
-            scrollDownToAndFindText("App permissions")
-            clickOnTextAndWaitForNewWindow("App permissions")
-            scrollDownToAndFindText("CtsHealthConnectTestAppAWithNormalReadWritePermission")
-            clickOnTextAndWaitForNewWindow("CtsHealthConnectTestAppAWithNormalReadWritePermission")
-
-            scrollDownToAndFindText("See app data")
-            clickOnTextAndWaitForNewWindow("See app data")
+            navigateToSeeAppData("CtsHealthConnectTestAppAWithNormalReadWritePermission")
 
             findText("CtsHealthConnectTestAppAWithNormalReadWritePermission")
-            scrollDownToAndFindText("Allergies")
-            clickOnTextAndWaitForNewWindow("Allergies")
+            navigateToNewPage("Allergies")
 
             findText("CtsHealthConnectTestAppAWithNormalReadWritePermission")
             findObject(By.textContains("Hospital X"))

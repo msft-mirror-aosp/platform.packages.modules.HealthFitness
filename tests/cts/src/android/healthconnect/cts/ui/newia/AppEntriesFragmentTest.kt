@@ -23,11 +23,11 @@ import android.health.connect.datatypes.StepsRecord
 import android.healthconnect.cts.lib.ActivityLauncher.launchMainActivity
 import android.healthconnect.cts.lib.RecordFactory.newEmptyMetadata
 import android.healthconnect.cts.lib.TestAppProxy
-import android.healthconnect.cts.lib.UiTestUtils.clickOnTextAndWaitForNewWindow
 import android.healthconnect.cts.lib.UiTestUtils.findObjectAndClick
 import android.healthconnect.cts.lib.UiTestUtils.findText
 import android.healthconnect.cts.lib.UiTestUtils.findTextAndClick
-import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
+import android.healthconnect.cts.lib.UiTestUtils.navigateToNewPage
+import android.healthconnect.cts.lib.UiTestUtils.navigateToSeeAppData
 import android.healthconnect.cts.lib.UiTestUtils.scrollUpTo
 import android.healthconnect.cts.lib.UiTestUtils.verifyObjectNotFound
 import android.healthconnect.cts.lib.UiTestUtils.verifyTextNotFound
@@ -68,17 +68,11 @@ class AppEntriesFragmentTest : HealthConnectBaseTest() {
     @Test
     fun appEntriesScreen_displaysCorrectly() {
         context.launchMainActivity {
-            scrollDownTo(By.text("App permissions"))
-            clickOnTextAndWaitForNewWindow("App permissions")
-            clickOnTextAndWaitForNewWindow("CtsHealthConnectTestAppAWithNormalReadWritePermission")
-
-            scrollDownTo(By.text("See app data"))
-            clickOnTextAndWaitForNewWindow("See app data")
-
+            navigateToSeeAppData("CtsHealthConnectTestAppAWithNormalReadWritePermission")
             findText("CtsHealthConnectTestAppAWithNormalReadWritePermission")
 
             findText("Activity")
-            clickOnTextAndWaitForNewWindow("Steps")
+            navigateToNewPage("Steps")
 
             findText("CtsHealthConnectTestAppAWithNormalReadWritePermission")
             verifyTextNotFound("Entries")
@@ -95,15 +89,9 @@ class AppEntriesFragmentTest : HealthConnectBaseTest() {
     @Test
     fun appEntriesScreen_deletesAllData() {
         context.launchMainActivity {
-            scrollDownTo(By.text("App permissions"))
-            clickOnTextAndWaitForNewWindow("App permissions")
-            clickOnTextAndWaitForNewWindow("CtsHealthConnectTestAppAWithNormalReadWritePermission")
-
-            scrollDownTo(By.text("See app data"))
-            clickOnTextAndWaitForNewWindow("See app data")
-
+            navigateToSeeAppData("CtsHealthConnectTestAppAWithNormalReadWritePermission")
             findText("Activity")
-            clickOnTextAndWaitForNewWindow("Steps")
+            navigateToNewPage("Steps")
 
             findText("CtsHealthConnectTestAppAWithNormalReadWritePermission")
             verifyObjectNotFound(By.text("Select all"))
