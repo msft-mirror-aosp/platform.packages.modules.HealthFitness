@@ -66,7 +66,7 @@ import java.util.stream.Collectors;
  * @hide
  */
 @FlaggedApi(FLAG_CLOUD_BACKUP_AND_RESTORE)
-public class BackupDatabaseHelper {
+public class CloudBackupDatabaseHelper {
     private final AppInfoHelper mAppInfoHelper;
     private final TransactionManager mTransactionManager;
     private final AccessLogsHelper mAccessLogsHelper;
@@ -78,9 +78,9 @@ public class BackupDatabaseHelper {
     private final ReadAccessLogsHelper mReadAccessLogsHelper;
     private final RecordProtoConverter mRecordProtoConverter = new RecordProtoConverter();
 
-    private static final String TAG = "BackupRestoreDatabaseHelper";
+    private static final String TAG = "CloudBackupRestoreDatabaseHelper";
 
-    public BackupDatabaseHelper(
+    public CloudBackupDatabaseHelper(
             TransactionManager transactionManager,
             AppInfoHelper appInfoHelper,
             AccessLogsHelper accessLogsHelper,
@@ -148,7 +148,7 @@ public class BackupDatabaseHelper {
         String changeLogsTablePageToken =
                 changeLogsPageToken == null ? getChangeLogsPageToken() : changeLogsPageToken;
 
-        //  TODO: b/377648858 - find a better approach to force the dependent data type orders
+        // TODO: b/377648858 - find a better approach to force the dependent data type orders
         List<Integer> recordTypes = getRecordTypes();
 
         List<BackupChange> backupChanges = new ArrayList<>();

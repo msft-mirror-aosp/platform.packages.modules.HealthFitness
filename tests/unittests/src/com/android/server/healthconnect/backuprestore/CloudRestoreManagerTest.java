@@ -16,12 +16,12 @@
 
 package com.android.server.healthconnect.backuprestore;
 
-import static com.android.server.healthconnect.backuprestore.BackupSettingsHelper.AUTO_DELETE_PREF_KEY;
-import static com.android.server.healthconnect.backuprestore.BackupSettingsHelper.DISTANCE_UNIT_PREF_KEY;
-import static com.android.server.healthconnect.backuprestore.BackupSettingsHelper.ENERGY_UNIT_PREF_KEY;
-import static com.android.server.healthconnect.backuprestore.BackupSettingsHelper.HEIGHT_UNIT_PREF_KEY;
-import static com.android.server.healthconnect.backuprestore.BackupSettingsHelper.TEMPERATURE_UNIT_PREF_KEY;
-import static com.android.server.healthconnect.backuprestore.BackupSettingsHelper.WEIGHT_UNIT_PREF_KEY;
+import static com.android.server.healthconnect.backuprestore.CloudBackupSettingsHelper.AUTO_DELETE_PREF_KEY;
+import static com.android.server.healthconnect.backuprestore.CloudBackupSettingsHelper.DISTANCE_UNIT_PREF_KEY;
+import static com.android.server.healthconnect.backuprestore.CloudBackupSettingsHelper.ENERGY_UNIT_PREF_KEY;
+import static com.android.server.healthconnect.backuprestore.CloudBackupSettingsHelper.HEIGHT_UNIT_PREF_KEY;
+import static com.android.server.healthconnect.backuprestore.CloudBackupSettingsHelper.TEMPERATURE_UNIT_PREF_KEY;
+import static com.android.server.healthconnect.backuprestore.CloudBackupSettingsHelper.WEIGHT_UNIT_PREF_KEY;
 import static com.android.server.healthconnect.backuprestore.RecordProtoConverter.PROTO_VERSION;
 import static com.android.server.healthconnect.proto.backuprestore.Settings.AutoDeleteFrequencyProto.AUTO_DELETE_RANGE_UNSPECIFIED;
 import static com.android.server.healthconnect.proto.backuprestore.Settings.DistanceUnitProto.DISTANCE_UNIT_UNSPECIFIED;
@@ -205,8 +205,8 @@ public class CloudRestoreManagerTest {
 
     @Test
     public void whenPushSettingsForRestoreCalled_noExportSettings_settingsSuccessfullyRestored() {
-        BackupSettingsHelper backupSettingsHelper =
-                new BackupSettingsHelper(mPriorityHelper, mPreferenceHelper, mAppInfoHelper);
+        CloudBackupSettingsHelper cloudBackupSettingsHelper =
+                new CloudBackupSettingsHelper(mPriorityHelper, mPreferenceHelper, mAppInfoHelper);
 
         Settings.PrioritizedAppIds expectedAppIds =
                 Settings.PrioritizedAppIds.newBuilder()
@@ -223,15 +223,15 @@ public class CloudRestoreManagerTest {
 
         mCloudRestoreManager.pushSettingsForRestore(backupSettings);
 
-        Settings currentSettings = backupSettingsHelper.collectUserSettings();
+        Settings currentSettings = cloudBackupSettingsHelper.collectUserSettings();
 
         assertSettingsCorrectlyUpdated(settingsToRestore, currentSettings, expectedPriorityList);
     }
 
     @Test
     public void whenPushSettingsForRestoreCalled_withExportSettings_settingsSuccessfullyRestored() {
-        BackupSettingsHelper backupSettingsHelper =
-                new BackupSettingsHelper(mPriorityHelper, mPreferenceHelper, mAppInfoHelper);
+        CloudBackupSettingsHelper cloudBackupSettingsHelper =
+                new CloudBackupSettingsHelper(mPriorityHelper, mPreferenceHelper, mAppInfoHelper);
 
         Settings.PrioritizedAppIds expectedAppIds =
                 Settings.PrioritizedAppIds.newBuilder()
@@ -249,7 +249,7 @@ public class CloudRestoreManagerTest {
 
         mCloudRestoreManager.pushSettingsForRestore(backupSettings);
 
-        Settings currentSettings = backupSettingsHelper.collectUserSettings();
+        Settings currentSettings = cloudBackupSettingsHelper.collectUserSettings();
 
         assertSettingsCorrectlyUpdated(settingsToRestore, currentSettings, expectedPriorityList);
     }
@@ -257,8 +257,8 @@ public class CloudRestoreManagerTest {
     @Test
     public void
             whenPushSettingsForRestoreCalled_withUnspecifiedEnums_settingsSuccessfullyRestored() {
-        BackupSettingsHelper backupSettingsHelper =
-                new BackupSettingsHelper(mPriorityHelper, mPreferenceHelper, mAppInfoHelper);
+        CloudBackupSettingsHelper cloudBackupSettingsHelper =
+                new CloudBackupSettingsHelper(mPriorityHelper, mPreferenceHelper, mAppInfoHelper);
 
         mPreferenceHelper.insertOrReplacePreference(
                 ENERGY_UNIT_PREF_KEY, Settings.EnergyUnitProto.CALORIE.toString());
@@ -278,7 +278,7 @@ public class CloudRestoreManagerTest {
 
         mCloudRestoreManager.pushSettingsForRestore(backupSettings);
 
-        Settings currentSettings = backupSettingsHelper.collectUserSettings();
+        Settings currentSettings = cloudBackupSettingsHelper.collectUserSettings();
 
         assertSettingsCorrectlyUpdated(settingsToRestore, currentSettings, expectedPriorityList);
     }

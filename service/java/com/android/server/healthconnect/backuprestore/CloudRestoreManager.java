@@ -73,12 +73,12 @@ public class CloudRestoreManager {
     /** Takes the serialized user settings and overwrites existing settings. */
     public void pushSettingsForRestore(BackupSettings newSettings) {
         Slog.i(TAG, "Restoring user settings.");
-        BackupSettingsHelper backupSettingsHelper =
-                new BackupSettingsHelper(mPriorityHelper, mPreferenceHelper, mAppInfoHelper);
+        CloudBackupSettingsHelper cloudBackupSettingsHelper =
+                new CloudBackupSettingsHelper(mPriorityHelper, mPreferenceHelper, mAppInfoHelper);
 
         byte[] data = newSettings.getData();
         try {
-            backupSettingsHelper.restoreUserSettings(Settings.parseFrom(data));
+            cloudBackupSettingsHelper.restoreUserSettings(Settings.parseFrom(data));
         } catch (Exception e) {
             throw new IllegalArgumentException(
                     "Unable to parse BackupSettings object back into"
