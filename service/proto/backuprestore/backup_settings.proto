@@ -4,11 +4,7 @@ package com.android.server.healthconnect.proto.backuprestore;
 
 option java_multiple_files = true;
 
-message BackupSettingsProto {
-  SettingsRecord record = 1;
-}
-
-message SettingsRecord {
+message Settings {
   map<int32, PrioritizedAppIds> priority_list = 1;
   optional ExportSettingsProto export_settings = 2;
   AutoDeleteFrequencyProto auto_delete_frequency = 3;

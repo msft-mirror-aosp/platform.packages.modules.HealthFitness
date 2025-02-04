@@ -23,12 +23,12 @@ import static com.android.server.healthconnect.backuprestore.BackupSettingsHelpe
 import static com.android.server.healthconnect.backuprestore.BackupSettingsHelper.TEMPERATURE_UNIT_PREF_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupSettingsHelper.WEIGHT_UNIT_PREF_KEY;
 import static com.android.server.healthconnect.backuprestore.RecordProtoConverter.PROTO_VERSION;
-import static com.android.server.healthconnect.proto.backuprestore.SettingsRecord.AutoDeleteFrequencyProto.AUTO_DELETE_RANGE_UNSPECIFIED;
-import static com.android.server.healthconnect.proto.backuprestore.SettingsRecord.DistanceUnitProto.DISTANCE_UNIT_UNSPECIFIED;
-import static com.android.server.healthconnect.proto.backuprestore.SettingsRecord.EnergyUnitProto.ENERGY_UNIT_UNSPECIFIED;
-import static com.android.server.healthconnect.proto.backuprestore.SettingsRecord.HeightUnitProto.HEIGHT_UNIT_UNSPECIFIED;
-import static com.android.server.healthconnect.proto.backuprestore.SettingsRecord.TemperatureUnitProto.TEMPERATURE_UNIT_UNSPECIFIED;
-import static com.android.server.healthconnect.proto.backuprestore.SettingsRecord.WeightUnitProto.WEIGHT_UNIT_UNSPECIFIED;
+import static com.android.server.healthconnect.proto.backuprestore.Settings.AutoDeleteFrequencyProto.AUTO_DELETE_RANGE_UNSPECIFIED;
+import static com.android.server.healthconnect.proto.backuprestore.Settings.DistanceUnitProto.DISTANCE_UNIT_UNSPECIFIED;
+import static com.android.server.healthconnect.proto.backuprestore.Settings.EnergyUnitProto.ENERGY_UNIT_UNSPECIFIED;
+import static com.android.server.healthconnect.proto.backuprestore.Settings.HeightUnitProto.HEIGHT_UNIT_UNSPECIFIED;
+import static com.android.server.healthconnect.proto.backuprestore.Settings.TemperatureUnitProto.TEMPERATURE_UNIT_UNSPECIFIED;
+import static com.android.server.healthconnect.proto.backuprestore.Settings.WeightUnitProto.WEIGHT_UNIT_UNSPECIFIED;
 import static com.android.server.healthconnect.storage.ExportImportSettingsStorage.EXPORT_PERIOD_PREFERENCE_KEY;
 import static com.android.server.healthconnect.storage.ExportImportSettingsStorage.EXPORT_URI_PREFERENCE_KEY;
 
@@ -55,7 +55,7 @@ import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.proto.backuprestore.BackupData;
 import com.android.server.healthconnect.proto.backuprestore.Record;
-import com.android.server.healthconnect.proto.backuprestore.SettingsRecord;
+import com.android.server.healthconnect.proto.backuprestore.Settings;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
@@ -209,25 +209,24 @@ public class CloudRestoreManagerTest {
         BackupSettingsHelper backupSettingsHelper =
                 new BackupSettingsHelper(mPriorityHelper, mPreferenceHelper, mAppInfoHelper);
 
-        SettingsRecord.PrioritizedAppIds expectedAppIds =
-                SettingsRecord.PrioritizedAppIds.newBuilder()
+        Settings.PrioritizedAppIds expectedAppIds =
+                Settings.PrioritizedAppIds.newBuilder()
                         .addAppId(mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME))
                         .addAppId(mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME_2))
                         .addAppId(mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME_3))
                         .build();
-        Map<Integer, SettingsRecord.PrioritizedAppIds> expectedPriorityList = new HashMap<>();
+        Map<Integer, Settings.PrioritizedAppIds> expectedPriorityList = new HashMap<>();
         expectedPriorityList.put(HealthDataCategory.ACTIVITY, expectedAppIds);
 
         setupInitialSettings(false);
-        SettingsRecord settingsToRestore = createSettingsToRestore(false, false);
+        Settings settingsToRestore = createSettingsToRestore(false, false);
         BackupSettings backupSettings = new BackupSettings(1, settingsToRestore.toByteArray());
 
         mCloudRestoreManager.pushSettingsForRestore(backupSettings);
 
-        SettingsRecord currentSettings = backupSettingsHelper.collectUserSettings();
+        Settings currentSettings = backupSettingsHelper.collectUserSettings();
 
-        assertSettingsRecordCorrectlyUpdated(
-                settingsToRestore, currentSettings, expectedPriorityList);
+        assertSettingsCorrectlyUpdated(settingsToRestore, currentSettings, expectedPriorityList);
     }
 
     @Test
@@ -235,26 +234,25 @@ public class CloudRestoreManagerTest {
         BackupSettingsHelper backupSettingsHelper =
                 new BackupSettingsHelper(mPriorityHelper, mPreferenceHelper, mAppInfoHelper);
 
-        SettingsRecord.PrioritizedAppIds expectedAppIds =
-                SettingsRecord.PrioritizedAppIds.newBuilder()
+        Settings.PrioritizedAppIds expectedAppIds =
+                Settings.PrioritizedAppIds.newBuilder()
                         .addAppId(mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME))
                         .addAppId(mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME_2))
                         .addAppId(mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME_3))
                         .build();
-        Map<Integer, SettingsRecord.PrioritizedAppIds> expectedPriorityList = new HashMap<>();
+        Map<Integer, Settings.PrioritizedAppIds> expectedPriorityList = new HashMap<>();
         expectedPriorityList.put(HealthDataCategory.ACTIVITY, expectedAppIds);
 
         setupInitialSettings(true);
-        SettingsRecord settingsToRestore = createSettingsToRestore(true, false);
+        Settings settingsToRestore = createSettingsToRestore(true, false);
 
         BackupSettings backupSettings = new BackupSettings(1, settingsToRestore.toByteArray());
 
         mCloudRestoreManager.pushSettingsForRestore(backupSettings);
 
-        SettingsRecord currentSettings = backupSettingsHelper.collectUserSettings();
+        Settings currentSettings = backupSettingsHelper.collectUserSettings();
 
-        assertSettingsRecordCorrectlyUpdated(
-                settingsToRestore, currentSettings, expectedPriorityList);
+        assertSettingsCorrectlyUpdated(settingsToRestore, currentSettings, expectedPriorityList);
     }
 
     @Test
@@ -264,27 +262,26 @@ public class CloudRestoreManagerTest {
                 new BackupSettingsHelper(mPriorityHelper, mPreferenceHelper, mAppInfoHelper);
 
         mPreferenceHelper.insertOrReplacePreference(
-                ENERGY_UNIT_PREF_KEY, SettingsRecord.EnergyUnitProto.CALORIE.toString());
+                ENERGY_UNIT_PREF_KEY, Settings.EnergyUnitProto.CALORIE.toString());
 
-        SettingsRecord.PrioritizedAppIds expectedAppIds =
-                SettingsRecord.PrioritizedAppIds.newBuilder()
+        Settings.PrioritizedAppIds expectedAppIds =
+                Settings.PrioritizedAppIds.newBuilder()
                         .addAppId(mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME))
                         .addAppId(mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME_2))
                         .addAppId(mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME_3))
                         .build();
-        Map<Integer, SettingsRecord.PrioritizedAppIds> expectedPriorityList = new HashMap<>();
+        Map<Integer, Settings.PrioritizedAppIds> expectedPriorityList = new HashMap<>();
         expectedPriorityList.put(HealthDataCategory.ACTIVITY, expectedAppIds);
 
         setupInitialSettings(false);
-        SettingsRecord settingsToRestore = createSettingsToRestore(false, true);
+        Settings settingsToRestore = createSettingsToRestore(false, true);
         BackupSettings backupSettings = new BackupSettings(1, settingsToRestore.toByteArray());
 
         mCloudRestoreManager.pushSettingsForRestore(backupSettings);
 
-        SettingsRecord currentSettings = backupSettingsHelper.collectUserSettings();
+        Settings currentSettings = backupSettingsHelper.collectUserSettings();
 
-        assertSettingsRecordCorrectlyUpdated(
-                settingsToRestore, currentSettings, expectedPriorityList);
+        assertSettingsCorrectlyUpdated(settingsToRestore, currentSettings, expectedPriorityList);
     }
 
     private void setupInitialSettings(boolean includeExportSettings) {
@@ -292,17 +289,17 @@ public class CloudRestoreManagerTest {
                 HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME, TEST_PACKAGE_NAME_2));
         mPreferenceHelper.insertOrReplacePreference(
                 AUTO_DELETE_PREF_KEY,
-                SettingsRecord.AutoDeleteFrequencyProto.AUTO_DELETE_RANGE_NEVER.toString());
+                Settings.AutoDeleteFrequencyProto.AUTO_DELETE_RANGE_NEVER.toString());
         mPreferenceHelper.insertOrReplacePreference(
-                ENERGY_UNIT_PREF_KEY, SettingsRecord.EnergyUnitProto.CALORIE.toString());
+                ENERGY_UNIT_PREF_KEY, Settings.EnergyUnitProto.CALORIE.toString());
         mPreferenceHelper.insertOrReplacePreference(
-                TEMPERATURE_UNIT_PREF_KEY, SettingsRecord.TemperatureUnitProto.CELSIUS.toString());
+                TEMPERATURE_UNIT_PREF_KEY, Settings.TemperatureUnitProto.CELSIUS.toString());
         mPreferenceHelper.insertOrReplacePreference(
-                HEIGHT_UNIT_PREF_KEY, SettingsRecord.HeightUnitProto.CENTIMETERS.toString());
+                HEIGHT_UNIT_PREF_KEY, Settings.HeightUnitProto.CENTIMETERS.toString());
         mPreferenceHelper.insertOrReplacePreference(
-                WEIGHT_UNIT_PREF_KEY, SettingsRecord.WeightUnitProto.POUND.toString());
+                WEIGHT_UNIT_PREF_KEY, Settings.WeightUnitProto.POUND.toString());
         mPreferenceHelper.insertOrReplacePreference(
-                DISTANCE_UNIT_PREF_KEY, SettingsRecord.DistanceUnitProto.KILOMETERS.toString());
+                DISTANCE_UNIT_PREF_KEY, Settings.DistanceUnitProto.KILOMETERS.toString());
 
         if (includeExportSettings) {
             mPreferenceHelper.insertOrReplacePreference(EXPORT_URI_PREFERENCE_KEY, EXPORT_URI);
@@ -310,50 +307,50 @@ public class CloudRestoreManagerTest {
         }
     }
 
-    private SettingsRecord createSettingsToRestore(
+    private Settings createSettingsToRestore(
             boolean includeExportSettings, boolean setEnergyUnitAsUnspecified) {
 
-        SettingsRecord.PrioritizedAppIds newAppIds =
-                SettingsRecord.PrioritizedAppIds.newBuilder()
+        Settings.PrioritizedAppIds newAppIds =
+                Settings.PrioritizedAppIds.newBuilder()
                         .addAppId(mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME_2))
                         .addAppId(mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME_3))
                         .addAppId(mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME))
                         .build();
-        Map<Integer, SettingsRecord.PrioritizedAppIds> newPriorityList = new HashMap<>();
+        Map<Integer, Settings.PrioritizedAppIds> newPriorityList = new HashMap<>();
         newPriorityList.put(HealthDataCategory.ACTIVITY, newAppIds);
 
-        SettingsRecord.Builder settingsRecordBuilder = SettingsRecord.newBuilder();
+        Settings.Builder settingsRecordBuilder = Settings.newBuilder();
 
         if (includeExportSettings) {
             settingsRecordBuilder.setExportSettings(
-                    SettingsRecord.ExportSettingsProto.newBuilder()
+                    Settings.ExportSettingsProto.newBuilder()
                             .setFrequency(30)
                             .setUri(EXPORT_URI_2)
                             .build());
         }
 
-        SettingsRecord.EnergyUnitProto energyUnitSetting =
+        Settings.EnergyUnitProto energyUnitSetting =
                 setEnergyUnitAsUnspecified
                         ? ENERGY_UNIT_UNSPECIFIED
-                        : SettingsRecord.EnergyUnitProto.KILOJOULE;
+                        : Settings.EnergyUnitProto.KILOJOULE;
 
         settingsRecordBuilder
                 .putAllPriorityList(newPriorityList)
                 .setAutoDeleteFrequency(
-                        SettingsRecord.AutoDeleteFrequencyProto.AUTO_DELETE_RANGE_THREE_MONTHS)
+                        Settings.AutoDeleteFrequencyProto.AUTO_DELETE_RANGE_THREE_MONTHS)
                 .setEnergyUnitSetting(energyUnitSetting)
-                .setTemperatureUnitSetting(SettingsRecord.TemperatureUnitProto.KELVIN)
-                .setHeightUnitSetting(SettingsRecord.HeightUnitProto.FEET)
-                .setWeightUnitSetting(SettingsRecord.WeightUnitProto.KILOGRAM)
-                .setDistanceUnitSetting(SettingsRecord.DistanceUnitProto.MILES);
+                .setTemperatureUnitSetting(Settings.TemperatureUnitProto.KELVIN)
+                .setHeightUnitSetting(Settings.HeightUnitProto.FEET)
+                .setWeightUnitSetting(Settings.WeightUnitProto.KILOGRAM)
+                .setDistanceUnitSetting(Settings.DistanceUnitProto.MILES);
 
         return settingsRecordBuilder.build();
     }
 
-    private void assertSettingsRecordCorrectlyUpdated(
-            SettingsRecord settingsFromBackup,
-            SettingsRecord restoredSettings,
-            Map<Integer, SettingsRecord.PrioritizedAppIds> expectedMergedPriorityList) {
+    private void assertSettingsCorrectlyUpdated(
+            Settings settingsFromBackup,
+            Settings restoredSettings,
+            Map<Integer, Settings.PrioritizedAppIds> expectedMergedPriorityList) {
 
         if (settingsFromBackup.getEnergyUnitSetting() == ENERGY_UNIT_UNSPECIFIED) {
             assertNotSame(ENERGY_UNIT_UNSPECIFIED, restoredSettings.getEnergyUnitSetting());

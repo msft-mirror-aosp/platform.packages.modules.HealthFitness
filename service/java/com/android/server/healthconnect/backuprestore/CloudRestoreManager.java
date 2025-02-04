@@ -27,7 +27,7 @@ import android.util.Slog;
 
 import com.android.server.healthconnect.proto.backuprestore.BackupData;
 import com.android.server.healthconnect.proto.backuprestore.Record;
-import com.android.server.healthconnect.proto.backuprestore.SettingsRecord;
+import com.android.server.healthconnect.proto.backuprestore.Settings;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
@@ -78,8 +78,7 @@ public class CloudRestoreManager {
 
         byte[] data = newSettings.getData();
         try {
-            SettingsRecord parsedSettings = SettingsRecord.parseFrom(data);
-            backupSettingsHelper.restoreUserSettings(parsedSettings);
+            backupSettingsHelper.restoreUserSettings(Settings.parseFrom(data));
         } catch (Exception e) {
             throw new IllegalArgumentException(
                     "Unable to parse BackupSettings object back into"

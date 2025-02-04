@@ -15,9 +15,9 @@
  */
 package com.android.server.healthconnect.backuprestore;
 
+import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
 import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 
-import static com.android.server.healthconnect.backuprestore.BackupDatabaseHelper.MAXIMUM_PAGE_SIZE;
 import static com.android.server.healthconnect.testing.storage.TransactionTestUtils.createStepsRecord;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -165,7 +165,7 @@ public class CloudBackupManagerTest {
     @Test
     public void getChangesForBackup_dataTableIsNotNull_succeed() {
         List<RecordInternal<?>> records = new ArrayList<>();
-        for (int recordNumber = 0; recordNumber < MAXIMUM_PAGE_SIZE + 1; recordNumber++) {
+        for (int recordNumber = 0; recordNumber < DEFAULT_PAGE_SIZE + 1; recordNumber++) {
             records.add(
                     createStepsRecord(
                             // Add offsets to start time and end time for distinguishing different
@@ -186,9 +186,9 @@ public class CloudBackupManagerTest {
     @Test
     public void getChangesForBackup_changeLogsTokenInvalid_invalidateToken() {
         List<RecordInternal<?>> records = new ArrayList<>();
-        // Use MAXIMUM_PAGE_SIZE + 1 to make sure the returned change token, which to be used for
+        // Use DEFAULT_PAGE_SIZE + 1 to make sure the returned change token, which to be used for
         // the second call of getChangesForBackup, is not empty.
-        for (int recordNumber = 0; recordNumber < MAXIMUM_PAGE_SIZE + 1; recordNumber++) {
+        for (int recordNumber = 0; recordNumber < DEFAULT_PAGE_SIZE + 1; recordNumber++) {
             records.add(
                     createStepsRecord(
                             // Add offsets to start time and end time for distinguishing different
