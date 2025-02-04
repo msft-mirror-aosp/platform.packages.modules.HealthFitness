@@ -24,6 +24,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import com.android.healthconnect.controller.R
@@ -33,6 +34,7 @@ import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.OnboardingElement
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled
+import com.android.settingslib.collapsingtoolbar.EdgeToEdgeUtils
 import com.google.android.setupcompat.template.FooterBarMixin
 import com.google.android.setupcompat.template.FooterButton
 import com.google.android.setupdesign.GlifLayout
@@ -83,16 +85,27 @@ class OnboardingActivity : Hilt_OnboardingActivity() {
         window.addSystemFlags(
             WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS
         )
-
-        ThemeHelper.trySetSuwTheme(this)
-        setContentView(R.layout.onboarding_screen)
-
         if (intent.hasExtra(TARGET_ACTIVITY_INTENT)) {
             targetIntent = intent.getParcelableExtra(TARGET_ACTIVITY_INTENT)
         }
 
         logger.setPageId(PageName.ONBOARDING_PAGE)
 
+        if (ThemeHelper.shouldApplyGlifExpressiveStyle(this)) {
+            setupExpressiveOnboarding()
+        } else {
+            setupLegacyOnboarding()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        logger.logPageImpression()
+    }
+
+    private fun setupExpressiveOnboarding() {
+        ThemeHelper.trySetSuwTheme(this)
+        setContentView(R.layout.onboarding_screen)
         val layout = findViewById<GlifLayout>(R.id.onboarding)
 
         val headerMixin = layout.getMixin(HeaderMixin::class.java)
@@ -155,8 +168,44 @@ class OnboardingActivity : Hilt_OnboardingActivity() {
         layout.getMixin(IconMixin::class.java)?.setVisibility(View.GONE)
     }
 
-    override fun onResume() {
-        super.onResume()
-        logger.logPageImpression()
+    private fun setupLegacyOnboarding() {
+        setContentView(R.layout.onboarding_legacy_screen)
+        EdgeToEdgeUtils.enable(this)
+
+        val onboardingDescription = findViewById<TextView>(R.id.onboarding_description)
+        val withHealthConnectTitle =
+            findViewById<TextView>(R.id.onboarding_description_with_health_connect)
+        if (isPersonalHealthRecordEnabled()) {
+            onboardingDescription.setText(R.string.onboarding_description_health_records)
+            withHealthConnectTitle.setVisibility(View.VISIBLE)
+            logger.logImpression(OnboardingElement.ONBOARDING_MESSAGE_WITH_PHR)
+        } else {
+            onboardingDescription.setText(R.string.onboarding_description)
+            withHealthConnectTitle.setVisibility(View.GONE)
+        }
+
+        val sharedPreference = getSharedPreferences(USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
+        val goBackButton = findViewById<Button>(R.id.go_back_button)
+        val getStartedButton = findViewById<Button>(R.id.get_started_button)
+        logger.logImpression(OnboardingElement.ONBOARDING_GO_BACK_BUTTON)
+        logger.logImpression(OnboardingElement.ONBOARDING_COMPLETED_BUTTON)
+
+        goBackButton.setOnClickListener {
+            logger.logInteraction(OnboardingElement.ONBOARDING_GO_BACK_BUTTON)
+            setResult(Activity.RESULT_CANCELED)
+            finish()
+        }
+        getStartedButton.setOnClickListener {
+            logger.logInteraction(OnboardingElement.ONBOARDING_COMPLETED_BUTTON)
+            val editor = sharedPreference.edit()
+            editor.putBoolean(ONBOARDING_SHOWN_PREF_KEY, true)
+            editor.apply()
+            if (targetIntent == null) {
+                setResult(Activity.RESULT_OK)
+            } else {
+                startActivity(targetIntent)
+            }
+            finish()
+        }
     }
 }
