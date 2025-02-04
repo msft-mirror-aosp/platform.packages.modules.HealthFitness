@@ -545,8 +545,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"O app Conexão Saúde armazena seus dados de saúde e condicionamento físico, oferecendo uma maneira simples de sincronizar os diferentes apps no dispositivo"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"A plataforma Conexão Saúde armazena e sincroniza seus dados de saúde e condicionamento físico de diferentes apps.\n\n"<b>"Dados de condicionamento físico e bem-estar,"</b>" incluindo sessões de exercícios, passos, nutrição, sono e muito mais\n\n"<b>"Históricos de saúde,"</b>" incluindo vacinas, resultados de laboratório e muito mais"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Com o app Conexão Saúde, é possível:"</string>
-    <string name="share_data_text" msgid="6898398345784931678"><b>"Compartilhe dados com seus apps"</b>\n"Escolha os dados que cada app pode ler ou gravar na plataforma Conexão Saúde"</string>
-    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Gerencie suas configurações e privacidade"</b>\n"Mude as permissões do app e gerencie seus dados a qualquer momento"</string>
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Compartilhar dados com seus apps"</b>\n"Escolha os dados que cada app pode ler ou gravar na plataforma Conexão Saúde"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Gerenciar suas configurações e privacidade"</b>\n"Mude as permissões do app e gerencie seus dados a qualquer momento"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Voltar"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Começar"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Excluir dados"</string>

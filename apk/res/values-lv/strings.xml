@@ -428,7 +428,7 @@
     <string name="no_apps_denied" msgid="743327680286446017">"Nav noraidīta neviena lietotne"</string>
     <string name="permissions_disconnect_all_dialog_title" msgid="27474286046207122">"Vai noņemt piekļuves atļauju visām lietotnēm?"</string>
     <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"Neviena no jūsu lietotnēm nevarēs piekļūt datiem vai pievienot jaunus datus platformā Health Connect. Esošie dati netiek dzēsti.\n\nTādējādi netiek ietekmētas citas atļaujas, kas lietotnei var būt piešķirtas, piemēram, atrašanās vietas, kameras vai mikrofona atļaujas."</string>
-    <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"Noņemt visas"</string>
+    <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"Noņemt visām"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"Lietotnes pārvaldība"</string>
     <string name="see_app_data" msgid="3951030076195119476">"Skatīt lietotnes datus"</string>
     <string name="remove_access_for_this_app" msgid="7701101420310711833">"Noņemt šīs lietotnes piekļuvi"</string>
@@ -1129,7 +1129,7 @@
     <string name="lock_screen_banner_content" msgid="3392527073622152481">"Lai uzlabotu savu veselības datu drošību, iestatiet šai ierīcei PIN, kombināciju vai paroli"</string>
     <string name="lock_screen_banner_button" msgid="2537090011380728122">"Iestatīt ekrāna bloķēšanu"</string>
     <string name="select_all" msgid="837499881590001166">"Atlasīt visu"</string>
-    <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Pievienotās lietotnes vairs nevarēs lasīt šos datus no lietotnes platformas Health Connect."</string>
+    <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Pievienotās lietotnes vairs nevarēs lasīt šos datus no platformas Health Connect."</string>
     <string name="a11y_checked" msgid="3685413382346589880">"Atzīmēta"</string>
     <string name="a11y_unchecked" msgid="6258943223981886207">"Nav atzīmēta"</string>
     <string name="a11y_map_description" msgid="4992907698581164434">"Ir pieejama treniņu maršruta karte"</string>
