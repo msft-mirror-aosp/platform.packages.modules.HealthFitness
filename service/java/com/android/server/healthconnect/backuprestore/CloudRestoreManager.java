@@ -20,6 +20,7 @@ import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTOR
 import static com.android.server.healthconnect.backuprestore.RecordProtoConverter.PROTO_VERSION;
 
 import android.annotation.FlaggedApi;
+import android.annotation.Nullable;
 import android.health.connect.backuprestore.BackupSettings;
 import android.health.connect.backuprestore.RestoreChange;
 import android.health.connect.internal.datatypes.RecordInternal;
@@ -37,6 +38,7 @@ import com.android.server.healthconnect.storage.request.UpsertTransactionRequest
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -73,18 +75,20 @@ public class CloudRestoreManager {
     /** Takes the serialized user settings and overwrites existing settings. */
     public void pushSettingsForRestore(BackupSettings newSettings) {
         Slog.i(TAG, "Restoring user settings.");
-        BackupSettingsHelper backupSettingsHelper =
-                new BackupSettingsHelper(mPriorityHelper, mPreferenceHelper, mAppInfoHelper);
+        CloudBackupSettingsHelper cloudBackupSettingsHelper =
+                new CloudBackupSettingsHelper(mPriorityHelper, mPreferenceHelper, mAppInfoHelper);
 
         byte[] data = newSettings.getData();
+        Settings settings;
         try {
-            backupSettingsHelper.restoreUserSettings(Settings.parseFrom(data));
+            settings = Settings.parseFrom(data);
         } catch (Exception e) {
             throw new IllegalArgumentException(
                     "Unable to parse BackupSettings object back into"
                             + "Settings Record. Details: ",
                     e.getCause());
         }
+        cloudBackupSettingsHelper.restoreUserSettings(settings);
     }
 
     /** Checks whether data with a certain version could be restored. */
@@ -94,16 +98,19 @@ public class CloudRestoreManager {
 
     /** Restores backup data changes. */
     public void pushChangesForRestore(List<RestoreChange> changes) {
-        List<Record> records = changes.stream().map(this::toRecord).toList();
-        records.stream()
-                .collect(Collectors.toMap(Record::getPackageName, Record::getAppName, (a, b) -> b))
-                .forEach(mAppInfoHelper::addOrUpdateAppInfoIfNoAppInfoEntryExists);
+        Slog.i(TAG, "Restoring " + changes.size() + " changes");
+        List<Record> records =
+                changes.stream().map(this::toRecord).filter(Objects::nonNull).toList();
         UpsertTransactionRequest upsertRequest =
                 UpsertTransactionRequest.createForRestore(
-                        records.stream().map(this::toRecordInternal).toList(),
+                        records.stream()
+                                .map(this::toRecordInternal)
+                                .filter(Objects::nonNull)
+                                .toList(),
                         mDeviceInfoHelper,
                         mAppInfoHelper);
-        mTransactionManager.insertAllRecords(mAppInfoHelper, null, upsertRequest);
+        var insertedRecords =
+                mTransactionManager.insertAllRecords(mAppInfoHelper, null, upsertRequest);
 
         records.stream()
                 .collect(
@@ -117,21 +124,26 @@ public class CloudRestoreManager {
                         (packageName, recordTypes) ->
                                 mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
                                         recordTypes, packageName));
+        Slog.i(TAG, "Restored " + insertedRecords.size() + " records out of " + changes.size());
     }
 
+    @Nullable
     private Record toRecord(RestoreChange backupChange) {
         try {
             return BackupData.parseFrom(backupChange.getData()).getRecord();
         } catch (Exception e) {
-            throw new IllegalArgumentException(e);
+            Slog.e(TAG, "Failed to parse record", e);
+            return null;
         }
     }
 
+    @Nullable
     private RecordInternal<?> toRecordInternal(Record record) {
         try {
             return mRecordProtoConverter.toRecordInternal(record);
         } catch (Exception e) {
-            throw new IllegalArgumentException(e);
+            Slog.e(TAG, "Failed to convert record", e);
+            return null;
         }
     }
 }

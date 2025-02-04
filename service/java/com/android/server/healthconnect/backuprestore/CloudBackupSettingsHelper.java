@@ -47,13 +47,13 @@ import java.util.stream.Stream;
  *
  * @hide
  */
-public final class BackupSettingsHelper {
+public final class CloudBackupSettingsHelper {
 
     private final HealthDataCategoryPriorityHelper mPriorityHelper;
     private final PreferenceHelper mPreferenceHelper;
     private final AppInfoHelper mAppInfoHelper;
 
-    public static final String TAG = "BackupSettingsHelper";
+    public static final String TAG = "CloudBackupSettingsHelper";
 
     public static final String ENERGY_UNIT_PREF_KEY = "ENERGY_UNIT_KEY";
     public static final String TEMPERATURE_UNIT_PREF_KEY = "TEMPERATURE_UNIT_KEY";
@@ -62,7 +62,7 @@ public final class BackupSettingsHelper {
     public static final String DISTANCE_UNIT_PREF_KEY = "DISTANCE_UNIT_KEY";
     public static final String AUTO_DELETE_PREF_KEY = "auto_delete_range_picker";
 
-    public BackupSettingsHelper(
+    public CloudBackupSettingsHelper(
             HealthDataCategoryPriorityHelper priorityHelper,
             PreferenceHelper preferenceHelper,
             AppInfoHelper appInfoHelper) {

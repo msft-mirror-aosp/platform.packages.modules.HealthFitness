@@ -55,7 +55,7 @@ public final class CloudBackupManager {
     private static final String TAG = "CloudBackupManager";
 
     private final TransactionManager mTransactionManager;
-    private final BackupDatabaseHelper mDatabaseHelper;
+    private final CloudBackupDatabaseHelper mDatabaseHelper;
     private final HealthDataCategoryPriorityHelper mPriorityHelper;
     private final PreferenceHelper mPreferenceHelper;
     private final AppInfoHelper mAppInfoHelper;
@@ -77,7 +77,7 @@ public final class CloudBackupManager {
         mPreferenceHelper = preferenceHelper;
         mAppInfoHelper = appInfoHelper;
         mDatabaseHelper =
-                new BackupDatabaseHelper(
+                new CloudBackupDatabaseHelper(
                         transactionManager,
                         appInfoHelper,
                         accessLogsHelper,
@@ -141,12 +141,11 @@ public final class CloudBackupManager {
     @NonNull
     public GetSettingsForBackupResponse getSettingsForBackup() {
         Slog.i(TAG, "Formatting user settings for export.");
-        BackupSettingsHelper backupSettingsHelper =
-                new BackupSettingsHelper(mPriorityHelper, mPreferenceHelper, mAppInfoHelper);
+        CloudBackupSettingsHelper cloudBackupSettingsHelper =
+                new CloudBackupSettingsHelper(mPriorityHelper, mPreferenceHelper, mAppInfoHelper);
 
-        int version = 0;
-        byte[] data = backupSettingsHelper.collectUserSettings().toByteArray();
+        byte[] data = cloudBackupSettingsHelper.collectUserSettings().toByteArray();
 
-        return new GetSettingsForBackupResponse(new BackupSettings(version, data));
+        return new GetSettingsForBackupResponse(new BackupSettings(PROTO_VERSION, data));
     }
 }

@@ -75,10 +75,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-/** Unit test for class {@link BackupDatabaseHelper}. */
+/** Unit test for class {@link CloudBackupDatabaseHelper}. */
 @RunWith(AndroidJUnit4.class)
 @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
-public class BackupDatabaseHelperTest {
+public class CloudBackupDatabaseHelperTest {
 
     private static final String TEST_PACKAGE_NAME = "test.package.name";
     private static final long TEST_START_TIME_IN_MILLIS = 2000;
@@ -100,7 +100,7 @@ public class BackupDatabaseHelperTest {
                     .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .build();
 
-    private BackupDatabaseHelper mBackupDatabaseHelper;
+    private CloudBackupDatabaseHelper mCloudBackupDatabaseHelper;
     private TransactionTestUtils mTransactionTestUtils;
     private TransactionManager mTransactionManager;
     private AccessLogsHelper mAccessLogsHelper;
@@ -136,8 +136,8 @@ public class BackupDatabaseHelperTest {
         ChangeLogsRequestHelper changeLogsRequestHelper =
                 healthConnectInjector.getChangeLogsRequestHelper();
 
-        mBackupDatabaseHelper =
-                new BackupDatabaseHelper(
+        mCloudBackupDatabaseHelper =
+                new CloudBackupDatabaseHelper(
                         mTransactionManager,
                         mAppInfoHelper,
                         mAccessLogsHelper,
@@ -152,7 +152,7 @@ public class BackupDatabaseHelperTest {
     @Test
     public void getChangesAndTokenFromDataTables_noRecordsInDb_noChangesReturned() {
         List<BackupChange> changes =
-                mBackupDatabaseHelper.getChangesAndTokenFromDataTables().getChanges();
+                mCloudBackupDatabaseHelper.getChangesAndTokenFromDataTables().getChanges();
 
         assertThat(changes).isEmpty();
     }
@@ -167,7 +167,7 @@ public class BackupDatabaseHelperTest {
                 createBloodPressureRecord(TEST_TIME_IN_MILLIS, TEST_SYSTOLIC, TEST_DIASTOLIC));
 
         GetChangesForBackupResponse response =
-                mBackupDatabaseHelper.getChangesAndTokenFromDataTables();
+                mCloudBackupDatabaseHelper.getChangesAndTokenFromDataTables();
         assertThat(response.getVersion()).isEqualTo(PROTO_VERSION);
 
         List<BackupChange> changes = response.getChanges();
@@ -211,7 +211,7 @@ public class BackupDatabaseHelperTest {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, records);
 
         GetChangesForBackupResponse response =
-                mBackupDatabaseHelper.getChangesAndTokenFromDataTables();
+                mCloudBackupDatabaseHelper.getChangesAndTokenFromDataTables();
 
         assertThat(response.getChanges().size()).isEqualTo(DEFAULT_PAGE_SIZE);
         String nextChangeTokenRowId = response.getNextChangeToken();
@@ -240,12 +240,12 @@ public class BackupDatabaseHelperTest {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, records);
 
         GetChangesForBackupResponse firstResponse =
-                mBackupDatabaseHelper.getChangesAndTokenFromDataTables();
+                mCloudBackupDatabaseHelper.getChangesAndTokenFromDataTables();
         BackupChangeTokenHelper.BackupChangeToken backupChangeToken =
                 BackupChangeTokenHelper.getBackupChangeToken(
                         mTransactionManager, firstResponse.getNextChangeToken());
         GetChangesForBackupResponse secondResponse =
-                mBackupDatabaseHelper.getChangesAndTokenFromDataTables(
+                mCloudBackupDatabaseHelper.getChangesAndTokenFromDataTables(
                         backupChangeToken.getDataTableName(),
                         backupChangeToken.getDataTablePageToken(),
                         backupChangeToken.getChangeLogsRequestToken());
@@ -280,7 +280,7 @@ public class BackupDatabaseHelperTest {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, records);
 
         GetChangesForBackupResponse response =
-                mBackupDatabaseHelper.getChangesAndTokenFromDataTables();
+                mCloudBackupDatabaseHelper.getChangesAndTokenFromDataTables();
 
         assertThat(response.getChanges().size()).isEqualTo(DEFAULT_PAGE_SIZE);
         String nextChangeTokenRowId = response.getNextChangeToken();
@@ -311,12 +311,12 @@ public class BackupDatabaseHelperTest {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, records);
 
         GetChangesForBackupResponse firstResponse =
-                mBackupDatabaseHelper.getChangesAndTokenFromDataTables();
+                mCloudBackupDatabaseHelper.getChangesAndTokenFromDataTables();
         BackupChangeTokenHelper.BackupChangeToken backupChangeToken =
                 BackupChangeTokenHelper.getBackupChangeToken(
                         mTransactionManager, firstResponse.getNextChangeToken());
         GetChangesForBackupResponse secondResponse =
-                mBackupDatabaseHelper.getChangesAndTokenFromDataTables(
+                mCloudBackupDatabaseHelper.getChangesAndTokenFromDataTables(
                         backupChangeToken.getDataTableName(),
                         backupChangeToken.getDataTablePageToken(),
                         backupChangeToken.getChangeLogsRequestToken());
@@ -355,7 +355,7 @@ public class BackupDatabaseHelperTest {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, records);
 
         GetChangesForBackupResponse response =
-                mBackupDatabaseHelper.getChangesAndTokenFromDataTables();
+                mCloudBackupDatabaseHelper.getChangesAndTokenFromDataTables();
 
         assertThat(response.getChanges().size()).isEqualTo(DEFAULT_PAGE_SIZE);
         String nextChangeTokenRowId = response.getNextChangeToken();
@@ -370,7 +370,7 @@ public class BackupDatabaseHelperTest {
 
     @Test
     public void isChangeLogsTokenValid_tokenIsNull_invalid() {
-        assertThat(mBackupDatabaseHelper.isChangeLogsTokenValid(null)).isFalse();
+        assertThat(mCloudBackupDatabaseHelper.isChangeLogsTokenValid(null)).isFalse();
     }
 
     @Test
@@ -380,7 +380,7 @@ public class BackupDatabaseHelperTest {
                         TEST_START_TIME_IN_MILLIS, TEST_END_TIME_IN_MILLIS, TEST_STEP_COUNT);
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, stepRecord);
         GetChangesForBackupResponse response =
-                mBackupDatabaseHelper.getChangesAndTokenFromDataTables();
+                mCloudBackupDatabaseHelper.getChangesAndTokenFromDataTables();
         // Insert a blood pressure record and generate a change log so the previous returned token
         // does not point to the end of the table.
         mTransactionTestUtils.insertRecords(
@@ -391,7 +391,7 @@ public class BackupDatabaseHelperTest {
         mTransactionManager.delete(
                 new DeleteTableRequest(ChangeLogsHelper.TABLE_NAME, stepRecord.getRecordType()));
 
-        assertThat(mBackupDatabaseHelper.isChangeLogsTokenValid(response.getNextChangeToken()))
+        assertThat(mCloudBackupDatabaseHelper.isChangeLogsTokenValid(response.getNextChangeToken()))
                 .isFalse();
     }
 
@@ -402,14 +402,14 @@ public class BackupDatabaseHelperTest {
                         TEST_START_TIME_IN_MILLIS, TEST_END_TIME_IN_MILLIS, TEST_STEP_COUNT);
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, stepRecord);
         GetChangesForBackupResponse response =
-                mBackupDatabaseHelper.getChangesAndTokenFromDataTables();
+                mCloudBackupDatabaseHelper.getChangesAndTokenFromDataTables();
         // Insert a blood pressure record and generate a change log so the previous returned token
         // does not point to the end of the table.
         mTransactionTestUtils.insertRecords(
                 TEST_PACKAGE_NAME,
                 createBloodPressureRecord(TEST_TIME_IN_MILLIS, TEST_SYSTOLIC, TEST_DIASTOLIC));
 
-        assertThat(mBackupDatabaseHelper.isChangeLogsTokenValid(response.getNextChangeToken()))
+        assertThat(mCloudBackupDatabaseHelper.isChangeLogsTokenValid(response.getNextChangeToken()))
                 .isTrue();
     }
 
@@ -420,9 +420,9 @@ public class BackupDatabaseHelperTest {
                         TEST_START_TIME_IN_MILLIS, TEST_END_TIME_IN_MILLIS, TEST_STEP_COUNT);
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, stepRecord);
         GetChangesForBackupResponse response =
-                mBackupDatabaseHelper.getChangesAndTokenFromDataTables();
+                mCloudBackupDatabaseHelper.getChangesAndTokenFromDataTables();
 
-        assertThat(mBackupDatabaseHelper.isChangeLogsTokenValid(response.getNextChangeToken()))
+        assertThat(mCloudBackupDatabaseHelper.isChangeLogsTokenValid(response.getNextChangeToken()))
                 .isTrue();
     }
 
@@ -430,7 +430,7 @@ public class BackupDatabaseHelperTest {
     public void getIncrementalChanges_changeLogsTokenIsNull_throwsException() {
         assertThrows(
                 IllegalStateException.class,
-                () -> mBackupDatabaseHelper.getIncrementalChanges(null));
+                () -> mCloudBackupDatabaseHelper.getIncrementalChanges(null));
     }
 
     @Test
@@ -441,7 +441,7 @@ public class BackupDatabaseHelperTest {
                         TEST_START_TIME_IN_MILLIS, TEST_END_TIME_IN_MILLIS, TEST_STEP_COUNT));
         // All data tables have been iterated through.
         GetChangesForBackupResponse response =
-                mBackupDatabaseHelper.getChangesAndTokenFromDataTables();
+                mCloudBackupDatabaseHelper.getChangesAndTokenFromDataTables();
         BackupChangeTokenHelper.BackupChangeToken backupChangeToken =
                 BackupChangeTokenHelper.getBackupChangeToken(
                         mTransactionManager, response.getNextChangeToken());
@@ -451,7 +451,7 @@ public class BackupDatabaseHelperTest {
                 TEST_PACKAGE_NAME,
                 createBloodPressureRecord(TEST_TIME_IN_MILLIS, TEST_SYSTOLIC, TEST_DIASTOLIC));
         GetChangesForBackupResponse secondResponse =
-                mBackupDatabaseHelper.getIncrementalChanges(
+                mCloudBackupDatabaseHelper.getIncrementalChanges(
                         backupChangeToken.getChangeLogsRequestToken());
 
         assertThat(secondResponse.getVersion()).isEqualTo(PROTO_VERSION);
@@ -478,7 +478,7 @@ public class BackupDatabaseHelperTest {
                 bloodPressureRecordInternal);
         // All data tables have been iterated through.
         GetChangesForBackupResponse response =
-                mBackupDatabaseHelper.getChangesAndTokenFromDataTables();
+                mCloudBackupDatabaseHelper.getChangesAndTokenFromDataTables();
         BackupChangeTokenHelper.BackupChangeToken backupChangeToken =
                 BackupChangeTokenHelper.getBackupChangeToken(
                         mTransactionManager, response.getNextChangeToken());
@@ -499,7 +499,7 @@ public class BackupDatabaseHelperTest {
                 mAccessLogsHelper);
 
         GetChangesForBackupResponse secondResponse =
-                mBackupDatabaseHelper.getIncrementalChanges(
+                mCloudBackupDatabaseHelper.getIncrementalChanges(
                         backupChangeToken.getChangeLogsRequestToken());
 
         assertThat(secondResponse.getChanges().size()).isEqualTo(1);
