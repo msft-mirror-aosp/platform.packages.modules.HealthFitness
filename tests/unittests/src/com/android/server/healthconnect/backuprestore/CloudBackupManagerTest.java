@@ -18,6 +18,7 @@ package com.android.server.healthconnect.backuprestore;
 import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
 import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 
+import static com.android.server.healthconnect.backuprestore.RecordProtoConverter.PROTO_VERSION;
 import static com.android.server.healthconnect.testing.storage.TransactionTestUtils.createStepsRecord;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -245,5 +246,11 @@ public class CloudBackupManagerTest {
             // Add backup_change_token_table back to not affect other tests.
             BackupChangeTokenHelper.applyBackupTokenUpgrade(database.getWritableDatabase());
         }
+    }
+
+    @Test
+    public void getSettingsForBackup_returnsProtoVersion() {
+        var response = mCloudBackupManager.getSettingsForBackup();
+        assertThat(response.getSettings().getVersion()).isEqualTo(PROTO_VERSION);
     }
 }

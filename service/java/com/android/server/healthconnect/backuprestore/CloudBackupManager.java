@@ -144,9 +144,8 @@ public final class CloudBackupManager {
         CloudBackupSettingsHelper cloudBackupSettingsHelper =
                 new CloudBackupSettingsHelper(mPriorityHelper, mPreferenceHelper, mAppInfoHelper);
 
-        int version = 0;
         byte[] data = cloudBackupSettingsHelper.collectUserSettings().toByteArray();
 
-        return new GetSettingsForBackupResponse(new BackupSettings(version, data));
+        return new GetSettingsForBackupResponse(new BackupSettings(PROTO_VERSION, data));
     }
 }
