@@ -26,9 +26,8 @@ import android.healthconnect.cts.lib.RecordFactory.newEmptyMetadata
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.text.format.DateFormat.is24HourFormat
 import com.android.healthfitness.flags.Flags.FLAG_ACTIVITY_INTENSITY
-import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
 
-@RequiresFlagsEnabled(FLAG_ACTIVITY_INTENSITY, FLAG_NEW_INFORMATION_ARCHITECTURE)
+@RequiresFlagsEnabled(FLAG_ACTIVITY_INTENSITY)
 class ActivityIntensityTest : BaseDataTypeTest<ActivityIntensityRecord>() {
 
     override val dataTypeString = "Activity intensity"

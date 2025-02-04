@@ -36,10 +36,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.deletion.DeletionConstants
-import com.android.healthconnect.controller.deletion.DeletionConstants.DELETION_TYPE
-import com.android.healthconnect.controller.deletion.DeletionFragment as OldDeletionFragment
-import com.android.healthconnect.controller.deletion.DeletionType as OldDeletionType
 import com.android.healthconnect.controller.deletion.DeletionViewModel as OldDeletionViewModel
 import com.android.healthconnect.controller.permissions.connectedapps.ConnectedAppsViewModel.DisconnectAllState
 import com.android.healthconnect.controller.permissions.shared.HelpAndFeedbackFragment.Companion.APP_INTEGRATION_REQUEST_BUCKET_ID
@@ -76,8 +72,6 @@ import com.android.healthconnect.controller.utils.pref
 import com.android.healthconnect.controller.utils.setupMenu
 import com.android.healthconnect.controller.utils.setupSharedMenu
 import com.android.healthconnect.controller.utils.showLoadingDialog
-import com.android.healthfitness.flags.Flags.newInformationArchitecture
-import com.android.healthfitness.flags.Flags.personalHealthRecord
 import com.android.settingslib.widget.TopIntroPreference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -109,10 +103,8 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
 
     private val viewModel: ConnectedAppsViewModel by viewModels()
     private val deletionViewModel: DeletionViewModel by activityViewModels()
-    private val oldDeletionViewModel: OldDeletionViewModel by activityViewModels()
     private lateinit var searchMenuItem: MenuItem
     private lateinit var removeAllAppsDialog: AlertDialog
-    private val newDeletionFlow = personalHealthRecord() || newInformationArchitecture()
 
     private val mTopIntro: TopIntroPreference by pref(TOP_INTRO)
 
@@ -129,42 +121,6 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
     private val mSettingsAndHelpCategory: PreferenceGroup by pref(SETTINGS_AND_HELP)
 
     private fun createRemoveAllAppsAccessDialog(apps: List<ConnectedAppMetadata>) {
-        if (newDeletionFlow) {
-            createNewIADialog(apps)
-        } else {
-            createOldIADialog(apps)
-        }
-    }
-
-    private fun createOldIADialog(apps: List<ConnectedAppMetadata>) {
-        removeAllAppsDialog =
-            AlertDialogBuilder(
-                    this,
-                    DisconnectAllAppsDialogElement.DISCONNECT_ALL_APPS_DIALOG_CONTAINER,
-                )
-                .setIcon(R.attr.disconnectAllIcon)
-                .setTitle(R.string.permissions_disconnect_all_dialog_title)
-                .setMessage(R.string.permissions_disconnect_all_dialog_message)
-                .setCancelable(false)
-                .setNeutralButton(
-                    android.R.string.cancel,
-                    DisconnectAllAppsDialogElement.DISCONNECT_ALL_APPS_DIALOG_CANCEL_BUTTON,
-                ) { _, _ ->
-                    viewModel.setAlertDialogStatus(false)
-                }
-                .setPositiveButton(
-                    R.string.permissions_disconnect_all_dialog_disconnect,
-                    DisconnectAllAppsDialogElement.DISCONNECT_ALL_APPS_DIALOG_REMOVE_ALL_BUTTON,
-                ) { _, _ ->
-                    if (!viewModel.disconnectAllApps(apps)) {
-                        Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                }
-                .create()
-    }
-
-    private fun createNewIADialog(apps: List<ConnectedAppMetadata>) {
         val body = layoutInflater.inflate(R.layout.dialog_message_with_checkbox, null)
         body.findViewById<TextView>(R.id.dialog_message).apply {
             text = getString(R.string.permissions_disconnect_all_dialog_message)
@@ -186,9 +142,9 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
 
         removeAllAppsDialog =
             AlertDialogBuilder(
-                    this,
-                    DisconnectAllAppsDialogElement.DISCONNECT_ALL_APPS_DIALOG_CONTAINER,
-                )
+                this,
+                DisconnectAllAppsDialogElement.DISCONNECT_ALL_APPS_DIALOG_CONTAINER,
+            )
                 .setView(body)
                 .setCancelable(false)
                 .setNeutralButton(
@@ -230,14 +186,8 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
         super.onCreatePreferences(savedInstanceState, rootKey)
         setPreferencesFromResource(R.xml.connected_apps_screen, rootKey)
 
-        if (newDeletionFlow) {
-            if (childFragmentManager.findFragmentByTag(FRAGMENT_TAG_DELETION) == null) {
-                childFragmentManager.commitNow { add(DeletionFragment(), FRAGMENT_TAG_DELETION) }
-            }
-        } else {
-            if (childFragmentManager.findFragmentByTag(FRAGMENT_TAG_DELETION) == null) {
-                childFragmentManager.commitNow { add(OldDeletionFragment(), FRAGMENT_TAG_DELETION) }
-            }
+        if (childFragmentManager.findFragmentByTag(FRAGMENT_TAG_DELETION) == null) {
+            childFragmentManager.commitNow { add(DeletionFragment(), FRAGMENT_TAG_DELETION) }
         }
     }
 
@@ -251,21 +201,11 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
         observeConnectedApps()
         observeRevokeAllAppsPermissions()
 
-        if (newDeletionFlow) {
-            deletionViewModel.connectedAppsReloadNeeded.observe(viewLifecycleOwner) { isReloadNeeded
-                ->
-                if (isReloadNeeded) {
-                    viewModel.loadConnectedApps()
-                    deletionViewModel.resetPermissionTypesReloadNeeded()
-                }
-            }
-        } else {
-            oldDeletionViewModel.appPermissionReloadNeeded.observe(viewLifecycleOwner) {
-                isReloadNeeded ->
-                if (isReloadNeeded) {
-                    viewModel.loadConnectedApps()
-                    oldDeletionViewModel.resetAppPermissionReloadNeeded()
-                }
+        deletionViewModel.connectedAppsReloadNeeded.observe(viewLifecycleOwner) { isReloadNeeded
+            ->
+            if (isReloadNeeded) {
+                viewModel.loadConnectedApps()
+                deletionViewModel.resetPermissionTypesReloadNeeded()
             }
         }
     }
@@ -365,11 +305,7 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
                             it.setOnDeleteButtonClickListener {
                                 val packageName = app.appMetadata.packageName
                                 val appName = app.appMetadata.appName
-                                if (newDeletionFlow) {
-                                    deleteData(packageName, appName)
-                                } else {
-                                    oldDeleteData(packageName, appName)
-                                }
+                                deleteData(packageName, appName)
                             }
                         }
                     mInactiveAppsCategory.addPreference(inactiveAppPreference)
@@ -380,14 +316,6 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
     private fun deleteData(packageName: String, appName: String) {
         deletionViewModel.setDeletionType(DeleteAppData(packageName, appName))
         childFragmentManager.setFragmentResult(START_DELETION_KEY, bundleOf())
-    }
-
-    private fun oldDeleteData(packageName: String, appName: String) {
-        val appDeletionType = OldDeletionType.DeletionTypeAppData(packageName, appName)
-        childFragmentManager.setFragmentResult(
-            DeletionConstants.START_INACTIVE_APP_DELETION_EVENT,
-            bundleOf(DELETION_TYPE to appDeletionType),
-        )
     }
 
     private fun updateNeedUpdateApps(appsList: List<ConnectedAppMetadata>) {

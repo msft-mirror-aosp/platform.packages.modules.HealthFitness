@@ -268,21 +268,6 @@ class TrampolineActivityTest {
     }
 
     @Test
-    @DisableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
-    fun manageHealthDataIntent_launchesDataManagementActivity_oldIA() {
-        // setup data management screen.
-        whenever(categoryViewModel.categoriesData).then {
-            MutableLiveData<CategoriesFragmentState>(WithData(emptyList()))
-        }
-
-        launchActivityForResult<TrampolineActivity>(createStartIntent(ACTION_MANAGE_HEALTH_DATA))
-
-        onIdle()
-        onView(withText("Browse data")).check(matches(isDisplayed()))
-    }
-
-    @Test
-    @EnableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
     fun manageHealthDataIntent_launchesDataManagementActivity_newIA() {
         // setup data management screen.
         whenever(categoryViewModel.categoriesData).then {

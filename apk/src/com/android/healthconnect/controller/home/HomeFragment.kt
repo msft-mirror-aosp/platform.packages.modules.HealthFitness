@@ -70,10 +70,8 @@ import com.android.healthconnect.controller.utils.logging.RecentAccessElement
 import com.android.healthconnect.controller.utils.logging.UnknownGenericElement
 import com.android.healthconnect.controller.utils.pref
 import com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled
-import com.android.healthfitness.flags.Flags.newInformationArchitecture
 import com.android.healthfitness.flags.Flags.onboarding
 import com.android.healthfitness.flags.Flags.personalHealthRecordLockScreenBanner
-import com.android.settingslib.widget.TopIntroPreference
 import com.android.settingslib.widget.ZeroStatePreference
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Instant
@@ -84,7 +82,6 @@ import javax.inject.Inject
 class HomeFragment : Hilt_HomeFragment() {
 
     companion object {
-        private const val TOP_INTRO_PREFERENCE_KEY = "health_connect_top_intro"
         private const val NO_RECENT_ACCESS = "no_recent_access"
         private const val DATA_AND_ACCESS_PREFERENCE_KEY = "data_and_access"
         private const val RECENT_ACCESS_PREFERENCE_KEY = "recent_access"
@@ -117,8 +114,6 @@ class HomeFragment : Hilt_HomeFragment() {
     private val migrationViewModel: MigrationViewModel by activityViewModels()
     private val exportStatusViewModel: ExportStatusViewModel by activityViewModels()
 
-    private val mTopIntroPreference: TopIntroPreference by pref(TOP_INTRO_PREFERENCE_KEY)
-
     private val noRecentAccessPreference: ZeroStatePreference by pref(NO_RECENT_ACCESS)
 
     private val mDataAndAccessPreference: HealthPreference by pref(DATA_AND_ACCESS_PREFERENCE_KEY)
@@ -148,13 +143,7 @@ class HomeFragment : Hilt_HomeFragment() {
         super.onCreatePreferences(savedInstanceState, rootKey)
         setPreferencesFromResource(R.xml.home_preference_screen, rootKey)
         mDataAndAccessPreference.logName = HomePageElement.DATA_AND_ACCESS_BUTTON
-
-        if (newInformationArchitecture()) {
-            mDataAndAccessPreference.summary = getString(R.string.browse_data_subtitle)
-            mTopIntroPreference.isVisible = false
-        } else {
-            mTopIntroPreference.isVisible = true
-        }
+        mDataAndAccessPreference.summary = getString(R.string.browse_data_subtitle)
         mDataAndAccessPreference.setOnPreferenceClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_healthDataCategoriesFragment)
             true
