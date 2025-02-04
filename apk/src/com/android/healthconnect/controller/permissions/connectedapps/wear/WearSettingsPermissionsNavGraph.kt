@@ -34,27 +34,30 @@ import com.android.healthconnect.controller.permissions.app.wear.WearViewAppInfo
 
 /** Wear Settings Permissions navigation graph. */
 @Composable
-fun WearSettingsPermissionsNavGraph() {
+fun WearSettingsPermissionsNavGraph(showRecentAccess: Boolean = false) {
     val viewModel = hiltViewModel<WearConnectedAppsViewModel>()
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = PermissionManagerScreen.Vitals.name) {
         composable(route = PermissionManagerScreen.Vitals.name) {
             AllDataTypesScreen(
                 viewModel,
+                showRecentAccess,
                 onClick = { permissionStr, dataTypeStr ->
                     navController.navigate(
-                        "${PermissionManagerScreen.PerDataType.name}/$permissionStr/$dataTypeStr"
+                        "${PermissionManagerScreen.PerDataType.name}/$permissionStr/$dataTypeStr/$showRecentAccess"
                     )
                 },
             )
         }
 
         composable(
-            route = "${PermissionManagerScreen.PerDataType.name}/{permissionStr}/{dataTypeStr}",
+            route =
+                "${PermissionManagerScreen.PerDataType.name}/{permissionStr}/{dataTypeStr}/{showRecentAccess}",
             arguments =
                 listOf(
                     navArgument("permissionStr") { type = NavType.StringType },
                     navArgument("dataTypeStr") { type = NavType.StringType },
+                    navArgument("showRecentAccess") { type = NavType.BoolType },
                 ),
         ) { backStackEntry ->
             val permissionStr = backStackEntry.arguments?.getString("permissionStr") ?: ""
@@ -63,6 +66,7 @@ fun WearSettingsPermissionsNavGraph() {
                 viewModel,
                 permissionStr,
                 dataTypeStr,
+                showRecentAccess,
                 onAppChipClick = { permissionStr, dataTypeStr, packageName ->
                     navController.navigate(
                         "${PermissionManagerScreen.PerDataTypePerApp.name}/$permissionStr/$dataTypeStr/$packageName"
