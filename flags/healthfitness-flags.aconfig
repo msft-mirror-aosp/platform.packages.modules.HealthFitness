@@ -507,3 +507,11 @@ flag {
     is_exported: true
 }
 
+flag {
+   name: "smoking_db"
+   namespace: "health_fitness_aconfig"
+   description: "Enables DB changes to support the nicotine intake data type."
+   bug: "394115085"
+   is_fixed_read_only: true
+   is_exported: true
+}
