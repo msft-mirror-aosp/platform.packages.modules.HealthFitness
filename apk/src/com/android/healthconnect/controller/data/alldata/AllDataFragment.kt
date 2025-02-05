@@ -16,6 +16,7 @@
 package com.android.healthconnect.controller.data.alldata
 
 import android.graphics.drawable.Drawable
+import android.health.connect.HealthDataCategory
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -28,7 +29,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.categories.HealthDataCategoriesFragment.Companion.CATEGORY_KEY
 import com.android.healthconnect.controller.data.appdata.AppDataFragment.Companion.PERMISSION_TYPE_NAME_KEY
 import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
 import com.android.healthconnect.controller.data.entries.EntriesViewModel
@@ -105,13 +105,7 @@ open class AllDataFragment : Hilt_AllDataFragment() {
         when (menuItem.itemId) {
             R.id.menu_data_sources -> {
                 logger.logInteraction(ToolbarElement.TOOLBAR_DATA_SOURCES_BUTTON)
-                // TODO (b/368600140) data sources will no longer need category once old IA is
-                // phased out
-                findNavController()
-                    .navigate(
-                        R.id.action_allDataFragment_to_dataSourcesFragment,
-                        bundleOf(CATEGORY_KEY to category),
-                    )
+                findNavController().navigate(R.id.action_allDataFragment_to_dataSourcesFragment)
                 true
             }
 
@@ -124,11 +118,7 @@ open class AllDataFragment : Hilt_AllDataFragment() {
         when (menuItem.itemId) {
             R.id.menu_data_sources -> {
                 logger.logInteraction(ToolbarElement.TOOLBAR_DATA_SOURCES_BUTTON)
-                findNavController()
-                    .navigate(
-                        R.id.action_allDataFragment_to_dataSourcesFragment,
-                        bundleOf(CATEGORY_KEY to category),
-                    )
+                findNavController().navigate(R.id.action_allDataFragment_to_dataSourcesFragment)
                 true
             }
 

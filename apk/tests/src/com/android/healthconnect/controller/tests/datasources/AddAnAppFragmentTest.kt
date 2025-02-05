@@ -25,12 +25,12 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.categories.HealthDataCategoriesFragment.Companion.CATEGORY_KEY
 import com.android.healthconnect.controller.datasources.AddAnAppFragment
 import com.android.healthconnect.controller.datasources.DataSourcesViewModel
 import com.android.healthconnect.controller.datasources.DataSourcesViewModel.DataSourcesInfo
 import com.android.healthconnect.controller.datasources.DataSourcesViewModel.PotentialAppSourcesState
 import com.android.healthconnect.controller.datasources.DataSourcesViewModel.PriorityListState
+import com.android.healthconnect.controller.navigation.CATEGORY_KEY
 import com.android.healthconnect.controller.tests.utils.TEST_APP
 import com.android.healthconnect.controller.tests.utils.TEST_APP_2
 import com.android.healthconnect.controller.tests.utils.TEST_APP_3

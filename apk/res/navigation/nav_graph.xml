@@ -144,15 +144,16 @@
         android:name="com.android.healthconnect.controller.exportimport.ScheduledExportFragment"
         android:label="@string/scheduled_export" />
 
-    <fragment
-        android:id="@+id/autoDeleteFragment"
-        android:name="com.android.healthconnect.controller.autodelete.AutoDeleteFragment"
-        android:label="@string/auto_delete_title"/>
 
     <fragment
         android:id="@+id/setUnitsFragment"
         android:name="com.android.healthconnect.controller.dataentries.units.UnitsFragment"
         android:label="@string/units_title"/>
+
+    <fragment
+        android:id="@+id/autoDeleteFragment"
+        android:name="com.android.healthconnect.controller.autodelete.AutoDeleteFragment"
+        android:label="@string/auto_delete_title"/>
 
     <activity
         android:id="@+id/playstore_activity"
@@ -160,5 +161,4 @@
         app:action="android.intent.action.VIEW"
         app:data="@string/playstore_collection_url"
         app:targetPackage="@string/playstore_package_name" />
-
 </navigation>

@@ -25,12 +25,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.categories.HealthDataCategoriesFragment.Companion.CATEGORY_KEY
 import com.android.healthconnect.controller.datasources.DataSourcesViewModel.AggregationCardsState
 import com.android.healthconnect.controller.datasources.DataSourcesViewModel.PotentialAppSourcesState
 import com.android.healthconnect.controller.datasources.DataSourcesViewModel.PriorityListState
 import com.android.healthconnect.controller.datasources.appsources.AppSourcesAdapter
 import com.android.healthconnect.controller.datasources.appsources.AppSourcesPreference
+import com.android.healthconnect.controller.navigation.CATEGORY_KEY
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.lowercaseTitle
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.uppercaseTitle
 import com.android.healthconnect.controller.shared.HealthDataCategoryInt
@@ -119,19 +119,6 @@ class DataSourcesFragment :
         setPreferencesFromResource(R.xml.data_sources_and_priority_screen, rootKey)
         dataSourcesCategoriesStrings =
             dataSourcesCategories.map { category -> getString(category.uppercaseTitle()) }
-
-        if (requireArguments().containsKey(CATEGORY_KEY) && savedInstanceState == null) {
-
-            // Only require this from the HealthPermissionTypes screen
-            // When navigating here from the Manage Data screen we pass Unknown
-            // so that going back and forth to this screen does not restrict users to just one
-            // category
-            val argCategory = requireArguments().getInt(CATEGORY_KEY)
-            if (argCategory != HealthDataCategory.UNKNOWN) {
-                currentCategorySelection = argCategory
-                dataSourcesViewModel.setCurrentSelection(currentCategorySelection)
-            }
-        }
 
         setupSpinnerPreference()
     }

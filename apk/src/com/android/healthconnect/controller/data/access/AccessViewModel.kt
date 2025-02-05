@@ -30,8 +30,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.launch
 
 /**
- * View model for the Access tab in [EntriesAccessFragment] and
- * [com.android.healthconnect.controller.dataaccess.HealthDataAccessFragment].
+ * View model for the Access tab in [EntriesAccessFragment].
  */
 @HiltViewModel
 class AccessViewModel @Inject constructor(private val loadAccessUseCase: ILoadAccessUseCase) :
