@@ -36,7 +36,6 @@ import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import androidx.test.uiautomator.By
-import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
 import com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD
 import com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE
 import java.time.Instant
@@ -46,7 +45,6 @@ import org.junit.Rule
 import org.junit.Test
 
 @RequiresFlagsEnabled(
-    FLAG_NEW_INFORMATION_ARCHITECTURE,
     FLAG_PERSONAL_HEALTH_RECORD,
     FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
 )

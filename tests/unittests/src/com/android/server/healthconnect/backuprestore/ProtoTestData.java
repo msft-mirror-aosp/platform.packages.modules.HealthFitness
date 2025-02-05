@@ -691,7 +691,6 @@ final class ProtoTestData {
         return Record.newBuilder()
                 .setUuid(UUID.randomUUID().toString())
                 .setPackageName("packageName")
-                .setAppName("appName")
                 .setLastModifiedTime(123456)
                 .setClientRecordId("clientId")
                 .setClientRecordVersion(3)

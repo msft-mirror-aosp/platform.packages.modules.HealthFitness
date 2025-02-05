@@ -15,7 +15,6 @@ package com.android.healthconnect.controller.permissions.app
 
 import android.health.connect.HealthPermissions.READ_EXERCISE
 import android.health.connect.HealthPermissions.READ_EXERCISE_ROUTES
-import android.health.connect.TimeInstantRangeFilter
 import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
@@ -23,8 +22,6 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.android.healthconnect.controller.deletion.DeletionType.DeletionTypeAppData
-import com.android.healthconnect.controller.deletion.api.DeleteAppDataUseCase as OldDeleteAppDataUseCase
 import com.android.healthconnect.controller.permissions.additionalaccess.ILoadExerciseRoutePermissionUseCase
 import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.ALWAYS_ALLOW
 import com.android.healthconnect.controller.permissions.api.GrantHealthPermissionUseCase
@@ -45,8 +42,6 @@ import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
-import com.android.healthfitness.flags.Flags.newInformationArchitecture
-import com.android.healthfitness.flags.Flags.personalHealthRecord
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.Instant
 import javax.inject.Inject
@@ -65,7 +60,6 @@ constructor(
     private val revokePermissionsStatusUseCase: RevokeHealthPermissionUseCase,
     private val revokeAllHealthPermissionsUseCase: RevokeAllHealthPermissionsUseCase,
     private val deleteAppDataUseCase: DeleteAppDataUseCase,
-    private val oldDeleteAppDataUseCase: OldDeleteAppDataUseCase,
     private val loadAccessDateUseCase: LoadAccessDateUseCase,
     private val loadGrantedHealthPermissionsUseCase: IGetGrantedHealthPermissionsUseCase,
     private val loadExerciseRoutePermissionUseCase: ILoadExerciseRoutePermissionUseCase,
@@ -244,8 +238,6 @@ constructor(
     private val _lastReadPermissionDisconnected = MutableLiveData(false)
     val lastReadPermissionDisconnected: LiveData<Boolean>
         get() = _lastReadPermissionDisconnected
-
-    private val newDeletionFlow = personalHealthRecord() || newInformationArchitecture()
 
     fun loadPermissionsForPackage(packageName: String) {
         // clear app permissions
@@ -642,27 +634,11 @@ constructor(
     }
 
     fun deleteAppData(packageName: String, appName: String) {
-        if (newDeletionFlow) {
-            newDeleteAppData(packageName, appName)
-        } else {
-            oldDeleteAppData(packageName, appName)
-        }
+        newDeleteAppData(packageName, appName)
     }
 
     private fun newDeleteAppData(packageName: String, appName: String) {
         viewModelScope.launch { deleteAppDataUseCase.invoke(DeleteAppData(packageName, appName)) }
-    }
-
-    private fun oldDeleteAppData(packageName: String, appName: String) {
-        viewModelScope.launch {
-            val appData = DeletionTypeAppData(packageName, appName)
-            val timeRangeFilter =
-                TimeInstantRangeFilter.Builder()
-                    .setStartTime(Instant.EPOCH)
-                    .setEndTime(Instant.ofEpochMilli(Long.MAX_VALUE))
-                    .build()
-            oldDeleteAppDataUseCase.invoke(appData, timeRangeFilter)
-        }
     }
 
     fun shouldNavigateToAppPermissionsFragment(packageName: String): Boolean {

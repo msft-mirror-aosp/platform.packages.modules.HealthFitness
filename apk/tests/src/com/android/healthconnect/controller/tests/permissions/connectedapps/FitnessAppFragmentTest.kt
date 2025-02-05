@@ -843,7 +843,6 @@ class FitnessAppFragmentTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
     fun seeAppData_showManageAppSectionEnabled_isEnabled_buttonDisplayed() {
 
         val writePermission = FitnessPermission(EXERCISE, WRITE)
@@ -868,7 +867,6 @@ class FitnessAppFragmentTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
     fun seeAppData_hideManageAppPermissionEnabled_isEnabled_buttonDisplayed() {
         val writePermission = FitnessPermission(EXERCISE, WRITE)
         val readPermission = FitnessPermission(DISTANCE, READ)

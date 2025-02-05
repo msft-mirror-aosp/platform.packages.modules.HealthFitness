@@ -191,9 +191,6 @@ public final class RecordProtoConverter {
         if (recordInternal.getPackageName() != null) {
             builder.setPackageName(recordInternal.getPackageName());
         }
-        if (recordInternal.getAppName() != null) {
-            builder.setAppName(recordInternal.getAppName());
-        }
         if (recordInternal.getClientRecordId() != null) {
             builder.setClientRecordId(recordInternal.getClientRecordId());
         }
@@ -1058,9 +1055,6 @@ public final class RecordProtoConverter {
         }
         if (recordProto.hasPackageName()) {
             recordInternal.setPackageName(recordProto.getPackageName());
-        }
-        if (recordProto.hasAppName()) {
-            recordInternal.setAppName(recordProto.getAppName());
         }
         recordInternal.setLastModifiedTime(recordProto.getLastModifiedTime());
         if (recordProto.hasClientRecordId()) {

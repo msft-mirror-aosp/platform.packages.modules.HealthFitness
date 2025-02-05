@@ -31,7 +31,6 @@ import android.platform.test.annotations.RequiresFlagsDisabled
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
-import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
 import com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD
 import com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE
 import com.android.settingslib.widget.theme.flags.Flags.FLAG_IS_EXPRESSIVE_DESIGN_ENABLED
@@ -91,22 +90,7 @@ class HomeFragmentTest : HealthConnectBaseTest() {
     }
 
     @Test
-    @RequiresFlagsDisabled(FLAG_NEW_INFORMATION_ARCHITECTURE)
-    fun homeFragment_oldIa_opensDataManagement() {
-        context.launchMainActivity {
-            scrollDownToAndFindText("Data and access")
-            clickOnTextAndWaitForNewWindow("Data and access")
-
-            scrollDownToAndFindText("Browse data")
-            scrollDownToAndFindText("Manage data")
-
-            scrollDownToAndFindText("Delete all data")
-        }
-    }
-
-    @Test
-    @RequiresFlagsEnabled(FLAG_NEW_INFORMATION_ARCHITECTURE)
-    fun homeFragment_newIa_opensDataManagement() {
+    fun homeFragment_opensDataManagement() {
         context.launchMainActivity {
             scrollDownToAndFindText("Data and access")
             clickOnTextAndWaitForNewWindow("Data and access")

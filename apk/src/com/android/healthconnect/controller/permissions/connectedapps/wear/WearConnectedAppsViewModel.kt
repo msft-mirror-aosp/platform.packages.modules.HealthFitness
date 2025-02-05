@@ -15,19 +15,27 @@
  */
 package com.android.healthconnect.controller.permissions.connectedapps.wear
 
+import android.health.connect.accesslog.AccessLog
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.healthconnect.controller.permissions.api.GrantHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.api.RevokeHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.app.LoadAppPermissionsStatusUseCase
 import com.android.healthconnect.controller.permissions.connectedapps.ILoadHealthPermissionApps
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.AdditionalPermission.Companion.READ_HEALTH_DATA_IN_BACKGROUND
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission.Companion.fromPermissionString
+import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
+import com.android.healthconnect.controller.recentaccess.LoadRecentAccessUseCase
 import com.android.healthconnect.controller.shared.HealthPermissionReader
+import com.android.healthconnect.controller.shared.HealthPermissionToDatatypeMapper
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
+import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.time.Instant
 import javax.inject.Inject
 import kotlin.collections.MutableList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,12 +49,9 @@ constructor(
     private val loadAppPermissionsStatusUseCase: LoadAppPermissionsStatusUseCase,
     private val grantPermissionsStatusUseCase: GrantHealthPermissionUseCase,
     private val revokeHealthPermissionUseCase: RevokeHealthPermissionUseCase,
+    private val loadRecentAccessUseCase: LoadRecentAccessUseCase,
     private val healthPermissionReader: HealthPermissionReader,
 ) : ViewModel() {
-
-    companion object {
-        private const val TAG = "WearConnectedAppsViewModel"
-    }
 
     /** A list of [AppMetadata] of all the apps that requests health permissions. */
     val connectedApps = MutableStateFlow<List<ConnectedAppMetadata>>(emptyList())
@@ -72,6 +77,15 @@ constructor(
     val appToAllowedDataTypes =
         MutableStateFlow<Map<AppMetadata, MutableList<HealthPermission>>>(emptyMap())
 
+    /**
+     * Holds the current state of health data access permissions for connected apps.
+     *
+     * This emits a list of [PermissionAccess] objects, where each object represents a health
+     * permission and the apps that have accessed it, along with their last access times. Consumers
+     * can observe this to stay updated on changes to app access for health permissions.
+     */
+    val dataTypeToAppToLastAccessTime = MutableStateFlow<List<PermissionAccess>>(emptyList())
+
     /** A list of [HealthPermission] that are at system level (not restricted to HC-only). */
     val systemHealthPermissions = MutableStateFlow<List<HealthPermission>>(emptyList())
 
@@ -82,49 +96,131 @@ constructor(
     fun loadConnectedApps() {
         viewModelScope.launch {
             connectedApps.value = loadHealthPermissionApps.invoke()
-
-            // Load system health permissions and granular permission to allowed/denied apps maps.
-            val sysHealthPermissions =
+            systemHealthPermissions.value =
                 healthPermissionReader.getSystemHealthPermissions().map { perm ->
                     fromPermissionString(perm)
                 }
-            systemHealthPermissions.value = sysHealthPermissions
 
-            // Init dataTypeToAllowedApps and dataTypeToDeniedApps.
-            // For each granular health permission, create a mapping of the allowed and denied apps.
-            val allowedAppsMap = mutableMapOf<HealthPermission, MutableList<AppMetadata>>()
-            val deniedAppsMap = mutableMapOf<HealthPermission, MutableList<AppMetadata>>()
-            val backgroundReadPermissionStatus = mutableMapOf<AppMetadata, Boolean>()
-            val allowedDataTypesMap = mutableMapOf<AppMetadata, MutableList<HealthPermission>>()
-            connectedApps.value.forEach { connectedAppMetadata ->
-                val packageName = connectedAppMetadata.appMetadata.packageName
-                val healthPermissionStatus = loadAppPermissionsStatusUseCase.invoke(packageName)
-                healthPermissionStatus
-                    .filter { sysHealthPermissions.contains(it.healthPermission) }
-                    .forEach { status ->
-                        val permission = status.healthPermission
-                        val appList = if (status.isGranted) allowedAppsMap else deniedAppsMap
-                        appList
-                            .getOrPut(permission) { mutableListOf() }
-                            .add(connectedAppMetadata.appMetadata)
-                        if (status.isGranted) {
-                            allowedDataTypesMap
-                                .getOrPut(connectedAppMetadata.appMetadata) { mutableListOf() }
-                                .add(permission)
+            loadDataTypeToAppsMapping()
+            loadRecentAccessMapping()
+        }
+    }
+
+    /** Load system health permissions and granular permission to allowed and denied apps maps. */
+    private suspend fun loadDataTypeToAppsMapping() {
+        // Init dataTypeToAllowedApps and dataTypeToDeniedApps.
+        // For each granular health permission, create a mapping of the allowed and denied apps.
+        val allowedAppsMap = mutableMapOf<HealthPermission, MutableList<AppMetadata>>()
+        val deniedAppsMap = mutableMapOf<HealthPermission, MutableList<AppMetadata>>()
+        val backgroundReadPermissionStatus = mutableMapOf<AppMetadata, Boolean>()
+        val allowedDataTypesMap = mutableMapOf<AppMetadata, MutableList<HealthPermission>>()
+
+        connectedApps.value.forEach { connectedAppMetadata ->
+            val packageName = connectedAppMetadata.appMetadata.packageName
+            val healthPermissionStatus = loadAppPermissionsStatusUseCase.invoke(packageName)
+            healthPermissionStatus
+                .filter { systemHealthPermissions.value.contains(it.healthPermission) }
+                .forEach { status ->
+                    val permission = status.healthPermission
+                    val appList = if (status.isGranted) allowedAppsMap else deniedAppsMap
+                    appList
+                        .getOrPut(permission) { mutableListOf() }
+                        .add(connectedAppMetadata.appMetadata)
+                    if (status.isGranted) {
+                        allowedDataTypesMap
+                            .getOrPut(connectedAppMetadata.appMetadata) { mutableListOf() }
+                            .add(permission)
+                    }
+                }
+            healthPermissionStatus
+                .firstOrNull { it.healthPermission == READ_HEALTH_DATA_IN_BACKGROUND }
+                ?.let {
+                    backgroundReadPermissionStatus[connectedAppMetadata.appMetadata] = it.isGranted
+                }
+        }
+
+        dataTypeToAllowedApps.value = allowedAppsMap
+        dataTypeToDeniedApps.value = deniedAppsMap
+        appToBackgroundReadStatus.value = backgroundReadPermissionStatus
+        appToAllowedDataTypes.value = allowedDataTypesMap
+    }
+
+    /** Load app recent usage access logs. */
+    private suspend fun loadRecentAccessMapping() {
+        val permissionAccesses = mutableListOf<PermissionAccess>()
+
+        val allAccessLogs: List<AccessLog> =
+            when (val loadAccessLogsResult = loadRecentAccessUseCase.invoke(Unit)) {
+                is UseCaseResults.Success -> loadAccessLogsResult.data
+                else -> {
+                    Log.e(TAG, "Error loading recent access logs ")
+                    emptyList()
+                }
+            }
+
+        allAccessLogs.forEach { log: AccessLog ->
+            val appMetadata =
+                connectedApps.value
+                    .firstOrNull { connectedApp ->
+                        connectedApp.appMetadata.packageName == log.packageName
+                    }
+                    ?.appMetadata
+            // Wear access logs are converted from app ops, and each log from app ops contains only
+            // one record type.
+            if (
+                appMetadata != null &&
+                    log.operationType == AccessLog.OperationType.OPERATION_TYPE_READ &&
+                    log.recordTypes.size == 1
+            ) {
+                val healthPermissionType =
+                    HealthPermissionToDatatypeMapper.getAllDataTypes()
+                        .filterValues { it.contains(log.recordTypes[0]) }
+                        .keys
+                        .firstOrNull()
+                // TODO: Dynamic mapping for scalability.
+                when (healthPermissionType) {
+                    FitnessPermissionType.HEART_RATE,
+                    FitnessPermissionType.SKIN_TEMPERATURE,
+                    FitnessPermissionType.OXYGEN_SATURATION -> {
+                        val healthPermission =
+                            HealthPermission.FitnessPermission(
+                                healthPermissionType,
+                                PermissionsAccessType.READ,
+                            )
+                        val permissionAccess =
+                            getPermissionAccessForHealthPermission(
+                                permissionAccesses,
+                                healthPermission,
+                            )
+                        val appAccess =
+                            getAppAccessForApp(permissionAccess, appMetadata, log.accessTime)
+
+                        if (appAccess.lastAccessTime.isBefore(log.accessTime)) {
+                            // Update the lastAccessTime if the current log has a later time
+                            permissionAccess.appAccesses =
+                                permissionAccess.appAccesses.map { appAccessRecord ->
+                                    if (appAccessRecord.app == appAccess.app) {
+                                        appAccessRecord.copy(lastAccessTime = log.accessTime)
+                                    } else {
+                                        appAccessRecord
+                                    }
+                                }
+                        } else if (appAccess !in permissionAccess.appAccesses) {
+                            // Add the new AppAccess if it doesn't exist
+                            permissionAccess.appAccesses = permissionAccess.appAccesses + appAccess
+                        }
+
+                        // Update the permissionAccesses list
+                        if (permissionAccess !in permissionAccesses) {
+                            permissionAccesses.add(permissionAccess)
                         }
                     }
-                healthPermissionStatus
-                    .firstOrNull { it.healthPermission == READ_HEALTH_DATA_IN_BACKGROUND }
-                    ?.let {
-                        backgroundReadPermissionStatus[connectedAppMetadata.appMetadata] =
-                            it.isGranted
-                    }
+                    else -> {} // Do nothing
+                }
             }
-            dataTypeToAllowedApps.value = allowedAppsMap
-            dataTypeToDeniedApps.value = deniedAppsMap
-            appToBackgroundReadStatus.value = backgroundReadPermissionStatus
-            appToAllowedDataTypes.value = allowedDataTypesMap
         }
+
+        dataTypeToAppToLastAccessTime.value = permissionAccesses
     }
 
     /** Grant or revoke a specific permission for an app. */
@@ -224,4 +320,27 @@ constructor(
                     .firstOrNull { it.appMetadata.packageName == packageName }
                     ?.appMetadata
         }
+
+    companion object {
+        private const val TAG = "WearConnectedAppsViewModel"
+
+        private fun getPermissionAccessForHealthPermission(
+            permissionAccesses: List<PermissionAccess>,
+            healthPermission: HealthPermission,
+        ): PermissionAccess {
+            return permissionAccesses.find { permissionAccessRecord ->
+                permissionAccessRecord.permission == healthPermission
+            } ?: PermissionAccess(healthPermission, mutableListOf())
+        }
+
+        private fun getAppAccessForApp(
+            permissionAccess: PermissionAccess,
+            appMetadata: AppMetadata,
+            firstAccessTimeIfNotFound: Instant,
+        ): AppAccess {
+            return permissionAccess.appAccesses.find { appAccessRecord ->
+                appAccessRecord.app == appMetadata
+            } ?: AppAccess(appMetadata, firstAccessTimeIfNotFound)
+        }
+    }
 }

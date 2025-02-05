@@ -11,7 +11,7 @@ message BackupData {
 message Record {
   string uuid = 1;
   optional string package_name = 2;
-  optional string app_name = 3;
+  reserved 3; // App name is removed.
   int64 last_modified_time = 4;
   optional string client_record_id = 5;
   int64 client_record_version = 6;

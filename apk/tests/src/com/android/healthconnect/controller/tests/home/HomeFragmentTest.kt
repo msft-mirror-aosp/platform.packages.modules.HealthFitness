@@ -376,52 +376,6 @@ class HomeFragmentTest {
 
     // region Display tests
     @Test
-    @DisableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE, Flags.FLAG_ONBOARDING)
-    fun legacyWhenRecentAccessApps_showsRecentAccessApps() {
-        val recentApp =
-            RecentAccessEntry(
-                metadata = TEST_APP,
-                instantTime = Instant.parse("2022-10-20T18:40:13.00Z"),
-                isToday = true,
-                dataTypesWritten =
-                    mutableSetOf(
-                        HealthDataCategory.ACTIVITY.uppercaseTitle(),
-                        HealthDataCategory.VITALS.uppercaseTitle(),
-                    ),
-                dataTypesRead =
-                    mutableSetOf(
-                        HealthDataCategory.SLEEP.uppercaseTitle(),
-                        HealthDataCategory.NUTRITION.uppercaseTitle(),
-                    ),
-            )
-
-        timeSource.setIs24Hour(true)
-
-        whenever(recentAccessViewModel.recentAccessApps).then {
-            MutableLiveData<RecentAccessState>(RecentAccessState.WithData(listOf(recentApp)))
-        }
-        whenever(homeViewModel.connectedApps).then {
-            MutableLiveData(listOf<ConnectedAppMetadata>())
-        }
-
-        launchFragment<HomeFragment>(Bundle())
-        onView(
-                withText(
-                    "Manage the health and fitness data on your device, and control which apps can access it"
-                )
-            )
-            .check(matches(isDisplayed()))
-        onView(withText("App permissions")).check(matches(isDisplayed()))
-        onView(withText("Data and access")).check(matches(isDisplayed()))
-        onView(withText("Manage data")).check(matches(isDisplayed()))
-
-        onView(withText("Recent access")).check(matches(isDisplayed()))
-        onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
-        onView(withText("18:40")).check(matches(isDisplayed()))
-        onView(withText("See all recent access")).check(matches(isDisplayed()))
-    }
-
-    @Test
     @DisableFlags(Flags.FLAG_ONBOARDING)
     fun legacyWhenRecentAccessApps_in12HourFormat_showsCorrectTime() {
         val recentApp =
@@ -476,41 +430,10 @@ class HomeFragmentTest {
         onView(withText("See all recent access")).check(doesNotExist())
     }
 
-    @Test
-    @DisableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE, Flags.FLAG_ONBOARDING)
-    fun oldIA_withNoRecentAccessApps() {
-        whenever(recentAccessViewModel.recentAccessApps).then {
-            MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
-        }
-        whenever(homeViewModel.connectedApps).then {
-            MutableLiveData(
-                listOf(
-                    ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
-                    ConnectedAppMetadata(TEST_APP_2, ConnectedAppStatus.ALLOWED),
-                )
-            )
-        }
-        launchFragment<HomeFragment>(Bundle())
-
-        onView(
-                withText(
-                    "Manage the health and fitness data on your device, and control which apps can access it"
-                )
-            )
-            .check(matches(isDisplayed()))
-        onView(withText("App permissions")).check(matches(isDisplayed()))
-        onView(withText("2 apps have access")).check(matches(isDisplayed()))
-        onView(withText("Data and access")).check(matches(isDisplayed()))
-        onView(withText("Manage data")).check(matches(isDisplayed()))
-
-        onView(withText("Recent access")).check(matches(isDisplayed()))
-        onView(withText("No apps recently accessed Health\u00A0Connect"))
-            .check(matches(isDisplayed()))
-    }
 
     @Test
     @DisableFlags(Flags.FLAG_ONBOARDING)
-    fun newIA_withNoRecentAccessApps() {
+    fun withNoRecentAccessApps() {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
@@ -540,7 +463,6 @@ class HomeFragmentTest {
 
     @Test
     @DisableFlags(Flags.FLAG_ONBOARDING)
-    @EnableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
     fun whenOneAppConnected_showsOneAppHasPermissions() {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
@@ -563,36 +485,6 @@ class HomeFragmentTest {
         onView(withText("See data and which apps can access it")).check(matches(isDisplayed()))
         onView(withText("Manage data")).check(matches(isDisplayed()))
     }
-
-    @Test
-    @DisableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE, Flags.FLAG_ONBOARDING)
-    fun whenOneAppConnected_oneAppNotConnected_showsCorrectSummary() {
-        whenever(recentAccessViewModel.recentAccessApps).then {
-            MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
-        }
-        whenever(homeViewModel.connectedApps).then {
-            MutableLiveData(
-                listOf(
-                    ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
-                    ConnectedAppMetadata(TEST_APP_2, ConnectedAppStatus.DENIED),
-                )
-            )
-        }
-
-        launchFragment<HomeFragment>(Bundle())
-
-        onView(
-                withText(
-                    "Manage the health and fitness data on your device, and control which apps can access it"
-                )
-            )
-            .check(matches(isDisplayed()))
-        onView(withText("App permissions")).check(matches(isDisplayed()))
-        onView(withText("1 of 2 apps has access")).check(matches(isDisplayed()))
-        onView(withText("Data and access")).check(matches(isDisplayed()))
-        onView(withText("Manage data")).check(matches(isDisplayed()))
-    }
-
     // endregion
 
     // region Migration tests
@@ -1107,49 +999,10 @@ class HomeFragmentTest {
     // endregion
 
     // region Logging
-    @Test
-    @DisableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE, Flags.FLAG_ONBOARDING)
-    fun homeFragmentLogging_oldIA_impressionsLogged() {
-        val recentApp =
-            RecentAccessEntry(
-                metadata = TEST_APP,
-                instantTime = Instant.parse("2022-10-20T18:40:13.00Z"),
-                isToday = true,
-                dataTypesWritten =
-                    mutableSetOf(
-                        HealthDataCategory.ACTIVITY.uppercaseTitle(),
-                        HealthDataCategory.VITALS.uppercaseTitle(),
-                    ),
-                dataTypesRead =
-                    mutableSetOf(
-                        HealthDataCategory.SLEEP.uppercaseTitle(),
-                        HealthDataCategory.NUTRITION.uppercaseTitle(),
-                    ),
-            )
-
-        timeSource.setIs24Hour(true)
-
-        whenever(recentAccessViewModel.recentAccessApps).then {
-            MutableLiveData<RecentAccessState>(RecentAccessState.WithData(listOf(recentApp)))
-        }
-        whenever(homeViewModel.connectedApps).then {
-            MutableLiveData(listOf<ConnectedAppMetadata>())
-        }
-
-        launchFragment<HomeFragment>(Bundle())
-
-        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.HOME_PAGE)
-        verify(healthConnectLogger).logPageImpression()
-        verify(healthConnectLogger).logImpression(HomePageElement.APP_PERMISSIONS_BUTTON)
-        verify(healthConnectLogger).logImpression(HomePageElement.DATA_AND_ACCESS_BUTTON)
-        verify(healthConnectLogger).logImpression(HomePageElement.SEE_ALL_RECENT_ACCESS_BUTTON)
-        verify(healthConnectLogger).logImpression(RecentAccessElement.RECENT_ACCESS_ENTRY_BUTTON)
-    }
 
     @Test
-    @EnableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
     @DisableFlags(Flags.FLAG_ONBOARDING)
-    fun homeFragmentLogging_newIA_impressionsLogged() {
+    fun homeFragmentLogging_impressionsLogged() {
         val recentApp =
             RecentAccessEntry(
                 metadata = TEST_APP,

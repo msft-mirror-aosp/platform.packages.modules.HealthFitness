@@ -111,8 +111,7 @@ class DataManagementActivityTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
-    fun whenNewIA_showsAllDataFragment() {
+    fun showsAllDataFragment() {
         whenever(migrationViewModel.getCurrentMigrationUiState()).then {
             MigrationRestoreState(
                 migrationUiState = MigrationUiState.IDLE,
@@ -137,35 +136,6 @@ class DataManagementActivityTest {
 
         onView(withText("Activity")).check(matches(isDisplayed()))
         onView(withText("Steps")).check(matches(isDisplayed()))
-    }
-
-    @Test
-    @DisableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
-    fun whenOldIA_showsCategoriesFragment() {
-        whenever(migrationViewModel.getCurrentMigrationUiState()).then {
-            MigrationRestoreState(
-                migrationUiState = MigrationUiState.IDLE,
-                dataRestoreState = DataRestoreUiState.IDLE,
-                dataRestoreError = DataRestoreUiError.ERROR_NONE,
-            )
-        }
-        whenever(migrationViewModel.migrationState).then {
-            MutableLiveData(
-                MigrationViewModel.MigrationFragmentState.WithData(
-                    MigrationRestoreState(
-                        migrationUiState = MigrationUiState.IDLE,
-                        dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
-                    )
-                )
-            )
-        }
-
-        val startActivityIntent = Intent(context, DataManagementActivity::class.java)
-
-        launch<DataManagementActivity>(startActivityIntent)
-
-        onView(withText("See all categories")).check(matches(isDisplayed()))
     }
 
     @Test

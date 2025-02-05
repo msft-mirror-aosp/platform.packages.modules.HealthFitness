@@ -26,11 +26,13 @@ import android.health.connect.backuprestore.RestoreChange;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.internal.datatypes.RecordInternal;
+import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.backuprestore.CloudBackupManager;
 import com.android.server.healthconnect.backuprestore.CloudRestoreManager;
@@ -61,6 +63,7 @@ import org.mockito.Mock;
 import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
+@EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
 public final class CloudBackupRestoreTest {
 
     @Rule(order = 1)
@@ -138,6 +141,7 @@ public final class CloudBackupRestoreTest {
                 mCloudBackupManager.getChangesForBackup(null).getChanges();
         assertThat(backupChanges).hasSize(1);
         mDatabaseHelpers.clearAllData(mTransactionManager);
+        mTransactionTestUtils.insertApp("packageName");
         mCloudRestoreManager.pushChangesForRestore(
                 backupChanges.stream().map(change -> new RestoreChange(change.getData())).toList());
 
