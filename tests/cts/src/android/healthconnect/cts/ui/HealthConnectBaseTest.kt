@@ -24,7 +24,6 @@ import android.healthconnect.cts.utils.TestUtils
 import android.server.wm.WindowManagerStateHelper
 import android.util.Log
 import androidx.test.core.app.ApplicationProvider
-import com.android.compatibility.common.util.DisableAnimationRule
 import com.android.compatibility.common.util.FreezeRotationRule
 import com.android.compatibility.common.util.SystemUtil.eventually
 import com.android.compatibility.common.util.SystemUtil.runShellCommandOrThrow
@@ -33,8 +32,6 @@ import org.junit.Before
 import org.junit.Rule
 
 open class HealthConnectBaseTest {
-    @get:Rule val disableAnimationRule = DisableAnimationRule()
-
     @get:Rule val freezeRotationRule = FreezeRotationRule()
 
     @get:Rule
