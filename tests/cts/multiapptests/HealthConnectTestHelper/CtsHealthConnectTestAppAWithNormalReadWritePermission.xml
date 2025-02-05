@@ -107,6 +107,9 @@
     <uses-permission android:name="android.permission.health.READ_MINDFULNESS"/>
     <uses-permission android:name="android.permission.health.READ_PLANNED_EXERCISE"/>
 
+    <!-- Used to check if App Ops considers the app to be in the background -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
     <application android:label="CtsHealthConnectTestAppAWithNormalReadWritePermission">
         <activity android:name="android.healthconnect.cts.testhelper.TestAppActivity"
                   android:exported="true">

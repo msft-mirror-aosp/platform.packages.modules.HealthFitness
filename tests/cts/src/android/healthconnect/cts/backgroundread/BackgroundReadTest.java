@@ -26,6 +26,7 @@ import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteDat
 import static android.healthconnect.cts.utils.TestUtils.getRecordIds;
 import static android.healthconnect.cts.utils.TestUtils.setupAggregation;
 
+import static com.android.compatibility.common.util.SystemUtil.eventually;
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -36,6 +37,7 @@ import static java.time.temporal.ChronoUnit.HOURS;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static java.util.Objects.requireNonNull;
 
+import android.app.AppOpsManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.health.connect.HealthConnectException;
@@ -89,6 +91,20 @@ public class BackgroundReadTest {
         mPackageManager = mContext.getPackageManager();
         mManager = requireNonNull(mContext.getSystemService(HealthConnectManager.class));
         mTestApp = TestAppProxy.forPackageNameInBackground(PKG_TEST_APP);
+
+        // Ensure that App Ops considers the test app to be in the background. This may take a few
+        // seconds if another test has recently launched it in the foreground.
+        AppOpsManager appOpsManager =
+                requireNonNull(mContext.getSystemService(AppOpsManager.class));
+        int uid = mPackageManager.getPackageUid(PKG_TEST_APP, /* flags= */ 0);
+        eventually(
+                () ->
+                        assertThat(
+                                        appOpsManager.unsafeCheckOp(
+                                                AppOpsManager.OPSTR_FINE_LOCATION,
+                                                uid,
+                                                PKG_TEST_APP))
+                                .isEqualTo(AppOpsManager.MODE_IGNORED));
 
         deleteAllStagedRemoteData();
     }
