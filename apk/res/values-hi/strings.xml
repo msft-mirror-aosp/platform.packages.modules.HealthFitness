@@ -68,7 +68,7 @@
     <string name="sleep_category_lowercase" msgid="842609634386839011">"नींद से जुड़ी जानकारी"</string>
     <string name="vitals_category_uppercase" msgid="8982333138032938623">"बीपी, धड़कन की दर वगैरह का डेटा"</string>
     <string name="vitals_category_lowercase" msgid="4664457787866407963">"ज़रूरी जानकारी"</string>
-    <string name="cycle_tracking_category_uppercase" msgid="4723200714782660489">"पीरियड साइकल"</string>
+    <string name="cycle_tracking_category_uppercase" msgid="4723200714782660489">"पीरियड्स साइकल की ट्रैकिंग"</string>
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"पीरियड साइकल का डेटा"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"पोषण"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"पोषण"</string>
@@ -544,7 +544,7 @@
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect का इस्तेमाल शुरू करें"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect में, आपकी सेहत और फ़िटनेस से जुड़ा डेटा सेव किया जाता है. इससे अपने डिवाइस में अलग-अलग ऐप्लिकेशन को आसानी से सिंक करने में मदद मिलती है"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect, अलग-अलग ऐप्लिकेशन से सेहत और फ़िटनेस से जुड़ा आपका डेटा सेव और सिंक करता है.\n\n"<b>"फ़िटनेस और तंदुरुस्ती का डेटा,"</b>" इसमें कसरत के सेशन, कदमों की संख्या, पोषण, नींद वगैरह का डेटा शामिल है\n\n"<b>"सेहत का डेटा,"</b>" इसमें टीकाकरण की जानकारी, लैब के नतीजे वगैरह शामिल हैं"</string>
-    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect की मदद से ये काम किए जा सकते हैं"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect की मदद से ये काम करें"</string>
     <string name="share_data_text" msgid="6898398345784931678"><b>"ऐप्लिकेशन के साथ डेटा शेयर करें"</b>\n"ऐप्लिकेशन के लिए, यह चुनें कि Health Connect में मौजूद कौनसा डेटा पढ़ने या सेव करने की अनुमति देनी है"</string>
     <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"सेटिंग और निजता को मैनेज करें"</b>\n" किसी भी समय, ऐप्लिकेशन को दी गई अनुमतियों में बदलाव करें और अपना डेटा मैनेज करें"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"वापस जाएं"</string>

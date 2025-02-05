@@ -44,7 +44,7 @@
     <string name="set_units_title" msgid="2657822539603758029">"Задаць адзінкі вымярэння"</string>
     <string name="manage_data_preferences_category_title" msgid="1183110821140344472">"Параметры"</string>
     <string name="manage_data_category_title" msgid="6328886061582616519">"Кіраванне данымі"</string>
-    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"Экспарт і Імпарт даных"</string>
+    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"Экспарт і імпарт даных"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Апошні доступ да даных геалакацыі"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"У апошні час праграмы не атрымлівалі доступу да Здароўя і спорту"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Паказаць усе нядаўнія выпадкі доступу"</string>

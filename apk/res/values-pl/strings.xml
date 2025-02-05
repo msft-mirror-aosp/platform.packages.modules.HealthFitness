@@ -427,7 +427,7 @@
     <string name="no_apps_allowed" msgid="5794833581324128108">"Nie zezwolono żadnym aplikacjom"</string>
     <string name="no_apps_denied" msgid="743327680286446017">"Nie zabroniono dostępu żadnym aplikacjom"</string>
     <string name="permissions_disconnect_all_dialog_title" msgid="27474286046207122">"Usunąć dostęp wszystkich aplikacji?"</string>
-    <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"Żadna aplikacja nie będzie już mogła korzystać z danych z Health Connect ani dodawać nowych danych. Istniejące dane nie zostaną usunięte.\n\nNie wpływa na to na inne uprawnienia, które może mieć ta aplikacja, np. dotyczące lokalizacji, aparatu czy mikrofonu."</string>
+    <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"Żadna aplikacja nie będzie już mogła korzystać z danych z Health Connect ani dodawać nowych danych. Istniejące dane nie zostaną usunięte.\n\nNie wpływa to na inne uprawnienia, które może mieć ta aplikacja, np. dotyczące lokalizacji, aparatu czy mikrofonu."</string>
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"Usuń wszystko"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"Zarządzaj aplikacją"</string>
     <string name="see_app_data" msgid="3951030076195119476">"Zobacz dane aplikacji"</string>
