@@ -52,8 +52,10 @@ import android.health.connect.datatypes.SleepSessionRecord;
 import android.health.connect.datatypes.SleepSessionRecord.Stage;
 import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.datatypes.TotalCaloriesBurnedRecord;
+import android.health.connect.datatypes.WeightRecord;
 import android.health.connect.datatypes.units.Energy;
 import android.health.connect.datatypes.units.Length;
+import android.health.connect.datatypes.units.Mass;
 import android.health.connect.datatypes.units.Power;
 import android.healthconnect.cts.utils.ToStringUtils;
 import android.os.Bundle;
@@ -157,6 +159,7 @@ public final class BundleHelper {
     private static final String COUNT = PREFIX + "COUNT";
     private static final String LENGTH_IN_METERS = PREFIX + "LENGTH_IN_METERS";
     private static final String ENERGY_IN_CALORIES = PREFIX + "ENERGY_IN_CALORIES";
+    private static final String WEIGHT_IN_GRAMS = PREFIX + "WEIGHT_IN_GRAMS";
     private static final String SAMPLE_TIMES = PREFIX + "SAMPLE_TIMES";
     private static final String SAMPLE_VALUES = PREFIX + "SAMPLE_VALUES";
     private static final String EXERCISE_ROUTE_TIMESTAMPS = PREFIX + "EXERCISE_ROUTE_TIMESTAMPS";
@@ -737,6 +740,8 @@ public final class BundleHelper {
             values = getTotalCaloriesBurnedRecord(totalCaloriesBurnedRecord);
         } else if (record instanceof MenstruationPeriodRecord) {
             values = new Bundle();
+        } else if (record instanceof WeightRecord weightRecord) {
+            values = getWeightRecord(weightRecord);
         } else {
             throw new IllegalArgumentException(
                     "Unsupported record type: " + record.getClass().getName());
@@ -803,6 +808,8 @@ public final class BundleHelper {
                     metadata, startTime, endTime, startZoneOffset, endZoneOffset, values);
         } else if (Objects.equals(recordClassName, MenstruationPeriodRecord.class.getName())) {
             return new MenstruationPeriodRecord.Builder(metadata, startTime, endTime).build();
+        } else if (Objects.equals(recordClassName, WeightRecord.class.getName())) {
+            return createWeightRecord(metadata, startTime, startZoneOffset, values);
         }
 
         throw new IllegalArgumentException("Unsupported record type: " + recordClassName);
@@ -1088,6 +1095,12 @@ public final class BundleHelper {
         return values;
     }
 
+    private static Bundle getWeightRecord(WeightRecord record) {
+        Bundle values = new Bundle();
+        values.putDouble(WEIGHT_IN_GRAMS, record.getWeight().getInGrams());
+        return values;
+    }
+
     private static HeartRateRecord createHeartRateRecord(
             Metadata metadata,
             Instant startTime,
@@ -1188,6 +1201,14 @@ public final class BundleHelper {
                         metadata, startTime, endTime, Energy.fromCalories(energyInCalories))
                 .setStartZoneOffset(startZoneOffset)
                 .setEndZoneOffset(endZoneOffset)
+                .build();
+    }
+
+    private static WeightRecord createWeightRecord(
+            Metadata metadata, Instant time, ZoneOffset zoneOffset, Bundle values) {
+        double weightInGrams = values.getDouble(WEIGHT_IN_GRAMS);
+        return new WeightRecord.Builder(metadata, time, Mass.fromGrams(weightInGrams))
+                .setZoneOffset(zoneOffset)
                 .build();
     }
 
