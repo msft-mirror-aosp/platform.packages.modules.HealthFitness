@@ -20,6 +20,7 @@ import android.healthconnect.cts.lib.ActivityLauncher.launchMainActivity
 import android.healthconnect.cts.lib.TestAppProxy
 import android.healthconnect.cts.lib.UiTestUtils.clickOnTextAndWaitForNewWindow
 import android.healthconnect.cts.lib.UiTestUtils.findText
+import android.healthconnect.cts.lib.UiTestUtils.navigateToNewPage
 import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndFindText
 import android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_ALLERGY
 import android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION
@@ -36,10 +37,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-@RequiresFlagsEnabled(
-    FLAG_PERSONAL_HEALTH_RECORD,
-    FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
-)
+@RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
 class AllMedicalDataFragmentTest : HealthConnectBaseTest() {
 
     @get:Rule val mCheckFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
@@ -70,8 +68,7 @@ class AllMedicalDataFragmentTest : HealthConnectBaseTest() {
     @Test
     fun allMedicalDataFragment_showsAvailableDataTypes() {
         context.launchMainActivity {
-            scrollDownToAndFindText("Browse health records")
-            clickOnTextAndWaitForNewWindow("Browse health records")
+            navigateToNewPage("Browse health records")
 
             scrollDownToAndFindText("Allergies")
             scrollDownToAndFindText("Vaccines")
@@ -81,8 +78,7 @@ class AllMedicalDataFragmentTest : HealthConnectBaseTest() {
     @Test
     fun allMedicalDataFragment_clickOnPermissionType_navigatesToEntriesAndAccess() {
         context.launchMainActivity {
-            scrollDownToAndFindText("Browse health records")
-            clickOnTextAndWaitForNewWindow("Browse health records")
+            navigateToNewPage("Browse health records")
 
             scrollDownToAndFindText("Allergies")
             clickOnTextAndWaitForNewWindow("Allergies")

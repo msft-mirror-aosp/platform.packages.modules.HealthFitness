@@ -17,10 +17,9 @@
 package android.healthconnect.cts.ui
 
 import android.healthconnect.cts.lib.ActivityLauncher.launchMainActivity
-import android.healthconnect.cts.lib.UiTestUtils
-import android.healthconnect.cts.lib.UiTestUtils.clickOnText
+import android.healthconnect.cts.lib.UiTestUtils.findText
+import android.healthconnect.cts.lib.UiTestUtils.navigateToNewPage
 import android.healthconnect.cts.utils.TestUtils
-import androidx.test.uiautomator.By
 import org.junit.Test
 
 /** CTS test for HealthConnect Manage data screen. */
@@ -35,9 +34,9 @@ class ManageDataFragmentTest : HealthConnectBaseTest() {
         TestUtils.setAutoDeletePeriod(0)
 
         context.launchMainActivity {
-            clickOnText("Manage data")
-            UiTestUtils.waitDisplayed(By.text("Auto-delete"))
-            UiTestUtils.waitDisplayed(By.text("Off"))
+            navigateToNewPage("Manage data")
+            findText("Auto-delete")
+            findText("Off")
         }
     }
 
@@ -46,9 +45,9 @@ class ManageDataFragmentTest : HealthConnectBaseTest() {
         TestUtils.setAutoDeletePeriod(THREE_MONTHS)
 
         context.launchMainActivity {
-            clickOnText("Manage data")
-            UiTestUtils.waitDisplayed(By.text("Auto-delete"))
-            UiTestUtils.waitDisplayed(By.text("After 3 months"))
+            navigateToNewPage("Manage data")
+            findText("Auto-delete")
+            findText("After 3 months")
         }
     }
 }

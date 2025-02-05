@@ -16,8 +16,8 @@
 package android.healthconnect.cts.ui.phr
 
 import android.healthconnect.cts.lib.ActivityLauncher.launchMainActivity
-import android.healthconnect.cts.lib.UiTestUtils.clickOnTextAndWaitForNewWindow
 import android.healthconnect.cts.lib.UiTestUtils.findText
+import android.healthconnect.cts.lib.UiTestUtils.navigateToAppPermissions
 import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndFindText
 import android.healthconnect.cts.ui.HealthConnectBaseTest
 import android.healthconnect.cts.utils.TestUtils
@@ -43,10 +43,7 @@ class ConnectedAppFragmentTest : HealthConnectBaseTest() {
     @Test
     fun appWithMedicalAndFitnessPermissions_showsCombinedPermssionsScreen() {
         context.launchMainActivity {
-            scrollDownToAndFindText("App permissions")
-            clickOnTextAndWaitForNewWindow("App permissions")
-            scrollDownToAndFindText("Health Connect cts test app 2")
-            clickOnTextAndWaitForNewWindow("Health Connect cts test app 2")
+            navigateToAppPermissions("Health Connect cts test app 2")
 
             findText("Health Connect cts test app 2")
             scrollDownToAndFindText("Permissions")
@@ -64,11 +61,7 @@ class ConnectedAppFragmentTest : HealthConnectBaseTest() {
     @Ignore("b/391460826 - Elements size too large on expressive devices")
     fun appWithFitnessPermissionsOnly_showsFitnessPermissionsScreen() {
         context.launchMainActivity {
-            scrollDownToAndFindText("App permissions")
-            clickOnTextAndWaitForNewWindow("App permissions")
-
-            scrollDownToAndFindText("CtsHealthConnectTestAppBWithNormalReadWritePermission")
-            clickOnTextAndWaitForNewWindow("CtsHealthConnectTestAppBWithNormalReadWritePermission")
+            navigateToAppPermissions("CtsHealthConnectTestAppBWithNormalReadWritePermission")
 
             scrollDownToAndFindText("Allowed to read")
             scrollDownToAndFindText("Allowed to write")

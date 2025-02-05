@@ -59,8 +59,9 @@ open class HealthConnectBaseTest {
     /** This assumes that the lock method is SWIPE or NONE. */
     private fun unlockDevice() {
         val keyguardManager = context.getSystemService(KeyguardManager::class.java)
-        // Wakes up the device
+        // Wakes up the device in case setup failed
         runShellCommandOrThrow("input keyevent KEYCODE_WAKEUP")
+        runShellCommandOrThrow("wm dismiss-keyguard")
         // Check if there is a lock screen set (we assume SWIPE)
         if ("false".equals(runShellCommandOrThrow("cmd lock_settings get-disabled"))) {
             // Unlock screen only when it's lock settings enabled to prevent showing "wallpaper
