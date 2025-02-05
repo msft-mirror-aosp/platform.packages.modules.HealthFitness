@@ -31,14 +31,13 @@ public class BackupSettingsTest {
 
     @Test
     public void backupSettingsParcel_propertiesAreIdentical() {
-        BackupSettings original = new BackupSettings(123, new byte[] {1, 2, 3});
+        BackupSettings original = new BackupSettings(new byte[] {1, 2, 3});
 
         Parcel parcel = Parcel.obtain();
         original.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
         BackupSettings restoredParcel = BackupSettings.CREATOR.createFromParcel(parcel);
 
-        assertThat(restoredParcel.getVersion()).isEqualTo(123);
         assertThat(restoredParcel.getData()).isEqualTo(new byte[] {1, 2, 3});
         parcel.recycle();
     }

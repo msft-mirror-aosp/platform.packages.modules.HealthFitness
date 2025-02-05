@@ -29,13 +29,18 @@ import java.util.Objects;
 @FlaggedApi(FLAG_CLOUD_BACKUP_AND_RESTORE)
 public final class GetSettingsForBackupResponse implements Parcelable {
 
+    // Version how the data was encoded.
+    private final int mVersion;
+
     @NonNull private final BackupSettings mSettings;
 
-    public GetSettingsForBackupResponse(@NonNull BackupSettings settings) {
+    public GetSettingsForBackupResponse(int version, @NonNull BackupSettings settings) {
+        mVersion = version;
         mSettings = settings;
     }
 
     private GetSettingsForBackupResponse(Parcel in) {
+        mVersion = in.readInt();
         mSettings = in.readParcelable(BackupSettings.class.getClassLoader());
     }
 
@@ -43,12 +48,14 @@ public final class GetSettingsForBackupResponse implements Parcelable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof GetSettingsForBackupResponse that)) return false;
-        return mSettings.equals(that.mSettings);
+        return mVersion == that.mVersion && mSettings.equals(that.mSettings);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(mSettings);
+        int result = Objects.hash(mVersion);
+        result = 31 * result + Objects.hash(mSettings);
+        return result;
     }
 
     @NonNull
@@ -66,12 +73,18 @@ public final class GetSettingsForBackupResponse implements Parcelable {
             };
 
     @NonNull
+    public int getVersion() {
+        return mVersion;
+    }
+
+    @NonNull
     public BackupSettings getSettings() {
         return mSettings;
     }
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeInt(mVersion);
         dest.writeParcelable(mSettings, flags);
     }
 

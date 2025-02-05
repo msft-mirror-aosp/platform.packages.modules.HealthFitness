@@ -219,7 +219,7 @@ public class CloudRestoreManagerTest {
 
         setupInitialSettings(false);
         Settings settingsToRestore = createSettingsToRestore(false, false);
-        BackupSettings backupSettings = new BackupSettings(1, settingsToRestore.toByteArray());
+        BackupSettings backupSettings = new BackupSettings(settingsToRestore.toByteArray());
 
         mCloudRestoreManager.pushSettingsForRestore(backupSettings);
 
@@ -245,7 +245,7 @@ public class CloudRestoreManagerTest {
         setupInitialSettings(true);
         Settings settingsToRestore = createSettingsToRestore(true, false);
 
-        BackupSettings backupSettings = new BackupSettings(1, settingsToRestore.toByteArray());
+        BackupSettings backupSettings = new BackupSettings(settingsToRestore.toByteArray());
 
         mCloudRestoreManager.pushSettingsForRestore(backupSettings);
 
@@ -274,7 +274,7 @@ public class CloudRestoreManagerTest {
 
         setupInitialSettings(false);
         Settings settingsToRestore = createSettingsToRestore(false, true);
-        BackupSettings backupSettings = new BackupSettings(1, settingsToRestore.toByteArray());
+        BackupSettings backupSettings = new BackupSettings(settingsToRestore.toByteArray());
 
         mCloudRestoreManager.pushSettingsForRestore(backupSettings);
 
