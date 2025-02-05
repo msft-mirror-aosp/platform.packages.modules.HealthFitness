@@ -357,6 +357,13 @@ public final class DataFactory {
                 .build();
     }
 
+    /** Returns a new weight record with the specified fields. */
+    public static WeightRecord getWeightRecord(double grams, Instant time, String clientId) {
+        return new WeightRecord.Builder(
+                        getMetadataForClientId(clientId), time, Mass.fromGrams(grams))
+                .build();
+    }
+
     public static StepsRecord getStepsRecordWithEmptyMetaData() {
         return getStepsRecord(10, getEmptyMetadata());
     }

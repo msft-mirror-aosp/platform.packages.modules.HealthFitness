@@ -22,24 +22,15 @@ import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKG
 import static android.healthconnect.cts.utils.DataFactory.NOW;
 import static android.healthconnect.cts.utils.DataFactory.getStepsRecord;
 import static android.healthconnect.cts.utils.DataFactory.getStepsRecordWithEmptyMetaData;
-import static android.healthconnect.cts.utils.TestUtils.aggregateStepsCount;
 import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteData;
 import static android.healthconnect.cts.utils.TestUtils.getRecordIds;
-import static android.healthconnect.cts.utils.TestUtils.insertStepsRecordViaTestApp;
-import static android.healthconnect.cts.utils.TestUtils.readStepsRecordsUsingFiltersViaTestApp;
-import static android.healthconnect.cts.utils.TestUtils.readStepsRecordsUsingRecordIdsViaTestApp;
-import static android.healthconnect.cts.utils.TestUtils.sendCommandToTestAppReceiver;
 import static android.healthconnect.cts.utils.TestUtils.setupAggregation;
-import static android.healthconnect.test.app.TestAppReceiver.ACTION_GET_CHANGE_LOGS;
-import static android.healthconnect.test.app.TestAppReceiver.ACTION_GET_CHANGE_LOG_TOKEN;
-import static android.healthconnect.test.app.TestAppReceiver.EXTRA_RECORD_COUNT;
-import static android.healthconnect.test.app.TestAppReceiver.EXTRA_RECORD_IDS;
-import static android.healthconnect.test.app.TestAppReceiver.EXTRA_RECORD_VALUE;
-import static android.healthconnect.test.app.TestAppReceiver.EXTRA_TOKEN;
 
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
 
 import static com.google.common.truth.Truth.assertThat;
+
+import static org.junit.Assert.assertThrows;
 
 import static java.time.temporal.ChronoUnit.HOURS;
 import static java.time.temporal.ChronoUnit.MINUTES;
@@ -47,15 +38,21 @@ import static java.util.Objects.requireNonNull;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.InsertRecordsResponse;
+import android.health.connect.ReadRecordsRequestUsingFilters;
+import android.health.connect.ReadRecordsRequestUsingIds;
+import android.health.connect.changelog.ChangeLogTokenRequest;
+import android.health.connect.changelog.ChangeLogsRequest;
+import android.health.connect.datatypes.ActiveCaloriesBurnedRecord;
+import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.StepsRecord;
+import android.healthconnect.cts.lib.TestAppProxy;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
-import android.healthconnect.cts.utils.TestReceiver;
 import android.healthconnect.cts.utils.TestUtils;
 import android.healthconnect.test.app.DefaultOutcomeReceiver;
-import android.os.Bundle;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -66,17 +63,19 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.Executors;
 
 @RunWith(AndroidJUnit4.class)
 public class BackgroundReadTest {
 
-    private static final String PKG_TEST_APP = "android.healthconnect.test.app";
+    private static final String PKG_TEST_APP = "android.healthconnect.cts.testapp.readWritePerms.A";
 
     private Context mContext;
     private PackageManager mPackageManager;
     private HealthConnectManager mManager;
+    private TestAppProxy mTestApp;
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
@@ -89,9 +88,9 @@ public class BackgroundReadTest {
         mContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         mPackageManager = mContext.getPackageManager();
         mManager = requireNonNull(mContext.getSystemService(HealthConnectManager.class));
+        mTestApp = TestAppProxy.forPackageNameInBackground(PKG_TEST_APP);
 
         deleteAllStagedRemoteData();
-        TestReceiver.reset();
     }
 
     @After
@@ -106,83 +105,99 @@ public class BackgroundReadTest {
         insertStepsRecordsDirectly(List.of(getStepsRecordWithEmptyMetaData()));
 
         // test app will try to read the step record inserted by this test
-        readStepsRecordsUsingFiltersViaTestApp(mContext, List.of(mContext.getPackageName()));
-
-        assertThat(TestReceiver.getResult()).isNull();
-        assertThat(TestReceiver.getErrorCode()).isEqualTo(ERROR_SECURITY);
+        ReadRecordsRequestUsingFilters<StepsRecord> request =
+                new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
+                        .addDataOrigins(
+                                new DataOrigin.Builder()
+                                        .setPackageName(mContext.getPackageName())
+                                        .build())
+                        .build();
+        HealthConnectException thrown =
+                assertThrows(HealthConnectException.class, () -> mTestApp.readRecords(request));
+        assertThat(thrown.getErrorCode()).isEqualTo(ERROR_SECURITY);
     }
 
     @Test
     public void testReadRecordsByFilters_inBackgroundWithoutPermission_canReadOwnData()
             throws Exception {
         revokeBackgroundReadPermissionForTestApp();
-        String insertedId = insertStepsRecordViaTestApp(mContext, NOW, NOW.plus(1, MINUTES), 10);
+        String insertedId = mTestApp.insertRecord(getStepsRecord(10, NOW, NOW.plus(1, MINUTES)));
 
         // test app will try to read the step record inserted by itself
-        readStepsRecordsUsingFiltersViaTestApp(mContext, List.of(PKG_TEST_APP));
+        ReadRecordsRequestUsingFilters<StepsRecord> request =
+                new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
+                        .addDataOrigins(
+                                new DataOrigin.Builder().setPackageName(PKG_TEST_APP).build())
+                        .build();
+        List<StepsRecord> records = mTestApp.readRecords(request);
 
-        Bundle result = TestReceiver.getResult();
-        assertThat(result).isNotNull();
-        assertThat(result.getInt(EXTRA_RECORD_COUNT)).isEqualTo(1);
-        assertThat(result.getStringArrayList(EXTRA_RECORD_IDS)).containsExactly(insertedId);
+        assertThat(records.stream().map(r -> r.getMetadata().getId())).containsExactly(insertedId);
     }
 
     @Test
-    public void
-            testReadRecordsByFilters_inBackgroundWithPermission_canReadBothOwnAndOtherAppsData() {
+    public void testReadRecordsByFilters_inBackgroundWithPermission_canReadBothOwnAndOtherAppsData()
+            throws Exception {
         grantBackgroundReadPermissionForTestApp();
         String idInsertedByThisTest =
                 insertStepsRecordsDirectly(List.of(getStepsRecordWithEmptyMetaData())).get(0);
         String idInsertedByTestApp =
-                insertStepsRecordViaTestApp(mContext, NOW, NOW.plus(1, MINUTES), 10);
+                mTestApp.insertRecord(getStepsRecord(10, NOW, NOW.plus(1, MINUTES)));
 
         // test app will try to read the step record inserted by both this test and the test app
-        readStepsRecordsUsingFiltersViaTestApp(
-                mContext, List.of(mContext.getPackageName(), PKG_TEST_APP));
+        ReadRecordsRequestUsingFilters<StepsRecord> request =
+                new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
+                        .addDataOrigins(
+                                new DataOrigin.Builder()
+                                        .setPackageName(mContext.getPackageName())
+                                        .build())
+                        .addDataOrigins(
+                                new DataOrigin.Builder().setPackageName(PKG_TEST_APP).build())
+                        .build();
+        List<StepsRecord> records = mTestApp.readRecords(request);
 
-        Bundle result = TestReceiver.getResult();
-        assertThat(result).isNotNull();
-        assertThat(result.getInt(EXTRA_RECORD_COUNT)).isEqualTo(2);
-        assertThat(result.getStringArrayList(EXTRA_RECORD_IDS))
+        assertThat(records.stream().map(r -> r.getMetadata().getId()))
                 .containsExactly(idInsertedByThisTest, idInsertedByTestApp);
     }
 
     @Test
     public void testReadRecordsByIds_inBackgroundWithoutPermission_canReadOnlyOwnData()
-            throws InterruptedException {
+            throws Exception {
         revokeBackgroundReadPermissionForTestApp();
         String idInsertedByThisTest =
                 insertStepsRecordsDirectly(List.of(getStepsRecordWithEmptyMetaData())).get(0);
         String idInsertedByTestApp =
-                insertStepsRecordViaTestApp(mContext, NOW, NOW.plus(1, MINUTES), 10);
+                mTestApp.insertRecord(getStepsRecord(10, NOW, NOW.plus(1, MINUTES)));
 
         // test app will try to read the step record inserted by both this test and the test app
-        readStepsRecordsUsingRecordIdsViaTestApp(
-                mContext, List.of(idInsertedByTestApp, idInsertedByThisTest));
+        ReadRecordsRequestUsingIds<StepsRecord> request =
+                new ReadRecordsRequestUsingIds.Builder<>(StepsRecord.class)
+                        .addId(idInsertedByTestApp)
+                        .addId(idInsertedByThisTest)
+                        .build();
+        List<StepsRecord> records = mTestApp.readRecords(request);
 
-        Bundle result = TestReceiver.getResult();
-        assertThat(result).isNotNull();
-        assertThat(result.getInt(EXTRA_RECORD_COUNT)).isEqualTo(1);
-        assertThat(result.getStringArrayList(EXTRA_RECORD_IDS))
+        assertThat(records.stream().map(r -> r.getMetadata().getId()))
                 .containsExactly(idInsertedByTestApp);
     }
 
     @Test
-    public void testReadRecordsByIds_inBackgroundWithPermission_canReadBothOwnAndOtherAppsData() {
+    public void testReadRecordsByIds_inBackgroundWithPermission_canReadBothOwnAndOtherAppsData()
+            throws Exception {
         grantBackgroundReadPermissionForTestApp();
         String idInsertedByThisTest =
                 insertStepsRecordsDirectly(List.of(getStepsRecordWithEmptyMetaData())).get(0);
         String idInsertedByTestApp =
-                insertStepsRecordViaTestApp(mContext, NOW, NOW.plus(1, MINUTES), 10);
+                mTestApp.insertRecord(getStepsRecord(10, NOW, NOW.plus(1, MINUTES)));
 
         // test app will try to read the step record inserted by both this test and the test app
-        readStepsRecordsUsingRecordIdsViaTestApp(
-                mContext, List.of(idInsertedByTestApp, idInsertedByThisTest));
+        ReadRecordsRequestUsingIds<StepsRecord> request =
+                new ReadRecordsRequestUsingIds.Builder<>(StepsRecord.class)
+                        .addId(idInsertedByTestApp)
+                        .addId(idInsertedByThisTest)
+                        .build();
+        List<StepsRecord> records = mTestApp.readRecords(request);
 
-        Bundle result = TestReceiver.getResult();
-        assertThat(result).isNotNull();
-        assertThat(result.getInt(EXTRA_RECORD_COUNT)).isEqualTo(2);
-        assertThat(result.getStringArrayList(EXTRA_RECORD_IDS))
+        assertThat(records.stream().map(r -> r.getMetadata().getId()))
                 .containsExactly(idInsertedByThisTest, idInsertedByTestApp);
     }
 
@@ -193,11 +208,17 @@ public class BackgroundReadTest {
     public void testAggregate_inBackgroundWithoutPermission_expectSecurityError() throws Exception {
         revokeBackgroundReadPermissionForTestApp();
         insertStepsRecordsDirectly(List.of(getStepsRecordWithEmptyMetaData())).get(0);
-        insertStepsRecordViaTestApp(mContext, NOW, NOW.plus(1, MINUTES), 10);
+        mTestApp.insertRecord(getStepsRecord(10, NOW, NOW.plus(1, MINUTES)));
 
-        aggregateStepsCount(mContext, List.of(mContext.getPackageName(), PKG_TEST_APP));
-
-        assertSecurityError();
+        HealthConnectException thrown =
+                assertThrows(
+                        HealthConnectException.class,
+                        () ->
+                                mTestApp.aggregateStepsCountTotal(
+                                        Instant.EPOCH,
+                                        Instant.now().plus(10, HOURS),
+                                        List.of(mContext.getPackageName(), PKG_TEST_APP)));
+        assertThat(thrown.getErrorCode()).isEqualTo(ERROR_SECURITY);
     }
 
     @Test
@@ -208,44 +229,46 @@ public class BackgroundReadTest {
         long value2 = 5;
         StepsRecord stepsRecord1 = getStepsRecord(value1);
         insertStepsRecordsDirectly(List.of(stepsRecord1)).get(0);
-        insertStepsRecordViaTestApp(
-                mContext,
-                stepsRecord1.getStartTime().minus(10, HOURS),
-                stepsRecord1.getEndTime().minus(10, HOURS),
-                value2);
+        mTestApp.insertRecord(
+                getStepsRecord(
+                        value2,
+                        stepsRecord1.getStartTime().minus(10, HOURS),
+                        stepsRecord1.getEndTime().minus(10, HOURS)));
         setupAggregation(List.of(mContext.getPackageName(), PKG_TEST_APP), ACTIVITY);
 
-        aggregateStepsCount(mContext, List.of(mContext.getPackageName(), PKG_TEST_APP));
-
-        assertSuccess();
-        Bundle result = TestReceiver.getResult();
-        assertThat(result).isNotNull();
-        assertThat(result.getLong(EXTRA_RECORD_VALUE)).isEqualTo(value1 + value2);
+        long result =
+                mTestApp.aggregateStepsCountTotal(
+                        Instant.EPOCH,
+                        Instant.now().plus(10, HOURS),
+                        List.of(mContext.getPackageName(), PKG_TEST_APP));
+        assertThat(result).isEqualTo(value1 + value2);
     }
 
     @Test
     public void testGetChangeLogs_inBackgroundWithoutPermission_securityError() throws Exception {
         revokeBackgroundReadPermissionForTestApp();
 
-        final Bundle extras = new Bundle();
-        extras.putString(EXTRA_TOKEN, "token");
-        sendCommandToTestAppReceiver(mContext, ACTION_GET_CHANGE_LOGS, extras);
+        ChangeLogsRequest request = new ChangeLogsRequest.Builder("token").build();
+        HealthConnectException thrown =
+                assertThrows(HealthConnectException.class, () -> mTestApp.getChangeLogs(request));
 
-        assertSecurityError();
+        assertThat(thrown.getErrorCode()).isEqualTo(ERROR_SECURITY);
     }
 
     @Test
     public void testGetChangeLogs_inBackgroundWithPermission_success() throws Exception {
         revokeBackgroundReadPermissionForTestApp();
-        sendCommandToTestAppReceiver(mContext, ACTION_GET_CHANGE_LOG_TOKEN);
-        final String token = requireNonNull(TestReceiver.getResult()).getString(EXTRA_TOKEN);
+
+        ChangeLogTokenRequest tokenRequest =
+                new ChangeLogTokenRequest.Builder()
+                        .addRecordType(ActiveCaloriesBurnedRecord.class)
+                        .build();
+        String token = mTestApp.getChangeLogToken(tokenRequest);
+
         grantBackgroundReadPermissionForTestApp();
 
-        final Bundle extras = new Bundle();
-        extras.putString(EXTRA_TOKEN, token);
-        sendCommandToTestAppReceiver(mContext, ACTION_GET_CHANGE_LOGS, extras);
-
-        assertSuccess();
+        ChangeLogsRequest changeLogsRequest = new ChangeLogsRequest.Builder(token).build();
+        mTestApp.getChangeLogs(changeLogsRequest);
     }
 
     private List<String> insertStepsRecordsDirectly(List<Record> recordsToInsert) {
@@ -276,16 +299,5 @@ public class BackgroundReadTest {
 
         // Wait a bit for the process to be killed
         Thread.sleep(500);
-    }
-
-    private void assertSecurityError() {
-        assertThat(TestReceiver.getErrorCode()).isEqualTo(ERROR_SECURITY);
-        assertThat(TestReceiver.getErrorMessage()).contains(READ_HEALTH_DATA_IN_BACKGROUND);
-    }
-
-    private Bundle assertSuccess() {
-        assertThat(TestReceiver.getErrorCode()).isNull();
-        assertThat(TestReceiver.getErrorMessage()).isNull();
-        return TestReceiver.getResult();
     }
 }
