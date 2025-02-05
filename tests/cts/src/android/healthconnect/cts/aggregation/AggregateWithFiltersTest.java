@@ -33,14 +33,11 @@ import static android.healthconnect.cts.utils.DataFactory.getDistanceRecord;
 import static android.healthconnect.cts.utils.DataFactory.getHeartRateRecord;
 import static android.healthconnect.cts.utils.DataFactory.getStepsRecord;
 import static android.healthconnect.cts.utils.DataFactory.getWeightRecord;
-import static android.healthconnect.cts.utils.TestUtils.PKG_TEST_APP;
 import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteData;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponse;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponseGroupByDuration;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponseGroupByPeriod;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
-import static android.healthconnect.cts.utils.TestUtils.insertStepsRecordViaTestApp;
-import static android.healthconnect.cts.utils.TestUtils.insertWeightRecordViaTestApp;
 import static android.healthconnect.cts.utils.TestUtils.setupAggregation;
 import static android.healthconnect.cts.utils.TestUtils.updatePriorityWithManageHealthDataPermission;
 
@@ -59,6 +56,7 @@ import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.units.Length;
 import android.health.connect.datatypes.units.Mass;
+import android.healthconnect.cts.lib.TestAppProxy;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 
@@ -79,10 +77,13 @@ import java.time.ZoneOffset;
 import java.util.List;
 
 public class AggregateWithFiltersTest {
+    private static final String PKG_TEST_APP = "android.healthconnect.cts.testapp.readWritePerms.A";
+
     private final Context mContext = ApplicationProvider.getApplicationContext();
     private final String mPackageName = mContext.getPackageName();
     private final ZoneOffset mCurrentZone =
             ZoneOffset.systemDefault().getRules().getOffset(Instant.now());
+    private final TestAppProxy mTestApp = TestAppProxy.forPackageName(PKG_TEST_APP);
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
@@ -104,7 +105,7 @@ public class AggregateWithFiltersTest {
     @Test
     public void dataOriginFilter_noFilter_everythingIncluded() throws Exception {
         Instant startTime = Instant.now().minus(1, DAYS);
-        insertStepsRecordViaTestApp(mContext, startTime, startTime.plusMillis(1000), 50);
+        mTestApp.insertRecord(getStepsRecord(50, startTime, startTime.plusMillis(1000)));
         insertRecords(
                 List.of(
                         getStepsRecord(
@@ -127,7 +128,7 @@ public class AggregateWithFiltersTest {
     @Test
     public void dataOriginFilter_validFilter_onlyDataFromFilteredApps() throws Exception {
         Instant startTime = Instant.now().minus(1, DAYS);
-        insertStepsRecordViaTestApp(mContext, startTime, startTime.plusMillis(1000), 50);
+        mTestApp.insertRecord(getStepsRecord(50, startTime, startTime.plusMillis(1000)));
         insertRecords(
                 List.of(
                         getStepsRecord(
@@ -152,7 +153,7 @@ public class AggregateWithFiltersTest {
     public void dataOriginFilter_invalidApp_noDataReturned() throws Exception {
         Instant startTime = Instant.now().minus(1, DAYS);
         LocalDateTime localTime = startTime.atOffset(mCurrentZone).toLocalDateTime();
-        insertStepsRecordViaTestApp(mContext, startTime, startTime.plusMillis(1000), 50);
+        mTestApp.insertRecord(getStepsRecord(50, startTime, startTime.plusMillis(1000)));
         insertRecords(
                 List.of(
                         getStepsRecord(
@@ -200,7 +201,7 @@ public class AggregateWithFiltersTest {
     public void dataOriginFilter_appNotInPriorityList_noDataReturned() throws Exception {
         Instant startTime = Instant.now().minus(1, DAYS);
         LocalDateTime localTime = startTime.atOffset(mCurrentZone).toLocalDateTime();
-        insertStepsRecordViaTestApp(mContext, startTime, startTime.plusMillis(1000), 50);
+        mTestApp.insertRecord(getStepsRecord(50, startTime, startTime.plusMillis(1000)));
         insertRecords(
                 List.of(
                         getStepsRecord(
@@ -245,7 +246,7 @@ public class AggregateWithFiltersTest {
     public void dataOriginFilter_noDataFromFilteredApps_noDataReturned() throws Exception {
         Instant startTime = Instant.now().minus(1, DAYS);
         LocalDateTime localTime = startTime.atOffset(mCurrentZone).toLocalDateTime();
-        insertStepsRecordViaTestApp(mContext, startTime, startTime.plusMillis(1000), 50);
+        mTestApp.insertRecord(getStepsRecord(50, startTime, startTime.plusMillis(1000)));
         updatePriorityWithManageHealthDataPermission(
                 ACTIVITY, ImmutableList.of(PKG_TEST_APP, mPackageName));
 
@@ -327,8 +328,8 @@ public class AggregateWithFiltersTest {
         ZoneOffset dataZone = ZoneOffset.systemDefault().getRules().getOffset(startTime);
         LocalDateTime startLocalTime = startTime.atOffset(dataZone).toLocalDateTime();
         LocalDateTime endLocalTime = endTime.atOffset(dataZone).toLocalDateTime();
-        insertStepsRecordViaTestApp(
-                mContext, startTime.minusMillis(1000), startTime.plusMillis(1000), 1000);
+        mTestApp.insertRecord(
+                getStepsRecord(1000, startTime.minusMillis(1000), startTime.plusMillis(1000)));
         insertRecords(
                 List.of(getStepsRecord(10, endTime.minusMillis(1000), endTime.plusMillis(1000))));
         updatePriorityWithManageHealthDataPermission(
@@ -365,7 +366,7 @@ public class AggregateWithFiltersTest {
         ZoneOffset dataZone = ZoneOffset.systemDefault().getRules().getOffset(startTime);
         LocalDateTime startLocalTime = startTime.atOffset(dataZone).toLocalDateTime();
         LocalDateTime endLocalTime = endTime.atOffset(dataZone).toLocalDateTime();
-        insertWeightRecordViaTestApp(mContext, startTime.minusMillis(1), 70);
+        mTestApp.insertRecord(getWeightRecord(70, startTime.minusMillis(1)));
         insertRecords(
                 List.of(getWeightRecord(80, endTime), getWeightRecord(77, endTime.minusMillis(1))));
 
@@ -399,7 +400,7 @@ public class AggregateWithFiltersTest {
         ZoneOffset dataZone = ZoneOffset.systemDefault().getRules().getOffset(startTime);
         LocalDateTime startLocalTime = startTime.atOffset(dataZone).toLocalDateTime();
         LocalDateTime endLocalTime = endTime.atOffset(dataZone).toLocalDateTime();
-        insertWeightRecordViaTestApp(mContext, startTime.plusMillis(1), 70);
+        mTestApp.insertRecord(getWeightRecord(70, startTime.plusMillis(1)));
         insertRecords(
                 List.of(getWeightRecord(80, endTime), getWeightRecord(77, endTime.minusMillis(1))));
 
@@ -434,8 +435,8 @@ public class AggregateWithFiltersTest {
         ZoneOffset dataZone = ZoneOffset.systemDefault().getRules().getOffset(startTime);
         LocalDateTime startLocalTime = startTime.atOffset(dataZone).toLocalDateTime();
         LocalDateTime endLocalTime = endTime.atOffset(dataZone).toLocalDateTime();
-        insertStepsRecordViaTestApp(
-                mContext, startTime.plusMillis(1), startTime.plusMillis(400), 70);
+        mTestApp.insertRecord(
+                getStepsRecord(70, startTime.plusMillis(1), startTime.plusMillis(400)));
         insertRecords(
                 List.of(
                         // fully in range
@@ -473,8 +474,8 @@ public class AggregateWithFiltersTest {
             throws Exception {
         Instant startTime = Instant.now().minus(1, DAYS);
         Instant endTime = startTime.plus(1, HOURS);
-        insertStepsRecordViaTestApp(
-                mContext, startTime.plusMillis(1), startTime.plusMillis(400), 70);
+        mTestApp.insertRecord(
+                getStepsRecord(70, startTime.plusMillis(1), startTime.plusMillis(400)));
         insertRecords(
                 List.of(
                         // fully in range

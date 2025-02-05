@@ -49,6 +49,7 @@ import android.os.Bundle;
 
 import com.android.cts.install.lib.TestApp;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -150,6 +151,15 @@ public class TestAppProxy {
         Bundle requestBundle = BundleHelper.fromReadRecordsRequestUsingIds(request);
         Bundle responseBundle = getFromTestApp(requestBundle);
         return BundleHelper.toReadRecordsResponse(responseBundle);
+    }
+
+    /** Aggregate steps records from HC on behalf of the app. */
+    public Long aggregateStepsCountTotal(
+            Instant startTime, Instant endTime, List<String> packageNames) throws Exception {
+        Bundle requestBundle =
+                BundleHelper.fromAggregateStepsCountTotalRequest(startTime, endTime, packageNames);
+        Bundle responseBundle = getFromTestApp(requestBundle);
+        return BundleHelper.toAggregateStepsCountTotalResponse(responseBundle);
     }
 
     /** Gets changelogs from HC on behalf of the app. */

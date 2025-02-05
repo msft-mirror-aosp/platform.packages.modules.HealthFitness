@@ -31,7 +31,6 @@ import static java.time.Month.APRIL;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.HOURS;
 
-import android.content.Context;
 import android.health.connect.HealthConnectException;
 import android.health.connect.RecordIdFilter;
 import android.health.connect.TimeInstantRangeFilter;
@@ -51,11 +50,11 @@ import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.units.Length;
 import android.health.connect.datatypes.units.Mass;
 import android.health.connect.datatypes.units.Power;
+import android.healthconnect.cts.lib.TestAppProxy;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.google.common.collect.Iterables;
 
@@ -79,7 +78,9 @@ import java.util.UUID;
 
 @RunWith(AndroidJUnit4.class)
 public class PlannedExerciseSessionRecordTest {
-    private Context mContext;
+    private static final String PKG_TEST_APP = "android.healthconnect.cts.testapp.readWritePerms.A";
+
+    private TestAppProxy mTestApp;
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
@@ -89,7 +90,7 @@ public class PlannedExerciseSessionRecordTest {
 
     @Before
     public void setUp() throws InterruptedException {
-        mContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        mTestApp = TestAppProxy.forPackageName(PKG_TEST_APP);
         TestUtils.deleteAllStagedRemoteData();
     }
 
@@ -805,11 +806,17 @@ public class PlannedExerciseSessionRecordTest {
 
     @Test
     public void referenceToTrainingPlanNullified_changelogsBelongToOwnersOfRespectiveRecords()
-            throws InterruptedException {
+            throws Exception {
         // Create and insert training plan using a package (test app) that is different to the CTS
         // tests.
-        TestUtils.insertPlannedExerciseSessionRecordViaTestApp(
-                mContext, SESSION_START_TIME, SESSION_END_TIME);
+        PlannedExerciseSessionRecord plannedExerciseSession =
+                new PlannedExerciseSessionRecord.Builder(
+                                new Metadata.Builder().build(),
+                                ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING,
+                                SESSION_START_TIME,
+                                SESSION_END_TIME)
+                        .build();
+        mTestApp.insertRecord(plannedExerciseSession);
         PlannedExerciseSessionRecord insertedTrainingPlan =
                 Iterables.getOnlyElement(readAllRecords(PlannedExerciseSessionRecord.class));
 
@@ -829,9 +836,7 @@ public class PlannedExerciseSessionRecordTest {
         ChangeLogTokenRequest tokenRequest =
                 new ChangeLogTokenRequest.Builder()
                         .addDataOriginFilter(
-                                new DataOrigin.Builder()
-                                        .setPackageName(TestUtils.PKG_TEST_APP)
-                                        .build())
+                                new DataOrigin.Builder().setPackageName(PKG_TEST_APP).build())
                         .addRecordType(PlannedExerciseSessionRecord.class)
                         .addRecordType(ExerciseSessionRecord.class)
                         .build();
@@ -893,8 +898,7 @@ public class PlannedExerciseSessionRecordTest {
     }
 
     @Test
-    public void trainingPlanDeleted_changelogsBelongToOwnersOfRespectiveRecords()
-            throws InterruptedException {
+    public void trainingPlanDeleted_changelogsBelongToOwnersOfRespectiveRecords() throws Exception {
         // Create and insert training plan.
         PlannedExerciseSessionRecord.Builder builder =
                 basePlannedExerciseSession(ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING);
@@ -907,19 +911,21 @@ public class PlannedExerciseSessionRecordTest {
 
         // Create and insert exercise that completes training plan, but insert via the test app
         // (different package).
-        TestUtils.insertExerciseRecordViaTestApp(
-                mContext,
-                SESSION_START_TIME,
-                SESSION_END_TIME,
-                originalTrainingPlan.getMetadata().getId());
+        ExerciseSessionRecord exerciseSession =
+                new ExerciseSessionRecord.Builder(
+                                new Metadata.Builder().build(),
+                                SESSION_START_TIME,
+                                SESSION_END_TIME,
+                                ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING)
+                        .setPlannedExerciseSessionId(originalTrainingPlan.getMetadata().getId())
+                        .build();
+        mTestApp.insertRecord(exerciseSession);
 
         // Filter for changelogs belonging to the test app only.
         ChangeLogTokenRequest tokenRequest =
                 new ChangeLogTokenRequest.Builder()
                         .addDataOriginFilter(
-                                new DataOrigin.Builder()
-                                        .setPackageName(TestUtils.PKG_TEST_APP)
-                                        .build())
+                                new DataOrigin.Builder().setPackageName(PKG_TEST_APP).build())
                         .addRecordType(PlannedExerciseSessionRecord.class)
                         .addRecordType(ExerciseSessionRecord.class)
                         .build();
