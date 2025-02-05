@@ -206,7 +206,8 @@ public final class RecordProtoConverter {
         } else if (recordInternal instanceof InstantRecordInternal<?> instantRecordInternal) {
             builder.setInstantRecord(toInstantRecordProto(instantRecordInternal));
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(
+                    "Unknown record type " + recordInternal.getClass().getSimpleName());
         }
 
         return builder.build();
@@ -287,7 +288,9 @@ public final class RecordProtoConverter {
                 instanceof WheelchairPushesRecordInternal wheelchairPushesRecordInternal) {
             builder.setWheelchairPushes(toWheelchairPushesProto(wheelchairPushesRecordInternal));
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(
+                    "Unknown interval record type "
+                            + intervalRecordInternal.getClass().getSimpleName());
         }
 
         return builder.build();
@@ -629,7 +632,9 @@ public final class RecordProtoConverter {
                     .setUnknownGoal(ExercisePerformanceGoal.UnknownGoal.getDefaultInstance())
                     .build();
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(
+                    "Unknown performance goal type "
+                            + performanceGoalInternal.getClass().getSimpleName());
         }
     }
 
@@ -717,7 +722,9 @@ public final class RecordProtoConverter {
                     .setUnknownGoal(ExerciseCompletionGoal.UnknownGoal.getDefaultInstance())
                     .build();
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(
+                    "Unknown completion goal type "
+                            + completionGoalInternal.getClass().getSimpleName());
         }
     }
 
@@ -903,7 +910,9 @@ public final class RecordProtoConverter {
         } else if (instantRecordInternal instanceof WeightRecordInternal weightRecordInternal) {
             builder.setWeight(toWeightProto(weightRecordInternal));
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(
+                    "Unknown instant record type "
+                            + instantRecordInternal.getClass().getSimpleName());
         }
 
         return builder.build();
@@ -1079,7 +1088,9 @@ public final class RecordProtoConverter {
                     populateInstantRecordInternal(
                             recordProto.getInstantRecord(),
                             (InstantRecordInternal<?>) recordInternal);
-            case SUBRECORD_NOT_SET -> throw new IllegalArgumentException();
+            default ->
+                    throw new IllegalArgumentException(
+                            "Unknown record type " + recordProto.getSubRecordCase());
         }
     }
 
@@ -1175,7 +1186,9 @@ public final class RecordProtoConverter {
                     populateWheelchairPushesRecordInternal(
                             intervalRecordProto.getWheelchairPushes(),
                             (WheelchairPushesRecordInternal) intervalRecordInternal);
-            case DATA_NOT_SET -> throw new IllegalArgumentException();
+            default ->
+                    throw new IllegalArgumentException(
+                            "Unknown record type " + intervalRecordProto.getDataCase());
         }
     }
 
@@ -1678,7 +1691,9 @@ public final class RecordProtoConverter {
                     populateWeightRecordInternal(
                             instantRecordProto.getWeight(),
                             (WeightRecordInternal) instantRecordInternal);
-            case DATA_NOT_SET -> throw new IllegalArgumentException();
+            default ->
+                    throw new IllegalArgumentException(
+                            "Unknown record type " + instantRecordProto.getDataCase());
         }
     }
 
@@ -1822,7 +1837,7 @@ public final class RecordProtoConverter {
         if (protoRecord.hasInstantRecord()) {
             return getInstantRecordId(protoRecord.getInstantRecord());
         }
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException("Record proto doesn't have a sub record defined.");
     }
 
     @RecordTypeIdentifier.RecordType
@@ -1851,7 +1866,7 @@ public final class RecordProtoConverter {
             case STEPS_CADENCE -> RecordTypeIdentifier.RECORD_TYPE_STEPS_CADENCE;
             case TOTAL_CALORIES_BURNED -> RecordTypeIdentifier.RECORD_TYPE_TOTAL_CALORIES_BURNED;
             case WHEELCHAIR_PUSHES -> RecordTypeIdentifier.RECORD_TYPE_WHEELCHAIR_PUSHES;
-            case DATA_NOT_SET -> throw new IllegalArgumentException();
+            case DATA_NOT_SET -> throw new IllegalArgumentException("Interval record not set");
         };
     }
 
@@ -1881,7 +1896,7 @@ public final class RecordProtoConverter {
             case SEXUAL_ACTIVITY -> RecordTypeIdentifier.RECORD_TYPE_SEXUAL_ACTIVITY;
             case VO2_MAX -> RecordTypeIdentifier.RECORD_TYPE_VO2_MAX;
             case WEIGHT -> RecordTypeIdentifier.RECORD_TYPE_WEIGHT;
-            case DATA_NOT_SET -> throw new IllegalArgumentException();
+            case DATA_NOT_SET -> throw new IllegalArgumentException("Instant record not set");
         };
     }
 }
