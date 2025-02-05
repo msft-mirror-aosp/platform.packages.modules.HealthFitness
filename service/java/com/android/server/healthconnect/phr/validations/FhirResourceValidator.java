@@ -47,12 +47,14 @@ public class FhirResourceValidator {
 
     /**
      * Validates the provided {@code fhirJsonObject} against the schema of the provided {@code
-     * fhirResourceType}.
+     * fhirResourceType} and {@code fhirVersion}.
      *
      * @throws IllegalArgumentException if the resource is invalid.
      */
     public void validateFhirResource(
-            JSONObject fhirJsonObject, @FhirResourceType int fhirResourceType) {
-        mFhirObjectTypeValidator.validate(fhirJsonObject, fhirResourceType);
+            JSONObject fhirJsonObject,
+            @FhirResourceType int fhirResourceType,
+            FhirVersion fhirVersion) {
+        mFhirObjectTypeValidator.validate(fhirJsonObject, fhirResourceType, fhirVersion);
     }
 }

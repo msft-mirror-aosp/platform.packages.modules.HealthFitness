@@ -21,9 +21,12 @@ import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_I
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_MEDICATION_REQUEST;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_OBSERVATION;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_R4;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_R4B;
 
 import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION;
 import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION;
+import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_EXTENSION_VALIDATION;
 import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION;
 import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_STRUCTURAL_VALIDATION;
 
@@ -72,7 +75,7 @@ public class FhirResourceValidatorTest {
 
         assertThrows(
                 IllegalArgumentException.class,
-                () -> validator.validateFhirResource(immunizationJson, 100));
+                () -> validator.validateFhirResource(immunizationJson, 100, FHIR_VERSION_R4));
     }
 
     @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION})
@@ -81,7 +84,8 @@ public class FhirResourceValidatorTest {
         FhirResourceValidator validator = new FhirResourceValidator();
         JSONObject immunizationJson = new JSONObject(FHIR_DATA_IMMUNIZATION);
 
-        validator.validateFhirResource(immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION);
+        validator.validateFhirResource(
+                immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION, FHIR_VERSION_R4);
     }
 
     @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION})
@@ -98,7 +102,8 @@ public class FhirResourceValidatorTest {
                                 .set("_status", new JSONObject("{\"id\": \"1234\"}"))
                                 .toJson());
 
-        validator.validateFhirResource(immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION);
+        validator.validateFhirResource(
+                immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION, FHIR_VERSION_R4);
     }
 
     @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION})
@@ -116,7 +121,8 @@ public class FhirResourceValidatorTest {
                                 .set("_status", new JSONObject("{\"id\": \"1234\"}"))
                                 .toJson());
 
-        validator.validateFhirResource(immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION);
+        validator.validateFhirResource(
+                immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION, FHIR_VERSION_R4);
     }
 
     @EnableFlags({
@@ -149,7 +155,7 @@ public class FhirResourceValidatorTest {
                                 .toJson());
 
         validator.validateFhirResource(
-                medicationRequestJson, FHIR_RESOURCE_TYPE_MEDICATION_REQUEST);
+                medicationRequestJson, FHIR_RESOURCE_TYPE_MEDICATION_REQUEST, FHIR_VERSION_R4);
     }
 
     @EnableFlags({
@@ -181,7 +187,8 @@ public class FhirResourceValidatorTest {
                                                 """))
                                 .toJson());
 
-        validator.validateFhirResource(observationJson, FHIR_RESOURCE_TYPE_OBSERVATION);
+        validator.validateFhirResource(
+                observationJson, FHIR_RESOURCE_TYPE_OBSERVATION, FHIR_VERSION_R4);
     }
 
     @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION})
@@ -199,7 +206,8 @@ public class FhirResourceValidatorTest {
                                 .removeField("_status")
                                 .toJson());
 
-        validator.validateFhirResource(immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION);
+        validator.validateFhirResource(
+                immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION, FHIR_VERSION_R4);
     }
 
     @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION})
@@ -221,7 +229,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
         assertThat(thrown).hasMessageThat().contains("Missing required field status");
     }
 
@@ -237,7 +247,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
         assertThat(thrown).hasMessageThat().contains("Found unexpected field unknown_field");
     }
 
@@ -256,7 +268,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
         assertThat(thrown).hasMessageThat().contains("Found unexpected field _unknown_field");
     }
 
@@ -279,7 +293,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
         assertThat(thrown).hasMessageThat().contains("Found unexpected field _identifier");
     }
 
@@ -295,7 +311,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
         assertThat(thrown).hasMessageThat().contains("Missing required field vaccineCode");
     }
 
@@ -318,7 +336,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
         assertThat(thrown).hasMessageThat().contains("Missing required field vaccineCode");
     }
 
@@ -342,7 +362,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
         assertThat(thrown).hasMessageThat().contains("Missing required field occurrence[x]");
     }
 
@@ -365,7 +387,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
         assertThat(thrown)
                 .hasMessageThat()
                 .contains("Only one type should be set for field occurrence[x]");
@@ -390,7 +414,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        allergyJson, FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE));
+                                        allergyJson,
+                                        FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                                        FHIR_VERSION_R4));
         assertThat(thrown)
                 .hasMessageThat()
                 .contains("Only one type should be set for field onset[x]");
@@ -410,7 +436,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
         assertThat(thrown).hasMessageThat().contains("Found null value in field: status");
     }
 
@@ -429,7 +457,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
         assertThat(thrown).hasMessageThat().contains("Found null value in field: _status");
     }
 
@@ -448,7 +478,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
         assertThat(thrown).hasMessageThat().contains("Found null value in field: statusReason");
     }
 
@@ -476,7 +508,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        allergyJson, FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE));
+                                        allergyJson,
+                                        FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                                        FHIR_VERSION_R4));
         assertThat(thrown).hasMessageThat().contains("Found null value in field: type");
     }
 
@@ -494,7 +528,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        allergyJson, FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE));
+                                        allergyJson,
+                                        FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                                        FHIR_VERSION_R4));
         assertThat(thrown)
                 .hasMessageThat()
                 .contains("Invalid resource structure. Expected array for field: category");
@@ -517,7 +553,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        allergyJson, FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE));
+                                        allergyJson,
+                                        FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                                        FHIR_VERSION_R4));
         assertThat(thrown).hasMessageThat().contains("Found null value in field: category");
     }
 
@@ -535,7 +573,8 @@ public class FhirResourceValidatorTest {
                                 .set("_category", new JSONArray("[null, null]"))
                                 .toJson());
 
-        validator.validateFhirResource(allergyJson, FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE);
+        validator.validateFhirResource(
+                allergyJson, FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE, FHIR_VERSION_R4);
     }
 
     @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION, FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION})
@@ -553,7 +592,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
         assertThat(thrown)
                 .hasMessageThat()
                 .contains("Invalid resource structure. Expected object in field: _status");
@@ -577,7 +618,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
         assertThat(thrown)
                 .hasMessageThat()
                 .contains(
@@ -601,7 +644,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
         assertThat(thrown)
                 .hasMessageThat()
                 .contains(
@@ -625,7 +670,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
         assertThat(thrown)
                 .hasMessageThat()
                 .contains("Invalid resource structure. Expected object in field: statusReason");
@@ -649,7 +696,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
         assertThat(thrown)
                 .hasMessageThat()
                 .contains("Invalid resource structure. Expected object in field: statusReason");
@@ -671,7 +720,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
         assertThat(thrown)
                 .hasMessageThat()
                 .contains("Invalid resource structure. Expected array for field: identifier");
@@ -692,7 +743,8 @@ public class FhirResourceValidatorTest {
                                         new JSONArray("[{\"id\": \"123\"}, {\"id\": \"456\"}]"))
                                 .toJson());
 
-        validator.validateFhirResource(allergyJson, FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE);
+        validator.validateFhirResource(
+                allergyJson, FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE, FHIR_VERSION_R4);
     }
 
     @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION, FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION})
@@ -715,7 +767,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
         assertThat(thrown)
                 .hasMessageThat()
                 .contains("Invalid resource structure. Expected object in field: _status");
@@ -735,7 +789,8 @@ public class FhirResourceValidatorTest {
                                                 "[{\"value\": \"123\"}, {\"value\": \"456\"}]"))
                                 .toJson());
 
-        validator.validateFhirResource(immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION);
+        validator.validateFhirResource(
+                immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION, FHIR_VERSION_R4);
     }
 
     @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION, FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION})
@@ -749,7 +804,8 @@ public class FhirResourceValidatorTest {
                                 .set("category", new JSONArray("[\"food\", \"medication\"]"))
                                 .toJson());
 
-        validator.validateFhirResource(allergyJson, FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE);
+        validator.validateFhirResource(
+                allergyJson, FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE, FHIR_VERSION_R4);
     }
 
     @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION, FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION})
@@ -768,15 +824,84 @@ public class FhirResourceValidatorTest {
         JSONObject immunizationJson =
                 new JSONObject(new ImmunizationBuilder().set("extension", extensionJson).toJson());
 
-        validator.validateFhirResource(immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION);
+        validator.validateFhirResource(
+                immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION, FHIR_VERSION_R4);
     }
 
-    @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION, FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION})
+    @EnableFlags({
+        FLAG_PHR_FHIR_STRUCTURAL_VALIDATION,
+        FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION,
+        FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION,
+        FLAG_PHR_FHIR_EXTENSION_VALIDATION
+    })
     @Test
     public void testValidateFhirResource_r4bExtensionCodeableReferenceValue_succeeds()
             throws JSONException {
         FhirResourceValidator validator = new FhirResourceValidator();
         // CodeableReference is a new R4B data type
+        JSONArray extensionJson =
+                new JSONArray(
+                        """
+                        [{  \"url\":
+                                \"http://hl7.org/fhir/StructureDefinition/immunization-procedure\",
+                            \"valueCodeableReference\": {
+                                \"id\": \"123\",
+                                \"extension\": [
+                                    {\"url\":
+                                    \"http://hl7.org/fhir/StructureDefinition/reference\"}],
+                                \"concept\": { \"text\": \"summary\" },
+                                \"reference\": { \"reference\": \"Procedure/123\" }
+                            }
+                        }]
+                        """);
+        JSONObject immunizationJson =
+                new JSONObject(new ImmunizationBuilder().set("extension", extensionJson).toJson());
+
+        validator.validateFhirResource(
+                immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION, FHIR_VERSION_R4B);
+    }
+
+    @EnableFlags({
+        FLAG_PHR_FHIR_STRUCTURAL_VALIDATION,
+        FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION,
+        FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION,
+        FLAG_PHR_FHIR_EXTENSION_VALIDATION
+    })
+    @Test
+    public void testValidateFhirResource_r4bExtensionRatioRangeValue_succeeds()
+            throws JSONException {
+        FhirResourceValidator validator = new FhirResourceValidator();
+        // RatioRange is a new R4B data type
+        JSONArray extensionJson =
+                new JSONArray(
+                        """
+                        [{
+                            \"url\": \"http://hl7.org/fhir/StructureDefinition/test\",
+                            \"valueRatioRange\": {
+                                \"lowNumerator\": { \"value\": 1.0, \"unit\": \"ml\"},
+                                \"highNumerator\": { \"value\": 2.0 },
+                                \"denominator\": { \"value\": 1.0 }
+                            }
+                        }]
+                        """);
+        JSONObject immunizationJson =
+                new JSONObject(new ImmunizationBuilder().set("extension", extensionJson).toJson());
+
+        validator.validateFhirResource(
+                immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION, FHIR_VERSION_R4B);
+    }
+
+    @EnableFlags({
+        FLAG_PHR_FHIR_STRUCTURAL_VALIDATION,
+        FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION,
+        FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION,
+        FLAG_PHR_FHIR_EXTENSION_VALIDATION
+    })
+    @Test
+    public void testValidateFhirResource_r4ExtensionCodeableReferenceValue_throws()
+            throws JSONException {
+        FhirResourceValidator validator = new FhirResourceValidator();
+        // CodeableReference is a new R4B data type and not supported in R4
         JSONArray extensionJson =
                 new JSONArray(
                         """
@@ -791,15 +916,29 @@ public class FhirResourceValidatorTest {
         JSONObject immunizationJson =
                 new JSONObject(new ImmunizationBuilder().set("extension", extensionJson).toJson());
 
-        validator.validateFhirResource(immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION);
+        Throwable thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                validator.validateFhirResource(
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
+        assertThat(thrown)
+                .hasMessageThat()
+                .contains("Found unexpected field extension.valueCodeableReference");
     }
 
-    @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION, FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION})
+    @EnableFlags({
+        FLAG_PHR_FHIR_STRUCTURAL_VALIDATION,
+        FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION,
+        FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION,
+        FLAG_PHR_FHIR_EXTENSION_VALIDATION
+    })
     @Test
-    public void testValidateFhirResource_r4bExtensionRatioRangeValue_succeeds()
-            throws JSONException {
+    public void testValidateFhirResource_r4ExtensionRatioRangeValue_throws() throws JSONException {
         FhirResourceValidator validator = new FhirResourceValidator();
-        // RatioRange is a new R4B data type
+        // RatioRange is a new R4B data type and not supported in R4
         JSONArray extensionJson =
                 new JSONArray(
                         """
@@ -813,7 +952,17 @@ public class FhirResourceValidatorTest {
         JSONObject immunizationJson =
                 new JSONObject(new ImmunizationBuilder().set("extension", extensionJson).toJson());
 
-        validator.validateFhirResource(immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION);
+        Throwable thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                validator.validateFhirResource(
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
+        assertThat(thrown)
+                .hasMessageThat()
+                .contains("Found unexpected field extension.valueRatioRange");
     }
 
     @EnableFlags({FLAG_PHR_FHIR_STRUCTURAL_VALIDATION, FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION})
@@ -834,7 +983,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        allergyJson, FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE));
+                                        allergyJson,
+                                        FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                                        FHIR_VERSION_R4));
         assertThat(thrown)
                 .hasMessageThat()
                 .contains("Invalid resource structure. Expected object in field: _category");
@@ -859,7 +1010,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
         assertThat(thrown)
                 .hasMessageThat()
                 .contains("Invalid resource structure. Expected object in field: identifier");
@@ -883,7 +1036,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        allergyJson, FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE));
+                                        allergyJson,
+                                        FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                                        FHIR_VERSION_R4));
         assertThat(thrown)
                 .hasMessageThat()
                 .contains(
@@ -908,7 +1063,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
         assertThat(thrown)
                 .hasMessageThat()
                 .contains(
@@ -945,7 +1102,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
         assertThat(thrown).hasMessageThat().contains("Missing required field note.text");
     }
 
@@ -978,7 +1137,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
         assertThat(thrown)
                 .hasMessageThat()
                 .contains("Found unexpected field vaccineCode.unknown_field");
@@ -1014,7 +1175,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
         assertThat(thrown)
                 .hasMessageThat()
                 .contains(
@@ -1052,7 +1215,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
         assertThat(thrown)
                 .hasMessageThat()
                 .contains("Found unexpected field performer.unknown_field");
@@ -1090,7 +1255,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        observationJson, FHIR_RESOURCE_TYPE_OBSERVATION));
+                                        observationJson,
+                                        FHIR_RESOURCE_TYPE_OBSERVATION,
+                                        FHIR_VERSION_R4));
         assertThat(thrown)
                 .hasMessageThat()
                 .contains("Found unexpected field effectiveTiming.repeat");
@@ -1137,7 +1304,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
         assertThat(thrown)
                 .hasMessageThat()
                 .contains(
@@ -1179,7 +1348,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
         assertThat(thrown)
                 .hasMessageThat()
                 .contains(
@@ -1218,7 +1389,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
         assertThat(thrown)
                 .hasMessageThat()
                 .contains("Only one type should be set for field note.author[x]");
@@ -1255,7 +1428,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
         assertThat(thrown)
                 .hasMessageThat()
                 .contains("Found unexpected field vaccineCode.coding.unknown_field");
@@ -1294,7 +1469,9 @@ public class FhirResourceValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validateFhirResource(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
         assertThat(thrown)
                 .hasMessageThat()
                 .contains("Found data nested deeper than the max allowed nesting level: 20");
