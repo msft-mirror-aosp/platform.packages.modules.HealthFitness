@@ -160,4 +160,20 @@
   <string name="number_of_medical_permissions_not_granted">%1$d medical permissions still not granted</string>
   <string name="spinner_default_message">SELECT FHIR RESOURCE TO INSERT</string>
   <!--endregion-->
+
+  <!-- region for permissions request screen-->
+  <string name="permissions_request">request permissions</string>
+  <string name="only">only</string>
+  <string name="write_permission">Write</string>
+  <string name="all_permissions">All permissions</string>
+  <string name="fitness_permissions">Fitness permissions</string>
+  <string name="health_permissions">Health permissions</string>
+  <string name="read_permission">Read</string>
+  <string name="medical">Personal health record</string>
+  <string name="additional_permissions">Additional</string>
+  <string name="history_read_permission">History read</string>
+  <string name="background_read_permission">Background read</string>
+  <string name="request_permissions">Request</string>
+  <!--endregion-->
+
 </resources>
