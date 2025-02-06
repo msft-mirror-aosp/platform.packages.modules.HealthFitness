@@ -23,11 +23,12 @@ import android.health.connect.datatypes.StepsRecord
 import android.healthconnect.cts.lib.ActivityLauncher.launchMainActivity
 import android.healthconnect.cts.lib.RecordFactory.newEmptyMetadata
 import android.healthconnect.cts.lib.TestAppProxy
-import android.healthconnect.cts.lib.UiTestUtils.clickOnTextAndWaitForNewWindow
 import android.healthconnect.cts.lib.UiTestUtils.findObjectAndClick
 import android.healthconnect.cts.lib.UiTestUtils.findText
 import android.healthconnect.cts.lib.UiTestUtils.findTextAndClick
-import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndClick
+import android.healthconnect.cts.lib.UiTestUtils.navigateToAppPermissions
+import android.healthconnect.cts.lib.UiTestUtils.navigateToNewPage
+import android.healthconnect.cts.lib.UiTestUtils.navigateToSeeAppData
 import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndFindText
 import android.healthconnect.cts.lib.UiTestUtils.scrollUpTo
 import android.healthconnect.cts.lib.UiTestUtils.verifyObjectNotFound
@@ -35,11 +36,9 @@ import android.healthconnect.cts.lib.UiTestUtils.verifyTextNotFound
 import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.ui.HealthConnectBaseTest
 import android.healthconnect.cts.utils.TestUtils
-import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import androidx.test.uiautomator.By
-import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
 import java.time.Duration
 import java.time.Instant
 import org.junit.After
@@ -47,8 +46,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-/** CTS test for Health Connect App Data fragment in the new IA. */
-@RequiresFlagsEnabled(FLAG_NEW_INFORMATION_ARCHITECTURE)
+/** CTS test for Health Connect App Data fragment */
 class AppDataFragmentTest : HealthConnectBaseTest() {
 
     @get:Rule val mCheckFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
@@ -74,9 +72,7 @@ class AppDataFragmentTest : HealthConnectBaseTest() {
     @Test
     fun appPermissions_showsAppDataButton() {
         context.launchMainActivity {
-            scrollDownToAndClick(By.text("App permissions"))
-            clickOnTextAndWaitForNewWindow("CtsHealthConnectTestAppAWithNormalReadWritePermission")
-
+            navigateToAppPermissions("CtsHealthConnectTestAppAWithNormalReadWritePermission")
             scrollDownToAndFindText("See app data")
         }
     }
@@ -84,13 +80,7 @@ class AppDataFragmentTest : HealthConnectBaseTest() {
     @Test
     fun navigateToAppData_showsAppData() {
         context.launchMainActivity {
-            scrollDownToAndFindText("App permissions")
-            clickOnTextAndWaitForNewWindow("App permissions")
-            clickOnTextAndWaitForNewWindow("CtsHealthConnectTestAppAWithNormalReadWritePermission")
-
-            scrollDownToAndFindText("See app data")
-            clickOnTextAndWaitForNewWindow("See app data")
-
+            navigateToSeeAppData("CtsHealthConnectTestAppAWithNormalReadWritePermission")
             findText("CtsHealthConnectTestAppAWithNormalReadWritePermission")
 
             scrollDownToAndFindText("Activity")
@@ -106,17 +96,11 @@ class AppDataFragmentTest : HealthConnectBaseTest() {
     @Test
     fun clickOnAppDataType_navigatesToAppEntries() {
         context.launchMainActivity {
-            scrollDownToAndFindText("App permissions")
-            clickOnTextAndWaitForNewWindow("App permissions")
-            clickOnTextAndWaitForNewWindow("CtsHealthConnectTestAppAWithNormalReadWritePermission")
-
-            scrollDownToAndFindText("See app data")
-            clickOnTextAndWaitForNewWindow("See app data")
-
+            navigateToSeeAppData("CtsHealthConnectTestAppAWithNormalReadWritePermission")
             findText("CtsHealthConnectTestAppAWithNormalReadWritePermission")
 
             findText("Activity")
-            clickOnTextAndWaitForNewWindow("Steps")
+            navigateToNewPage("Steps")
 
             findText("CtsHealthConnectTestAppAWithNormalReadWritePermission")
             verifyTextNotFound("Entries")
@@ -127,14 +111,9 @@ class AppDataFragmentTest : HealthConnectBaseTest() {
     @Test
     fun appDataFragment_deletesAllData() {
         context.launchMainActivity {
-            scrollDownToAndFindText("App permissions")
-            clickOnTextAndWaitForNewWindow("App permissions")
-            clickOnTextAndWaitForNewWindow("CtsHealthConnectTestAppAWithNormalReadWritePermission")
-
-            scrollDownToAndFindText("See app data")
-            clickOnTextAndWaitForNewWindow("See app data")
-
+            navigateToSeeAppData("CtsHealthConnectTestAppAWithNormalReadWritePermission")
             findText("CtsHealthConnectTestAppAWithNormalReadWritePermission")
+
             verifyObjectNotFound(By.text("Select all"))
             findObjectAndClick(By.desc("Enter deletion"))
             scrollUpTo(By.text("Select all"))

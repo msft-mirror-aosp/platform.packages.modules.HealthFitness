@@ -20,8 +20,14 @@ package com.android.healthconnect.controller.tests.permissions.additionalaccess
 
 import android.content.pm.PackageManager
 import android.content.pm.PackageManager.FLAG_PERMISSION_USER_SET
+import android.health.connect.HealthPermissions.READ_BODY_FAT
 import android.health.connect.HealthPermissions.READ_EXERCISE
 import android.health.connect.HealthPermissions.READ_EXERCISE_ROUTES
+import android.health.connect.HealthPermissions.READ_HEART_RATE
+import android.health.connect.HealthPermissions.READ_STEPS
+import android.health.connect.HealthPermissions.WRITE_DISTANCE
+import android.health.connect.HealthPermissions.WRITE_HEIGHT
+import android.health.connect.HealthPermissions.WRITE_SPEED
 import com.android.healthconnect.controller.permissions.additionalaccess.ExerciseRouteState
 import com.android.healthconnect.controller.permissions.additionalaccess.LoadDeclaredHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.additionalaccess.LoadExerciseRoutePermissionUseCase
@@ -44,6 +50,7 @@ import org.junit.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
@@ -124,6 +131,8 @@ class LoadExerciseRoutePermissionUseCaseTest {
                 exercisePermissionState = NOT_DECLARED,
             )
         assertThat(state).isEqualTo(UseCaseResults.Success(expected))
+        verify(getHealthPermissionsFlagsUseCase)
+            .invoke(TEST_APP_PACKAGE_NAME, listOf(READ_EXERCISE_ROUTES, READ_EXERCISE))
     }
 
     @Test
@@ -159,7 +168,43 @@ class LoadExerciseRoutePermissionUseCaseTest {
     }
 
     @Test
-    fun execute_exerciseRoutePermissionNotDeclared_returnNotDeclaredState() = runTest {
+    fun execute_onlyReadExerciseDeclared_routePermissionNotDeclared() = runTest {
+        whenever(loadDeclaredHealthPermissionUseCase.invoke(TEST_APP_PACKAGE_NAME)).then {
+            listOf(READ_EXERCISE)
+        }
+
+        val state = useCase.invoke(TEST_APP_PACKAGE_NAME)
+
+        val expected =
+            ExerciseRouteState(
+                exerciseRoutePermissionState = NOT_DECLARED,
+                exercisePermissionState = ASK_EVERY_TIME,
+            )
+        assertThat(state).isEqualTo(UseCaseResults.Success(expected))
+        verify(getHealthPermissionsFlagsUseCase)
+            .invoke(TEST_APP_PACKAGE_NAME, listOf(READ_EXERCISE))
+    }
+
+    @Test
+    fun execute_onlyRoutePermissionDeclared_exercisePermissionNotDeclared() = runTest {
+        whenever(loadDeclaredHealthPermissionUseCase.invoke(TEST_APP_PACKAGE_NAME)).then {
+            listOf(READ_EXERCISE_ROUTES)
+        }
+
+        val state = useCase.invoke(TEST_APP_PACKAGE_NAME)
+
+        val expected =
+            ExerciseRouteState(
+                exerciseRoutePermissionState = ASK_EVERY_TIME,
+                exercisePermissionState = NOT_DECLARED,
+            )
+        assertThat(state).isEqualTo(UseCaseResults.Success(expected))
+        verify(getHealthPermissionsFlagsUseCase)
+            .invoke(TEST_APP_PACKAGE_NAME, listOf(READ_EXERCISE_ROUTES))
+    }
+
+    @Test
+    fun execute_permissionsNotDeclared_returnNotDeclaredState() = runTest {
         whenever(loadDeclaredHealthPermissionUseCase.invoke(TEST_APP_PACKAGE_NAME)).then {
             listOf<String>()
         }
@@ -172,6 +217,34 @@ class LoadExerciseRoutePermissionUseCaseTest {
                 exercisePermissionState = NOT_DECLARED,
             )
         assertThat(state).isEqualTo(UseCaseResults.Success(expected))
+        verify(getHealthPermissionsFlagsUseCase).invoke(TEST_APP_PACKAGE_NAME, listOf())
+    }
+
+    @Test
+    fun execute_ignoresOtherPermissions() = runTest {
+        whenever(loadDeclaredHealthPermissionUseCase.invoke(TEST_APP_PACKAGE_NAME)).then {
+            listOf(
+                READ_STEPS,
+                WRITE_DISTANCE,
+                READ_EXERCISE,
+                READ_HEART_RATE,
+                WRITE_SPEED,
+                READ_EXERCISE_ROUTES,
+                READ_BODY_FAT,
+                WRITE_HEIGHT,
+            )
+        }
+
+        val state = useCase.invoke(TEST_APP_PACKAGE_NAME)
+
+        val expected =
+            ExerciseRouteState(
+                exerciseRoutePermissionState = ASK_EVERY_TIME,
+                exercisePermissionState = ASK_EVERY_TIME,
+            )
+        assertThat(state).isEqualTo(UseCaseResults.Success(expected))
+        verify(getHealthPermissionsFlagsUseCase)
+            .invoke(TEST_APP_PACKAGE_NAME, listOf(READ_EXERCISE_ROUTES, READ_EXERCISE))
     }
 
     @Test

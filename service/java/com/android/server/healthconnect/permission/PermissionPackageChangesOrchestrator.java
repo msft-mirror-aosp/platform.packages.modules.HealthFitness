@@ -108,12 +108,6 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
                             packageName, userHandle);
         }
 
-        // Wear Apps don't require the permissions intent. No need to revoke the permissions if it
-        // is missing.
-        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_WATCH) &&
-            Flags.replaceBodySensorPermissionEnabled()) {
-            removePermissions = false;
-        }
         // If the package was removed, we reset grant time. If the package is present but the health
         // intent support removed we revoke all health permissions and also reset grant time
         // (is done via onPermissionChanged callback)
@@ -131,29 +125,36 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
                                         .maybeRemoveAppWithoutWritePermissionsFromPriorityList(
                                                 packageName));
             }
-        } else if (removePermissions) {
-            // Revoke all health permissions as we don't grant health permissions if permissions
-            // usage intent is not supported.
-            if (Constants.DEBUG) {
-                Slog.d(
-                        TAG,
-                        "Revoking all health permissions of "
-                                + packageName
-                                + " for user: "
-                                + userHandle);
-            }
+          return;
+        }
 
-            try {
-                mPermissionHelper.revokeAllHealthPermissions(
-                        packageName,
-                        "Health permissions usage activity has been removed.",
-                        userHandle);
-            } catch (IllegalArgumentException ex) {
-                // Catch IllegalArgumentException to fix a crash (b/24679220) due to race condition
-                // in case this `revokeAllHealthPermissions()` method is called right after the
-                // client app is uninstalled.
-                Slog.e(TAG, "Revoking all health permissions failed", ex);
-            }
+        // If we don't need to remove or enforce the rationale intent, we are done.
+        if (!removePermissions
+                || !mPermissionHelper.shouldEnforcePermissionUsageIntent(packageName, userHandle)) {
+            return;
+        }
+
+        // Revoke all health permissions as we don't grant health permissions if permissions
+        // usage intent is not supported.
+        if (Constants.DEBUG) {
+            Slog.d(
+                    TAG,
+                    "Revoking all health permissions of "
+                            + packageName
+                            + " for user: "
+                            + userHandle);
+        }
+
+        try {
+            mPermissionHelper.revokeAllHealthPermissions(
+                    packageName,
+                    "Health permissions usage activity has been removed.",
+                    userHandle);
+        } catch (IllegalArgumentException ex) {
+            // Catch IllegalArgumentException to fix a crash (b/24679220) due to race condition
+            // in case this `revokeAllHealthPermissions()` method is called right after the
+            // client app is uninstalled.
+            Slog.e(TAG, "Revoking all health permissions failed", ex);
         }
     }
 

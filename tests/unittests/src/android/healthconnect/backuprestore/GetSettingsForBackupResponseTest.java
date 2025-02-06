@@ -33,7 +33,7 @@ public class GetSettingsForBackupResponseTest {
     @Test
     public void getSettingsForBackupResponseParcel_propertiesAreIdentical() {
         GetSettingsForBackupResponse original =
-                new GetSettingsForBackupResponse(new BackupSettings(123, new byte[] {1, 2, 3}));
+                new GetSettingsForBackupResponse(123, new BackupSettings(new byte[] {1, 2, 3}));
 
         Parcel parcel = Parcel.obtain();
         original.writeToParcel(parcel, 0);
@@ -41,8 +41,9 @@ public class GetSettingsForBackupResponseTest {
         GetSettingsForBackupResponse restoredParcel =
                 GetSettingsForBackupResponse.CREATOR.createFromParcel(parcel);
 
+        assertThat(restoredParcel.getVersion()).isEqualTo(123);
         assertThat(restoredParcel.getSettings())
-                .isEqualTo(new BackupSettings(123, new byte[] {1, 2, 3}));
+                .isEqualTo(new BackupSettings(new byte[] {1, 2, 3}));
         parcel.recycle();
     }
 }

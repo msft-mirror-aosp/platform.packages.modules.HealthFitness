@@ -56,6 +56,10 @@
     <string name="separator" msgid="5521285473288943819">"፣ "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"ፈቃዶችን አስተዳድር"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"ሰዓት፦ <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
+    <string name="recent_access_empty_state_title" msgid="4767157641389217682">"ምንም የቅርብ ጊዜ መድረስ የለም"</string>
+    <string name="recent_access_empty_state_description" msgid="6334951450158128989">"በቅርብ ጊዜ የእርስዎን ውሂብ የደረሱ መተግበሪያዎች በራስ-ሰር እዚህ ይታያሉ"</string>
+    <string name="recent_access_view_all_button" msgid="825946958049641541">"ሁሉንም አሳይ"</string>
+    <string name="recent_access_error" msgid="2258399573560888960">"የቅርብ ጊዜ መዳረሻን መጫን አይቻልም"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"እንቅስቃሴ"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"እንቅስቃሴ"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"የሰውነት አካል መለኪያዎች"</string>
@@ -107,7 +111,7 @@
     <string name="additional_permissions_combined_request_description" msgid="7136418603696342323">"እንዲሁም <xliff:g id="APP_NAME">%1$s</xliff:g> እነዚህን የጤና አገናኝ ቅንብሮች መድረስ ይፈልጋል"</string>
     <string name="background_read_medical_combined_request_title_both_types_granted" msgid="4225111383019900451">"በዳራ ውስጥ ያለን ውሂብ በሙሉ መድረስ"</string>
     <string name="background_read_medical_combined_request_title_medical_granted" msgid="7245376864667067106">"በዳራ ውስጥ የጤና መዝገቦችን መድረስ"</string>
-    <string name="background_read_medical_combined_request_title_fitness_granted" msgid="2639416977416876229">"በዳራ ውስጥ የአካት ብቃት እና ጤንነት ውሂብን መድረስ"</string>
+    <string name="background_read_medical_combined_request_title_fitness_granted" msgid="2639416977416876229">"በዳራ ውስጥ የአካል ብቃት እና ጤንነት ውሂብን መድረስ"</string>
     <string name="background_read_medical_combined_request_description_both_types_granted" msgid="8812552783934180223">"ይህን መተግበሪያ እየተጠቀሙ ባልሆኑበት ጊዜ መተግበሪያው የአካል ብቃት እና ጤንነት ውሂብን እና የጤና መዝገቦችን እንዲደርስ ይፍቀዱ"</string>
     <string name="background_read_medical_combined_request_description_medical_granted" msgid="5140647084504657934">"ይህን መተግበሪያ እየተጠቀሙ ባልሆኑበት ጊዜ መተግበሪያው ይህን ውሂብ እንዲደርስ ይፍቀዱ"</string>
     <string name="background_read_medical_combined_request_description_fitness_granted" msgid="919785628751851996">"ይህን መተግበሪያ እየተጠቀሙ ባልሆኑበት ጊዜ መተግበሪያው ይህን ውሂብ እንዲደርስ ይፍቀዱ"</string>
@@ -123,7 +127,7 @@
     <string name="history_read_medical_combined_request_footer_link" msgid="355676489585738987">"ስለ ፈቃዶች የበለጠ ያንብቡ"</string>
     <string name="background_read_medical_access_title_both_types_granted" msgid="4475972082863444603">"በዳራ ውስጥ ያለን ውሂብ በሙሉ መድረስ"</string>
     <string name="background_read_medical_access_title_medical_granted" msgid="7852915238347056139">"በዳራ ውስጥ የጤና መዝገቦችን መድረስ"</string>
-    <string name="background_read_medical_access_title_fitness_granted" msgid="8691675952190647227">"በዳራ ውስጥ የአካት ብቃት እና ጤንነት ውሂብን መድረስ"</string>
+    <string name="background_read_medical_access_title_fitness_granted" msgid="8691675952190647227">"በዳራ ውስጥ የአካል ብቃት እና ጤንነት ውሂብን መድረስ"</string>
     <string name="background_read_medical_access_description_both_types_granted" msgid="7193350031798606366">"ይህን መተግበሪያ እየተጠቀሙ ባልሆኑበት ጊዜ መተግበሪያው የአካል ብቃት እና ጤንነት ውሂብን እና የጤና መዝገቦችን እንዲደርስ ይፍቀዱ"</string>
     <string name="background_read_medical_access_description_medical_granted" msgid="8570683510275055450">"ይህን መተግበሪያ እየተጠቀሙ ባልሆኑበት ጊዜ መተግበሪያው ይህን ውሂብ እንዲደርስ ይፍቀዱ"</string>
     <string name="background_read_medical_access_description_fitness_granted" msgid="2584567718805499407">"ይህን መተግበሪያ እየተጠቀሙ ባልሆኑበት ጊዜ መተግበሪያው ይህን ውሂብ እንዲደርስ ይፍቀዱ"</string>
@@ -541,10 +545,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"የጤና አገናኝ የእርስዎን የጤና እና አካል ብቃት ውሂብ ያከማቻል፣ ይህም በመሣሪያዎ ላይ ያሉ የተለያዩ መተግበሪያዎችን ለማስመር ቀላል መንገድ ይሰጥዎታል"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"የጤና አገናኝ የጤና እና አካል ብቃት ውሂብዎን ከተለያዩ መተግበሪያዎች ያከማቻል እና ያሰምራል።\n\n"<b>"የልምምድ ክፍለ-ጊዜዎች፣ እርምጃዎች፣ አመጋገብ፣ እንቅልፍ እና ሌሎችንም ጨምሮ"</b>"የአካል ብቃት እና ጤናማነት ውሂብ\n\n"<b>"ክትባቶች፣ የቤተ ሙከራ ውጤቶች እና ሌሎችንም ጨምሮ"</b>"የጤና መዝገቦች"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"በጤና አገናኝ የሚከተሉትን ማድረግ ይችላሉ"</string>
-    <string name="share_data" msgid="3481932156368883946">"በመተግበሪያዎችዎ ውሂብን ያጋሩ"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"እያንዳንዱ መተግበሪያ በጤና አገናኝ ላይ ማንበብ ወይም መጻፍ የሚችለውን ውሂብ ይምረጡ"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"የእርስዎን ቅንብሮች እና ግላዊነት ያስተዳድሩ"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"በማንኛውም ጊዜ የመተግበሪያ ፈቃዶችን ይለውጡ እና ውሂብዎን ያስተዳድሩ"</string>
+    <string name="share_data_text" msgid="6898398345784931678"><b>"ከመተግበሪያዎችዎ ጋር ውሂብ ያጋሩ"</b>\n"እያንዳንዱ መተግበሪያ ማንበብ ወይም ወደ የጤና አገናኝ መጻፍ የሚችለውን ውሂብ ይምረጡ"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"የእርስዎን ቅንብሮች እና ግላዊነት ያስተዳድሩ"</b>\n"በማንኛውም ጊዜ የመተግበሪያ ፈቃዶችን ይለውጡ እና ውሂብዎን ያስተዳድሩ"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"ተመለስ"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"ይጀምሩ"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"ውሂብን ይሰርዙ"</string>

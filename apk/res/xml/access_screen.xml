@@ -25,8 +25,8 @@
     <PreferenceCategory
         android:key="can_write">
     </PreferenceCategory>
-    <PreferenceCategory
+    <com.android.healthconnect.controller.shared.LongSummaryPreferenceCategory
         android:key="inactive"
         android:title="@string/inactive_apps">
-    </PreferenceCategory>
+    </com.android.healthconnect.controller.shared.LongSummaryPreferenceCategory>
 </PreferenceScreen>

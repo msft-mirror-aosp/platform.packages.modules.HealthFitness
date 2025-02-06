@@ -29,5 +29,5 @@
     <string name="grant_dialog_button_allow_always" msgid="5216642447029937725">"一律允許"</string>
     <string name="grant_dialog_button_allow_foreground" msgid="2911675370133933600">"使用應用程式時"</string>
     <string name="grant_dialog_button_allow_background" msgid="7827419162341440169">"一律允許"</string>
-    <string name="permgrouplab_health" msgid="6793578181776346442">"健身和身心健康"</string>
+    <string name="permgrouplab_health" msgid="6793578181776346442">"健身和健康"</string>
 </resources>

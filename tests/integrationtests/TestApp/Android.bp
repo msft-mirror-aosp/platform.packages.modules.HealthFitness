@@ -22,7 +22,7 @@ filegroup {
         "src/**/*.java",
     ],
     visibility: [
-        "//packages/modules/HealthFitness:__subpackages__",
+        "//packages/modules/HealthFitness/tests/integrationtests:__subpackages__",
     ],
 }
 
@@ -83,6 +83,48 @@ android_test_helper_app {
         "general-tests",
     ],
     manifest: "AndroidManifest_sharedUser.xml",
+    sdk_version: "system_current",
+    min_sdk_version: "34",
+    target_sdk_version: "34",
+}
+
+android_test_helper_app {
+    name: "RequestReadHeartRateTestApp",
+    defaults: ["cts_defaults"],
+
+    libs: [
+        "android.test.base.stubs.system",
+        "android.test.runner.stubs.system",
+    ],
+
+    srcs: [":healthfitness-permissions-testapp-srcs"],
+
+    test_suites: [
+        "device-tests",
+        "general-tests",
+    ],
+    manifest: "AndroidManifest_withReadHeartRatePermission.xml",
+    sdk_version: "system_current",
+    min_sdk_version: "34",
+    target_sdk_version: "34",
+}
+
+android_test_helper_app {
+    name: "RequestBodySensorsTestApp",
+    defaults: ["cts_defaults"],
+
+    libs: [
+        "android.test.base.stubs.system",
+        "android.test.runner.stubs.system",
+    ],
+
+    srcs: [":healthfitness-permissions-testapp-srcs"],
+
+    test_suites: [
+        "device-tests",
+        "general-tests",
+    ],
+    manifest: "AndroidManifest_withBodySensorsPermission.xml",
     sdk_version: "system_current",
     min_sdk_version: "34",
     target_sdk_version: "34",

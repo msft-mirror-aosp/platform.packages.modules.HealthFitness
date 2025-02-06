@@ -47,12 +47,14 @@ import com.android.healthconnect.controller.shared.Constants.LOCK_SCREEN_BANNER_
 import com.android.healthconnect.controller.shared.Constants.LOCK_SCREEN_BANNER_SEEN_MEDICAL
 import com.android.healthconnect.controller.shared.Constants.MIGRATION_NOT_COMPLETE_DIALOG_SEEN
 import com.android.healthconnect.controller.shared.Constants.USER_ACTIVITY_TRACKER
+import com.android.healthconnect.controller.shared.IExpressiveThemingHelper
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.app.AppPermissionsType
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
 import com.android.healthconnect.controller.shared.preference.BannerPreference
+import com.android.healthconnect.controller.shared.preference.HealthButtonPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.utils.AttributeResolver
@@ -64,15 +66,13 @@ import com.android.healthconnect.controller.utils.logging.DataRestoreElement
 import com.android.healthconnect.controller.utils.logging.HomePageElement
 import com.android.healthconnect.controller.utils.logging.MigrationElement
 import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthconnect.controller.utils.logging.RecentAccessElement
 import com.android.healthconnect.controller.utils.logging.UnknownGenericElement
 import com.android.healthconnect.controller.utils.pref
 import com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled
-import com.android.healthfitness.flags.Flags.exportImport
-import com.android.healthfitness.flags.Flags.newInformationArchitecture
 import com.android.healthfitness.flags.Flags.onboarding
 import com.android.healthfitness.flags.Flags.personalHealthRecordLockScreenBanner
-import com.android.settingslib.widget.SettingsThemeHelper
-import com.android.settingslib.widget.TopIntroPreference
+import com.android.settingslib.widget.ZeroStatePreference
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Instant
 import javax.inject.Inject
@@ -82,14 +82,14 @@ import javax.inject.Inject
 class HomeFragment : Hilt_HomeFragment() {
 
     companion object {
-        private const val TOP_INTRO_PREFERENCE_KEY = "health_connect_top_intro"
+        private const val NO_RECENT_ACCESS = "no_recent_access"
         private const val DATA_AND_ACCESS_PREFERENCE_KEY = "data_and_access"
         private const val RECENT_ACCESS_PREFERENCE_KEY = "recent_access"
         private const val CONNECTED_APPS_PREFERENCE_KEY = "connected_apps"
         private const val MIGRATION_BANNER_PREFERENCE_KEY = "migration_banner"
         private const val DATA_RESTORE_BANNER_PREFERENCE_KEY = "data_restore_banner"
         private const val MANAGE_DATA_PREFERENCE_KEY = "manage_data"
-        private const val BROSE_MEDICAL_DATA_PREFERENCE_KEY = "medical_data"
+        private const val BROWSE_MEDICAL_DATA_PREFERENCE_KEY = "medical_data"
         private const val EXPORT_ERROR_BANNER_PREFERENCE_KEY = "export_error_banner"
         private const val HOME_FRAGMENT_BANNER_ORDER = 1
         private const val START_USING_HC_BANNER_KEY = "start_using_hc"
@@ -107,30 +107,25 @@ class HomeFragment : Hilt_HomeFragment() {
 
     @Inject lateinit var timeSource: TimeSource
     @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
+    @Inject lateinit var expressiveThemingHelper: IExpressiveThemingHelper
 
     private val recentAccessViewModel: RecentAccessViewModel by viewModels()
     private val homeViewModel: HomeViewModel by viewModels()
     private val migrationViewModel: MigrationViewModel by activityViewModels()
     private val exportStatusViewModel: ExportStatusViewModel by activityViewModels()
 
-    private val mTopIntroPreference: TopIntroPreference? by lazy {
-        preferenceScreen.findPreference(TOP_INTRO_PREFERENCE_KEY)
-    }
+    private val noRecentAccessPreference: ZeroStatePreference by pref(NO_RECENT_ACCESS)
 
-    private val mDataAndAccessPreference: HealthPreference? by lazy {
-        preferenceScreen.findPreference(DATA_AND_ACCESS_PREFERENCE_KEY)
-    }
+    private val mDataAndAccessPreference: HealthPreference by pref(DATA_AND_ACCESS_PREFERENCE_KEY)
 
-    private val mRecentAccessPreference: PreferenceGroup? by lazy {
-        preferenceScreen.findPreference(RECENT_ACCESS_PREFERENCE_KEY)
-    }
+    private val mRecentAccessPreference: PreferenceGroup by pref(RECENT_ACCESS_PREFERENCE_KEY)
 
     private val mConnectedAppsPreference: HealthPreference by pref(CONNECTED_APPS_PREFERENCE_KEY)
 
     private val mManageDataPreference: HealthPreference by pref(MANAGE_DATA_PREFERENCE_KEY)
 
     private val mBrowseMedicalDataPreference: HealthPreference by
-        pref(BROSE_MEDICAL_DATA_PREFERENCE_KEY)
+        pref(BROWSE_MEDICAL_DATA_PREFERENCE_KEY)
 
     private val dateFormatter: LocalDateTimeFormatter by lazy {
         LocalDateTimeFormatter(requireContext())
@@ -147,15 +142,9 @@ class HomeFragment : Hilt_HomeFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
         setPreferencesFromResource(R.xml.home_preference_screen, rootKey)
-        mDataAndAccessPreference?.logName = HomePageElement.DATA_AND_ACCESS_BUTTON
-
-        if (newInformationArchitecture()) {
-            mDataAndAccessPreference?.summary = getString(R.string.browse_data_subtitle)
-            mTopIntroPreference?.isVisible = false
-        } else {
-            mTopIntroPreference?.isVisible = true
-        }
-        mDataAndAccessPreference?.setOnPreferenceClickListener {
+        mDataAndAccessPreference.logName = HomePageElement.DATA_AND_ACCESS_BUTTON
+        mDataAndAccessPreference.summary = getString(R.string.browse_data_subtitle)
+        mDataAndAccessPreference.setOnPreferenceClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_healthDataCategoriesFragment)
             true
         }
@@ -170,9 +159,8 @@ class HomeFragment : Hilt_HomeFragment() {
             findNavController().navigate(R.id.action_homeFragment_to_manageDataFragment)
             true
         }
-        if (exportImport()) {
-            mManageDataPreference.summary = getString(R.string.manage_data_summary)
-        }
+
+        mManageDataPreference.summary = getString(R.string.manage_data_summary)
 
         if (isPersonalHealthRecordEnabled()) {
             mBrowseMedicalDataPreference.setOnPreferenceClickListener {
@@ -186,7 +174,7 @@ class HomeFragment : Hilt_HomeFragment() {
             mBrowseMedicalDataPreference.isVisible = false
             mBrowseMedicalDataPreference.logName = HomePageElement.BROWSE_HEALTH_RECORDS_BUTTON
         } else {
-            preferenceScreen.removePreferenceRecursively(BROSE_MEDICAL_DATA_PREFERENCE_KEY)
+            preferenceScreen.removePreferenceRecursively(BROWSE_MEDICAL_DATA_PREFERENCE_KEY)
         }
 
         migrationBannerSummary = getString(R.string.resume_migration_banner_description_fallback)
@@ -197,9 +185,7 @@ class HomeFragment : Hilt_HomeFragment() {
         super.onResume()
         recentAccessViewModel.loadRecentAccessApps(maxNumEntries = 3)
         homeViewModel.loadConnectedApps()
-        if (exportImport()) {
-            exportStatusViewModel.loadScheduledExportStatus()
-        }
+        exportStatusViewModel.loadScheduledExportStatus()
         if (isPersonalHealthRecordEnabled()) {
             homeViewModel.loadHasAnyMedicalData()
             if (isLockScreenBannerAvailable) {
@@ -220,6 +206,9 @@ class HomeFragment : Hilt_HomeFragment() {
                 is RecentAccessState.WithData -> {
                     updateRecentApps(recentAppsState.recentAccessEntries)
                 }
+                is RecentAccessState.Error -> {
+                    updateRecentAppsWithError()
+                }
                 else -> {
                     updateRecentApps(emptyList())
                 }
@@ -239,20 +228,18 @@ class HomeFragment : Hilt_HomeFragment() {
                 }
             }
         }
-
-        if (exportImport()) {
-            exportStatusViewModel.storedScheduledExportStatus.observe(viewLifecycleOwner) {
-                scheduledExportUiStatus ->
-                when (scheduledExportUiStatus) {
-                    is ScheduledExportUiStatus.WithData -> {
-                        maybeShowExportErrorBanner(scheduledExportUiStatus.scheduledExportUiState)
-                    }
-                    else -> {
-                        // do nothing
-                    }
+        exportStatusViewModel.storedScheduledExportStatus.observe(viewLifecycleOwner) {
+            scheduledExportUiStatus ->
+            when (scheduledExportUiStatus) {
+                is ScheduledExportUiStatus.WithData -> {
+                    maybeShowExportErrorBanner(scheduledExportUiStatus.scheduledExportUiState)
+                }
+                else -> {
+                    // do nothing
                 }
             }
         }
+
         if (isPersonalHealthRecordEnabled()) {
             homeViewModel.loadHasAnyMedicalData()
             homeViewModel.hasAnyMedicalData.observe(viewLifecycleOwner) { hasAnyMedicalData ->
@@ -338,6 +325,7 @@ class HomeFragment : Hilt_HomeFragment() {
         }
     }
 
+    // region Banners
     private fun maybeShowExportErrorBanner(scheduledExportUiState: ScheduledExportUiState) {
         if (
             preferenceScreen.findPreference<Preference>(EXPORT_ERROR_BANNER_PREFERENCE_KEY) != null
@@ -411,7 +399,6 @@ class HomeFragment : Hilt_HomeFragment() {
         }
     }
 
-    // Onboarding banners
     private fun getStartUsingHealthConnectBanner(): BannerPreference {
         return BannerPreference(requireContext(), UnknownGenericElement.UNKNOWN_BANNER).also {
             banner ->
@@ -550,6 +537,8 @@ class HomeFragment : Hilt_HomeFragment() {
         }
     }
 
+    // endregion
+
     private fun navigateToSecuritySettings() {
         startActivity(securitySettingsIntent)
     }
@@ -640,10 +629,20 @@ class HomeFragment : Hilt_HomeFragment() {
     }
 
     private fun updateRecentApps(recentAppsList: List<RecentAccessEntry>) {
-        mRecentAccessPreference?.removeAll()
+        if (
+            expressiveThemingHelper.isExpressiveTheme(requireContext()) && recentAppsList.isEmpty()
+        ) {
+            noRecentAccessPreference.isVisible = true
+            mRecentAccessPreference.isVisible = false
+            return
+        }
+
+        noRecentAccessPreference.isVisible = false
+        mRecentAccessPreference.isVisible = true
+        mRecentAccessPreference.removeAll()
 
         if (recentAppsList.isEmpty()) {
-            mRecentAccessPreference?.addPreference(
+            mRecentAccessPreference.addPreference(
                 Preference(requireContext())
                     .also { it.setSummary(R.string.no_recent_access) }
                     .also { it.isSelectable = false }
@@ -651,25 +650,57 @@ class HomeFragment : Hilt_HomeFragment() {
         } else {
             recentAppsList.forEach { recentApp ->
                 val newRecentAccessPreference = getRecentAccessPreference(recentApp)
-                mRecentAccessPreference?.addPreference(newRecentAccessPreference)
+                mRecentAccessPreference.addPreference(newRecentAccessPreference)
             }
-            val seeAllPreference =
+            mRecentAccessPreference.addPreference(getSeeAllPreference())
+        }
+    }
+
+    private fun updateRecentAppsWithError() {
+        noRecentAccessPreference.isVisible = false
+        mRecentAccessPreference.isVisible = true
+        mRecentAccessPreference.removeAll()
+        mRecentAccessPreference.addPreference(
+            HealthPreference(requireContext()).also {
+                it.title = getString(R.string.recent_access_error)
+                it.isSelectable = false
+                it.setIcon(AttributeResolver.getResource(requireContext(), R.attr.warningIcon))
+            }
+        )
+    }
+
+    private fun getSeeAllPreference(): Preference {
+        val seeAllPreference =
+            if (expressiveThemingHelper.isExpressiveTheme(requireContext())) {
+                HealthButtonPreference(requireContext()).also {
+                    it.setTitle(R.string.recent_access_view_all_button)
+                    it.setIcon(AttributeResolver.getResource(requireContext(), R.attr.optionsIcon))
+                    it.logName = HomePageElement.SEE_ALL_RECENT_ACCESS_BUTTON
+                    it.setOnClickListener {
+                        findNavController()
+                            .navigate(R.id.action_homeFragment_to_recentAccessFragment)
+                    }
+                }
+            } else {
                 HealthPreference(requireContext()).also {
                     it.setTitle(R.string.show_recent_access_entries_button_title)
                     it.setIcon(AttributeResolver.getResource(requireContext(), R.attr.seeAllIcon))
                     it.logName = HomePageElement.SEE_ALL_RECENT_ACCESS_BUTTON
+                    it.setOnPreferenceClickListener {
+                        findNavController()
+                            .navigate(R.id.action_homeFragment_to_recentAccessFragment)
+                        true
+                    }
                 }
-            seeAllPreference.setOnPreferenceClickListener {
-                findNavController().navigate(R.id.action_homeFragment_to_recentAccessFragment)
-                true
             }
-            mRecentAccessPreference?.addPreference(seeAllPreference)
-        }
+
+        return seeAllPreference
     }
 
     private fun getRecentAccessPreference(recentApp: RecentAccessEntry): HealthPreference {
-        return if (SettingsThemeHelper.isExpressiveTheme(requireContext())) {
+        return if (expressiveThemingHelper.isExpressiveTheme(requireContext())) {
             HealthPreference(requireContext()).also { newPreference ->
+                newPreference.logName = RecentAccessElement.RECENT_ACCESS_ENTRY_BUTTON
                 newPreference.title = recentApp.metadata.appName
                 newPreference.icon = recentApp.metadata.icon
                 newPreference.summary =

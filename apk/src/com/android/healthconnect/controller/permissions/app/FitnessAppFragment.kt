@@ -28,11 +28,8 @@ import androidx.fragment.app.commitNow
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.deletion.DeletionConstants.DELETION_TYPE
 import com.android.healthconnect.controller.deletion.DeletionConstants.FRAGMENT_TAG_DELETION
-import com.android.healthconnect.controller.deletion.DeletionConstants.START_DELETION_EVENT
 import com.android.healthconnect.controller.deletion.DeletionFragment
-import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.deletion.DeletionViewModel
 import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel
 import com.android.healthconnect.controller.permissions.additionalaccess.DisableExerciseRoutePermissionDialog
@@ -62,7 +59,6 @@ import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.pref
 import com.android.healthconnect.controller.utils.showLoadingDialog
-import com.android.healthfitness.flags.Flags
 import com.android.settingslib.widget.AppHeaderPreference
 import com.android.settingslib.widget.FooterPreference
 import dagger.hilt.android.AndroidEntryPoint
@@ -257,40 +253,23 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
                 state.isAvailable()
         }
 
-        if (Flags.newInformationArchitecture()) {
-            manageDataCategory.addPreference(
-                HealthPreference(requireContext()).also {
-                    it.logName = AppAccessElement.SEE_APP_DATA_BUTTON
-                    it.title = getString(R.string.see_app_data)
-                    it.setOnPreferenceClickListener {
-                        findNavController()
-                            .navigate(
-                                R.id.action_fitnessApp_to_appData,
-                                bundleOf(
-                                    EXTRA_PACKAGE_NAME to packageName,
-                                    EXTRA_APP_NAME to appName,
-                                ),
-                            )
-                        true
-                    }
-                }
-            )
-        } else {
-            manageDataCategory.addPreference(
-                HealthPreference(requireContext()).also {
-                    it.logName = AppAccessElement.DELETE_APP_DATA_BUTTON
-                    it.title = getString(R.string.delete_app_data)
-                    it.setOnPreferenceClickListener {
-                        val deletionType = DeletionType.DeletionTypeAppData(packageName, appName)
-                        childFragmentManager.setFragmentResult(
-                            START_DELETION_EVENT,
-                            bundleOf(DELETION_TYPE to deletionType),
+        manageDataCategory.addPreference(
+            HealthPreference(requireContext()).also {
+                it.logName = AppAccessElement.SEE_APP_DATA_BUTTON
+                it.title = getString(R.string.see_app_data)
+                it.setOnPreferenceClickListener {
+                    findNavController()
+                        .navigate(
+                            R.id.action_fitnessApp_to_appData,
+                            bundleOf(
+                                EXTRA_PACKAGE_NAME to packageName,
+                                EXTRA_APP_NAME to appName,
+                            ),
                         )
-                        true
-                    }
+                    true
                 }
-            )
-        }
+            }
+        )
     }
 
     private fun shouldAddAdditionalAccessPref(): Boolean {

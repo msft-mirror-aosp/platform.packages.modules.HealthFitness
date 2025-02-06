@@ -21,6 +21,8 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.healthconnect.cts.utils.AssumptionCheckerRule
 import android.healthconnect.cts.utils.TestUtils
+import android.server.wm.WindowManagerStateHelper
+import android.util.Log
 import androidx.test.core.app.ApplicationProvider
 import com.android.compatibility.common.util.DisableAnimationRule
 import com.android.compatibility.common.util.FreezeRotationRule
@@ -42,26 +44,40 @@ open class HealthConnectBaseTest {
             "Tests should run on supported hardware only.",
         )
 
+    companion object {
+        private const val TAG = "HealthConnectBaseTest"
+    }
+
     protected val context: Context = ApplicationProvider.getApplicationContext()
+    private val wmState = WindowManagerStateHelper()
 
     @Before
     fun setUpClass() {
-        // Collapse notifications
+        // If the status bar is showing, hide it (swipe it back up)
         runShellCommandOrThrow("cmd statusbar collapse")
 
         unlockDevice()
     }
 
+    /** This assumes that the lock method is SWIPE or NONE. */
     private fun unlockDevice() {
+        val keyguardManager = context.getSystemService(KeyguardManager::class.java)
+        // Wakes up the device in case setup failed
         runShellCommandOrThrow("input keyevent KEYCODE_WAKEUP")
+        runShellCommandOrThrow("wm dismiss-keyguard")
+        // Check if there is a lock screen set (we assume SWIPE)
         if ("false".equals(runShellCommandOrThrow("cmd lock_settings get-disabled"))) {
             // Unlock screen only when it's lock settings enabled to prevent showing "wallpaper
             // picker" which may cover another UI elements on freeform window configuration.
+            Log.i(
+                TAG,
+                "keyguardManager.isKeyguardLocked (aka is keyguard showing) = ${keyguardManager.isKeyguardLocked}",
+            )
+            Log.i(TAG, "Lock screen not disabled, send unlock screen event")
             runShellCommandOrThrow("input keyevent 82")
+        } else {
+            Log.i(TAG, "Lock screen disabled, screen should be awake")
         }
-        runShellCommandOrThrow("wm dismiss-keyguard")
-
-        val keyguardManager = context.getSystemService(KeyguardManager::class.java)
 
         eventually {
             assertWithMessage("device is locked").that(keyguardManager.isDeviceLocked).isFalse()

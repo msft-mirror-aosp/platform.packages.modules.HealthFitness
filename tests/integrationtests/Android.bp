@@ -72,6 +72,7 @@ android_test {
         "compatibility-device-util-axt",
         "androidx.test.ext.truth",
         "cts-healthconnect-utils",
+        "android.permission.flags-aconfig-java-export",
     ],
 
     srcs: [
@@ -89,6 +90,8 @@ android_test {
         ":HealthFitnessPermsTestApp",
         ":HCPermsTestAppNoUsageIntent",
         ":HCSharedUserPermsTestApp",
+        ":RequestReadHeartRateTestApp",
+        ":RequestBodySensorsTestApp",
     ],
 }
 
@@ -110,6 +113,7 @@ android_test {
         "compatibility-device-util-axt",
         "androidx.test.ext.truth",
         "cts-healthconnect-utils",
+        "cts-healthconnect-phr-lib",
         "healthconnect-documentprovider-utils",
         "healthfitness-exported-aconfig-flags-lib",
     ],

@@ -44,7 +44,7 @@
     <string name="set_units_title" msgid="2657822539603758029">"Задаць адзінкі вымярэння"</string>
     <string name="manage_data_preferences_category_title" msgid="1183110821140344472">"Параметры"</string>
     <string name="manage_data_category_title" msgid="6328886061582616519">"Кіраванне данымі"</string>
-    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"Экспарт і Імпарт даных"</string>
+    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"Экспарт і імпарт даных"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Апошні доступ да даных геалакацыі"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"У апошні час праграмы не атрымлівалі доступу да Здароўя і спорту"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Паказаць усе нядаўнія выпадкі доступу"</string>
@@ -56,6 +56,10 @@
     <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Кіраваць дазволамі"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Час: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
+    <string name="recent_access_empty_state_title" msgid="4767157641389217682">"Праграмы не звярталіся да вашых даных у апошні час"</string>
+    <string name="recent_access_empty_state_description" msgid="6334951450158128989">"Тут будуць аўтаматычна паказвацца праграмы, якія нядаўна атрымлівалі доступ да вашых даных"</string>
+    <string name="recent_access_view_all_button" msgid="825946958049641541">"Праглядзець усе"</string>
+    <string name="recent_access_error" msgid="2258399573560888960">"Не ўдалося загрузіць нядаўні доступ"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Актыўнасць"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"актыўнасць"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Параметры цела"</string>
@@ -359,7 +363,7 @@
     <string name="read_permission_category" msgid="6002099618259628632">"Дазвольце праграме “<xliff:g id="APP_NAME">%1$s</xliff:g>” счытваць даныя"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Дазвольце праграме “<xliff:g id="APP_NAME">%1$s</xliff:g>” запісваць даныя"</string>
     <string name="request_permissions_allow" msgid="4201324235711040631">"Дазволіць"</string>
-    <string name="request_permissions_allow_all" msgid="3419414351406638770">"Дазволіць усё"</string>
+    <string name="request_permissions_allow_all" msgid="3419414351406638770">"Дазволіць усе"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Не дазваляць"</string>
     <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Выберыце, якія даныя зможа счытваць ці запісваць гэта праграма ў платформе \"Здароўе і спорт\""</string>
     <string name="request_permissions_data_access_type_read" msgid="6005792244220381045">"Выберыце, якія даныя зможа счытваць гэта праграма з платформы \"Здароўе і спорт\""</string>
@@ -541,10 +545,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Праграма \"Здароўе і спорт\" захоўвае даныя пра ваша здароўе і фізічную актыўнасць і забяспечвае сінхранізацыю розных праграм на прыладзе"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Праграма \"Здароўе і спорт\" захоўвае і сінхранізуе вашы даныя пра здароўе і фізічную актыўнасць з розных праграм.\n\n"<b>"Даныя пра здароўе і фізічны стан"</b>", у тым ліку сеансы трэніровак, даныя сну і іншае.\n\n"<b>"Інфармацыю пра стан здароўя"</b>", у тым ліку пра вакцыны, вынікі аналізаў і іншае."</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Праграма \"Здароўе і спорт\" дазваляе рабіць наступнае:"</string>
-    <string name="share_data" msgid="3481932156368883946">"Абагульвайце даныя з праграмамі"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Выбірайце, да якіх даных у \"Здароўі і спорце\" будуць мець доступ праграмы"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Кіруйце наладамі і прыватнасцю"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"У любы час змяняйце дазволы праграм і кіруйце сваімі данымі"</string>
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Абагульванне даных з праграмамі"</b>\n"Выбірайце, якія даныя іншыя праграмы змогуць счытваць і запісваць у сэрвісе \"Здароўе і спорт\""</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Кіраванне наладамі і прыватнасцю"</b>\n"Вы можаце ў любы час змяняць дазволы праграм і кіраваць сваімі данымі"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Назад"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Пачаць"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Выдаліць даныя"</string>

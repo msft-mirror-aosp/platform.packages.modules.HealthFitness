@@ -18,6 +18,7 @@ package com.android.healthconnect.controller.exportimport
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.provider.DocumentsContract
 import android.view.LayoutInflater
@@ -45,6 +46,8 @@ import com.android.healthconnect.controller.utils.logging.ExportDestinationEleme
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthfitness.flags.Flags.exportImportFastFollow
+import com.android.healthfitness.flags.Flags.exportImportNiceToHave
+
 import com.android.settingslib.widget.LinkTextView
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -188,12 +191,16 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
 
     private fun getDefaultFileName(): String {
         val sequentialNumber = exportStatusViewModel.storedNextExportSequentialNumber.value
+        var fileName: String = getString(R.string.export_default_file_name)
         if (exportImportFastFollow() && sequentialNumber !== null && sequentialNumber != 0) {
-            return getString(
+            fileName = getString(
                 R.string.export_default_file_name_with_sequence,
                 sequentialNumber.toString(),
-            ) + ".zip"
+            )
         }
-        return getString(R.string.export_default_file_name) + ".zip"
+        if (exportImportNiceToHave()){
+            fileName = Build.BRAND + " " + Build.MODEL + " " + fileName
+        }
+        return fileName + ".zip"
     }
 }

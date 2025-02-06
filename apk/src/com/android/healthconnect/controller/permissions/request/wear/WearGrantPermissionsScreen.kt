@@ -61,227 +61,234 @@ import com.android.healthconnect.controller.shared.app.AppMetadata
  */
 @Composable
 fun WearGrantPermissionsScreen(viewModel: RequestPermissionViewModel, onButtonClicked: () -> Unit) {
-  val appMetadata: State<AppMetadata?> = viewModel.appMetadata.observeAsState(null)
-  val appName = appMetadata.value?.appName ?: ""
-  val fitnessPermissions = viewModel.fitnessPermissionsList.observeAsState(emptyList())
-  val dataTypes =
-    fitnessPermissions.value.map { permission ->
-      stringResource(
-        FitnessPermissionStrings.fromPermissionType(permission.fitnessPermissionType).uppercaseLabel
-      )
-    }
-  val additionalPermissions = viewModel.additionalPermissionsList.observeAsState(emptyList())
-  val backgroundPermission = additionalPermissions.value.filter { it.isBackgroundReadPermission() }
+    val appMetadata: State<AppMetadata?> = viewModel.appMetadata.observeAsState(null)
+    val appName = appMetadata.value?.appName ?: ""
+    val fitnessPermissions = viewModel.fitnessPermissionsList.observeAsState(emptyList())
+    val dataTypes =
+        fitnessPermissions.value.map { permission ->
+            stringResource(
+                FitnessPermissionStrings.fromPermissionType(permission.fitnessPermissionType)
+                    .uppercaseLabel
+            )
+        }
+    val additionalPermissions = viewModel.additionalPermissionsList.observeAsState(emptyList())
+    val backgroundPermission =
+        additionalPermissions.value.filter { it.isBackgroundReadPermission() }
 
-  if (dataTypes.size > 1) {
-    GrantMultipleFitnessPermissions(
-      fitnessPermissions,
-      appName,
-      dataTypes,
-      onButtonClicked,
-      viewModel,
-    )
-  } else if (dataTypes.size == 1) {
-    GrantSingleFitnessPermission(appName, dataTypes[0], onButtonClicked, viewModel)
-  } else if (dataTypes.size == 0 && !backgroundPermission.isEmpty()) {
-    GrantReadBackgroundHealthPermission(appName, onButtonClicked, viewModel)
-  }
+    if (dataTypes.size > 1) {
+        GrantMultipleFitnessPermissions(
+            fitnessPermissions,
+            appName,
+            dataTypes,
+            onButtonClicked,
+            viewModel,
+        )
+    } else if (dataTypes.size == 1) {
+        GrantSingleFitnessPermission(appName, dataTypes[0], onButtonClicked, viewModel)
+    } else if (dataTypes.size == 0 && !backgroundPermission.isEmpty()) {
+        GrantReadBackgroundHealthPermission(appName, onButtonClicked, viewModel)
+    }
 }
 
 @Composable
 fun GrantMultipleFitnessPermissions(
-  fitnessPermissions: State<List<FitnessPermission>>,
-  appName: String,
-  dataTypes: List<String>,
-  onButtonClicked: () -> Unit,
-  viewModel: RequestPermissionViewModel,
+    fitnessPermissions: State<List<FitnessPermission>>,
+    appName: String,
+    dataTypes: List<String>,
+    onButtonClicked: () -> Unit,
+    viewModel: RequestPermissionViewModel,
 ) {
-  val res = LocalContext.current.resources
-  // Represents whether user has toggled-on a granular data type permission, by default toggled.
-  val checkedStates =
-    remember(fitnessPermissions.value) { // Recalculate when fitness permissions change.
-      mutableStateListOf(*(fitnessPermissions.value).map { true }.toTypedArray())
-    }
-  val expandableState = rememberExpandableState()
+    val res = LocalContext.current.resources
+    // Represents whether user has toggled-on a granular data type permission, by default toggled.
+    val checkedStates =
+        remember(fitnessPermissions.value) { // Recalculate when fitness permissions change.
+            mutableStateListOf(*(fitnessPermissions.value).map { true }.toTypedArray())
+        }
+    val expandableState = rememberExpandableState()
 
-  ScrollableScreen(
-    showTimeText = false,
-    title = res.getString(R.string.wear_allow_app_access_fitness_and_wellness_data, appName),
-    subtitle =
-    res.getString(
-      R.string.wear_request_multiple_data_type_permissions,
-      appName,
-      dataTypes.joinToString(", "),
-    ),
-  ) {
-    // Granular health data types. By default hidden, will show up once user clicks expand button.
-    expandableItems(expandableState, dataTypes.size) { index ->
-      val dataType = dataTypes[index]
-      val isChecked = checkedStates[index]
-      Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-        SwitchButton(
-          label = { Text(dataType, maxLines = 3, overflow = TextOverflow.Ellipsis) },
-          checked = isChecked,
-          onCheckedChange = { newCheckedValue ->
-            checkedStates[index] = newCheckedValue
-            viewModel.updateHealthPermission(
-              fitnessPermissions.value[index],
-              newCheckedValue as Boolean,
+    ScrollableScreen(
+        showTimeText = false,
+        title = res.getString(R.string.wear_allow_app_access_fitness_and_wellness_data, appName),
+        subtitle =
+            res.getString(
+                R.string.wear_request_multiple_data_type_permissions,
+                appName,
+                dataTypes.joinToString(", "),
+            ),
+    ) {
+        // Granular health data types. By default hidden, will show up once user clicks expand
+        // button.
+        expandableItems(expandableState, dataTypes.size) { index ->
+            val dataType = dataTypes[index]
+            val isChecked = checkedStates[index]
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                SwitchButton(
+                    label = { Text(dataType, maxLines = 3, overflow = TextOverflow.Ellipsis) },
+                    checked = isChecked,
+                    onCheckedChange = { newCheckedValue ->
+                        checkedStates[index] = newCheckedValue
+                        viewModel.updateHealthPermission(
+                            fitnessPermissions.value[index],
+                            newCheckedValue as Boolean,
+                        )
+                    },
+                    enabled = true,
+                )
+            }
+        }
+        // Buttons.
+        // Allow all / Allow selected button.
+        item {
+            Chip(
+                label =
+                    if (expandableState.expanded) {
+                        res.getString(R.string.request_permissions_allow_selected)
+                    } else {
+                        res.getString(R.string.request_permissions_allow_all)
+                    },
+                onClick = {
+                    if (!expandableState.expanded) {
+                        // User hasn't toggle any chip, allow all.
+                        viewModel.updateFitnessPermissions(true)
+                    }
+                    onButtonClicked()
+                },
+                modifier = Modifier.fillMaxWidth(),
+                labelMaxLines = Integer.MAX_VALUE,
             )
-          },
-          enabled = true,
-        )
-      }
-    }
-    // Buttons.
-    // Allow all / Allow selected button.
-    item {
-      Chip(
-        label =
-        if (expandableState.expanded) {
-            res.getString(R.string.request_permissions_allow_selected)
-        } else {
-            res.getString(R.string.request_permissions_allow_all)
-        },
-        onClick = {
-          if (!expandableState.expanded) {
-            // User hasn't toggle any chip, allow all.
-            viewModel.updateFitnessPermissions(true)
-          }
-          onButtonClicked()
-        },
-        modifier = Modifier.fillMaxWidth(),
-        labelMaxLines = Integer.MAX_VALUE,
-      )
-    }
-    // Deny all button.
-    item {
-      Chip(
-        label = res.getString(R.string.request_permissions_deny_all),
-        onClick = {
-          checkedStates.fill(false)
-          viewModel.updateFitnessPermissions(false)
-          onButtonClicked()
-        },
-        modifier = Modifier.fillMaxWidth(),
-        labelMaxLines = Integer.MAX_VALUE,
-      )
-    }
-    // Expand granular control button. User clicks this to control each data type individually.
-    expandableButton(expandableState) {
-      CompactChip(
-        label = {
-          Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-              painter = painterResource(R.drawable.ic_expand_more_24),
-              contentDescription = "Expand more",
+        }
+        // Deny all button.
+        item {
+            Chip(
+                label = res.getString(R.string.request_permissions_deny_all),
+                onClick = {
+                    checkedStates.fill(false)
+                    viewModel.updateFitnessPermissions(false)
+                    onButtonClicked()
+                },
+                modifier = Modifier.fillMaxWidth(),
+                labelMaxLines = Integer.MAX_VALUE,
             )
-          }
-        },
-        onClick = {
-          expandableState.expanded = !expandableState.expanded
-          // By default, all the data types are selected when user clicks expand button.
-          viewModel.updateFitnessPermissions(true)
-        },
-        border = ChipDefaults.chipBorder(),
-        colors = ChipDefaults.chipColors(backgroundColor = Color.Black, contentColor = Color.White),
-        contentPadding = PaddingValues(0.dp), // Remove Chip's default contentPadding
-      )
+        }
+        // Expand granular control button. User clicks this to control each data type individually.
+        expandableButton(expandableState) {
+            CompactChip(
+                label = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_expand_more_24),
+                            contentDescription = "Expand more",
+                        )
+                    }
+                },
+                onClick = {
+                    expandableState.expanded = !expandableState.expanded
+                    // By default, all the data types are selected when user clicks expand button.
+                    viewModel.updateFitnessPermissions(true)
+                },
+                border = ChipDefaults.chipBorder(),
+                colors =
+                    ChipDefaults.chipColors(
+                        backgroundColor = Color.Black,
+                        contentColor = Color.White,
+                    ),
+                contentPadding = PaddingValues(0.dp), // Remove Chip's default contentPadding
+            )
+        }
     }
-  }
 }
 
 @Composable
 fun GrantSingleFitnessPermission(
-  appName: String,
-  dataType: String,
-  onButtonClicked: () -> Unit,
-  viewModel: RequestPermissionViewModel,
+    appName: String,
+    dataType: String,
+    onButtonClicked: () -> Unit,
+    viewModel: RequestPermissionViewModel,
 ) {
-  val res = LocalContext.current.resources
-  ScrollableScreen(
-    showTimeText = false,
-    title = res.getString(R.string.wear_request_single_data_type_permission, appName, dataType),
-  ) {
-    // Allow button.
-    item {
-      Chip(
-        label = res.getString(R.string.request_permissions_allow),
-        onClick = {
-          viewModel.updateFitnessPermissions(true)
-          onButtonClicked()
-        },
-        modifier = Modifier.fillMaxWidth(),
-        labelMaxLines = Integer.MAX_VALUE,
-      )
+    val res = LocalContext.current.resources
+    ScrollableScreen(
+        showTimeText = false,
+        title = res.getString(R.string.wear_request_single_data_type_permission, appName, dataType),
+    ) {
+        // Allow button.
+        item {
+            Chip(
+                label = res.getString(R.string.request_permissions_allow),
+                onClick = {
+                    viewModel.updateFitnessPermissions(true)
+                    onButtonClicked()
+                },
+                modifier = Modifier.fillMaxWidth(),
+                labelMaxLines = Integer.MAX_VALUE,
+            )
+        }
+        // Deny button.
+        item {
+            Chip(
+                label = res.getString(R.string.request_permissions_dont_allow),
+                onClick = {
+                    viewModel.updateFitnessPermissions(false)
+                    onButtonClicked()
+                },
+                modifier = Modifier.fillMaxWidth(),
+                labelMaxLines = Integer.MAX_VALUE,
+            )
+        }
     }
-    // Deny button.
-    item {
-      Chip(
-        label = res.getString(R.string.request_permissions_dont_allow),
-        onClick = {
-          viewModel.updateFitnessPermissions(false)
-          onButtonClicked()
-        },
-        modifier = Modifier.fillMaxWidth(),
-        labelMaxLines = Integer.MAX_VALUE,
-      )
-    }
-  }
 }
 
 @Composable
 fun GrantReadBackgroundHealthPermission(
-  appName: String,
-  onButtonClicked: () -> Unit,
-  viewModel: RequestPermissionViewModel,
+    appName: String,
+    onButtonClicked: () -> Unit,
+    viewModel: RequestPermissionViewModel,
 ) {
-  val res = LocalContext.current.resources
-  val grantedAdditionalPermissions =
-    viewModel.grantedAdditionalPermissions.observeAsState(emptySet())
-  // Wait until the grantedAdditionalPermission value has been posted then return to Activity and
-  // handle permission results.
-  LaunchedEffect(grantedAdditionalPermissions.value) {
-    if (
-      HealthPermission.AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND in
-      grantedAdditionalPermissions.value
-    ) {
-      onButtonClicked()
+    val res = LocalContext.current.resources
+    val grantedAdditionalPermissions =
+        viewModel.grantedAdditionalPermissions.observeAsState(emptySet())
+    // Wait until the grantedAdditionalPermission value has been posted then return to Activity and
+    // handle permission results.
+    LaunchedEffect(grantedAdditionalPermissions.value) {
+        if (
+            HealthPermission.AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND in
+                grantedAdditionalPermissions.value
+        ) {
+            onButtonClicked()
+        }
     }
-  }
 
-  ScrollableScreen(
-    showTimeText = false,
-    title = res.getString(R.string.wear_allow_app_access_fitness_and_wellness_data, appName),
-  ) {
-    // Allow all the time button.
-    item {
-      Chip(
-        label = res.getString(R.string.request_permissions_allow_all_the_time),
-        onClick = {
-          viewModel.updateHealthPermission(
-            HealthPermission.AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND,
-            true,
-          )
-        },
-        modifier = Modifier.fillMaxWidth(),
-        labelMaxLines = Integer.MAX_VALUE,
-      )
+    ScrollableScreen(
+        showTimeText = false,
+        title = res.getString(R.string.wear_allow_app_access_fitness_and_wellness_data, appName),
+    ) {
+        // Allow all the time button.
+        item {
+            Chip(
+                label = res.getString(R.string.request_permissions_allow_all_the_time),
+                onClick = {
+                    viewModel.updateHealthPermission(
+                        HealthPermission.AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND,
+                        true,
+                    )
+                },
+                modifier = Modifier.fillMaxWidth(),
+                labelMaxLines = Integer.MAX_VALUE,
+            )
+        }
+        // Allow while in use button. (Deny background read permission.)
+        item {
+            Chip(
+                label = res.getString(R.string.request_permissions_while_using_the_app),
+                onClick = {
+                    viewModel.updateHealthPermission(
+                        HealthPermission.AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND,
+                        false,
+                    )
+                    onButtonClicked()
+                },
+                modifier = Modifier.fillMaxWidth(),
+                labelMaxLines = Integer.MAX_VALUE,
+            )
+        }
     }
-    // Allow while in use button. (Deny background read permission.)
-    item {
-      Chip(
-        label = res.getString(R.string.request_permissions_while_using_the_app),
-        onClick = {
-          viewModel.updateHealthPermission(
-            HealthPermission.AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND,
-            false,
-          )
-          onButtonClicked()
-        },
-        modifier = Modifier.fillMaxWidth(),
-        labelMaxLines = Integer.MAX_VALUE,
-      )
-    }
-  }
 }

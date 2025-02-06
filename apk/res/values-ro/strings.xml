@@ -56,6 +56,10 @@
     <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Gestionează permisiunile"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Oră: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
+    <string name="recent_access_empty_state_title" msgid="4767157641389217682">"Nicio accesare recentă"</string>
+    <string name="recent_access_empty_state_description" msgid="6334951450158128989">"Aplicațiile care ți-au accesat datele recent se vor afișa automat aici"</string>
+    <string name="recent_access_view_all_button" msgid="825946958049641541">"Afișează-le pe toate"</string>
+    <string name="recent_access_error" msgid="2258399573560888960">"Nu s-a putut încărca accesul recent"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Activitate"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"activitate"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Măsurători corporale"</string>
@@ -343,7 +347,7 @@
     <string name="procedures_uppercase_label" msgid="9176087520132593261">"Date despre proceduri"</string>
     <string name="procedures_lowercase_label" msgid="5320804313946273234">"date despre proceduri"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"Să citească datele despre proceduri"</string>
-    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Istoricul rețelelor sociale"</string>
+    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Istoric social"</string>
     <string name="social_history_lowercase_label" msgid="9027541979445736412">"istoricul rețelelor sociale"</string>
     <string name="social_history_content_description" msgid="7187059309389849831">"Să citească istoricul rețelelor sociale"</string>
     <string name="visits_uppercase_label" msgid="8532619758336375886">"Vizite"</string>
@@ -541,10 +545,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect îți stochează datele despre sănătate și fitness, oferindu-ți o metodă simplă de a sincroniza aplicațiile diverse de pe dispozitiv"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect stochează și sincronizează datele despre sănătate și fitness din diferite aplicații.\n\n"<b>"Date despre fitness și wellness,"</b>" inclusiv sesiunile de exerciții, pașii, nutriția, somnul și altele\n\n"<b>"Înregistrări de sănătate,"</b>" inclusiv vaccinările, rezultatele analizelor și altele"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Cu Health Connect"</string>
-    <string name="share_data" msgid="3481932156368883946">"Permite accesul aplicațiilor la date"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Alege datele pe care fiecare aplicație le poate citi sau scrie în Health Connect"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Gestionează-ți setările și confidențialitatea"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Modifică permisiunile pentru aplicație și gestionează-ți datele oricând"</string>
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Permite accesul aplicațiilor la date"</b>\n"Alege datele pe care fiecare aplicație le poate citi sau scrie în Health Connect"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Gestionează-ți setările și confidențialitatea"</b>\n"Modifică permisiunile pentru aplicație și gestionează-ți datele oricând"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Înapoi"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Începe"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Șterge datele"</string>
@@ -1177,7 +1179,7 @@
     <string name="allowed_to_access" msgid="4179317387300812335">"Poate accesa"</string>
     <string name="allowed_to_read" msgid="2775365229411407406">"Poate citi"</string>
     <string name="give_permission_prompt" msgid="5788144216023065504">"Aceste permisiuni oferă acces <xliff:g id="APP_NAME">%1$s</xliff:g> la datele de la senzorii dispozitivului."</string>
-    <string name="allowed_apps_count" msgid="2289260267605628310">"<xliff:g id="NUMBER_0">%1$d</xliff:g> din <xliff:g id="OTHER_NUMBER">%2$d</xliff:g> aplicație(i) au această permisiune"</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"<xliff:g id="NUMBER_0">%1$d</xliff:g> din <xliff:g id="OTHER_NUMBER">%2$d</xliff:g> aplicație(i) are(au) această permisiune"</string>
     <string name="no_apps_requesting" msgid="8088684445910698363">"Nicio aplicație care solicită"</string>
     <string name="allowed" msgid="4158456017482263737">"Permisă"</string>
     <string name="not_allowed" msgid="6092523505093372147">"Nepermisă"</string>

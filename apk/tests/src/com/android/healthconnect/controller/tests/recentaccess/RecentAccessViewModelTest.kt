@@ -99,6 +99,18 @@ class RecentAccessViewModelTest {
     @After
     fun tearDown() {
         Dispatchers.resetMain()
+        fakeRecentAccessUseCase.setForceFail(false)
+    }
+
+    @Test
+    fun loadRecentAccess_whenError_returnsErrorState() = runTest {
+        fakeRecentAccessUseCase.setForceFail(true)
+        val testObserver = TestObserver<RecentAccessState>()
+        viewModel.recentAccessApps.observeForever(testObserver)
+        viewModel.loadRecentAccessApps()
+        advanceUntilIdle()
+        val actual = testObserver.getLastValue()
+        assertThat(actual is RecentAccessState.Error).isTrue()
     }
 
     @Test
@@ -709,7 +721,6 @@ class RecentAccessViewModelTest {
         assertRecentAccessEquality(actual, expected)
     }
 
-    @EnableFlags(Flags.FLAG_MINDFULNESS)
     @Test
     fun loadRecentAccessApps_mindfulness_read() = runTest {
         val packageName = TEST_APP_PACKAGE_NAME
@@ -746,7 +757,6 @@ class RecentAccessViewModelTest {
         assertRecentAccessEquality(actual, expected)
     }
 
-    @EnableFlags(Flags.FLAG_MINDFULNESS)
     @Test
     fun loadRecentAccessApps_mindfulness_upsert() = runTest {
         val packageName = TEST_APP_PACKAGE_NAME

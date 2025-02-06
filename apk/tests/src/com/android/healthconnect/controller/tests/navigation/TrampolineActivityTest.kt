@@ -37,6 +37,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.test.core.app.ActivityScenario.launchActivityForResult
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -64,6 +65,7 @@ import com.android.healthconnect.controller.permissions.app.AppPermissionViewMod
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
+import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel
 import com.android.healthconnect.controller.selectabledeletion.DeletionDataViewModel
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus
@@ -76,6 +78,7 @@ import com.android.healthconnect.controller.tests.utils.showOnboarding
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
 import com.android.healthfitness.flags.Flags
+import com.android.settingslib.widget.SettingsThemeHelper
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -107,7 +110,9 @@ class TrampolineActivityTest {
     val appPermissionViewModel: AppPermissionViewModel = mock(AppPermissionViewModel::class.java)
     @BindValue val allDataViewModel: AllDataViewModel = Mockito.mock(AllDataViewModel::class.java)
     @BindValue val homeViewModel: HomeViewModel = mock(HomeViewModel::class.java)
-
+    @BindValue
+    val recentAccessViewModel: RecentAccessViewModel =
+        Mockito.mock(RecentAccessViewModel::class.java)
     private val context = InstrumentationRegistry.getInstrumentation().context
 
     @Before
@@ -211,6 +216,9 @@ class TrampolineActivityTest {
         whenever(homeViewModel.showLockScreenBanner).then {
             MediatorLiveData(HomeViewModel.LockScreenBannerState.NoBanner)
         }
+        whenever(recentAccessViewModel.recentAccessApps).then {
+            MutableLiveData(RecentAccessViewModel.RecentAccessState.WithData(listOf()))
+        }
     }
 
     @Test
@@ -248,26 +256,18 @@ class TrampolineActivityTest {
         launchActivityForResult<TrampolineActivity>(createStartIntent(ACTION_HEALTH_HOME_SETTINGS))
 
         onIdle()
-        onView(withText("Recent access")).check(matches(isDisplayed()))
+        // TODO (b/390212615) update once we can use settings flag
+        if (SettingsThemeHelper.isExpressiveTheme(context)) {
+            onView(withText("No recent access")).perform(scrollTo()).check(matches(isDisplayed()))
+        } else {
+            onView(withText("No apps recently accessed Health\u00A0Connect"))
+                .perform(scrollTo())
+                .check(matches(isDisplayed()))
+        }
         onView(withText("Permissions and data")).check(matches(isDisplayed()))
     }
 
     @Test
-    @DisableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
-    fun manageHealthDataIntent_launchesDataManagementActivity_oldIA() {
-        // setup data management screen.
-        whenever(categoryViewModel.categoriesData).then {
-            MutableLiveData<CategoriesFragmentState>(WithData(emptyList()))
-        }
-
-        launchActivityForResult<TrampolineActivity>(createStartIntent(ACTION_MANAGE_HEALTH_DATA))
-
-        onIdle()
-        onView(withText("Browse data")).check(matches(isDisplayed()))
-    }
-
-    @Test
-    @EnableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
     fun manageHealthDataIntent_launchesDataManagementActivity_newIA() {
         // setup data management screen.
         whenever(categoryViewModel.categoriesData).then {

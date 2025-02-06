@@ -145,10 +145,22 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             boolean useLocalTime) {
         AggregateParams params = getAggregateParams(aggregationType);
         String physicalTimeColumnName = getStartTimeColumnName();
-        String startTimeColumnName =
-                useLocalTime ? getLocalStartTimeColumnName() : physicalTimeColumnName;
-        String endTimeColumnName =
-                useLocalTime ? getLocalEndTimeColumnName() : getEndTimeColumnName();
+        String startTimeColumnName;
+        String endTimeColumnName;
+        if (useLocalTime) {
+            startTimeColumnName = getLocalStartTimeColumnName();
+            endTimeColumnName = getLocalEndTimeColumnName();
+        } else {
+            // TODO(b/326058390): Handle local time filter for series data types
+            startTimeColumnName =
+                    getSampleTimestampsColumnName() != null
+                            ? getSampleTimestampsColumnName()
+                            : physicalTimeColumnName;
+            endTimeColumnName =
+                    getSampleTimestampsColumnName() != null
+                            ? getSampleTimestampsColumnName()
+                            : getEndTimeColumnName();
+        }
         params.setTimeColumnName(startTimeColumnName);
         params.setExtraTimeColumn(endTimeColumnName);
         params.setOffsetColumnToFetch(getZoneOffsetColumnName());
@@ -706,6 +718,15 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
 
     /** Returns the table name to be created corresponding to this helper */
     public abstract String getMainTableName();
+
+    /**
+     * Returns the column name that holds the timestamps for samples in a series, where the record
+     * type is a SeriesRecord
+     */
+    @Nullable
+    public String getSampleTimestampsColumnName() {
+        return null;
+    }
 
     /** Returns the information required to perform aggregate operation. */
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression

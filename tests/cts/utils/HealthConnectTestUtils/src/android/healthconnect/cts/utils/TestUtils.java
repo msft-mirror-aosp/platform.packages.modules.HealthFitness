@@ -31,21 +31,6 @@ import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMIS
 import static android.healthconnect.cts.utils.DataFactory.NOW;
 import static android.healthconnect.cts.utils.DataFactory.getDataOrigin;
 import static android.healthconnect.cts.utils.HealthConnectReceiver.callAndGetResponseWithShellPermissionIdentity;
-import static android.healthconnect.test.app.TestAppReceiver.ACTION_AGGREGATE_STEPS_COUNT;
-import static android.healthconnect.test.app.TestAppReceiver.ACTION_INSERT_EXERCISE_RECORD;
-import static android.healthconnect.test.app.TestAppReceiver.ACTION_INSERT_PLANNED_EXERCISE_RECORD;
-import static android.healthconnect.test.app.TestAppReceiver.ACTION_INSERT_STEPS_RECORDS;
-import static android.healthconnect.test.app.TestAppReceiver.ACTION_INSERT_WEIGHT_RECORDS;
-import static android.healthconnect.test.app.TestAppReceiver.ACTION_READ_STEPS_RECORDS_USING_FILTERS;
-import static android.healthconnect.test.app.TestAppReceiver.ACTION_READ_STEPS_RECORDS_USING_RECORD_IDS;
-import static android.healthconnect.test.app.TestAppReceiver.EXTRA_END_TIMES;
-import static android.healthconnect.test.app.TestAppReceiver.EXTRA_PACKAGE_NAMES;
-import static android.healthconnect.test.app.TestAppReceiver.EXTRA_PLANNED_EXERCISE_SESSION_ID;
-import static android.healthconnect.test.app.TestAppReceiver.EXTRA_RECORD_CLIENT_IDS;
-import static android.healthconnect.test.app.TestAppReceiver.EXTRA_RECORD_IDS;
-import static android.healthconnect.test.app.TestAppReceiver.EXTRA_RECORD_VALUES;
-import static android.healthconnect.test.app.TestAppReceiver.EXTRA_SENDER_PACKAGE_NAME;
-import static android.healthconnect.test.app.TestAppReceiver.EXTRA_TIMES;
 
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
@@ -58,7 +43,6 @@ import static java.util.Objects.requireNonNull;
 import android.Manifest;
 import android.app.UiAutomation;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.health.connect.AggregateRecordsGroupedByDurationResponse;
 import android.health.connect.AggregateRecordsGroupedByPeriodResponse;
@@ -131,8 +115,6 @@ import android.health.connect.datatypes.Vo2MaxRecord;
 import android.health.connect.datatypes.WeightRecord;
 import android.health.connect.datatypes.WheelchairPushesRecord;
 import android.health.connect.migration.MigrationException;
-import android.healthconnect.test.app.TestAppReceiver;
-import android.os.Bundle;
 import android.os.OutcomeReceiver;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
@@ -177,10 +159,6 @@ import java.util.stream.IntStream;
 
 public final class TestUtils {
     private static final String TAG = "HCTestUtils";
-
-    public static final String PKG_TEST_APP = "android.healthconnect.test.app";
-    private static final String TEST_APP_RECEIVER =
-            PKG_TEST_APP + "." + TestAppReceiver.class.getSimpleName();
 
     public static ChangeLogTokenResponse getChangeLogToken(ChangeLogTokenRequest request)
             throws InterruptedException {
@@ -922,47 +900,6 @@ public final class TestUtils {
         return requireNonNull(context.getSystemService(HealthConnectManager.class));
     }
 
-    /** Reads {@link StepsRecord}s using record IDs. */
-    public static void readStepsRecordsUsingRecordIdsViaTestApp(
-            Context context, List<String> recordIds) {
-        Bundle extras = new Bundle();
-        extras.putStringArrayList(EXTRA_RECORD_IDS, new ArrayList<>(recordIds));
-        sendCommandToTestAppReceiver(context, ACTION_READ_STEPS_RECORDS_USING_RECORD_IDS, extras);
-    }
-
-    /** Reads {@link StepsRecord}s using package name filters. */
-    public static void readStepsRecordsUsingFiltersViaTestApp(
-            Context context, List<String> packageNameFilters) {
-        Bundle extras = new Bundle();
-        extras.putStringArrayList(EXTRA_PACKAGE_NAMES, new ArrayList<>(packageNameFilters));
-        sendCommandToTestAppReceiver(context, ACTION_READ_STEPS_RECORDS_USING_FILTERS, extras);
-    }
-
-    /** Aggregates {@link StepsRecord}s using package name filters. */
-    public static void aggregateStepsCount(Context context, List<String> packageNameFilters) {
-        Bundle extras = new Bundle();
-        extras.putStringArrayList(EXTRA_PACKAGE_NAMES, new ArrayList<>(packageNameFilters));
-        sendCommandToTestAppReceiver(context, ACTION_AGGREGATE_STEPS_COUNT, extras);
-    }
-
-    public static void sendCommandToTestAppReceiver(Context context, String action) {
-        sendCommandToTestAppReceiver(context, action, /* extras= */ null);
-    }
-
-    public static void sendCommandToTestAppReceiver(Context context, String action, Bundle extras) {
-        // This call to reset() is important!
-        // reset() needs to be called every time before a call is made to the test app, otherwise,
-        // TestReceiver won't receive the result from the test app.
-        android.healthconnect.cts.utils.TestReceiver.reset();
-
-        final Intent intent = new Intent(action).setClassName(PKG_TEST_APP, TEST_APP_RECEIVER);
-        intent.putExtra(EXTRA_SENDER_PACKAGE_NAME, context.getPackageName());
-        if (extras != null) {
-            intent.putExtras(extras);
-        }
-        context.sendBroadcast(intent);
-    }
-
     /** Sets up the priority list for aggregation tests. */
     public static void setupAggregation(String packageName, int dataCategory) {
         try {
@@ -1190,70 +1127,6 @@ public final class TestUtils {
         return LocalTime.parse(localTime)
                 .atDate(LocalDate.now().minusDays(1))
                 .toInstant(ZoneOffset.UTC);
-    }
-
-    /** Inserts {@link StepsRecord} via test app with the specified data. */
-    public static String insertStepsRecordViaTestApp(
-            Context context, Instant startTime, Instant endTime, long value) {
-        return insertStepsRecordViaTestApp(
-                context, startTime, endTime, /* clientId= */ null, value);
-    }
-
-    /** Inserts {@link StepsRecord} via test app with the specified data. */
-    public static String insertStepsRecordViaTestApp(
-            Context context, Instant startTime, Instant endTime, String clientId, long value) {
-        Bundle bundle = new Bundle();
-        bundle.putLongArray(EXTRA_TIMES, new long[] {startTime.toEpochMilli()});
-        bundle.putLongArray(EXTRA_END_TIMES, new long[] {endTime.toEpochMilli()});
-        bundle.putStringArray(EXTRA_RECORD_CLIENT_IDS, new String[] {clientId});
-        bundle.putLongArray(EXTRA_RECORD_VALUES, new long[] {value});
-        sendCommandToTestAppReceiver(context, ACTION_INSERT_STEPS_RECORDS, bundle);
-        return android.healthconnect.cts.utils.TestReceiver.getResult()
-                .getStringArrayList(EXTRA_RECORD_IDS)
-                .get(0);
-    }
-
-    /** Inserts {@link WeightRecord} via test app with the specified data. */
-    public static String insertWeightRecordViaTestApp(Context context, Instant time, double value) {
-        return insertWeightRecordViaTestApp(context, time, /* clientId= */ null, value);
-    }
-
-    /** Inserts {@link WeightRecord} via test app with the specified data. */
-    public static String insertWeightRecordViaTestApp(
-            Context context, Instant time, String clientId, double value) {
-        Bundle bundle = new Bundle();
-        bundle.putLongArray(EXTRA_TIMES, new long[] {time.toEpochMilli()});
-        bundle.putStringArray(EXTRA_RECORD_CLIENT_IDS, new String[] {clientId});
-        bundle.putDoubleArray(EXTRA_RECORD_VALUES, new double[] {value});
-        sendCommandToTestAppReceiver(context, ACTION_INSERT_WEIGHT_RECORDS, bundle);
-        return android.healthconnect.cts.utils.TestReceiver.getResult()
-                .getStringArrayList(EXTRA_RECORD_IDS)
-                .get(0);
-    }
-
-    /** Inserts {@link StepsRecord} via test app with the specified data. */
-    public static String insertExerciseRecordViaTestApp(
-            Context context, Instant startTime, Instant endTime, String plannedExerciseSessionId) {
-        Bundle bundle = new Bundle();
-        bundle.putLongArray(EXTRA_TIMES, new long[] {startTime.toEpochMilli()});
-        bundle.putLongArray(EXTRA_END_TIMES, new long[] {endTime.toEpochMilli()});
-        bundle.putString(EXTRA_PLANNED_EXERCISE_SESSION_ID, plannedExerciseSessionId);
-        sendCommandToTestAppReceiver(context, ACTION_INSERT_EXERCISE_RECORD, bundle);
-        return android.healthconnect.cts.utils.TestReceiver.getResult()
-                .getStringArrayList(EXTRA_RECORD_IDS)
-                .get(0);
-    }
-
-    /** Inserts {@link StepsRecord} via test app with the specified data. */
-    public static String insertPlannedExerciseSessionRecordViaTestApp(
-            Context context, Instant startTime, Instant endTime) {
-        Bundle bundle = new Bundle();
-        bundle.putLongArray(EXTRA_TIMES, new long[] {startTime.toEpochMilli()});
-        bundle.putLongArray(EXTRA_END_TIMES, new long[] {endTime.toEpochMilli()});
-        sendCommandToTestAppReceiver(context, ACTION_INSERT_PLANNED_EXERCISE_RECORD, bundle);
-        return android.healthconnect.cts.utils.TestReceiver.getResult()
-                .getStringArrayList(EXTRA_RECORD_IDS)
-                .get(0);
     }
 
     /** Extracts and returns ids of the provided records. */

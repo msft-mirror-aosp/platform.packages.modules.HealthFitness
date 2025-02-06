@@ -48,7 +48,7 @@
     <string name="recent_access_header" msgid="7623497371790225888">"ბოლო წვდომა"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"არცერთ აპს არ ჰქონდა წვდომა Health Connect-თან"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"ყველა ბოლო წვდომის ნახვა"</string>
-    <string name="recent_access_screen_description" msgid="331101209889185402">"იხილეთ, რომელ აპებს ჰქონდათ თქვენს მონაცემებზე წვდომა ბოლო 24 საათის განმავლობაში"</string>
+    <string name="recent_access_screen_description" msgid="331101209889185402">"იხილეთ, რომელ აპებს ჰქონდა თქვენს მონაცემებზე წვდომა ბოლო 24 საათის განმავლობაში"</string>
     <string name="today_header" msgid="1006837293203834373">"დღეს"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"გუშინ"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"კითხვა: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
@@ -56,6 +56,10 @@
     <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"ნებართვების მართვა"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"დრო: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
+    <string name="recent_access_empty_state_title" msgid="4767157641389217682">"ბოლოდროინდელი წვდომა არ არის"</string>
+    <string name="recent_access_empty_state_description" msgid="6334951450158128989">"აპები, რომლებსაც ახლახან ჰქონდათ წვდომა თქვენს მონაცემებზე, ავტომატურად გამოჩნდება აქ"</string>
+    <string name="recent_access_view_all_button" msgid="825946958049641541">"ყველას ნახვა"</string>
+    <string name="recent_access_error" msgid="2258399573560888960">"ბოლო წვდომის ჩატვირთვა ვერ მოხერხდა"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"აქტივობა"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"აქტივობა"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"სხეულის ზომები"</string>
@@ -541,10 +545,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect ინახავს თქვენს ჯანმრთელობასა და ფიტნესთან დაკავშირებულ მონაცემებს და გაძლევთ თქვენს მოწყობილობაში სხვადასხვა აპის მარტივი სინქრონიზაციის საშუალებას."</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect სხვადასხვა აპებიდან ინახავს და ახდენს თქვენი ჯანმრთელობის და ფიტნესის მონაცემების სინქრონიზაციას.\n\n"<b>"ფიტნესის და კეთილდღეობის მონაცემები,"</b>" ვარჯიშის სესიების, ნაბიჯების, კვების, ძილის და სხვა ინფორმაციის ჩათვლით\n\n"<b>"ჯანმრთელობის ჩანაწერები,"</b>" ვაქცინების, ლაბორატორიული შედეგების და სხვა ინფორმაციის ჩათვლით"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"რა შეგიძლიათ Health Connect-ის საშუალებით"</string>
-    <string name="share_data" msgid="3481932156368883946">"გააზიარეთ ინფორმაცია თქვენს აპებთან"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"აირჩიეთ მონაცემები, რომლებიც თითოეულ აპს შეუძლია წაიკითხოს ან ჩაწეროს Health Connect-Ში"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"მართეთ თქვენი პარამეტრები და კონფიდენციალურობა"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"შეცვალეთ აპის ნებართვები და მართეთ თქვენი მონაცემები ნებისმიერ დროს"</string>
+    <string name="share_data_text" msgid="6898398345784931678"><b>"მონაცემების გაზიარება თქვენს აპებთან"</b>\n"აირჩიეთ მონაცემები, რომლის წაკითხვა ან ჩაწერაც შეუძლია თითოეულ აპს Health Connect-ში"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"თქვენი პარამეტრებისა და კონფიდენციალურობის მართვა"</b>\n"შეცვალეთ აპის ნებართვები და მართეთ თქვენი მონაცემები ნებისმიერ დროს"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"უკან დაბრუნება"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"დაწყება"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"მონაცემების წაშლა"</string>
@@ -1104,7 +1106,7 @@
     <string name="default_app_summary" msgid="6183876151011837062">"მოწყობილობის ნაგულისხმევი"</string>
     <string name="app_data_title" msgid="6499967982291000837">"აპის მონაცემები"</string>
     <string name="app_data_no_data_footer" msgid="7027700714577530371">"მონაცემები <xliff:g id="APP_NAME">%1$s</xliff:g>-იდან აქ გამოჩნდება"</string>
-    <string name="all_data_no_data_footer" msgid="2553443887019153340">"მონაცემები იმ აპებიდან, რომლებსაც Health Connect-ზე აქვთ წვდომა, აქ გამოჩნდება"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"მონაცემები იმ აპებიდან, რომლებსაც Health Connect-ზე აქვს წვდომა, აქ გამოჩნდება"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"დღე"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"კვირა"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"თვე"</string>
@@ -1143,10 +1145,10 @@
     <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"გსურთ <xliff:g id="APP_NAME">%s</xliff:g>-ის არჩეული მონაცემების სამუდამოდ წაშლა?"</string>
     <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>-ისთვის ყველა სამუდამოდ წაშლა?"</string>
     <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>-ის კვირისთვის ყველა შენატანის სამუდამოდ წაშლა?"</string>
-    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>-ისთვის ყველა სამუდამოდ წაშლა?"</string>
+    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>სთვის ყველა შენატანის სამუდამოდ წაშლა?"</string>
     <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>-ისთვის არჩეული შენატანების სამუდამოდ წაშლა?"</string>
     <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>-ის კვირისთვის არჩეული შენატანების სამუდამოდ წაშლა?"</string>
-    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>-ისთვის არჩეული შენატანების სამუდამოდ წაშლა?"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>-სთვის არჩეული შენატანების სამუდამოდ წაშლა?"</string>
     <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"გსურთ ამ შენატანის სამუდამოდ წაშლა?"</string>
     <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>-ისთვის <xliff:g id="APP_NAME">%1$s</xliff:g>-ის ყველა შენატანის სამუდამოდ წაშლა?"</string>
     <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"გსურთ <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>-ის კვირისთვის <xliff:g id="APP_NAME">%1$s</xliff:g>-ის ყველა შენატანის სამუდამოდ წაშლა?"</string>

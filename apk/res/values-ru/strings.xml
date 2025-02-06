@@ -22,7 +22,7 @@
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Разрешения и данные"</string>
     <string name="home_subtitle" msgid="2154213430054477787">"Управляйте данными о физической активности и здоровье с устройства и контролируйте доступ приложений к этой информации."</string>
     <string name="data_title" msgid="4456619761533380816">"Данные и доступ"</string>
-    <string name="browse_medical_data" msgid="6963802956096683273">"Просмотреть информацию о здоровье"</string>
+    <string name="browse_medical_data" msgid="6963802956096683273">"Информация о здоровье"</string>
     <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"Информация о здоровье и приложения, имеющие к ней доступ"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Все категории"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Показать все категории"</string>
@@ -37,7 +37,7 @@
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Нет приложений"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Сведения о записи"</string>
     <string name="browse_data_title" msgid="5232691805953326097">"Просмотр данных"</string>
-    <string name="browse_data_subtitle" msgid="7025164374898103993">"Просмотр данных и приложений, которые имеют к ним доступ"</string>
+    <string name="browse_data_subtitle" msgid="7025164374898103993">"Ваши данные и список приложений с доступом к ним"</string>
     <string name="manage_data_summary" msgid="8537870912521944449">"Автоматическое удаление, источники, резервное копирование и восстановление данных"</string>
     <string name="backup_title" msgid="211503191266235085">"Резервное копирование"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Источники данных и приоритет"</string>
@@ -48,7 +48,7 @@
     <string name="recent_access_header" msgid="7623497371790225888">"Доступ за последнее время"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"В последнее время приложения не получали доступ к сервису \"Здоровье и спорт\""</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Вся информация о доступе за последнее время"</string>
-    <string name="recent_access_screen_description" msgid="331101209889185402">"Посмотрите, какие приложения получали доступ к вашим данным за последние 24 ч."</string>
+    <string name="recent_access_screen_description" msgid="331101209889185402">"Посмотрите, какие приложения получали доступ к вашим данным за последние 24 часа."</string>
     <string name="today_header" msgid="1006837293203834373">"Сегодня"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Вчера"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Чтение: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
@@ -56,6 +56,10 @@
     <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Настроить разрешения"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Время: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
+    <string name="recent_access_empty_state_title" msgid="4767157641389217682">"Нет информации об использовании за последнее время"</string>
+    <string name="recent_access_empty_state_description" msgid="6334951450158128989">"Здесь вы увидите, какие приложения недавно использовали ваши данные."</string>
+    <string name="recent_access_view_all_button" msgid="825946958049641541">"Показать все"</string>
+    <string name="recent_access_error" msgid="2258399573560888960">"Не удалось загрузить последние данные."</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Активность"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"активность"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Физические параметры"</string>
@@ -79,10 +83,10 @@
     <string name="app_priority_button" msgid="3126133977893705098">"Приоритет приложений"</string>
     <string name="delete_category_data_button" msgid="2324773398768267043">"Удалить данные этой категории (<xliff:g id="CATEGORY">%s</xliff:g>)"</string>
     <string name="select_all_apps_title" msgid="884487568464305913">"Все приложения"</string>
-    <string name="can_read" msgid="4568261079308309564">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g>: чтение"</string>
-    <string name="can_write" msgid="5082414937218423823">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g>: запись"</string>
+    <string name="can_read" msgid="4568261079308309564">"Доступ на чтение: <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
+    <string name="can_write" msgid="5082414937218423823">"Доступ на запись: <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"Неактивные приложения"</string>
-    <string name="inactive_apps_message" msgid="8335803540719022910">"Эти приложения больше не читают и не записывают данные \"<xliff:g id="DATA_TYPE">%s</xliff:g>\". Поступившие от них сведения продолжат храниться в сервисе \"Здоровье и спорт\"."</string>
+    <string name="inactive_apps_message" msgid="8335803540719022910">"Эти приложения больше не могут читать и записывать определенные данные (<xliff:g id="DATA_TYPE">%s</xliff:g>), но их данные продолжают храниться в сервисе \"Здоровье и спорт\""</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"Приложения больше не могут считывать или записывать данные \"<xliff:g id="DATA_TYPE_0">%1$s</xliff:g>\". В приложении \"Здоровье и спорт\" нет данных \"<xliff:g id="DATA_TYPE_2">%2$s</xliff:g>\"."</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Сведения о времени и типе тренировок, количестве кругов, повторений, подходов, гребков и т. д."</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Сведения о сне, например о его фазах."</string>
@@ -107,7 +111,7 @@
     <string name="additional_permissions_combined_request_description" msgid="7136418603696342323">"Приложение \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" также запрашивает доступ к настройкам платформы \"Здоровье и спорт\", указанным ниже."</string>
     <string name="background_read_medical_combined_request_title_both_types_granted" msgid="4225111383019900451">"Доступ ко всем данным в фоновом режиме"</string>
     <string name="background_read_medical_combined_request_title_medical_granted" msgid="7245376864667067106">"Доступ к данным о здоровье в фоновом режиме"</string>
-    <string name="background_read_medical_combined_request_title_fitness_granted" msgid="2639416977416876229">"Доступ к данным о физической активности и самочувствии в фоновом режиме"</string>
+    <string name="background_read_medical_combined_request_title_fitness_granted" msgid="2639416977416876229">"Доступ к данным о самочувствии и физической активности в фоновом режиме"</string>
     <string name="background_read_medical_combined_request_description_both_types_granted" msgid="8812552783934180223">"Данные о здоровье, самочувствии и физической активности будут доступны приложению, когда вы им не пользуетесь"</string>
     <string name="background_read_medical_combined_request_description_medical_granted" msgid="5140647084504657934">"Эти данные будут доступны приложению, когда вы им не пользуетесь"</string>
     <string name="background_read_medical_combined_request_description_fitness_granted" msgid="919785628751851996">"Эти данные будут доступны приложению, когда вы им не пользуетесь"</string>
@@ -123,7 +127,7 @@
     <string name="history_read_medical_combined_request_footer_link" msgid="355676489585738987">"Подробнее о разрешениях…"</string>
     <string name="background_read_medical_access_title_both_types_granted" msgid="4475972082863444603">"Доступ ко всем данным в фоновом режиме"</string>
     <string name="background_read_medical_access_title_medical_granted" msgid="7852915238347056139">"Доступ к данным о здоровье в фоновом режиме"</string>
-    <string name="background_read_medical_access_title_fitness_granted" msgid="8691675952190647227">"Доступ к данным о физической активности и самочувствии в фоновом режиме"</string>
+    <string name="background_read_medical_access_title_fitness_granted" msgid="8691675952190647227">"Доступ к данным о самочувствии и физической активности в фоновом режиме"</string>
     <string name="background_read_medical_access_description_both_types_granted" msgid="7193350031798606366">"Данные о здоровье, самочувствии и физической активности будут доступны приложению, когда вы им не пользуетесь"</string>
     <string name="background_read_medical_access_description_medical_granted" msgid="8570683510275055450">"Эти данные будут доступны приложению, когда вы им не пользуетесь"</string>
     <string name="background_read_medical_access_description_fitness_granted" msgid="2584567718805499407">"Эти данные будут доступны приложению, когда вы им не пользуетесь"</string>
@@ -368,7 +372,7 @@
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Если вы предоставите приложению доступ для чтения, оно сможет получать как новые, так и старые данные."</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Открыть приложению \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" доступ к сервису \"Здоровье и спорт\"?"</string>
     <string name="request_permissions_with_medical_header_title" msgid="6269944931319362595">"Открыть приложению \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" доступ к данным о самочувствии и физической активности?"</string>
-    <string name="request_permissions_rationale" msgid="2642076968583316986">"Сведения о том, как приложение \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" обрабатывает ваши данные, содержит <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>."</string>
+    <string name="request_permissions_rationale" msgid="2642076968583316986">"О том, как приложение \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" обрабатывает ваши данные, можно прочитать в его <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>."</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"политике конфиденциальности"</string>
     <string name="medical_request_header" msgid="2300521519021510027">"Разрешить приложению \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" доступ к информации о здоровье?"</string>
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Если вы предоставите разрешение, приложение сможет считывать и записывать данные, например о вакцинации, анализах и аллергии.\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
@@ -426,14 +430,14 @@
     <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"Ни одно из ваших приложений больше не сможет получать доступ к информации в сервисе \"Здоровье и спорт\" или добавлять ее. Записанные ранее данные не будут удалены.\n\nЭто действие не повлияет на другие разрешения, такие как доступ к сведениям о местоположении, камере или микрофону."</string>
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"Запретить"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"Управление приложением"</string>
-    <string name="see_app_data" msgid="3951030076195119476">"Смотреть данные приложения"</string>
+    <string name="see_app_data" msgid="3951030076195119476">"Посмотреть данные приложения"</string>
     <string name="remove_access_for_this_app" msgid="7701101420310711833">"Закрыть доступ для этого приложения"</string>
     <string name="delete_app_data" msgid="6890357774873859952">"Удалить данные приложения"</string>
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"Неактивные приложения"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"У этих приложений больше нет доступа, но их данные по-прежнему хранятся в сервисе \"Здоровье и спорт\"."</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"Приложение <xliff:g id="APP_NAME">%1$s</xliff:g> получит доступ к данным, добавленным после <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"Чтобы задать разрешения для этого приложения в Android, выберите \"Настройки &gt; Приложения\"."</string>
-    <string name="manage_permissions_rationale" msgid="2780008055185441703">"Подробнее о том, как приложение \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" обрабатывает ваши данные, можно прочитать в политике конфиденциальности разработчика."</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"Подробнее о том, как приложение <xliff:g id="APP_NAME">%1$s</xliff:g> обрабатывает ваши данные, можно прочитать в политике конфиденциальности разработчика."</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Чтобы задать разрешения для этого приложения в Android, выберите \"Настройки &gt; Приложения\"."</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Ознакомиться с политикой конфиденциальности"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Разрешение использовалось в последние 24 часа"</string>
@@ -447,7 +451,7 @@
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"Тренировки, сон, питание и не только"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"Информация о здоровье"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"информация о здоровье"</string>
-    <string name="medical_permissions_summary" msgid="5526004634109548577">"Анализы, медикаменты, вакцины и др."</string>
+    <string name="medical_permissions_summary" msgid="5526004634109548577">"Анализы, лекарства, прививки и не только"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Разрешения отозваны"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Сервис \"Здоровье и спорт\" отозвал разрешения для приложения \"<xliff:g id="APP_DATA">%s</xliff:g>\"."</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Сервис \"Здоровье и спорт\" отозвал разрешения для приложений \"<xliff:g id="APP_DATA_0">%1$s</xliff:g>\" и \"<xliff:g id="APP_DATA_TWO">%2$s</xliff:g>\"."</string>
@@ -537,14 +541,12 @@
     <string name="export_import_no_apps_text" msgid="6403119325024893690">"Нет доступных приложений. После установки облачные хранилища появятся здесь."</string>
     <string name="export_import_install_apps_text" msgid="5026922993254770904">"Если вам нужны ещё варианты, установите приложения для облачного хранения, и они появятся здесь."</string>
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Перейти в Google Play"</string>
-    <string name="onboarding_title" msgid="8550656211291180188">"Начало работы с сервисом \"Здоровье и спорт\""</string>
+    <string name="onboarding_title" msgid="8550656211291180188">"Представляем Здоровье и спорт"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Приложение \"Здоровье и спорт\" надежно хранит ваши данные о физической активности и здоровье, а также синхронизирует работу разных приложений на устройстве."</string>
-    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Платформа \"Здоровье и спорт\" объединяет и синхронизирует сведения из всех ваших приложений для отслеживания физической активности и состояния здоровья, а именно:\n\n"<b>"Информацию о самочувствии и физической активности,"</b>" в том числе о занятиях спортом, количестве пройденных шагов, питании, сне и не только.\n\n"<b>"Информацию о здоровье,"</b>" включая данные о вакцинации, результаты анализов и многое другое."</string>
+    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Платформа \"Здоровье и спорт\" позволяет хранить и синхронизировать данные о здоровье и физической активности из разных приложений:\n\n"<b>"Информацию о самочувствии и физической активности,"</b>" в том числе о занятиях спортом, количестве пройденных шагов, питании, сне и не только.\n\n"<b>"Информацию о здоровье,"</b>" включая данные о прививках, результаты анализов и многое другое."</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Благодаря платформе \"Здоровье и спорт\" вы можете:"</string>
-    <string name="share_data" msgid="3481932156368883946">"Делиться данными с приложениями"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Выбирайте, какую информацию каждое приложение сможет читать и сохранять в сервисе \"Здоровье и спорт\"."</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Управлять настройками и конфиденциальностью"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Настраивайте разрешения для приложений и управляйте своими данными."</string>
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Делиться данными с приложениями"</b>\n"Выбирайте, какую информацию каждое приложение сможет считывать и сохранять в сервисе \"Здоровье и спорт\"."</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Управлять настройками и конфиденциальностью"</b>\n"Настраивайте разрешения для приложений и управляйте своими данными."</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Назад"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Начать"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Удалить данные"</string>
@@ -561,39 +563,39 @@
     <string name="time_range_one_week" msgid="8754523384275645434">"За последние 7 дней"</string>
     <string name="time_range_one_month" msgid="3034747870231999766">"За последние 30 дней"</string>
     <string name="time_range_all" msgid="8167350212705839943">"Все"</string>
-    <string name="confirming_question_all" msgid="1585414659784742952">"Навсегда удалить все данные?"</string>
+    <string name="confirming_question_all" msgid="1585414659784742952">"Навсегда удалить данные за все время?"</string>
     <string name="confirming_question_one_day" msgid="8001434729335611950">"Навсегда удалить все данные за последние 24 часа?"</string>
     <string name="confirming_question_one_week" msgid="5441506951423969587">"Навсегда удалить все данные за последние 7 дней?"</string>
     <string name="confirming_question_one_month" msgid="4118595547587081940">"Навсегда удалить все данные за последние 30 дней?"</string>
-    <string name="confirming_question_data_type_all" msgid="1173934949902602037">"Навсегда удалить все данные \"<xliff:g id="DATA_TYPE">%s</xliff:g>\"?"</string>
-    <string name="confirming_question_data_type_one_day" msgid="5386681714769751416">"Навсегда удалить данные \"<xliff:g id="DATA_TYPE">%s</xliff:g>\" за последние 24 часа?"</string>
-    <string name="confirming_question_data_type_one_week" msgid="8346031951374422501">"Навсегда удалить данные \"<xliff:g id="DATA_TYPE">%s</xliff:g>\" за последние 7 дней?"</string>
-    <string name="confirming_question_data_type_one_month" msgid="7110328687576360400">"Навсегда удалить данные \"<xliff:g id="DATA_TYPE">%s</xliff:g>\" за последние 30 дней?"</string>
-    <string name="confirming_question_category_all" msgid="9182430869247761531">"Навсегда удалить все данные категории \"<xliff:g id="CATEGORY">%s</xliff:g>\"?"</string>
+    <string name="confirming_question_data_type_all" msgid="1173934949902602037">"Навсегда удалить данные (<xliff:g id="DATA_TYPE">%s</xliff:g>) за все время?"</string>
+    <string name="confirming_question_data_type_one_day" msgid="5386681714769751416">"Навсегда удалить данные (<xliff:g id="DATA_TYPE">%s</xliff:g>) за последние 24 часа?"</string>
+    <string name="confirming_question_data_type_one_week" msgid="8346031951374422501">"Навсегда удалить данные (<xliff:g id="DATA_TYPE">%s</xliff:g>) за последние 7 дней?"</string>
+    <string name="confirming_question_data_type_one_month" msgid="7110328687576360400">"Навсегда удалить данные (<xliff:g id="DATA_TYPE">%s</xliff:g>) за последние 30 дней?"</string>
+    <string name="confirming_question_category_all" msgid="9182430869247761531">"Навсегда удалить данные категории \"<xliff:g id="CATEGORY">%s</xliff:g>\" за все время?"</string>
     <string name="confirming_question_category_one_day" msgid="4886776948515472679">"Навсегда удалить данные категории \"<xliff:g id="CATEGORY">%s</xliff:g>\" за последние 24 часа?"</string>
     <string name="confirming_question_category_one_week" msgid="1790565625674277693">"Навсегда удалить данные категории \"<xliff:g id="CATEGORY">%s</xliff:g>\" за последние 7 дней?"</string>
     <string name="confirming_question_category_one_month" msgid="9181788460112796273">"Навсегда удалить данные категории \"<xliff:g id="CATEGORY">%s</xliff:g>\" за последние 30 дней?"</string>
-    <string name="confirming_question_app_data_all" msgid="4818571921949673097">"Навсегда удалить все данные приложения \"<xliff:g id="APP_DATA">%s</xliff:g>\"?"</string>
-    <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"Навсегда удалить данные приложения \"<xliff:g id="APP_DATA">%s</xliff:g>\" за последние 24 часа?"</string>
-    <string name="confirming_question_app_data_one_week" msgid="2096555081811730496">"Навсегда удалить данные приложения \"<xliff:g id="APP_DATA">%s</xliff:g>\" за последние 7 дней?"</string>
-    <string name="confirming_question_app_data_one_month" msgid="6438241250825892892">"Навсегда удалить данные приложения \"<xliff:g id="APP_DATA">%s</xliff:g>\" за последние 30 дней?"</string>
-    <string name="confirming_question_permission_type_app_data_all" msgid="1210052631467085849">"Навсегда удалить все данные \"<xliff:g id="DATA_TYPE">%1$s</xliff:g>\", полученные из приложения \"<xliff:g id="APP_DATA">%2$s</xliff:g>\"?"</string>
-    <string name="confirming_question_permission_type_app_data_one_day" msgid="4377296923865256246">"Навсегда удалить данные \"<xliff:g id="DATA_TYPE">%1$s</xliff:g>\", полученные из приложения \"<xliff:g id="APP_DATA">%2$s</xliff:g>\" за последние 24 часа?"</string>
-    <string name="confirming_question_permission_type_app_data_one_week" msgid="2253468260502709170">"Навсегда удалить данные \"<xliff:g id="DATA_TYPE">%1$s</xliff:g>\", полученные из приложения \"<xliff:g id="APP_DATA">%2$s</xliff:g>\" за последние 7 дней?"</string>
-    <string name="confirming_question_permission_type_app_data_one_month" msgid="1656927839079630144">"Навсегда удалить данные \"<xliff:g id="DATA_TYPE">%1$s</xliff:g>\", полученные из приложения \"<xliff:g id="APP_DATA">%2$s</xliff:g>\" за последние 30 дней?"</string>
+    <string name="confirming_question_app_data_all" msgid="4818571921949673097">"Навсегда удалить данные приложения <xliff:g id="APP_DATA">%s</xliff:g> за все время?"</string>
+    <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"Навсегда удалить данные приложения <xliff:g id="APP_DATA">%s</xliff:g> за последние 24 часа?"</string>
+    <string name="confirming_question_app_data_one_week" msgid="2096555081811730496">"Навсегда удалить данные приложения <xliff:g id="APP_DATA">%s</xliff:g> за последние 7 дней?"</string>
+    <string name="confirming_question_app_data_one_month" msgid="6438241250825892892">"Навсегда удалить данные приложения <xliff:g id="APP_DATA">%s</xliff:g> за последние 30 дней?"</string>
+    <string name="confirming_question_permission_type_app_data_all" msgid="1210052631467085849">"Навсегда удалить данные (<xliff:g id="DATA_TYPE">%1$s</xliff:g>), полученные из приложения <xliff:g id="APP_DATA">%2$s</xliff:g> за все время?"</string>
+    <string name="confirming_question_permission_type_app_data_one_day" msgid="4377296923865256246">"Навсегда удалить данные (<xliff:g id="DATA_TYPE">%1$s</xliff:g>), полученные из приложения <xliff:g id="APP_DATA">%2$s</xliff:g> за последние 24 часа?"</string>
+    <string name="confirming_question_permission_type_app_data_one_week" msgid="2253468260502709170">"Навсегда удалить данные (<xliff:g id="DATA_TYPE">%1$s</xliff:g>), полученные из приложения <xliff:g id="APP_DATA">%2$s</xliff:g> за последние 7 дней?"</string>
+    <string name="confirming_question_permission_type_app_data_one_month" msgid="1656927839079630144">"Навсегда удалить данные (<xliff:g id="DATA_TYPE">%1$s</xliff:g>), полученные из приложения <xliff:g id="APP_DATA">%2$s</xliff:g> за последние 30 дней?"</string>
     <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"Также удалить все разрешения, предоставленные приложению \"<xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g>\" на платформе \"Здоровье и спорт\""</string>
-    <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"Навсегда удалить данные \"<xliff:g id="DATA_TYPE">%1$s</xliff:g>\", полученные из приложения \"<xliff:g id="APP_DATA">%2$s</xliff:g>\"?"</string>
-    <string name="confirming_question_single_entry" msgid="2064578008447638932">"Навсегда удалить эту запись из приложения \"Здоровье и спорт\"?"</string>
+    <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"Навсегда удалить данные (<xliff:g id="DATA_TYPE">%1$s</xliff:g>), полученные из приложения <xliff:g id="APP_DATA">%2$s</xliff:g>?"</string>
+    <string name="confirming_question_single_entry" msgid="2064578008447638932">"Навсегда удалить эту запись с платформы \"Здоровье и спорт\"?"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"У связанных приложений больше не будет доступа к этим данным платформы \"Здоровье и спорт\"."</string>
     <string name="confirming_question_message_menstruation" msgid="944931041343695373">"Все данные о менструациях с <xliff:g id="START_DATE">%1$s</xliff:g> по <xliff:g id="END_DATE">%2$s</xliff:g> будут удалены."</string>
     <string name="confirming_question_delete_button" msgid="1999996759507959985">"Удалить"</string>
     <string name="confirming_question_go_back_button" msgid="9037523726124648221">"Назад"</string>
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"ОК"</string>
     <string name="delete_dialog_failure_close_button" msgid="4376647579348193224">"Закрыть"</string>
-    <string name="delete_dialog_success_title" msgid="900884533930984889">"Данные из приложения \"Здоровье и спорт\" удалены"</string>
+    <string name="delete_dialog_success_title" msgid="900884533930984889">"Данные с платформы \"Здоровье и спорт\" удалены"</string>
     <string name="delete_dialog_success_message" msgid="7454086333205881294">"Чтобы полностью удалить данные из связанных приложений, проверьте каждое, где может сохраняться ваша информация."</string>
     <string name="delete_dialog_done_button" msgid="1371340030947835493">"Готово"</string>
-    <string name="delete_dialog_see_connected_apps_button" msgid="2975631672738138716">"Посмотреть связанные приложения"</string>
+    <string name="delete_dialog_see_connected_apps_button" msgid="2975631672738138716">"Посмотреть приложения"</string>
     <string name="delete_progress_indicator" msgid="5799502879065833417">"Удаление данных…"</string>
     <string name="delete_dialog_failure_title" msgid="1959020721355789496">"Не удалось удалить данные"</string>
     <string name="delete_dialog_failure_message" msgid="7473241488471319963">"Произошла ошибка. Не удалось удалить ваши данные из приложения \"Здоровье и спорт\"."</string>
@@ -790,8 +792,8 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"Музыка"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"Другое"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Без руководства"</string>
-    <string name="activity_intensity_type_moderate" msgid="7974792315871109564">"Умеренные"</string>
-    <string name="activity_intensity_type_vigorous" msgid="5651020560923780330">"Интенсивные"</string>
+    <string name="activity_intensity_type_moderate" msgid="7974792315871109564">"Умеренная"</string>
+    <string name="activity_intensity_type_vigorous" msgid="5651020560923780330">"Высокая"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> мин."</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> ч. <xliff:g id="MIN">%2$s</xliff:g> мин."</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> ч."</string>
@@ -1104,7 +1106,7 @@
     <string name="default_app_summary" msgid="6183876151011837062">"Приложение по умолчанию"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Данные приложения"</string>
     <string name="app_data_no_data_footer" msgid="7027700714577530371">"Здесь показываются данные из приложения \"<xliff:g id="APP_NAME">%1$s</xliff:g>\"."</string>
-    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Здесь показываются данные из приложений, у которых есть доступ к приложению \"Здоровье и спорт\"."</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Здесь будут появляться данные из приложений, у которых есть доступ к приложению \"Здоровье и спорт\"."</string>
     <string name="date_picker_day" msgid="3076687507968958991">"День"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Неделя"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Месяц"</string>
@@ -1127,7 +1129,7 @@
     <string name="lock_screen_banner_content" msgid="3392527073622152481">"Установите на этом устройстве PIN-код, графический ключ или пароль, чтобы лучше защитить данные о здоровье."</string>
     <string name="lock_screen_banner_button" msgid="2537090011380728122">"Настроить блокировку экрана"</string>
     <string name="select_all" msgid="837499881590001166">"Выбрать все"</string>
-    <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Связанные приложения больше не смогут читать эти данные платформы \"Здоровье и спорт\"."</string>
+    <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Связанные приложения больше не смогут считывать эти данные с платформы \"Здоровье и спорт\"."</string>
     <string name="a11y_checked" msgid="3685413382346589880">"Выбрано"</string>
     <string name="a11y_unchecked" msgid="6258943223981886207">"Не выбрано"</string>
     <string name="a11y_map_description" msgid="4992907698581164434">"Доступна карта маршрута тренировки"</string>
@@ -1139,8 +1141,8 @@
     <string name="a11y_previous_month" msgid="3304373968190750755">"Предыдущий месяц"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Навсегда удалить все данные?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Навсегда удалить выбранные данные?"</string>
-    <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Навсегда удалить все данные приложения \"<xliff:g id="APP_NAME">%s</xliff:g>\"?"</string>
-    <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"Навсегда удалить выбранные данные приложения \"<xliff:g id="APP_NAME">%s</xliff:g>\"?"</string>
+    <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Навсегда удалить все данные приложения <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
+    <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"Навсегда удалить выбранные данные приложения <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
     <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"Навсегда удалить все записи за <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"Навсегда удалить все записи за <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Навсегда удалить все записи за <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
@@ -1148,14 +1150,14 @@
     <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"Навсегда удалить выбранные записи за <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"Навсегда удалить выбранные записи за <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"Навсегда удалить эту запись?"</string>
-    <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"Навсегда удалить все записи в приложении \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" за <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
-    <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"Навсегда удалить все записи в приложении \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" за <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
-    <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"Навсегда удалить все записи в приложении \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" за <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
-    <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"Навсегда удалить выбранные записи в приложении \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" за <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
-    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Навсегда удалить выбранные записи в приложении \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" за <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
-    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Навсегда удалить выбранные записи в приложении \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" за <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
-    <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Навсегда удалить эту запись в приложении \"<xliff:g id="APP_NAME">%s</xliff:g>\"?"</string>
-    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Удалить данные (<xliff:g id="DATA_TYPE">%1$s</xliff:g>) приложения \"<xliff:g id="APP_NAME">%2$s</xliff:g>\" без возможности восстановления?"</string>
+    <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"Навсегда удалить все записи приложения <xliff:g id="APP_NAME">%1$s</xliff:g> за <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"Навсегда удалить все записи приложения <xliff:g id="APP_NAME">%1$s</xliff:g> за <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"Навсегда удалить все записи приложения <xliff:g id="APP_NAME">%1$s</xliff:g> за <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"Навсегда удалить выбранные записи приложения <xliff:g id="APP_NAME">%1$s</xliff:g> за <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Навсегда удалить выбранные записи приложения <xliff:g id="APP_NAME">%1$s</xliff:g> за <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Навсегда удалить выбранные записи приложения <xliff:g id="APP_NAME">%1$s</xliff:g> за <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Навсегда удалить эту запись приложения <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Навсегда удалить данные (<xliff:g id="DATA_TYPE">%1$s</xliff:g>) приложения <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
     <string name="on" msgid="8266542510798355807">"Включено"</string>
     <string name="off" msgid="6996623844428550649">"Отключено"</string>
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Последний доступ в <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
@@ -1163,11 +1165,11 @@
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Последний доступ: <xliff:g id="TIME_DATE_0">%1$s</xliff:g>, <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
     <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"Разрешить в любом режиме"</string>
     <string name="request_permissions_allow_selected" msgid="218527615680495438">"Разрешить выбранные"</string>
-    <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"В самом приложении при его использовании"</string>
+    <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"При использовании приложения"</string>
     <string name="request_permissions_deny_all" msgid="4123735770293545320">"Отклонить все"</string>
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Открыть приложению \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" доступ к данным о самочувствии и физической активности?"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"Приложение \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" запрашивает доступ к следующим типам данных: <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nВы можете предоставить сразу все разрешения или настроить их по отдельности."</string>
-    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Разрешить приложению \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" доступ к данным \"<xliff:g id="DATA_TYPE">%2$s</xliff:g>\"?"</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Разрешить приложению \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" доступ к данным этой категории: <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
     <string name="fitness_and_wellness" msgid="2002316898861559748">"Физическая активность и самочувствие"</string>
     <string name="view_permissions_all_the_time" msgid="6899702815770193290">"всегда"</string>
     <string name="view_permissions_while_in_use" msgid="2031627107397429473">"при использовании приложения"</string>
@@ -1188,5 +1190,5 @@
     <string name="current_allow_mode" msgid="6716206063077569218">"Приложение \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" имеет доступ к вашим данным о физической активности и самочувствии <xliff:g id="ALLOW_MODE">%2$s</xliff:g>."</string>
     <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Разрешить приложению \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" постоянный доступ к данным о самочувствии и физической активности?"</string>
     <string name="current_access" msgid="1457167070428176139">"Приложение \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" имеет доступ к следующим типам данных: <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
-    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Настройки доступа к данным о физической активности и самочувствии"</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Доступ к данным об активности и самочувствии"</string>
 </resources>

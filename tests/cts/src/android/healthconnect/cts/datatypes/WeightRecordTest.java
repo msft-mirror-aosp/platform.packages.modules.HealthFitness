@@ -21,7 +21,6 @@ import static android.health.connect.datatypes.WeightRecord.WEIGHT_AVG;
 import static android.health.connect.datatypes.WeightRecord.WEIGHT_MAX;
 import static android.health.connect.datatypes.WeightRecord.WEIGHT_MIN;
 import static android.healthconnect.cts.utils.DataFactory.generateMetadata;
-import static android.healthconnect.cts.utils.TestUtils.insertWeightRecordViaTestApp;
 import static android.healthconnect.cts.utils.TestUtils.updateRecords;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -53,7 +52,9 @@ import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.WeightRecord;
 import android.health.connect.datatypes.units.Mass;
+import android.healthconnect.cts.lib.TestAppProxy;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
+import android.healthconnect.cts.utils.DataFactory;
 import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
 
@@ -83,10 +84,11 @@ import java.util.UUID;
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
 @RunWith(AndroidJUnit4.class)
 public class WeightRecordTest {
-    private static final String TAG = "WeightRecordTest";
     private static final String PACKAGE_NAME = "android.healthconnect.cts";
+    private static final String PKG_TEST_APP = "android.healthconnect.cts.testapp.readWritePerms.A";
 
     private Context mContext;
+    private TestAppProxy mTestApp;
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
@@ -97,6 +99,7 @@ public class WeightRecordTest {
     @Before
     public void setUp() throws InterruptedException {
         mContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        mTestApp = TestAppProxy.forPackageName(PKG_TEST_APP);
         TestUtils.deleteAllStagedRemoteData();
     }
 
@@ -288,8 +291,7 @@ public class WeightRecordTest {
 
         TestUtils.assertRecordNotFound(id1, WeightRecord.class);
         TestUtils.assertRecordNotFound(id2, WeightRecord.class);
-        // TODO(b/331350683): Uncomment once LocalTimeRangeFilter#endTime is exclusive
-        // TestUtils.assertRecordFound(id3, WeightRecord.class);
+        TestUtils.assertRecordFound(id3, WeightRecord.class);
     }
 
     @Test
@@ -855,9 +857,9 @@ public class WeightRecordTest {
     }
 
     @Test
-    public void updateRecordsFromAnotherApp_byId_fail() {
+    public void updateRecordsFromAnotherApp_byId_fail() throws Exception {
         Instant now = Instant.now();
-        String insertedId = insertWeightRecordViaTestApp(mContext, now, 10.0);
+        String insertedId = mTestApp.insertRecord(DataFactory.getWeightRecord(10.0, now));
 
         List<Record> updatedRecords = List.of(getWeightRecord(insertedId, now, 20.0));
         HealthConnectException error =
@@ -866,9 +868,9 @@ public class WeightRecordTest {
     }
 
     @Test
-    public void updateRecordsFromAnotherApp_byClientRecordId_fail() {
+    public void updateRecordsFromAnotherApp_byClientRecordId_fail() throws Exception {
         Instant now = Instant.now();
-        insertWeightRecordViaTestApp(mContext, now, "id1", 10.0);
+        mTestApp.insertRecord(DataFactory.getWeightRecord(10.0, now, "id1"));
 
         List<Record> updatedRecords = List.of(getWeightRecord(now, "id1", 20.0));
         HealthConnectException error =

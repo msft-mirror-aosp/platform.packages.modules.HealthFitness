@@ -16,9 +16,9 @@
 
 package com.android.server.healthconnect.logging;
 
-import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createBloodPressureRecord;
-import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createSpeedRecordInternal;
-import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
+import static com.android.server.healthconnect.testing.storage.TransactionTestUtils.createBloodPressureRecord;
+import static com.android.server.healthconnect.testing.storage.TransactionTestUtils.createSpeedRecordInternal;
+import static com.android.server.healthconnect.testing.storage.TransactionTestUtils.createStepsRecord;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -26,7 +26,6 @@ import static org.mockito.Mockito.mock;
 
 import android.content.Context;
 import android.health.connect.CreateMedicalDataSourceRequest;
-import android.health.connect.HealthConnectManager;
 import android.health.connect.datatypes.FhirResource;
 import android.health.connect.datatypes.FhirVersion;
 import android.health.connect.datatypes.MedicalDataSource;
@@ -41,18 +40,18 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.EnvironmentFixture;
-import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseStatsCollector;
-import com.android.server.healthconnect.storage.datatypehelpers.FakeTimeSource;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInternalRequest;
+import com.android.server.healthconnect.testing.fakes.FakeTimeSource;
+import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
+import com.android.server.healthconnect.testing.fixtures.SQLiteDatabaseFixture;
+import com.android.server.healthconnect.testing.storage.TransactionTestUtils;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -74,7 +73,6 @@ public class DatabaseStatsCollectorTest {
     @Rule(order = 2)
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(HealthConnectManager.class)
                     .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();

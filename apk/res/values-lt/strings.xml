@@ -56,6 +56,10 @@
     <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Tvarkyti leidimus"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Laikas: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
+    <string name="recent_access_empty_state_title" msgid="4767157641389217682">"Nėra naujausios prieigos"</string>
+    <string name="recent_access_empty_state_description" msgid="6334951450158128989">"Čia bus automatiškai rodomos programos, kurios neseniai pasiekė jūsų duomenis"</string>
+    <string name="recent_access_view_all_button" msgid="825946958049641541">"Žr. viską"</string>
+    <string name="recent_access_error" msgid="2258399573560888960">"Nepavyko įkelti naujausios prieigos"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Veikla"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"veikla"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Kūno matavimai"</string>
@@ -319,9 +323,9 @@
     <string name="allergies_intolerances_uppercase_label" msgid="2458552115947636884">"Alergijos"</string>
     <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"alergijos"</string>
     <string name="allergies_intolerances_content_description" msgid="7954532940667325068">"Skaityti alergijų duomenis"</string>
-    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Sąlygos"</string>
-    <string name="conditions_lowercase_label" msgid="2678248918552246997">"sąlygos"</string>
-    <string name="conditions_content_description" msgid="3230552343616193829">"Skaityti sąlygas"</string>
+    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Sveikatos būklė"</string>
+    <string name="conditions_lowercase_label" msgid="2678248918552246997">"sveikatos būklė"</string>
+    <string name="conditions_content_description" msgid="3230552343616193829">"Skaityti sveikatos būklės duomenis"</string>
     <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Vakcinos"</string>
     <string name="vaccines_lowercase_label" msgid="4991324441768127447">"vakcinos"</string>
     <string name="vaccines_content_description" msgid="7152741514791951684">"Skaityti vakcinų duomenis"</string>
@@ -370,7 +374,7 @@
     <string name="request_permissions_with_medical_header_title" msgid="6269944931319362595">"Leisti programai „<xliff:g id="APP_NAME">%1$s</xliff:g>“ pasiekti mankštos ir sveikatingumo duomenis?"</string>
     <string name="request_permissions_rationale" msgid="2642076968583316986">"Kaip „<xliff:g id="APP_NAME">%1$s</xliff:g>“ tvarko jūsų duomenis, sužinosite <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"privatumo politika"</string>
-    <string name="medical_request_header" msgid="2300521519021510027">"Leisti „<xliff:g id="APP_NAME">%1$s</xliff:g>“ pasiekti sveikatos įrašus?"</string>
+    <string name="medical_request_header" msgid="2300521519021510027">"Leisti <xliff:g id="APP_NAME">%1$s</xliff:g> pasiekti sveikatos įrašus?"</string>
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Jei suteiksite prieigą, programa galės skaityti ir rašyti tokius duomenis kaip alergijos, laboratorinių tyrimų rezultatai, vakcinos ir kt.\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Jei suteiksite prieigą, programa galės skaityti tokius duomenis kaip alergijos, laboratorinių tyrimų rezultatai, vakcinos ir kt.\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"Apie sveikatos įrašus"</string>
@@ -541,10 +545,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Sistemoje „Health Connect“ saugomi jūsų sveikatos ir kūno rengybos duomenys ir galite lengvai sinchronizuoti skirtingas programas įrenginyje"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"„Health Connect“ saugo ir sinchronizuoja jūsų sveikatos ir kūno rengybos duomenis iš skirtingų programų.\n\n"<b>"Kūno rengybos ir sveikatingumo duomenys,"</b>" įskaitant mankštos sesijas, žingsnius, mitybą, miegą ir kt.\n\n"<b>"Sveikatos įrašai,"</b>" įskaitant vakcinas, laboratorinių tyrimų rezultatus ir kt."</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Naudodami „Health Connect“ galite atlikti toliau nurodytus veiksmus."</string>
-    <string name="share_data" msgid="3481932156368883946">"Duomenų bendrinimas su programomis"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Pasirinkite, kokius duomenis kiekviena programa gali skaityti ar rašyti sistemoje „Health Connect“"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Nustatymų ir privatumo valdymas"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Bet kada keiskite programų leidimus ir tvarkykite duomenis"</string>
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Duomenų bendrinimas su programomis"</b>\n"Pasirinkite, kokius duomenis kiekviena programa gali skaityti ar rašyti sistemoje „Health Connect“"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Nustatymų ir privatumo tvarkymas"</b>\n"Bet kada keiskite programų leidimus ir tvarkykite duomenis"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Grįžti"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Pradėti"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Ištrinti duomenis"</string>
@@ -1117,7 +1119,7 @@
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"„Health Connect“ naudojimo pradžia"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Sinchronizuokite pirmąsias programas, kad galėtumėte bendrinti sveikatos ir kūno rengybos duomenis su jomis"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Nustatyti"</string>
-    <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"Daugiau programų susiejimas"</string>
+    <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"Susiekite daugiau programų"</string>
     <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"Pradėkite bendrinti duomenis su „<xliff:g id="APP_NAME">%s</xliff:g>“ ir sveikatos programomis telefone"</string>
     <string name="connect_more_apps_set_up_button" msgid="4491201768717567269">"Nustatyti"</string>
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Suderinamų programų peržiūra"</string>
@@ -1167,7 +1169,7 @@
     <string name="request_permissions_deny_all" msgid="4123735770293545320">"Atmesti viską"</string>
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Leisti programai „<xliff:g id="APP_NAME">%1$s</xliff:g>“ pasiekti mankštos ir sveikatingumo duomenis?"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"„<xliff:g id="APP_NAME">%1$s</xliff:g>“ prašo prieigos prie šių duomenų: <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nGalite leisti viską arba valdyti atskirai."</string>
-    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Leisti „<xliff:g id="APP_NAME">%1$s</xliff:g>“ pasiekti įrenginį (<xliff:g id="DATA_TYPE">%2$s</xliff:g>)?"</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Leisti „<xliff:g id="APP_NAME">%1$s</xliff:g>“ pasiekti: <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
     <string name="fitness_and_wellness" msgid="2002316898861559748">"Kūno rengyba ir sveikata"</string>
     <string name="view_permissions_all_the_time" msgid="6899702815770193290">"visą laiką"</string>
     <string name="view_permissions_while_in_use" msgid="2031627107397429473">"kol naudojama"</string>
@@ -1181,12 +1183,12 @@
     <string name="no_apps_requesting" msgid="8088684445910698363">"Nėra jokių programų, kurios pateiktų užklausą"</string>
     <string name="allowed" msgid="4158456017482263737">"Leidžiama"</string>
     <string name="not_allowed" msgid="6092523505093372147">"Neleidžiama"</string>
-    <string name="access_sensor_note" msgid="7949933977197789634">"Programos, kurioms suteiktas šis leidimas, gali pasiekti <xliff:g id="DATA_TYPE">%s</xliff:g> duomenis iš įrenginio jutiklių."</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Programos, kurioms suteiktas šis leidimas, gali pasiekti duomenis (<xliff:g id="DATA_TYPE">%s</xliff:g>) iš įrenginio jutiklių."</string>
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Pašalinti <xliff:g id="DATA_TYPE">%s</xliff:g> prieigą prie visų programų laikrodyje?"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"Varnelė"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"Kryžiuko ženklas"</string>
     <string name="current_allow_mode" msgid="6716206063077569218">"Šiuo metu „<xliff:g id="APP_NAME">%1$s</xliff:g>“ gali <xliff:g id="ALLOW_MODE">%2$s</xliff:g> pasiekti visus jūsų mankštos ir sveikatingumo duomenis"</string>
     <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Leisti programai „<xliff:g id="APP_NAME">%1$s</xliff:g>“ visada pasiekti mankštos ir sveikatingumo duomenis?"</string>
-    <string name="current_access" msgid="1457167070428176139">"„<xliff:g id="APP_NAME">%1$s</xliff:g>“ turi prieigą prie <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
+    <string name="current_access" msgid="1457167070428176139">"„<xliff:g id="APP_NAME">%1$s</xliff:g>“ turi prieigą prie toliau nurodytų: <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
     <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Tvarkyti mankštos ir sveikatingumo leidimus"</string>
 </resources>

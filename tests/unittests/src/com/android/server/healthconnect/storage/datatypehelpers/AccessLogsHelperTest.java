@@ -43,7 +43,6 @@ import static com.google.common.truth.Truth.assertThat;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.health.connect.HealthConnectManager;
 import android.health.connect.accesslog.AccessLog;
 import android.health.connect.datatypes.BloodPressureRecord;
 import android.health.connect.datatypes.BodyFatRecord;
@@ -60,9 +59,6 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.EnvironmentFixture;
-import com.android.server.healthconnect.FakePreferenceHelper;
-import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
@@ -70,6 +66,10 @@ import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTra
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.AlterTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
+import com.android.server.healthconnect.testing.fakes.FakePreferenceHelper;
+import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
+import com.android.server.healthconnect.testing.fixtures.SQLiteDatabaseFixture;
+import com.android.server.healthconnect.testing.storage.TransactionTestUtils;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -90,7 +90,6 @@ public class AccessLogsHelperTest {
     @Rule(order = 2)
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(HealthConnectManager.class)
                     .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();

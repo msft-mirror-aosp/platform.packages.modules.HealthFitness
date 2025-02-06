@@ -17,6 +17,7 @@
 package com.android.healthconnect.controller.recentaccess
 
 import android.health.connect.accesslog.AccessLog
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -29,6 +30,7 @@ import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus
 import com.android.healthconnect.controller.shared.safelyDataTypeToCategory
+import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.postValueIfUpdated
 import com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled
@@ -52,6 +54,7 @@ constructor(
     companion object {
         private val MAX_CLUSTER_DURATION = Duration.ofMinutes(10)
         private val MAX_GAP_BETWEEN_LOGS_IN_CLUSTER_DURATION = Duration.ofMinutes(1)
+        private const val TAG = "RecentAccessViewModel"
     }
 
     private val _recentAccessApps = MutableLiveData<RecentAccessState>()
@@ -64,17 +67,28 @@ constructor(
             _recentAccessApps.postValue(Loading)
         }
         viewModelScope.launch {
-            try {
-                val clusters = getRecentAccessAppsClusters(maxNumEntries)
-                _recentAccessApps.postValueIfUpdated(RecentAccessState.WithData(clusters))
-            } catch (ex: Exception) {
-                _recentAccessApps.postValueIfUpdated(RecentAccessState.Error)
+            when (val accessLogsResults = loadRecentAccessUseCase.invoke(Unit)) {
+                is UseCaseResults.Success -> {
+                    try {
+                        val clusters =
+                            getRecentAccessAppsClusters(accessLogsResults.data, maxNumEntries)
+                        _recentAccessApps.postValueIfUpdated(RecentAccessState.WithData(clusters))
+                    } catch (ex: Exception) {
+                        Log.e(TAG, "Error calculating clusters ", ex)
+                        _recentAccessApps.postValueIfUpdated(RecentAccessState.Error)
+                    }
+                }
+                else -> {
+                    _recentAccessApps.postValueIfUpdated(RecentAccessState.Error)
+                }
             }
         }
     }
 
-    private suspend fun getRecentAccessAppsClusters(maxNumEntries: Int): List<RecentAccessEntry> {
-        val accessLogs = loadRecentAccessUseCase.invoke()
+    private suspend fun getRecentAccessAppsClusters(
+        accessLogs: List<AccessLog>,
+        maxNumEntries: Int,
+    ): List<RecentAccessEntry> {
         val connectedApps = loadHealthPermissionApps.invoke()
         val inactiveApps =
             connectedApps

@@ -29,7 +29,7 @@
     <string name="no_data" msgid="1906986019249068659">"Ni podatkov"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"Dovoljenja za aplikacije"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Upravljanje aplikacij in dovoljenj"</string>
-    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"Dostop ima <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> od toliko aplikacij: <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>"</string>
+    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"Dostop ima <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> od <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> aplikacij"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"Dostop ima toliko aplikacij: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> od <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>."</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"Dostop ima toliko aplikacij: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>."</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"Dostop ima <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> aplikacija."</string>
@@ -56,6 +56,10 @@
     <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Upravljanje dovoljenj"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Čas: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
+    <string name="recent_access_empty_state_title" msgid="4767157641389217682">"Ni nedavnih dostopov"</string>
+    <string name="recent_access_empty_state_description" msgid="6334951450158128989">"Aplikacije, ki so nedavno dostopale do vaših podatkov, bodo samodejno prikazane tukaj"</string>
+    <string name="recent_access_view_all_button" msgid="825946958049641541">"Prikaži vse"</string>
+    <string name="recent_access_error" msgid="2258399573560888960">"Nedavnih dostopov ni bilo mogoče naložiti"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Dejavnost"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"dejavnost"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Telesne meritve"</string>
@@ -312,7 +316,7 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"temperatura kože"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Branje temperature kože"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Zapisovanje temperature kože"</string>
-    <string name="browse_health_records_intro" msgid="1611488691642390523">"To vključuje vse zdravstvene evidence, sinhronizirane s storitvijo Health Connect in dodane vanjo. To morda ne obsega vaše celotne zdravstvene kartoteke in to ne vključuje medicinskega opisa vaših zdravstvenih evidenc."</string>
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"To vključuje vse zdravstvene evidence, sinhronizirane s storitvijo Health Connect in dodane vanjo. To morda ne obsega vaše celotne zdravstvene kartoteke in ne vključuje medicinskega opisa vaših zdravstvenih evidenc."</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Vse zdravstvene evidence"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"vse zdravstvene evidence"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"Zapisovanje vseh zdravstvenih evidenc"</string>
@@ -423,7 +427,7 @@
     <string name="no_apps_allowed" msgid="5794833581324128108">"Nobena aplikacija nima dovoljenja."</string>
     <string name="no_apps_denied" msgid="743327680286446017">"Dovoljenje ni zavrnjeno nobeni aplikaciji."</string>
     <string name="permissions_disconnect_all_dialog_title" msgid="27474286046207122">"Želite odstraniti dostop za vse aplikacije?"</string>
-    <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"Nobena od vaših aplikacij ne bo mogla dostopati do podatkov v aplikaciji Health Connect ali vanjo dodajati novih podatkov. S tem ne izbrišete obstoječih podatkov.\n\nTo ne vpliva na druga dovoljenja, ki jih morda ima ta aplikacija, na primer za lokacijo, fotoaparat ali mikrofon."</string>
+    <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"Nobena od vaših aplikacij ne bo mogla dostopati do podatkov v storitvi Health Connect ali vanjo dodajati novih podatkov. S tem ne izbrišete obstoječih podatkov.\n\nTo ne vpliva na druga dovoljenja, ki jih morda ima ta aplikacija, na primer za lokacijo, fotoaparat ali mikrofon."</string>
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"Odstrani vse"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"Upravljanje aplikacije"</string>
     <string name="see_app_data" msgid="3951030076195119476">"Prikaži podatke aplikacije"</string>
@@ -541,10 +545,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect shranjuje vaše podatke o zdravju in telesni pripravljenosti ter vam omogoča, da na preprost način sinhronizirate različne aplikacije v napravi."</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect shranjuje in sinhronizira podatke o zdravju in telesni pripravljenosti iz različnih aplikacij.\n\n"<b>"Podatke o telesni pripravljenosti in počutju,"</b>" vključno s treningi, koraki, prehrano, spanjem in drugimi podatki.\n\n"<b>"Zdravstvene evidence,"</b>" vključno s cepivi, laboratorijskimi izvidi in drugimi podatki."</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect vam omogoča naslednje:"</string>
-    <string name="share_data" msgid="3481932156368883946">"Deljenje podatkov z aplikacijami"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Izberite, katere podatke lahko aplikacije berejo ali zapisujejo v storitvi Health Connect."</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Upravljanje nastavitev in zasebnosti"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Kadar koli spremenite dovoljenja za aplikacije in upravljajte svoje podatke."</string>
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Deljenje podatkov z aplikacijami"</b>\n"Izberite, katere podatke lahko aplikacije berejo ali zapisujejo v storitvi Health Connect"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Upravljanje nastavitev in zasebnosti"</b>\n"Kadar koli spremenite dovoljenja za aplikacije in upravljajte svoje podatke"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Nazaj"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Začnite"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Izbriši podatke"</string>
@@ -1188,5 +1190,5 @@
     <string name="current_allow_mode" msgid="6716206063077569218">"Trenutno lahko aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> <xliff:g id="ALLOW_MODE">%2$s</xliff:g> dostopa do podatkov o telesni pripravljenosti in počutju"</string>
     <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Želite aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> dovoliti stalen dostop do podatkov o telesni pripravljenosti in počutju?"</string>
     <string name="current_access" msgid="1457167070428176139">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> ima dostop do teh vrst podatkov: <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
-    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Upravljanje dovoljenj za podatke o telesni pripravljenosti in počutju"</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Upravljanje dovoljenj za telesno pripravljenost in počutje"</string>
 </resources>

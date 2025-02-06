@@ -25,6 +25,7 @@
         <item name="seeAllIcon">@drawable/ic_right_arrow</item>
         <item name="recentAccessTimelineDividerDrawable">@drawable/ic_timeline_divider</item>
         <item name="manageDataIcon">@drawable/ic_build</item>
+        <item name="optionsIcon">@drawable/options_icon</item>
 
         <!-- App permissions page-->
         <item name="removeAccessForAllAppsIcon">@drawable/ic_remove_access_for_all_apps</item>
@@ -38,7 +39,6 @@
         <item name="autoDeleteIcon">@drawable/ic_auto_delete</item>
         <item name="autoDeleteOffIcon">@drawable/ic_auto_delete_off</item>
         <item name="deleteIcon">@drawable/ic_delete</item>
-        <item name="importDataIcon">@drawable/ic_import_data</item>
         <item name="activityCategoryIcon">@drawable/ic_category_activity</item>
         <item name="bodyMeasurementsCategoryIcon">@drawable/ic_category_body_measurements</item>
         <item name="cycleTrackingCategoryIcon">@drawable/ic_category_cycle_tracking</item>

@@ -56,6 +56,10 @@
     <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Muuta lupia"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Aika: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
+    <string name="recent_access_empty_state_title" msgid="4767157641389217682">"Ei pääsyä viime aikoina"</string>
+    <string name="recent_access_empty_state_description" msgid="6334951450158128989">"Sovellukset, jotka ovat saaneet pääsyn dataasi viime aikoina, näkyvät täällä automaattisesti"</string>
+    <string name="recent_access_view_all_button" msgid="825946958049641541">"Näytä kaikki"</string>
+    <string name="recent_access_error" msgid="2258399573560888960">"Viimeaikaisen pääsyn lataaminen epäonnistui"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Treeni"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"treeni"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Kehon mittaustulokset"</string>
@@ -136,7 +140,7 @@
     <string name="history_read_access_description" msgid="800722432229526128">"Salli sovellukselle pääsy Health Connectin dataan, joka on lisätty ennen <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="history_read_access_description_fallback" msgid="4151538305657852010">"Salli sovellukselle pääsy aiempaan Health Connectin dataan"</string>
     <string name="history_read_medical_access_read_warning" msgid="8878271647163400440">"Liikuntadataa ei tällä hetkellä lueta, koska <xliff:g id="APP_NAME">%1$s</xliff:g> ei ole saanut luvaluvat:"</string>
-    <string name="additional_access_medical_read_footer" msgid="4640796038121080343">"<xliff:g id="APP_NAME">%1$s</xliff:g> voi jo nyt käyttää aiempaa terveystietojesi dataa. Jos haluat muuttaa tätä, laita sovelluksen terveystietojen käyttöoikeudet pois päältä"</string>
+    <string name="additional_access_medical_read_footer" msgid="4640796038121080343">"<xliff:g id="APP_NAME">%1$s</xliff:g> voi jo nyt käyttää aiempaa terveystietojesi dataa. Jos haluat muuttaa tätä, laita sovelluksen terveystietojen käyttöluvat pois päältä"</string>
     <string name="additional_access_medical_read_footer_link" msgid="2797623091827504856">"Ylläpidä terveystietolupia"</string>
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Ota käyttöön vähintään yksi lukuoikeus, jotta taustakäyttöoikeudet tai aiemmat pääsyoikeudet dataan voidaan laittaa päälle tälle sovellukselle"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Ota käyttöön vähintään yksi lukuoikeus, jotta taustakäyttöoikeudet voidaan laittaa päälle tälle sovellukselle"</string>
@@ -361,7 +365,7 @@
     <string name="request_permissions_allow" msgid="4201324235711040631">"Salli"</string>
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Salli kaikki"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Älä salli"</string>
-    <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Valitse, mitä Health Connect dataa‑ haluat sovelluksen kirjoittavan tai lukevan"</string>
+    <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Valitse, mitä Health Connect -dataa haluat sovelluksen kirjoittavan tai lukevan"</string>
     <string name="request_permissions_data_access_type_read" msgid="6005792244220381045">"Valitse, mitä Health Connect dataa haluat sovelluksen lukevan"</string>
     <string name="request_permissions_data_access_type_write" msgid="6369810467678676337">"Valitse, mitä dataa haluat sovelluksen kirjoittavan Health Connectiin"</string>
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Jos annat lukupääsyoikeudet, sovellus voi lukea uutta dataa ja dataa 30 viime päivältä"</string>
@@ -541,10 +545,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect tallentaa terveys‑ ja kuntodatasi ja tarjoaa helpon tavan synkronoida eri sovelluksia laitteellasi"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect tallentaa ja synkronoi terveys- ja kuntoiludataa eri sovelluksista.\n\n"<b>"Kuntoilu- ja hyvinvointidata,"</b>" esim. treenit, askeleet, ravinto ja uni\n\n"<b>"Terveystiedot,"</b>" esim. rokotukset ja laboratoriotulokset"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connectilla voit tehdä seuraavia asioita"</string>
-    <string name="share_data" msgid="3481932156368883946">"Jaa dataa sovelluksille"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Valitse, mitä dataa kukin sovellus voi lukea tai kirjoittaa Health Connectiin"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Tee asetus- ja yksityisyysvalinnat"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Muuta sovelluslupia ja ylläpidä dataa milloin vain"</string>
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Jaa dataa sovelluksillesi"</b>\n"Valitse, mitä dataa kukin sovellus voi lukea tai kirjoittaa Health Connectiin"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Tee asetus- ja yksityisyysvalinnat"</b>\n"Muuta sovelluslupia ja ylläpidä dataa milloin vain"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Takaisin"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Aloita"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Poista data"</string>
@@ -606,7 +608,7 @@
     <string name="aggregation_total" msgid="5641333638662325184">"Yhteensä: <xliff:g id="TOTAL_VALUE">%s</xliff:g>"</string>
     <string name="watt_format" msgid="8500953817369623803">"{value,plural, =1{1 W}other{# W}}"</string>
     <string name="watt_format_long" msgid="7107446926499116109">"{value,plural, =1{1 watti}other{# watti}}"</string>
-    <string name="steps_value" msgid="5779393974668105298">"{count,plural, =1{1 askel}other{# askel}}"</string>
+    <string name="steps_value" msgid="5779393974668105298">"{count,plural, =1{1 askel}other{# askelta}}"</string>
     <string name="steps_per_minute" msgid="5527133010067502098">"{value,plural, =1{1 askel/min}other{# askelta/min}}"</string>
     <string name="steps_per_minute_long" msgid="6146224261144843301">"{value,plural, =1{1 askel minuutissa}other{# askelta minuutissa}}"</string>
     <string name="heart_rate_value" msgid="6936476566204248578">"{count,plural, =1{1 bpm}other{# bpm}}"</string>

@@ -15,13 +15,25 @@
   limitations under the License.
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <com.android.healthconnect.controller.shared.preference.HealthPreference
-        android:key="auto_delete"
-        android:title="@string/auto_delete_title"/>
-    <com.android.healthconnect.controller.shared.preference.HealthPreference
-        android:key="data_sources_and_priority"
-        android:title="@string/data_sources_and_priority_title"/>
-    <com.android.healthconnect.controller.shared.preference.HealthPreference
-        android:key="set_units"
-        android:title="@string/set_units_title"/>
+    <PreferenceCategory
+        android:key="manage_data_preferences_category"
+        android:title="@string/manage_data_preferences_category_title">
+        <com.android.healthconnect.controller.shared.preference.HealthPreference
+            android:key="auto_delete"
+            android:title="@string/auto_delete_title"/>
+        <com.android.healthconnect.controller.shared.preference.HealthPreference
+            android:key="data_sources_and_priority"
+            android:title="@string/data_sources_and_priority_title"/>
+        <com.android.healthconnect.controller.shared.preference.HealthPreference
+            android:key="set_units"
+            android:title="@string/set_units_title"/>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="manage_data_category"
+        android:title="@string/manage_data_category_title">
+        <com.android.healthconnect.controller.shared.preference.HealthPreference
+            android:key="backup_and_restore"
+            android:title="@string/backup_and_restore_settings_screen_title"
+            android:summary="@string/backup_and_restore_settings_summary"/>
+    </PreferenceCategory>
 </PreferenceScreen>

@@ -16,9 +16,12 @@
 package com.android.healthconnect.controller.shared.preference
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.View.OnClickListener
 import androidx.preference.Preference
+import androidx.preference.Preference.OnPreferenceClickListener
+import com.android.healthconnect.controller.utils.logging.ElementName
 import com.android.settingslib.widget.SettingsThemeHelper
 import com.android.settingslib.widget.TopIntroPreference
 
@@ -50,6 +53,41 @@ fun topIntroPreference(
             learnMoreText?.let { setLearnMoreText(it) }
             learnMoreAction?.let { setLearnMoreAction(it) }
             order = preferenceOrder
+        }
+    }
+}
+
+fun buttonPreference(
+    context: Context,
+    icon: Drawable?,
+    title: String?,
+    logName: ElementName?,
+    key: String?,
+    order: Int?,
+    listener: (() -> Unit)?,
+): Preference {
+    return if (SettingsThemeHelper.isExpressiveTheme(context)) {
+        HealthButtonPreference(context).also { preference ->
+            icon?.let { preference.icon = it }
+            title?.let { preference.title = it }
+            logName?.let { preference.logName = it }
+            key?.let { preference.key = it }
+            order?.let { preference.order = it }
+            listener?.let { (preference).setOnClickListener { it() } }
+        }
+    } else {
+        HealthPreference(context).also { preference ->
+            icon?.let { preference.icon = it }
+            title?.let { preference.title = it }
+            logName?.let { preference.logName = it }
+            key?.let { preference.key = it }
+            order?.let { preference.order = it }
+            listener?.let {
+                preference.onPreferenceClickListener = OnPreferenceClickListener {
+                    it()
+                    true
+                }
+            }
         }
     }
 }

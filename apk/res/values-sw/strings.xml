@@ -56,6 +56,10 @@
     <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Dhibiti ruhusa"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Saa: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
+    <string name="recent_access_empty_state_title" msgid="4767157641389217682">"Hakuna programu zilizofikia data hivi majuzi"</string>
+    <string name="recent_access_empty_state_description" msgid="6334951450158128989">"Programu ambazo zimefikia data yako hivi majuzi zitaonekana hapa kiotomatiki"</string>
+    <string name="recent_access_view_all_button" msgid="825946958049641541">"Angalia yote"</string>
+    <string name="recent_access_error" msgid="2258399573560888960">"Imeshindwa kupakia vipengele vilivyofikiwa hivi majuzi"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Shughuli"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"shughuli"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Vipimo vya mwili"</string>
@@ -308,10 +312,10 @@
     <string name="resting_heart_rate_lowercase_label" msgid="4533866739695973169">"mapigo ya moyo ya kawaida"</string>
     <string name="resting_heart_rate_read_content_description" msgid="1068160055773401020">"Isome data ya mapigo ya moyo ya kawaida"</string>
     <string name="resting_heart_rate_write_content_description" msgid="8848198128082739995">"Iandike data ya mapigo ya moyo ya kawaida"</string>
-    <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Kiwango cha joto kwenye ngozi"</string>
-    <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"kiwango cha joto kwenye ngozi"</string>
-    <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Soma kiwango cha joto kwenye ngozi"</string>
-    <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Andika kiwango cha joto kwenye ngozi"</string>
+    <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Halijoto ya ngozi"</string>
+    <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"halijoto ya ngozi"</string>
+    <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Kusoma halijoto ya ngozi"</string>
+    <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Kuandika halijoto ya ngozi"</string>
     <string name="browse_health_records_intro" msgid="1611488691642390523">"Hii inajumuisha rekodi zote za afya zilizosawazishwa na kuwekwa kwenye Health Connect. Huenda hii isiwe rekodi yako kamili ya matibabu na haijumuishi maelezo ya kimatibabu ya rekodi zako za afya."</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Rekodi zote za afya"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"rekodi zote za afya"</string>
@@ -541,10 +545,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect huhifadhi data yako ya afya na siha, hali inayorahisisha mchakato wa kusawazisha programu tofauti kwenye kifaa chako"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect huhifadhi na kusawazisha data yako ya afya na siha kutoka kwenye programu tofauti.\n\n"<b>"Data ya siha,"</b>" ikiwa ni pamoja na vipindi vya mazoezi ya mwili, hatua, lishe, kulala na mengine mengi\n\n"<b>"Rekodi za afya,"</b>" ikiwa ni pamoja na chanjo, matokeo ya maabara na mengine mengi"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Ukiwa na Health Connect unaweza"</string>
-    <string name="share_data" msgid="3481932156368883946">"Shiriki data na programu zako"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Chagua data ambayo kila programu inaweza kusoma na kuandika kwenye Health Connect"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Dhibiti mipangilio na faragha yako"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Badilisha ruhusa za programu na udhibiti data yako wakati wowote"</string>
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Ruhusu programu zako zifikie data"</b>\n"Chagua data ambayo kila programu inaweza kusoma au kuandika kwenye Health Connect"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Dhibiti mipangilio na faragha yako"</b>\n"Badilisha ruhusa za programu na udhibiti data yako wakati wowote"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Rudi nyuma"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Anza"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Futa data"</string>
@@ -1165,7 +1167,7 @@
     <string name="request_permissions_allow_selected" msgid="218527615680495438">"Ruhusu ulizochagua"</string>
     <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Unapotumia programu"</string>
     <string name="request_permissions_deny_all" msgid="4123735770293545320">"Kataa zote"</string>
-    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Ungependa kuruhusu <xliff:g id="APP_NAME">%1$s</xliff:g> ifikie data ya mazoezi na siha?"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Ungependa kuruhusu <xliff:g id="APP_NAME">%1$s</xliff:g> ifikie data ya siha na afya?"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> inaomba ruhusa ya kufikia data ya <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nChagua kuruhusu zote au udhibiti kila ruhusa kivyake."</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Ungependa kuruhusu <xliff:g id="APP_NAME">%1$s</xliff:g> ifikie <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
     <string name="fitness_and_wellness" msgid="2002316898861559748">"Siha na afya"</string>

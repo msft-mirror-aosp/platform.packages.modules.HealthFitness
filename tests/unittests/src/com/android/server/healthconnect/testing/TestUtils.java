@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package com.android.server.healthconnect;
+package com.android.server.healthconnect.testing;
 
 import android.database.DatabaseUtils;
 import android.os.UserHandle;
 
+import com.android.server.healthconnect.HealthConnectThreadScheduler;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 
 import java.time.Instant;

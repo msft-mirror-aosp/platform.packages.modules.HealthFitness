@@ -56,6 +56,10 @@
     <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Pamahalaan ang mga pahintulot"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Oras: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
+    <string name="recent_access_empty_state_title" msgid="4767157641389217682">"Walang kamakailang pag-access"</string>
+    <string name="recent_access_empty_state_description" msgid="6334951450158128989">"Awtomatikong lalabas dito ang mga app na kamakailang nag-access ng iyong data"</string>
+    <string name="recent_access_view_all_button" msgid="825946958049641541">"Tingnan lahat"</string>
+    <string name="recent_access_error" msgid="2258399573560888960">"Hindi ma-load ang kamakailang access"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Aktibidad"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"aktibidad"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Mga sukat ng katawan"</string>
@@ -541,10 +545,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Sino-store ng Health Connect ang iyong data ng kalusugan at fitness, na nagbibigay sa iyo ng simpleng paraan para i-sync ang iba\'t ibang app sa device mo"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Sino-store at sini-sync ng Health Connect ang iyong data ng kalusugan at fitness mula sa iba\'t ibang app.\n\n"<b>"Data ng fitness at wellness,"</b>" kabilang ang mga session ng pag-eehersisyo, pagtulog, at higit pa\n\n"<b>"Mga health record,"</b>" kabilang ang mga bakuna, lab result, at higit pa"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Gamit ang Health Connect, magagawa mong"</string>
-    <string name="share_data" msgid="3481932156368883946">"Magbahagi ng data sa iyong mga app"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Piliin ang data na puwedeng i-read o i-write ng bawat app sa Health Connect"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Pamahalaan ang iyong mga setting at privacy"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Baguhin ang mga pahintulot sa app at pamahalaan ang iyong data kahit kailan"</string>
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Magbahagi ng data sa iyong mga app"</b>\n"Piliin ang data na puwedeng i-read o i-write ng bawat app sa Health Connect"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Pamahalaan ang iyong mga setting at privacy"</b>\n"Baguhin ang mga pahintulot sa app at pamahalaan ang data mo kahit kailan"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Bumalik"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Magsimula"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Mag-delete ng data"</string>

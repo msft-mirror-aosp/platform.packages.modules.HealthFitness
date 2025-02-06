@@ -24,8 +24,8 @@ import static android.health.connect.exportimport.ImportStatus.DATA_IMPORT_START
 import static com.android.server.healthconnect.exportimport.ExportManager.LOCAL_EXPORT_DATABASE_FILE_NAME;
 import static com.android.server.healthconnect.exportimport.ImportManager.IMPORT_DATABASE_DIR_NAME;
 import static com.android.server.healthconnect.exportimport.ImportManager.IMPORT_DATABASE_FILE_NAME;
-import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createBloodPressureRecord;
-import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
+import static com.android.server.healthconnect.testing.storage.TransactionTestUtils.createBloodPressureRecord;
+import static com.android.server.healthconnect.testing.storage.TransactionTestUtils.createStepsRecord;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -53,10 +53,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.EnvironmentFixture;
-import com.android.server.healthconnect.FakePreferenceHelper;
-import com.android.server.healthconnect.SQLiteDatabaseFixture;
-import com.android.server.healthconnect.TestUtils;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.logging.ExportImportLogger;
@@ -73,9 +69,13 @@ import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper.D
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
+import com.android.server.healthconnect.testing.TestUtils;
+import com.android.server.healthconnect.testing.fakes.FakePreferenceHelper;
+import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
+import com.android.server.healthconnect.testing.fixtures.SQLiteDatabaseFixture;
+import com.android.server.healthconnect.testing.storage.TransactionTestUtils;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -247,7 +247,7 @@ public class ImportManagerTest {
         assertThat(records).hasSize(2);
         assertThat(records.get(0).getUuid()).isEqualTo(stepsUuids.get(0));
         assertThat(records.get(1).getUuid()).isEqualTo(bloodPressureUuids.get(0));
-        assertThat(mExportImportSettingsStorage.getImportStatus().getDataImportError())
+        assertThat(mExportImportSettingsStorage.getImportStatus().getDataImportState())
                 .isEqualTo(DATA_IMPORT_ERROR_NONE);
     }
 
@@ -447,7 +447,7 @@ public class ImportManagerTest {
                                 .NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_INVALID_FILE,
                         DEFAULT_USER_HANDLE);
 
-        assertThat(mExportImportSettingsStorage.getImportStatus().getDataImportError())
+        assertThat(mExportImportSettingsStorage.getImportStatus().getDataImportState())
                 .isEqualTo(DATA_IMPORT_ERROR_WRONG_FILE);
     }
 
@@ -473,7 +473,7 @@ public class ImportManagerTest {
                                 .NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_INVALID_FILE,
                         DEFAULT_USER_HANDLE);
 
-        assertThat(mExportImportSettingsStorage.getImportStatus().getDataImportError())
+        assertThat(mExportImportSettingsStorage.getImportStatus().getDataImportState())
                 .isEqualTo(DATA_IMPORT_ERROR_WRONG_FILE);
     }
 
@@ -527,7 +527,7 @@ public class ImportManagerTest {
                                 .NOTIFICATION_TYPE_IMPORT_UNSUCCESSFUL_VERSION_MISMATCH,
                         DEFAULT_USER_HANDLE);
 
-        assertThat(mExportImportSettingsStorage.getImportStatus().getDataImportError())
+        assertThat(mExportImportSettingsStorage.getImportStatus().getDataImportState())
                 .isEqualTo(DATA_IMPORT_ERROR_VERSION_MISMATCH);
     }
 
@@ -546,7 +546,7 @@ public class ImportManagerTest {
                         ExportImportNotificationSender.NOTIFICATION_TYPE_IMPORT_COMPLETE,
                         DEFAULT_USER_HANDLE);
 
-        assertThat(mExportImportSettingsStorage.getImportStatus().getDataImportError())
+        assertThat(mExportImportSettingsStorage.getImportStatus().getDataImportState())
                 .isEqualTo(DATA_IMPORT_ERROR_NONE);
     }
 
@@ -641,7 +641,7 @@ public class ImportManagerTest {
         assertThat(records).hasSize(2);
         assertThat(records.get(0).getUuid()).isEqualTo(stepsUuids.get(0));
         assertThat(records.get(1).getUuid()).isEqualTo(bloodPressureUuids.get(0));
-        assertThat(mExportImportSettingsStorage.getImportStatus().getDataImportError())
+        assertThat(mExportImportSettingsStorage.getImportStatus().getDataImportState())
                 .isEqualTo(DATA_IMPORT_ERROR_NONE);
     }
 

@@ -24,6 +24,7 @@
       android:label="Wear Test App">
     <uses-library android:name="android.test.runner"/>
 
+  <!-- Note: There is no rationale intent filter below (okay for Wear apps). -->
     <activity android:name=".MainActivity"
         android:label="MainActivity"
         android:exported="true">

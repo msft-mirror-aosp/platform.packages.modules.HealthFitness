@@ -20,7 +20,7 @@ import static android.health.connect.HealthDataCategory.ACTIVITY;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_READ;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS;
 
-import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
+import static com.android.server.healthconnect.testing.storage.TransactionTestUtils.createStepsRecord;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -34,7 +34,6 @@ import static org.mockito.Mockito.verify;
 
 import android.content.Context;
 import android.health.connect.AggregateRecordsRequest;
-import android.health.connect.HealthConnectManager;
 import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.TimeRangeFilter;
 import android.health.connect.TimeRangeFilterHelper;
@@ -51,8 +50,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.EnvironmentFixture;
-import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
@@ -62,8 +59,10 @@ import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
+import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
+import com.android.server.healthconnect.testing.fixtures.SQLiteDatabaseFixture;
+import com.android.server.healthconnect.testing.storage.TransactionTestUtils;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -85,7 +84,6 @@ public class AggregateTransactionRequestTest {
     @Rule(order = 2)
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(HealthConnectManager.class)
                     .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();
@@ -199,7 +197,7 @@ public class AggregateTransactionRequestTest {
         aggregateTransactionRequest.getAggregateDataResponseParcel();
 
         List<ReadAccessLogsHelper.ReadAccessLog> result =
-                mReadAccessLogsHelper.queryReadAccessLogs();
+                mReadAccessLogsHelper.queryReadAccessLogs(0).getReadAccessLogs();
         ReadAccessLogsHelper.ReadAccessLog log = result.get(0);
         assertThat(log.getWriterPackage()).isEqualTo(TEST_PACKAGE_NAME);
         assertThat(log.getReaderPackage()).isEqualTo(readerPackage);

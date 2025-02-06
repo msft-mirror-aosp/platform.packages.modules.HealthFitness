@@ -81,6 +81,11 @@ public class StepsCadenceRecordHelper
         return SERIES_TABLE_NAME;
     }
 
+    @Override
+    public String getSampleTimestampsColumnName() {
+        return EPOCH_MILLIS_COLUMN_NAME;
+    }
+
     /** Populates the {@code record} with values specific to datatype */
     @Override
     void populateSpecificValues(Cursor seriesTableCursor, StepsCadenceRecordInternal record) {

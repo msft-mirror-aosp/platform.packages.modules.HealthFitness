@@ -43,7 +43,6 @@ import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_DATA_SOURCE
 import com.android.healthconnect.controller.tests.utils.TestObserver
 import com.android.healthconnect.controller.tests.utils.getDataOrigin
 import com.android.healthconnect.controller.tests.utils.setLocale
-import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -105,16 +104,14 @@ class AllDataViewModelTest {
         advanceUntilIdle()
 
         val expected =
-            listOfNotNull(
+            listOf(
                 PermissionTypesPerCategory(HealthDataCategory.ACTIVITY, listOf()),
                 PermissionTypesPerCategory(HealthDataCategory.BODY_MEASUREMENTS, listOf()),
                 PermissionTypesPerCategory(HealthDataCategory.CYCLE_TRACKING, listOf()),
                 PermissionTypesPerCategory(HealthDataCategory.NUTRITION, listOf()),
                 PermissionTypesPerCategory(HealthDataCategory.SLEEP, listOf()),
                 PermissionTypesPerCategory(HealthDataCategory.VITALS, listOf()),
-                PermissionTypesPerCategory(HealthDataCategory.WELLNESS, listOf()).takeIf {
-                    Flags.mindfulness()
-                },
+                PermissionTypesPerCategory(HealthDataCategory.WELLNESS, listOf()),
             )
         assertThat(testObserver.getLastValue())
             .isEqualTo(AllDataViewModel.AllDataState.WithData(expected))
@@ -156,7 +153,7 @@ class AllDataViewModelTest {
         advanceUntilIdle()
 
         val expected =
-            listOfNotNull(
+            listOf(
                 PermissionTypesPerCategory(
                     HealthDataCategory.ACTIVITY,
                     listOf(FitnessPermissionType.STEPS),
@@ -172,9 +169,7 @@ class AllDataViewModelTest {
                     HealthDataCategory.VITALS,
                     listOf(FitnessPermissionType.HEART_RATE),
                 ),
-                PermissionTypesPerCategory(HealthDataCategory.WELLNESS, listOf()).takeIf {
-                    Flags.mindfulness()
-                },
+                PermissionTypesPerCategory(HealthDataCategory.WELLNESS, listOf()),
             )
         assertThat(testObserver.getLastValue())
             .isEqualTo(AllDataViewModel.AllDataState.WithData(expected))

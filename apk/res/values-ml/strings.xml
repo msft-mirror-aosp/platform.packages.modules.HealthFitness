@@ -52,10 +52,14 @@
     <string name="today_header" msgid="1006837293203834373">"ഇന്ന്"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"ഇന്നലെ"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"വായിച്ചത്: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="write_data_access_label" msgid="105976369853871061">"എഴുതിയത്: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"റൈറ്റ് ചെയ്തത്: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"അനുമതികൾ മാനേജ് ചെയ്യുക"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"സമയം: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
+    <string name="recent_access_empty_state_title" msgid="4767157641389217682">"അടുത്തിടെ ആക്സസ് ഇല്ല"</string>
+    <string name="recent_access_empty_state_description" msgid="6334951450158128989">"അടുത്തിടെ നിങ്ങളുടെ ഡാറ്റ ആക്‌സസ് ചെയ്‌ത ആപ്പുകൾ സ്വയമേവ ഇവിടെ കാണിക്കും"</string>
+    <string name="recent_access_view_all_button" msgid="825946958049641541">"എല്ലാം കാണുക"</string>
+    <string name="recent_access_error" msgid="2258399573560888960">"അടുത്തിടെയുള്ള ആക്‌സസ് ലോഡ് ചെയ്യാനായില്ല"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"ആക്റ്റിവിറ്റി"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"ആക്റ്റിവിറ്റി"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"ശാരീരിക അളവുകൾ"</string>
@@ -417,7 +421,7 @@
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"ആക്സസിന് അനുമതി നൽകാത്തവ"</string>
     <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"അപ്‌ഡേറ്റ് ചെയ്യേണ്ടതുണ്ട്"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"ക്രമീകരണവും സഹായവും"</string>
-    <string name="disconnect_all_apps" msgid="748945115977534726">"എല്ലാ ആപ്പുകളുടെയും ആക്സസ് നീക്കം ചെയ്യൂ"</string>
+    <string name="disconnect_all_apps" msgid="748945115977534726">"ആപ്പുകളുടെ ആക്സസ് നീക്കം ചെയ്യൂ"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"റീഡ് ചെയ്യാൻ അനുവാദമുള്ളവ"</string>
     <string name="manage_permissions_write_header" msgid="6876806848658168370">"റൈറ്റ് ചെയ്യാൻ അനുവാദമുള്ളവ"</string>
     <string name="no_apps_allowed" msgid="5794833581324128108">"ആപ്പുകൾക്കൊന്നും അനുമതി നൽകിയിട്ടില്ല"</string>
@@ -541,10 +545,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"നിങ്ങളുടെ ആരോഗ്യവും ഫിറ്റ്നസും സംബന്ധിച്ച ഡാറ്റ Health Connect സംഭരിക്കുന്നു, ഇതിലൂടെ നിങ്ങളുടെ ഉപകരണത്തിലെ വ്യത്യസ്ത ആപ്പുകൾ എളുപ്പത്തിൽ സമന്വയിപ്പിക്കാനാകും"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"വ്യത്യസ്ത ആപ്പുകളിൽ നിന്നുള്ള നിങ്ങളുടെ ആരോഗ്യവും ഫിറ്റ്‍നസും സംബന്ധിച്ച ഡാറ്റ, Health Connect സംഭരിക്കുകയും സമന്വയിപ്പിക്കുകയും ചെയ്യുന്നു.\n\nവ്യായാമ സെഷനുകൾ, ചുവടുകൾ, പോഷകാഹാരം, ഉറക്കം എന്നിവയും മറ്റും ഉൾപ്പെടെയുള്ള "<b>"ഫിറ്റ്നസ്, വെൽനസ് ഡാറ്റ"</b>\n\n"വാക്‌സിനുകളും ലാബ് ഫലങ്ങളും മറ്റും ഉൾപ്പെടെയുള്ള "<b>"ആരോഗ്യ റെക്കോർഡുകൾ"</b></string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect ഉപയോഗിച്ച് ഇനിപ്പറയുന്നവ ചെയ്യാം"</string>
-    <string name="share_data" msgid="3481932156368883946">"നിങ്ങളുടെ ആപ്പുകളുമായി ഡാറ്റ പങ്കിടുക"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"ഓരോ ആപ്പിനും റീഡ് ചെയ്യാനോ Health Connect-ലേക്ക് റൈറ്റ് ചെയ്യാനോ കഴിയുന്ന ഡാറ്റ തിരഞ്ഞെടുക്കുക"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"നിങ്ങളുടെ ക്രമീകരണവും സ്വകാര്യതയും മാനേജ് ചെയ്യുക"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"ആപ്പ് അനുമതികൾ മാറ്റുക, ഏതുസമയത്തും നിങ്ങളുടെ ഡാറ്റ മാനേജ് ചെയ്യുക"</string>
+    <string name="share_data_text" msgid="6898398345784931678"><b>"നിങ്ങളുടെ ആപ്പുകളുമായി ഡാറ്റ പങ്കിടുക"</b>\n"ഓരോ ആപ്പിനും റീഡ് ചെയ്യാനോ Health Connect-ലേക്ക് റൈറ്റ് ചെയ്യാനോ കഴിയുന്ന ഡാറ്റ തിരഞ്ഞെടുക്കുക"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"നിങ്ങളുടെ ക്രമീകരണവും സ്വകാര്യതയും മാനേജ് ചെയ്യുക"</b>\n"ആപ്പ് അനുമതികൾ മാറ്റുക, ഏതുസമയത്തും നിങ്ങളുടെ ഡാറ്റ മാനേജ് ചെയ്യുക"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"മടങ്ങുക"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"ആരംഭിക്കുക"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"ഡാറ്റ ഇല്ലാതാക്കുക"</string>
@@ -1165,7 +1167,7 @@
     <string name="request_permissions_allow_selected" msgid="218527615680495438">"തിരഞ്ഞെടുത്തവ അനുവദിക്കുക"</string>
     <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"ആപ്പ് ഉപയോഗിക്കുമ്പോൾ"</string>
     <string name="request_permissions_deny_all" msgid="4123735770293545320">"എല്ലാം നിരസിക്കുക"</string>
-    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"ഫിറ്റ്‌നസ്, വെൽനസ് ഡാറ്റ ആക്സസ് ചെയ്യാൻ <xliff:g id="APP_NAME">%1$s</xliff:g> ആപ്പിനെ അനുവദിക്കണോ?"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"ഫിറ്റ്‌നസ്, വെൽനസ് ഡാറ്റ ആക്സസ് ചെയ്യാൻ <xliff:g id="APP_NAME">%1$s</xliff:g> എന്നതിനെ അനുവദിക്കണോ?"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> ആപ്പ് <xliff:g id="DATA_TYPES">%2$s</xliff:g> എന്നതിലേക്ക് ആക്‌സസ് അഭ്യർത്ഥിക്കുന്നു.\n\nഎല്ലാം അനുവദിക്കാൻ തിരഞ്ഞെടുക്കുകയോ അവ ഓരോന്നും പ്രത്യേകം നിയന്ത്രിക്കുകയോ ചെയ്യുക."</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"<xliff:g id="DATA_TYPE">%2$s</xliff:g> ആക്‌സസ് ചെയ്യാൻ <xliff:g id="APP_NAME">%1$s</xliff:g> എന്നതിനെ അനുവദിക്കണോ?"</string>
     <string name="fitness_and_wellness" msgid="2002316898861559748">"ഫിറ്റ്നസും ശാരീരികക്ഷമതയും"</string>
@@ -1173,7 +1175,7 @@
     <string name="view_permissions_while_in_use" msgid="2031627107397429473">"ഉപയോഗത്തിലുള്ളപ്പോൾ"</string>
     <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"എല്ലായ്‌പ്പോഴും"</string>
     <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"ഉപയോഗത്തിലുള്ളപ്പോൾ"</string>
-    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> ആപ്പിന് നിങ്ങളുടെ എല്ലാ ഫിറ്റ്നസ്, ശാരീരികക്ഷമതാ ഡാറ്റയും <xliff:g id="ALLOW_MODE">%2$s</xliff:g> ആക്സസ് ചെയ്യാൻ കഴിയും"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> എന്നതിന് നിങ്ങളുടെ എല്ലാ ഫിറ്റ്നസ്, ശാരീരികക്ഷമതാ ഡാറ്റയും <xliff:g id="ALLOW_MODE">%2$s</xliff:g> ആക്സസ് ചെയ്യാൻ കഴിയും"</string>
     <string name="allowed_to_access" msgid="4179317387300812335">"ആക്സസ് ചെയ്യാൻ അനുവദിച്ചു"</string>
     <string name="allowed_to_read" msgid="2775365229411407406">"റീഡ് ചെയ്യാനുള്ള അനുവാദം"</string>
     <string name="give_permission_prompt" msgid="5788144216023065504">"ഈ അനുമതികൾ നിങ്ങളുടെ ഉപകരണ സെൻസറുകളിൽ നിന്നുള്ള ഡാറ്റയിലേക്ക് <xliff:g id="APP_NAME">%1$s</xliff:g> ആപ്പിന് ആക്സസ് നൽകുന്നു."</string>

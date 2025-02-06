@@ -41,8 +41,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.FakePreferenceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
+import com.android.server.healthconnect.testing.fakes.FakePreferenceHelper;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -56,9 +56,8 @@ import java.time.Instant;
 public final class ExportImportSettingsStorageTest {
     private static final String EXPORT_URI_PREFERENCE_KEY = "export_uri_key";
     private static final String EXPORT_PERIOD_PREFERENCE_KEY = "export_period_key";
-    private static final String IMPORT_ONGOING_PREFERENCE_KEY = "import_ongoing_key";
     private static final String LAST_EXPORT_ERROR_PREFERENCE_KEY = "last_export_error_key";
-    private static final String LAST_IMPORT_ERROR_PREFERENCE_KEY = "last_import_error_key";
+    private static final String IMPORT_STATE_PREFERENCE_KEY = "import_state_key";
     private static final String LAST_SUCCESSFUL_EXPORT_URI_PREFERENCE_KEY =
             "last_successful_export_uri_key";
     private static final String NEXT_EXPORT_SEQUENTIAL_NUMBER_PREFERENCE_KEY =
@@ -67,7 +66,7 @@ public final class ExportImportSettingsStorageTest {
 
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
-            new ExtendedMockitoRule.Builder(this).mockStatic(PreferenceHelper.class).build();
+            new ExtendedMockitoRule.Builder(this).build();
 
     @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 
@@ -229,19 +228,14 @@ public final class ExportImportSettingsStorageTest {
 
     @Test
     public void testConfigure_importStatus() {
-        mExportImportSettingsStorage.setImportOngoing(true);
-        mExportImportSettingsStorage.setLastImportError(DATA_IMPORT_ERROR_NONE);
+        mExportImportSettingsStorage.setImportState(DATA_IMPORT_ERROR_NONE);
 
-        assertThat(mFakePreferenceHelper.getPreference(LAST_IMPORT_ERROR_PREFERENCE_KEY))
+        assertThat(mFakePreferenceHelper.getPreference(IMPORT_STATE_PREFERENCE_KEY))
                 .isEqualTo(Integer.toString(DATA_IMPORT_ERROR_NONE));
-        assertThat(mFakePreferenceHelper.getPreference(IMPORT_ONGOING_PREFERENCE_KEY))
-                .isEqualTo(String.valueOf(true));
 
         ImportStatus importStatus = mExportImportSettingsStorage.getImportStatus();
 
-        assertThat(importStatus.getDataImportError()).isEqualTo(DATA_IMPORT_ERROR_NONE);
-        assertThat(mFakePreferenceHelper.getPreference(IMPORT_ONGOING_PREFERENCE_KEY))
-                .isEqualTo(String.valueOf(true));
+        assertThat(importStatus.getDataImportState()).isEqualTo(DATA_IMPORT_ERROR_NONE);
     }
 
     @Test

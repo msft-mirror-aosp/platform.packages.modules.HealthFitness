@@ -25,6 +25,8 @@ import static android.health.connect.datatypes.BloodPressureRecord.SYSTOLIC_MIN;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.junit.Assert.assertThrows;
+
 import android.content.Context;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
@@ -95,6 +97,38 @@ public class BloodPressureRecordTest {
                         .setEndTime(Instant.now())
                         .build());
         TestUtils.deleteAllStagedRemoteData();
+    }
+
+    @Test
+    public void constructor_invalidSystolic_throwsIllegalArgumentException() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> {
+                    new BloodPressureRecord.Builder(
+                                    new Metadata.Builder().build(),
+                                    Instant.now(),
+                                    1,
+                                    Pressure.fromMillimetersOfMercury(310.0),
+                                    Pressure.fromMillimetersOfMercury(80.0),
+                                    1)
+                            .build();
+                });
+    }
+
+    @Test
+    public void constructor_invalidDiastolic_throwsIllegalArgumentException() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> {
+                    new BloodPressureRecord.Builder(
+                                    new Metadata.Builder().build(),
+                                    Instant.now(),
+                                    1,
+                                    Pressure.fromMillimetersOfMercury(120.0),
+                                    Pressure.fromMillimetersOfMercury(310.0),
+                                    1)
+                            .build();
+                });
     }
 
     @Test

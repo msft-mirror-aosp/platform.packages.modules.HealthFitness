@@ -24,6 +24,7 @@ java_defaults {
         "src/**/HiltTestRunner.kt",
         "src/**/TestActivity.kt",
     ],
+    kotlin_lang_version: "1.9",
     defaults: ["modules-utils-testable-device-config-defaults"],
     sdk_version: "module_current",
     min_sdk_version: "34",
@@ -57,6 +58,7 @@ java_defaults {
         "compatibility-device-util-axt",
         "mockito-kotlin2",
         "platform-parametric-runner-lib",
+        "android.permission.flags-aconfig-java-export",
     ],
     libs: [
         "kotlin-annotations",
@@ -76,11 +78,20 @@ java_defaults {
         ":UnsupportedTestApp",
         ":OldPermissionsTestApp",
         ":MedicalPermissionsTestApp",
-        ":HealthConnectUITestApp6",
-        ":HealthConnectUITestApp7",
+        ":HealthConnectUIBodySensorsTestApp",
+        ":HealthConnectUIWearTestApp",
     ],
     test_config_template: "AndroidTestTemplate.xml",
     visibility: ["//visibility:private"],
+}
+
+filegroup {
+    name: "hilt-test-runner",
+    srcs: ["src/**/HiltTestRunner.kt"],
+    visibility: [
+        "//packages/modules/HealthFitness/apk/tests/screendiff",
+        "//vendor:__subpackages__",
+    ],
 }
 
 java_library {

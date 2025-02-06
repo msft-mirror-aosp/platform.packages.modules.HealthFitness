@@ -22,7 +22,7 @@
     <string name="permissions_and_data_header" msgid="4406105506837487805">"அனுமதிகளும் தரவும்"</string>
     <string name="home_subtitle" msgid="2154213430054477787">"ஆரோக்கியம் மற்றும் உடற்பயிற்சி குறித்த தரவை உங்கள் சாதனத்தில் நிர்வகிக்கலாம், அதை எந்தெந்த ஆப்ஸ் அணுகலாம் என்பதைக் கட்டுப்படுத்தலாம்"</string>
     <string name="data_title" msgid="4456619761533380816">"தரவு மற்றும் அணுகல்"</string>
-    <string name="browse_medical_data" msgid="6963802956096683273">"உடல்நலம் குறித்த சுருக்கமான தகவல்களைக் காட்டு"</string>
+    <string name="browse_medical_data" msgid="6963802956096683273">"உடல்நலம் குறித்த தகவல்களைத் தேடுதல்"</string>
     <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"உங்கள் உடல்நலம் குறித்த சுருக்கமான தகவல்களையும் அவற்றை எந்த ஆப்ஸ் அணுகலாம் என்பதையும் பார்க்கலாம்"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"அனைத்து வகைகளும்"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"அனைத்து வகைகளையும் காட்டு"</string>
@@ -56,6 +56,10 @@
     <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"அனுமதிகளை நிர்வகியுங்கள்"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"நேரம்: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
+    <string name="recent_access_empty_state_title" msgid="4767157641389217682">"சமீபத்திய அணுகல் இல்லை"</string>
+    <string name="recent_access_empty_state_description" msgid="6334951450158128989">"சமீபத்தில் உங்கள் தரவை அணுகிய ஆப்ஸ் தானாக இங்கே காட்டப்படும்"</string>
+    <string name="recent_access_view_all_button" msgid="825946958049641541">"அனைத்தையும் காட்டு"</string>
+    <string name="recent_access_error" msgid="2258399573560888960">"சமீபத்திய அணுகலை ஏற்ற முடியவில்லை"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"செயல்பாடு"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"செயல்பாடு"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"உடல் அளவீடுகள்"</string>
@@ -374,7 +378,7 @@
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"நீங்கள் அனுமதி வழங்கினால் ஒவ்வாமைகள், ஆய்வக முடிவுகள், தடுப்பூசிகள் போன்ற தரவை ஆப்ஸ் படிக்கலாம் எழுதலாம்\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"நீங்கள் அனுமதி வழங்கினால் ஒவ்வாமைகள், ஆய்வக முடிவுகள், தடுப்பூசிகள் போன்ற தரவை ஆப்ஸ் படிக்கலாம்\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"உடல்நலம் குறித்த சுருக்கமான தகவல்கள் பற்றிய அறிமுகம்"</string>
-    <string name="medical_request_data_to_share" msgid="6778034304921873317">"பகிர்வதற்கான தரவும் அடங்கும்"</string>
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"பகிர்வதற்கான தரவில் இவையும் அடங்கும்"</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"நீங்கள் அனுமதித்தால் உங்கள் உடல்நலம் குறித்த சுருக்கமான தகவல்களை Health Connect உடன் <xliff:g id="APP_NAME">%1$s</xliff:g> பகிரலாம்."</string>
     <string name="medical_request_footer" msgid="6533749932770903089">"வெவ்வேறு ஆப்ஸ் மற்றும் மூலங்களில் இருந்து உங்கள் உடல்நலம் குறித்த சுருக்கமான தகவல்களை ஒரே இடத்தில் வைத்திருக்க அவற்றை ஒத்திசைக்கவும்"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"எல்லா அனுமதிகளையும் அகற்றவா?"</string>
@@ -418,7 +422,7 @@
     <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"புதுப்பிப்பு தேவைப்படுபவை"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"அமைப்புகள் &amp; உதவி"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"எல்லா ஆப்ஸுக்கும் அணுகலை அகற்று"</string>
-    <string name="manage_permissions_read_header" msgid="2031153753057983683">"வாசிக்க அனுமதிக்கப்பட்டவை"</string>
+    <string name="manage_permissions_read_header" msgid="2031153753057983683">"படிக்க அனுமதிக்கப்பட்டவை"</string>
     <string name="manage_permissions_write_header" msgid="6876806848658168370">"எழுத அனுமதிக்கப்பட்டவை"</string>
     <string name="no_apps_allowed" msgid="5794833581324128108">"எந்த ஆப்ஸும் அனுமதிக்கப்படவில்லை"</string>
     <string name="no_apps_denied" msgid="743327680286446017">"எந்த ஆப்ஸுக்கும் அனுமதி மறுக்கப்படவில்லை"</string>
@@ -445,7 +449,7 @@
     <string name="permissions_header" msgid="6519976063360071569">"அனுமதிகள்"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"உடற்பயிற்சியும் ஆரோக்கியமும்"</string>
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"உடற்பயிற்சி, உறக்கம், ஊட்டச்சத்து &amp; பிற"</string>
-    <string name="medical_permissions" msgid="1224097151249321566">"உடல்நலம் குறித்த சுருக்கமான தகவல்கள்"</string>
+    <string name="medical_permissions" msgid="1224097151249321566">"உடல்நலம் குறித்த தகவல்கள்"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"உடல்நலம் குறித்த சுருக்கமான தகவல்கள்"</string>
     <string name="medical_permissions_summary" msgid="5526004634109548577">"ஆய்வக முடிவு, மருந்து, தடுப்பூசி &amp; பிற"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"அகற்றப்பட்ட ஆப்ஸ் அனுமதிகள்"</string>
@@ -541,10 +545,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect ஆப்ஸ் உங்கள் ஆரோக்கியம் மற்றும் உடற்பயிற்சி குறித்த தரவைச் சேமிக்கிறது. இந்த ஆப்ஸ் மூலம் சாதனத்திலுள்ள வெவ்வேறு ஆப்ஸை நீங்கள் எளிதாக ஒத்திசைக்கலாம்."</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect வெவ்வேறு ஆப்ஸிலிருந்து ஆரோக்கியம் மற்றும் உடற்பயிற்சி குறித்த தரவைச் சேமித்து ஒத்திசைக்கிறது.\n\n"<b>"உடற்பயிற்சி மற்றும் ஆரோக்கியம் குறித்த தரவு,"</b>" இதில் உடற்பயிற்சி அமர்வுகள், காலடிகள், ஊட்டச்சத்து, உறக்கம் மற்றும் பல அடங்கும்\n\n"<b>"உடல்நலம் குறித்த சுருக்கமான தகவல்கள்,"</b>" இதில் தடுப்பூசிகள், ஆய்வக முடிவுகள் மற்றும் பல அடங்கும்"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect மூலம் இவற்றைச் செய்யலாம்:"</string>
-    <string name="share_data" msgid="3481932156368883946">"ஆப்ஸுடன் தரவைப் பகிர்தல்"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"ஒவ்வொரு ஆப்ஸும் Health Connectடில் வாசிக்க/எழுத வேண்டிய தரவை நீங்கள் தேர்வுசெய்யலாம்."</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"உங்கள் அமைப்புகளையும் தனியுரிமையையும் நிர்வகித்தல்"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"எப்போது வேண்டுமானாலும் ஆப்ஸ் அனுமதிகளை மாற்றலாம் உங்கள் தரவை நிர்வகிக்கலாம்"</string>
+    <string name="share_data_text" msgid="6898398345784931678"><b>"உங்கள் ஆப்ஸுடன் தரவைப் பகிர்தல்"</b>\n"ஒவ்வொரு ஆப்ஸும் Health Connectடில் எந்தெந்தத் தரவைப் படிக்கலாம்/எழுதலாம் என்பதை நீங்கள் தேர்வுசெய்யலாம்"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"உங்கள் அமைப்புகளையும் தனியுரிமையையும் நிர்வகித்தல்"</b>\n"எப்போது வேண்டுமானாலும் ஆப்ஸ் அனுமதிகளை மாற்றலாம், உங்கள் தரவை நிர்வகிக்கலாம்"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"பின்செல்"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"தொடங்குக"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"தரவை நீக்கும்"</string>
@@ -1167,7 +1169,7 @@
     <string name="request_permissions_deny_all" msgid="4123735770293545320">"அனைத்தையும் நிராகரி"</string>
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"உடற்பயிற்சி மற்றும் ஆரோக்கியம் குறித்த தரவை அணுக <xliff:g id="APP_NAME">%1$s</xliff:g> ஆப்ஸை அனுமதிக்கவா?"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="DATA_TYPES">%2$s</xliff:g>க்கான அணுகல் <xliff:g id="APP_NAME">%1$s</xliff:g> ஆப்ஸுக்குத் தேவை.\n\nஅனைத்தையும் அனுமதிக்கவோ அவற்றைத் தனித்தனியே கட்டுப்படுத்தவோ தேர்வுசெய்யுங்கள்."</string>
-    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"<xliff:g id="DATA_TYPE">%2$s</xliff:g>ஐ அணுக <xliff:g id="APP_NAME">%1$s</xliff:g> ஆப்ஸை அனுமதிக்கவா?"</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"<xliff:g id="DATA_TYPE">%2$s</xliff:g> ஐ அணுக <xliff:g id="APP_NAME">%1$s</xliff:g> ஆப்ஸை அனுமதிக்கவா?"</string>
     <string name="fitness_and_wellness" msgid="2002316898861559748">"உடற்பயிற்சியும் ஆரோக்கியமும்"</string>
     <string name="view_permissions_all_the_time" msgid="6899702815770193290">"எப்போதும்"</string>
     <string name="view_permissions_while_in_use" msgid="2031627107397429473">"ஆப்ஸைப் பயன்படுத்தும்போது"</string>
@@ -1175,7 +1177,7 @@
     <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"ஆப்ஸைப் பயன்படுத்தும்போது"</string>
     <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> ஆப்ஸால் உடற்பயிற்சி மற்றும் ஆரோக்கியம் குறித்த அனைத்துத் தரவையும் <xliff:g id="ALLOW_MODE">%2$s</xliff:g> அணுக முடியும்"</string>
     <string name="allowed_to_access" msgid="4179317387300812335">"அணுக அனுமதிக்கப்பட்டது"</string>
-    <string name="allowed_to_read" msgid="2775365229411407406">"வாசிக்க அனுமதிக்கப்பட்டவை"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"படிக்க அனுமதிக்கப்பட்டவை"</string>
     <string name="give_permission_prompt" msgid="5788144216023065504">"இந்த அனுமதிகள் உங்கள் சாதன சென்சார்களில் இருந்து தரவுக்கான அணுகலை <xliff:g id="APP_NAME">%1$s</xliff:g> ஆப்ஸுக்கு வழங்கும்."</string>
     <string name="allowed_apps_count" msgid="2289260267605628310">"அனுமதிக்கப்பட்ட ஆப்ஸ்: <xliff:g id="NUMBER_0">%1$d</xliff:g>/<xliff:g id="OTHER_NUMBER">%2$d</xliff:g>"</string>
     <string name="no_apps_requesting" msgid="8088684445910698363">"எந்த ஆப்ஸும் அனுமதி கேட்கவில்லை"</string>

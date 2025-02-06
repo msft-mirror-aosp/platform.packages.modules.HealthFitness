@@ -21,9 +21,7 @@ import static android.healthconnect.cts.utils.DataFactory.getDistanceRecord;
 import static android.healthconnect.cts.utils.DataFactory.getHeartRateRecord;
 import static android.healthconnect.cts.utils.DataFactory.getStepsRecord;
 import static android.healthconnect.cts.utils.DataFactory.getTotalCaloriesBurnedRecord;
-import static android.healthconnect.cts.utils.TestUtils.PKG_TEST_APP;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
-import static android.healthconnect.cts.utils.TestUtils.insertStepsRecordViaTestApp;
 import static android.healthconnect.cts.utils.TestUtils.readRecords;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -41,6 +39,7 @@ import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.datatypes.TotalCaloriesBurnedRecord;
+import android.healthconnect.cts.lib.TestAppProxy;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 
@@ -57,7 +56,10 @@ import java.time.ZoneId;
 import java.util.List;
 
 public class ReadByFilterTests {
+    private static final String PKG_TEST_APP = "android.healthconnect.cts.testapp.readWritePerms.A";
+
     private Context mContext;
+    private TestAppProxy mTestApp;
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
@@ -68,6 +70,7 @@ public class ReadByFilterTests {
     @Before
     public void setup() {
         mContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        mTestApp = TestAppProxy.forPackageName(PKG_TEST_APP);
         TestUtils.deleteAllStagedRemoteData();
     }
 
@@ -120,7 +123,7 @@ public class ReadByFilterTests {
     public void filterByDataOrigin_dataOfOtherOriginsExcluded() throws Exception {
         Instant startTime = Instant.now().minus(1, DAYS);
         String id =
-                insertStepsRecordViaTestApp(mContext, startTime, startTime.plusMillis(1000), 50);
+                mTestApp.insertRecord(getStepsRecord(50, startTime, startTime.plusMillis(1000)));
         insertRecords(
                 List.of(
                         getStepsRecord(
@@ -149,7 +152,7 @@ public class ReadByFilterTests {
     @Test
     public void filterByDataOrigin_noFilterSet_allDataReturned() throws Exception {
         Instant startTime = Instant.now().minus(1, DAYS);
-        insertStepsRecordViaTestApp(mContext, startTime, startTime.plusMillis(1000), 50);
+        mTestApp.insertRecord(getStepsRecord(50, startTime, startTime.plusMillis(1000)));
         insertRecords(
                 List.of(
                         getStepsRecord(

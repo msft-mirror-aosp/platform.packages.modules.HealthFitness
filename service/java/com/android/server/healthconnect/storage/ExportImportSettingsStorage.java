@@ -44,8 +44,8 @@ import java.time.Instant;
  */
 public final class ExportImportSettingsStorage {
     // Scheduled Export Settings
-    private static final String EXPORT_URI_PREFERENCE_KEY = "export_uri_key";
-    private static final String EXPORT_PERIOD_PREFERENCE_KEY = "export_period_key";
+    public static final String EXPORT_URI_PREFERENCE_KEY = "export_uri_key";
+    public static final String EXPORT_PERIOD_PREFERENCE_KEY = "export_period_key";
 
     // Scheduled Export State
     private static final String LAST_SUCCESSFUL_EXPORT_PREFERENCE_KEY =
@@ -58,8 +58,7 @@ public final class ExportImportSettingsStorage {
             "next_export_sequential_number_key";
 
     // Import State
-    private static final String IMPORT_ONGOING_PREFERENCE_KEY = "import_ongoing_key";
-    private static final String LAST_IMPORT_ERROR_PREFERENCE_KEY = "last_import_error_key";
+    private static final String IMPORT_STATE_PREFERENCE_KEY = "import_state_key";
 
     private static final String TAG = "HealthConnectExportImport";
 
@@ -224,30 +223,20 @@ public final class ExportImportSettingsStorage {
                 .build();
     }
 
-    /** Set to true when an import starts and to false when a data import completes */
-    public void setImportOngoing(boolean importOngoing) {
+    /** Set the state of an import to started, success or an error of the last import attempt. */
+    public void setImportState(@ImportStatus.DataImportState int state) {
         mPreferenceHelper.insertOrReplacePreference(
-                IMPORT_ONGOING_PREFERENCE_KEY, String.valueOf(importOngoing));
-    }
-
-    /** Set errors during the last failed import attempt. */
-    public void setLastImportError(@ImportStatus.DataImportError int error) {
-        mPreferenceHelper.insertOrReplacePreference(
-                LAST_IMPORT_ERROR_PREFERENCE_KEY, String.valueOf(error));
+                IMPORT_STATE_PREFERENCE_KEY, String.valueOf(state));
     }
 
     /** Get the status of the last data import. */
     public ImportStatus getImportStatus() {
-        String lastImportError = mPreferenceHelper.getPreference(LAST_IMPORT_ERROR_PREFERENCE_KEY);
-        boolean importOngoing =
-                Boolean.parseBoolean(
-                        mPreferenceHelper.getPreference(IMPORT_ONGOING_PREFERENCE_KEY));
+        String lastImportState = mPreferenceHelper.getPreference(IMPORT_STATE_PREFERENCE_KEY);
 
         return new ImportStatus(
-                lastImportError == null
+                lastImportState == null
                         ? ImportStatus.DATA_IMPORT_ERROR_NONE
-                        : Integer.parseInt(lastImportError),
-                importOngoing);
+                        : Integer.parseInt(lastImportState));
     }
 
     /** Get the file name of the either the last or the next export, depending on the passed uri. */

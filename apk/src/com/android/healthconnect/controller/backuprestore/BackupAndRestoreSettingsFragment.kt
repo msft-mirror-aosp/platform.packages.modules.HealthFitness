@@ -272,18 +272,21 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
         if (importErrorBanner != null) {
             preferenceScreen.removePreferenceRecursively(IMPORT_ERROR_BANNER_KEY)
         }
-        when (importUiState.dataImportError) {
-            ImportUiState.DataImportError.DATA_IMPORT_ERROR_WRONG_FILE -> {
+        when (importUiState.dataImportState) {
+            ImportUiState.DataImportState.DATA_IMPORT_ERROR_WRONG_FILE -> {
                 preferenceScreen.addPreference(getImportWrongFileErrorBanner())
             }
-            ImportUiState.DataImportError.DATA_IMPORT_ERROR_VERSION_MISMATCH -> {
+            ImportUiState.DataImportState.DATA_IMPORT_ERROR_VERSION_MISMATCH -> {
                 preferenceScreen.addPreference(getImportVersionMismatchErrorBanner())
             }
-            ImportUiState.DataImportError.DATA_IMPORT_ERROR_UNKNOWN -> {
+            ImportUiState.DataImportState.DATA_IMPORT_ERROR_UNKNOWN -> {
                 preferenceScreen.addPreference(getImportOtherErrorBanner())
             }
-            ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE -> {
+            ImportUiState.DataImportState.DATA_IMPORT_ERROR_NONE -> {
                 // Do nothing.
+            }
+            ImportUiState.DataImportState.DATA_IMPORT_STARTED -> {
+                // Do nothing, import ongoing, no error so far
             }
         }
     }

@@ -20,11 +20,11 @@ import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXP
 import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXPORT_ERROR_UNKNOWN;
 import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXPORT_STARTED;
 
-import static com.android.server.healthconnect.TestUtils.queryNumEntries;
 import static com.android.server.healthconnect.exportimport.ExportManager.LOCAL_EXPORT_DATABASE_FILE_NAME;
 import static com.android.server.healthconnect.exportimport.ExportManager.LOCAL_EXPORT_DIR_NAME;
 import static com.android.server.healthconnect.exportimport.ExportManager.LOCAL_EXPORT_ZIP_FILE_NAME;
-import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
+import static com.android.server.healthconnect.testing.TestUtils.queryNumEntries;
+import static com.android.server.healthconnect.testing.storage.TransactionTestUtils.createStepsRecord;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -39,7 +39,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.health.connect.HealthConnectManager;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.exportimport.ScheduledExportStatus;
@@ -60,9 +59,6 @@ import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.modules.utils.testing.ExtendedMockitoRule.MockStatic;
 import com.android.modules.utils.testing.ExtendedMockitoRule.MockStaticClasses;
-import com.android.server.healthconnect.EnvironmentFixture;
-import com.android.server.healthconnect.FakePreferenceHelper;
-import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.logging.ExportImportLogger;
@@ -71,9 +67,12 @@ import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTra
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.HealthConnectContext;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
-import com.android.server.healthconnect.storage.PhrTestUtils;
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
+import com.android.server.healthconnect.testing.fakes.FakePreferenceHelper;
+import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
+import com.android.server.healthconnect.testing.fixtures.SQLiteDatabaseFixture;
+import com.android.server.healthconnect.testing.storage.PhrTestUtils;
+import com.android.server.healthconnect.testing.storage.TransactionTestUtils;
 
 import org.junit.After;
 import org.junit.Before;
@@ -104,7 +103,6 @@ public class ExportManagerTest {
     @Rule(order = 2)
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(HealthConnectManager.class)
                     .mockStatic(ExportImportLogger.class)
                     .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
@@ -166,9 +164,52 @@ public class ExportManagerTest {
     }
 
     @Test
+    @EnableFlags({
+        Flags.FLAG_PERSONAL_HEALTH_RECORD,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_ENABLE_EXPORT_IMPORT
+    })
+    public void testWhenPhrExportImportEnableFlagIsEnabled_tableContentIsExported()
+            throws Exception {
+        /*
+         * When FLAG_PERSONAL_HEALTH_RECORD_ENABLE_EXPORT_IMPORT is enabled, regardless whether
+         * FLAG_PERSONAL_HEALTH_RECORD_DISABLE_EXPORT_IMPORT is enabled or disabled, PHR data should
+         * still be exported.
+         */
+        MedicalDataSource dataSource =
+                mPhrTestUtils.insertR4MedicalDataSource("ds", TEST_PACKAGE_NAME);
+        mPhrTestUtils.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource);
+        assertThat(mTransactionTestUtils.queryNumEntries("medical_data_source_table")).isEqualTo(1);
+        assertThat(mTransactionTestUtils.queryNumEntries("medical_resource_table")).isEqualTo(1);
+        assertThat(mTransactionTestUtils.queryNumEntries("medical_resource_indices_table"))
+                .isEqualTo(1);
+
+        assertThat(mExportManager.runExport(mContext.getUser())).isTrue();
+
+        decompressExportedZip();
+        try (HealthConnectDatabase exportedDatabase =
+                new HealthConnectDatabase(mExportedDbContext, REMOTE_EXPORT_DATABASE_FILE_NAME)) {
+            assertThat(queryNumEntries(exportedDatabase, "medical_data_source_table")).isEqualTo(1);
+            assertThat(queryNumEntries(exportedDatabase, "medical_resource_table")).isEqualTo(1);
+            assertThat(queryNumEntries(exportedDatabase, "medical_resource_indices_table"))
+                    .isEqualTo(1);
+        }
+    }
+
+    @Test
     @EnableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
-    @DisableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DISABLE_EXPORT_IMPORT})
-    public void testWhenPhrExportNotDisabled_tableContentIsExported() throws Exception {
+    @DisableFlags({
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_ENABLE_EXPORT_IMPORT,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_DISABLE_EXPORT_IMPORT
+    })
+    public void
+            testWhenBothPhrExportImportEnableFlagAndDisableFlagAreDisabled_tableContentIsExported()
+                    throws Exception {
+        /*
+         * When FLAG_PERSONAL_HEALTH_RECORD_ENABLE_EXPORT_IMPORT is disabled, and if
+         * FLAG_PERSONAL_HEALTH_RECORD_DISABLE_EXPORT_IMPORT is also disabled, then PHR data should
+         * still be exported.
+         */
         MedicalDataSource dataSource =
                 mPhrTestUtils.insertR4MedicalDataSource("ds", TEST_PACKAGE_NAME);
         mPhrTestUtils.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource);
@@ -195,7 +236,15 @@ public class ExportManagerTest {
         Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
         Flags.FLAG_PERSONAL_HEALTH_RECORD_DISABLE_EXPORT_IMPORT
     })
-    public void testDisableExportForPhr_deletesPhrTablesContent() throws Exception {
+    @DisableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_ENABLE_EXPORT_IMPORT})
+    public void
+            testPhrExportImportEnableFlagIsDisableAndDisableFlagIsEnabled_deletesPhrTablesContent()
+                    throws Exception {
+        /*
+         * When FLAG_PERSONAL_HEALTH_RECORD_ENABLE_EXPORT_IMPORT is disabled, and if
+         * FLAG_PERSONAL_HEALTH_RECORD_DISABLE_EXPORT_IMPORT is enabled, then PHR data should
+         * be deleted and not exported.
+         */
         MedicalDataSource dataSource =
                 mPhrTestUtils.insertR4MedicalDataSource("ds", TEST_PACKAGE_NAME);
         mPhrTestUtils.upsertResource(PhrDataFactory::createVaccineMedicalResource, dataSource);

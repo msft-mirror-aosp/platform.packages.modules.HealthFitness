@@ -25,12 +25,8 @@ import android.health.connect.datatypes.MindfulnessSessionRecord.MINDFULNESS_SES
 import android.health.connect.datatypes.MindfulnessSessionRecord.MINDFULNESS_SESSION_TYPE_UNKNOWN
 import android.healthconnect.cts.lib.RecordFactory.YESTERDAY_11AM
 import android.healthconnect.cts.lib.RecordFactory.newEmptyMetadata
-import android.platform.test.annotations.RequiresFlagsEnabled
 import android.text.format.DateFormat.is24HourFormat
-import com.android.healthfitness.flags.Flags.FLAG_MINDFULNESS
-import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
 
-@RequiresFlagsEnabled(FLAG_MINDFULNESS, FLAG_NEW_INFORMATION_ARCHITECTURE)
 class MindfulnessTest : BaseDataTypeTest<MindfulnessSessionRecord>() {
     override val dataTypeString = "Mindfulness"
     override val dataCategoryString = "Wellness"

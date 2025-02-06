@@ -392,8 +392,7 @@ public class HeartRateRecordTest {
                         .build());
         TestUtils.assertRecordNotFound(id1, HeartRateRecord.class);
         TestUtils.assertRecordNotFound(id2, HeartRateRecord.class);
-        // TODO(b/331350683): Uncomment once LocalTimeRangeFilter#endTime is exclusive
-        // TestUtils.assertRecordFound(id3, HeartRateRecord.class);
+        TestUtils.assertRecordFound(id3, HeartRateRecord.class);
     }
 
     @Test

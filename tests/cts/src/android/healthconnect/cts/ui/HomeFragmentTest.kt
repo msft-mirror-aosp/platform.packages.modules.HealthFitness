@@ -18,7 +18,7 @@ package android.healthconnect.cts.ui
 import android.health.connect.datatypes.StepsRecord
 import android.healthconnect.cts.lib.ActivityLauncher.launchMainActivity
 import android.healthconnect.cts.lib.TestAppProxy
-import android.healthconnect.cts.lib.UiTestUtils.clickOnTextAndWaitForNewWindow
+import android.healthconnect.cts.lib.UiTestUtils.navigateToNewPage
 import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndFindText
 import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndFindTextContains
 import android.healthconnect.cts.lib.UiTestUtils.scrollToEnd
@@ -31,9 +31,9 @@ import android.platform.test.annotations.RequiresFlagsDisabled
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
-import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
 import com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD
 import com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE
+import com.android.settingslib.widget.theme.flags.Flags.FLAG_IS_EXPRESSIVE_DESIGN_ENABLED
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import org.junit.AfterClass
@@ -81,8 +81,7 @@ class HomeFragmentTest : HealthConnectBaseTest() {
     @Test
     fun homeFragment_opensAppPermissions() {
         context.launchMainActivity {
-            scrollDownToAndFindText("App permissions")
-            clickOnTextAndWaitForNewWindow("App permissions")
+            navigateToNewPage("App permissions")
 
             scrollDownToAndFindText("Allowed access")
             scrollDownToAndFindText("Not allowed access")
@@ -90,25 +89,9 @@ class HomeFragmentTest : HealthConnectBaseTest() {
     }
 
     @Test
-    @RequiresFlagsDisabled(FLAG_NEW_INFORMATION_ARCHITECTURE)
-    fun homeFragment_oldIa_opensDataManagement() {
+    fun homeFragment_opensDataManagement() {
         context.launchMainActivity {
-            scrollDownToAndFindText("Data and access")
-            clickOnTextAndWaitForNewWindow("Data and access")
-
-            scrollDownToAndFindText("Browse data")
-            scrollDownToAndFindText("Manage data")
-
-            scrollDownToAndFindText("Delete all data")
-        }
-    }
-
-    @Test
-    @RequiresFlagsEnabled(FLAG_NEW_INFORMATION_ARCHITECTURE)
-    fun homeFragment_newIa_opensDataManagement() {
-        context.launchMainActivity {
-            scrollDownToAndFindText("Data and access")
-            clickOnTextAndWaitForNewWindow("Data and access")
+            navigateToNewPage("Data and access")
 
             scrollDownToAndFindText("Activity")
             scrollDownToAndFindText("Steps")
@@ -118,8 +101,7 @@ class HomeFragmentTest : HealthConnectBaseTest() {
     @Test
     fun homeFragment_opensManageData() {
         context.launchMainActivity {
-            scrollDownToAndFindText("Manage data")
-            clickOnTextAndWaitForNewWindow("Manage data")
+            navigateToNewPage("Manage data")
 
             scrollDownToAndFindText("Auto-delete")
             scrollDownToAndFindText("Data sources and priority")
@@ -128,7 +110,8 @@ class HomeFragmentTest : HealthConnectBaseTest() {
     }
 
     @Test
-    fun homeFragment_recentAccessShownOnHomeScreen() {
+    @RequiresFlagsDisabled(FLAG_IS_EXPRESSIVE_DESIGN_ENABLED)
+    fun homeFragment_legacyRecentAccessShownOnHomeScreen() {
         context.launchMainActivity {
             scrollDownToAndFindTextContains("CtsHealthConnectTest")
             scrollDownToAndFindText("See all recent access")
@@ -136,10 +119,30 @@ class HomeFragmentTest : HealthConnectBaseTest() {
     }
 
     @Test
-    fun homeFragment_navigatesToRecentAccess() {
+    @RequiresFlagsEnabled(FLAG_IS_EXPRESSIVE_DESIGN_ENABLED)
+    fun homeFragment_expressiveRecentAccessShownOnHomeScreen() {
         context.launchMainActivity {
-            scrollDownToAndFindText("See all recent access")
-            clickOnTextAndWaitForNewWindow("See all recent access")
+            scrollDownToAndFindTextContains("CtsHealthConnectTest")
+            scrollDownToAndFindText("View all")
+        }
+    }
+
+    @Test
+    @RequiresFlagsDisabled(FLAG_IS_EXPRESSIVE_DESIGN_ENABLED)
+    fun homeFragment_navigatesToLegacyRecentAccess() {
+        context.launchMainActivity {
+            navigateToNewPage("See all recent access")
+
+            scrollDownToAndFindText("Today")
+            scrollDownToAndFindTextContains("CtsHealthConnectTest")
+        }
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_IS_EXPRESSIVE_DESIGN_ENABLED)
+    fun homeFragment_navigatesToExpressiveRecentAccess() {
+        context.launchMainActivity {
+            navigateToNewPage("View all")
 
             scrollDownToAndFindText("Today")
             scrollDownToAndFindTextContains("CtsHealthConnectTest")
@@ -153,8 +156,7 @@ class HomeFragmentTest : HealthConnectBaseTest() {
             APP_A_WITH_READ_WRITE_PERMS.createMedicalDataSource(getCreateMedicalDataSourceRequest())
         APP_A_WITH_READ_WRITE_PERMS.upsertMedicalResource(dataSource.id, FHIR_DATA_IMMUNIZATION)
         context.launchMainActivity {
-            scrollDownToAndFindText("Browse health records")
-            clickOnTextAndWaitForNewWindow("Browse health records")
+            navigateToNewPage("Browse health records")
 
             scrollDownToAndFindText("Vaccines")
         }

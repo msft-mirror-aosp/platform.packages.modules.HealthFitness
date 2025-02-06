@@ -29,5 +29,5 @@
     <string name="grant_dialog_button_allow_always" msgid="5216642447029937725">"Cijelo vrijeme"</string>
     <string name="grant_dialog_button_allow_foreground" msgid="2911675370133933600">"Dok se aplikacija koristi"</string>
     <string name="grant_dialog_button_allow_background" msgid="7827419162341440169">"Cijelo vrijeme"</string>
-    <string name="permgrouplab_health" msgid="6793578181776346442">"Fitness i wellness"</string>
+    <string name="permgrouplab_health" msgid="6793578181776346442">"Fitness i opće stanje"</string>
 </resources>

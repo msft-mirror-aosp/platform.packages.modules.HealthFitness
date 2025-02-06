@@ -63,13 +63,12 @@ public final class ImportStatus implements Parcelable {
     public static final int DATA_IMPORT_ERROR_VERSION_MISMATCH = 3;
 
     /**
-     * Indicates that an import was started.
+     * Indicates that an import was started and has not yet completed.
      *
      * @hide
      */
     public static final int DATA_IMPORT_STARTED = 4;
 
-    // TODO(b/356393172) Clean up statuses, add DATA_IMPORT_STARTED here and remove isImportOngoing
     /** @hide */
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
@@ -77,8 +76,9 @@ public final class ImportStatus implements Parcelable {
         DATA_IMPORT_ERROR_UNKNOWN,
         DATA_IMPORT_ERROR_WRONG_FILE,
         DATA_IMPORT_ERROR_VERSION_MISMATCH,
+        DATA_IMPORT_STARTED,
     })
-    public @interface DataImportError {}
+    public @interface DataImportState {}
 
     @NonNull
     public static final Creator<ImportStatus> CREATOR =
@@ -94,22 +94,23 @@ public final class ImportStatus implements Parcelable {
                 }
             };
 
-    @DataImportError private final int mDataImportError;
-    private final boolean mIsImportOngoing;
+    @DataImportState private final int mDataImportState;
 
-    public ImportStatus(@DataImportError int dataImportError, boolean isImportOngoing) {
-        mDataImportError = dataImportError;
-        mIsImportOngoing = isImportOngoing;
+    public ImportStatus(@DataImportState int dataImportState) {
+        mDataImportState = dataImportState;
     }
 
-    /** Returns the error status of the last import attempt. */
-    public int getDataImportError() {
-        return mDataImportError;
+    /**
+     * Returns the state of the last import attempt, which can indicate that the import has started,
+     * has failed or has succeeded
+     */
+    public int getDataImportState() {
+        return mDataImportState;
     }
 
-    /** Returns whether the import is ongoing. */
+    /** Convenience method to check if an import is ongoing. */
     public boolean isImportOngoing() {
-        return mIsImportOngoing;
+        return mDataImportState == DATA_IMPORT_STARTED;
     }
 
     @Override
@@ -118,13 +119,11 @@ public final class ImportStatus implements Parcelable {
     }
 
     private ImportStatus(@NonNull Parcel in) {
-        mDataImportError = in.readInt();
-        mIsImportOngoing = in.readBoolean();
+        mDataImportState = in.readInt();
     }
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeInt(mDataImportError);
-        dest.writeBoolean(mIsImportOngoing);
+        dest.writeInt(mDataImportState);
     }
 }

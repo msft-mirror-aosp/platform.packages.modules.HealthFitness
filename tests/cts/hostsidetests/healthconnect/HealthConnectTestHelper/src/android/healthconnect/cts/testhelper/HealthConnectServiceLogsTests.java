@@ -65,6 +65,7 @@ import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.datatypes.units.Length;
 import android.health.connect.datatypes.units.Mass;
 import android.healthconnect.cts.phr.utils.PhrCtsTestUtils;
+import android.healthconnect.cts.utils.PermissionHelper;
 import android.healthconnect.cts.utils.TestUtils;
 import android.os.OutcomeReceiver;
 
@@ -101,6 +102,10 @@ public class HealthConnectServiceLogsTests {
     @Before
     public void before() throws InterruptedException {
         TestUtils.deleteAllStagedRemoteData();
+        // b/372766760: In theory, declared permissions are meant to be auto granted. However,
+        // this seems to be unreliable and has led to test failures where the permissions don't
+        // get granted as expected. We do it explicitly here as a precaution.
+        PermissionHelper.grantAllHealthPermissions(mContext.getPackageName());
         // insert a record so the test app gets an app id in HC
         Record record =
                 new StepsRecord.Builder(getEmptyMetadata(), EPOCH, Instant.now(), 123).build();

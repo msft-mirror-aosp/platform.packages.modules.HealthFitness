@@ -70,6 +70,11 @@ public class CyclingPedalingCadenceRecordHelper
     }
 
     @Override
+    public String getSampleTimestampsColumnName() {
+        return EPOCH_MILLIS_COLUMN_NAME;
+    }
+
+    @Override
     List<Pair<String, String>> getSeriesRecordColumnInfo() {
         ArrayList<Pair<String, String>> columnInfo = new ArrayList<>(NUM_LOCAL_COLUMNS);
         columnInfo.add(new Pair<>(EPOCH_MILLIS_COLUMN_NAME, INTEGER));

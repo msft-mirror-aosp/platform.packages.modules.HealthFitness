@@ -56,6 +56,10 @@
     <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Rechten beheren"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Tijd: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
+    <string name="recent_access_empty_state_title" msgid="4767157641389217682">"Geen recente toegang"</string>
+    <string name="recent_access_empty_state_description" msgid="6334951450158128989">"Apps die recent toegang tot je gegevens hebben gehad, worden hier automatisch getoond"</string>
+    <string name="recent_access_view_all_button" msgid="825946958049641541">"Alles bekijken"</string>
+    <string name="recent_access_error" msgid="2258399573560888960">"Kan recente toegang niet laden"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Activiteit"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"activiteit"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Lichaamsmetingen"</string>
@@ -296,7 +300,7 @@
     <string name="heart_rate_variability_lowercase_label" msgid="2332638559415663836">"hartslagvariabiliteit"</string>
     <string name="heart_rate_variability_read_content_description" msgid="5812707457872629556">"Gegevens over hartslagvariabiliteit lezen"</string>
     <string name="heart_rate_variability_write_content_description" msgid="3628171603035566114">"Gegevens over hartslagvariabiliteit schrijven"</string>
-    <string name="oxygen_saturation_uppercase_label" msgid="1396254185616418355">"Zuurstofsaturatie"</string>
+    <string name="oxygen_saturation_uppercase_label" msgid="1396254185616418355">"Zuurstof­saturatie"</string>
     <string name="oxygen_saturation_lowercase_label" msgid="7264179897533866327">"zuurstofsaturatie"</string>
     <string name="oxygen_saturation_read_content_description" msgid="4756434113425028212">"Gegevens over zuurstofsaturatie lezen"</string>
     <string name="oxygen_saturation_write_content_description" msgid="7189901097196830875">"Gegevens over zuurstofsaturatie schrijven"</string>
@@ -308,7 +312,7 @@
     <string name="resting_heart_rate_lowercase_label" msgid="4533866739695973169">"hartslag in rust"</string>
     <string name="resting_heart_rate_read_content_description" msgid="1068160055773401020">"Gegevens over hartslag in rust lezen"</string>
     <string name="resting_heart_rate_write_content_description" msgid="8848198128082739995">"Gegevens over hartslag in rust schrijven"</string>
-    <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Huidtemperatuur"</string>
+    <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Huid­temperatuur"</string>
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"huidtemperatuur"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Huidtemperatuur lezen"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Huidtemperatuur schrijven"</string>
@@ -343,9 +347,9 @@
     <string name="procedures_uppercase_label" msgid="9176087520132593261">"Procedures"</string>
     <string name="procedures_lowercase_label" msgid="5320804313946273234">"procedures"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"Procedures lezen"</string>
-    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Sociale geschiedenis"</string>
-    <string name="social_history_lowercase_label" msgid="9027541979445736412">"sociale geschiedenis"</string>
-    <string name="social_history_content_description" msgid="7187059309389849831">"Sociale geschiedenis lezen"</string>
+    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Sociale context"</string>
+    <string name="social_history_lowercase_label" msgid="9027541979445736412">"sociale context"</string>
+    <string name="social_history_content_description" msgid="7187059309389849831">"Sociale context lezen"</string>
     <string name="visits_uppercase_label" msgid="8532619758336375886">"Bezoeken"</string>
     <string name="visits_lowercase_label" msgid="2545887061364564151">"bezoeken"</string>
     <string name="visits_content_description" msgid="6336796415049565697">"Bezoeken lezen"</string>
@@ -541,10 +545,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect slaat je gezondheids- en fitnessgegevens op zodat je de verschillende apps op je apparaat makkelijk kunt synchroniseren"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect slaat je gezondheids- en fitnessgegevens uit verschillende apps op en synchroniseert deze.\n\n"<b>"Fitness- en welzijnsgegevens,"</b>" waaronder trainingssessies, stappen, voeding en slaap\n\n"<b>"Medische dossiers,"</b>" waaronder vaccinaties, labresultaten en meer"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Met Health Connect kun je het volgende doen"</string>
-    <string name="share_data" msgid="3481932156368883946">"Gegevens delen met je apps"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Kies de gegevens die elke app mag lezen in of sturen naar Health Connect"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Je instellingen en privacy beheren"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Wijzig app-rechten en beheer je gegevens wanneer je maar wilt"</string>
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Gegevens delen met je apps"</b>\n"Kies de gegevens die elke app mag lezen in of sturen naar Health Connect"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Je instellingen en privacy beheren"</b>\n"Wijzig app-rechten en beheer je gegevens wanneer je maar wilt"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Terug"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Aan de slag"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Gegevens verwijderen"</string>
@@ -947,7 +949,7 @@
     <string name="feet_inches_format" msgid="768610500549967860">"<xliff:g id="FT">%1$s</xliff:g><xliff:g id="IN">%2$s</xliff:g>⁠"</string>
     <string name="feet_inches_format_long" msgid="5187265716573430363">"<xliff:g id="FT">%1$s</xliff:g> <xliff:g id="IN">%2$s</xliff:g>"</string>
     <string name="calories_long" msgid="7225535148232419419">"{count,plural, =1{1 calorie}other{# calorieën}}"</string>
-    <string name="calories" msgid="320906359079319632">"{count,plural, =1{1 cal.}other{# cal.}}"</string>
+    <string name="calories" msgid="320906359079319632">"{count,plural, =1{1 cal}other{# cal}}"</string>
     <string name="kj" msgid="2742876437259085714">"{count,plural, =1{1 kJ}other{# kJ}}"</string>
     <string name="kj_long" msgid="1837278261960345400">"{count,plural, =1{1 kilojoule}other{# kilojoules}}"</string>
     <string name="percent" formatted="false" msgid="9199428244800776575">"{value,plural, =1{1%}other{#%}}"</string>
@@ -1173,7 +1175,7 @@
     <string name="view_permissions_while_in_use" msgid="2031627107397429473">"tijdens gebruik"</string>
     <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Altijd"</string>
     <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Tijdens gebruik"</string>
-    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> heeft toegang tot al je fitness- en welzijnsgegevens <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> heeft <xliff:g id="ALLOW_MODE">%2$s</xliff:g> toegang tot al je fitness- en welzijnsgegevens"</string>
     <string name="allowed_to_access" msgid="4179317387300812335">"Toegang toegestaan"</string>
     <string name="allowed_to_read" msgid="2775365229411407406">"Lezen toegestaan"</string>
     <string name="give_permission_prompt" msgid="5788144216023065504">"Met deze rechten heeft <xliff:g id="APP_NAME">%1$s</xliff:g> toegang tot gegevens van de apparaatsensoren."</string>

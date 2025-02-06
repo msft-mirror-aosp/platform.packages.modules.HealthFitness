@@ -18,14 +18,10 @@ package com.android.healthconnect.controller.shared.preference
 import android.content.Context
 import android.util.AttributeSet
 import androidx.preference.Preference
-import androidx.preference.Preference.OnPreferenceClickListener
 import com.android.healthconnect.controller.permissions.connectedapps.ComparablePreference
 import com.android.healthconnect.controller.utils.logging.ElementName
-import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
-import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
 import com.android.healthconnect.controller.utils.logging.UnknownGenericElement
-import dagger.hilt.android.EntryPointAccessors
 
 /** A [Preference] that allows logging. */
 open class HealthPreference
@@ -33,47 +29,29 @@ open class HealthPreference
 constructor(context: Context, attrs: AttributeSet? = null) :
     Preference(context, attrs), ComparablePreference {
 
-    private var logger: HealthConnectLogger
+    private var logger: HealthConnectLogger = HealthPreferenceUtils.initializeLogger(context)
     var logName: ElementName = UnknownGenericElement.UNKNOWN_HEALTH_PREFERENCE
-
-    init {
-        val hiltEntryPoint =
-            EntryPointAccessors.fromApplication(
-                context.applicationContext, HealthConnectLoggerEntryPoint::class.java)
-        logger = hiltEntryPoint.logger()
-    }
 
     override fun onAttached() {
         super.onAttached()
         logger.logImpression(logName)
     }
 
-    // TODO (b/270944053) - This does not currently work for preferences defined in XML
-    //  because they don't have the log name when this method is called
-    //    override fun onAttachedToHierarchy(preferenceManager: PreferenceManager?) {
-    //        super.onAttachedToHierarchy(preferenceManager)
-    //        logger.logImpression(logName)
-    //    }
-
     override fun setOnPreferenceClickListener(
         onPreferenceClickListener: OnPreferenceClickListener?
     ) {
-        val loggingClickListener = OnPreferenceClickListener {
-            logger.logInteraction(logName)
-            onPreferenceClickListener?.onPreferenceClick(it) ?: false
-        }
-        super.setOnPreferenceClickListener(loggingClickListener)
+        super.setOnPreferenceClickListener(
+            HealthPreferenceUtils.loggingPreferenceClickListener(
+                logger,
+                logName,
+                onPreferenceClickListener,
+            )
+        )
     }
 
-    override fun isSameItem(preference: Preference): Boolean {
-        return preference == this
-    }
+    override fun isSameItem(preference: Preference): Boolean =
+        HealthPreferenceUtils.isSameItem(preference, this)
 
-    override fun hasSameContents(preference: Preference): Boolean {
-        return preference is HealthPreference &&
-            this.title == preference.title &&
-            this.summary == preference.summary &&
-            this.icon == preference.icon &&
-            this.isEnabled == preference.isEnabled
-    }
+    override fun hasSameContents(preference: Preference): Boolean =
+        HealthPreferenceUtils.hasSameContents(preference, this)
 }

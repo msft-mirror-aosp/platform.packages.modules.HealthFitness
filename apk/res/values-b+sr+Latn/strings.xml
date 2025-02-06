@@ -56,6 +56,10 @@
     <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Upravljaj dozvolama"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Vreme: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
+    <string name="recent_access_empty_state_title" msgid="4767157641389217682">"Nema nedavnih pristupa"</string>
+    <string name="recent_access_empty_state_description" msgid="6334951450158128989">"Aplikacije koje su nedavno pristupale vašim podacima će se automatski prikazivati ovde"</string>
+    <string name="recent_access_view_all_button" msgid="825946958049641541">"Prikaži sve"</string>
+    <string name="recent_access_error" msgid="2258399573560888960">"Učitavanje nedavnih pristupa nije uspelo"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Aktivnosti"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"aktivnosti"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Telesne mere"</string>
@@ -540,11 +544,9 @@
     <string name="onboarding_title" msgid="8550656211291180188">"Započnite sa Povezivanjem zdravlja"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Povezivanje zdravlja čuva vaše podatke o zdravlju i fitnesu i pruža vam jednostavan način da sinhronizujete različite aplikacije na uređaju"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Povezivanje zdravlja čuva i sinhronizuje podatke o zdravlju i fitnesu iz različitih aplikacija.\n\n"<b>"Podaci o fitnesu i zdravlju,"</b>" uključujući sesije vežbanja, broj koraka, ishranu, spavanje i drugo\n\n"<b>"Zdravstvena evidencija,"</b>" uključujući vakcinacije, laboratorijske rezultate i drugo"</string>
-    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Pomoću Povezivanja zdravlja možete:"</string>
-    <string name="share_data" msgid="3481932156368883946">"Delite podatke sa aplikacijama"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"Odaberite podatke koje svaka aplikacije može da čita i upisuje u Povezivanje zdravlja"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"Upravljajte podešavanjima i privatnošću"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"Promenite dozvole za aplikacije i upravljajte podacima bilo kada"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Pomoću Povezivanja zdravlja:"</string>
+    <string name="share_data_text" msgid="6898398345784931678"><b>"Delite podatke sa aplikacijama"</b>\n"Odaberite podatke koje svaka aplikacija može da čita i upisuje u Povezivanje zdravlja"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Upravljajte podešavanjima i privatnošću"</b>\n"Promenite dozvole za aplikacije i upravljajte podacima bilo kada"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Nazad"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Započnite"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Brisanje podataka"</string>
@@ -1167,7 +1169,7 @@
     <string name="request_permissions_deny_all" msgid="4123735770293545320">"Odbij sve"</string>
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Želite da dozvolite da <xliff:g id="APP_NAME">%1$s</xliff:g> pristupa podacima o fitnesu i velnesu?"</string>
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> traži pristup za: <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nIzaberite da li želite da dozvolite sve ili da ih kontrolišete pojedinačno."</string>
-    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Dozvoljavate da <xliff:g id="APP_NAME">%1$s</xliff:g> pristupa uređaju <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Dozvoljavate da <xliff:g id="APP_NAME">%1$s</xliff:g> pristupa podacima: <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
     <string name="fitness_and_wellness" msgid="2002316898861559748">"Fitnes i velnes"</string>
     <string name="view_permissions_all_the_time" msgid="6899702815770193290">"sve vreme"</string>
     <string name="view_permissions_while_in_use" msgid="2031627107397429473">"dok se koristi"</string>
@@ -1187,6 +1189,6 @@
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"Znak x"</string>
     <string name="current_allow_mode" msgid="6716206063077569218">"Trenutno, <xliff:g id="APP_NAME">%1$s</xliff:g> može da pristupa podacima o fitnesu i velnesu <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
     <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Želite da dozvolite da <xliff:g id="APP_NAME">%1$s</xliff:g> stalno pristupa podacima o fitnesu i velnesu?"</string>
-    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> ima pristup za: <xliff:g id="DATA_TYPES">%2$s</xliff:g>"</string>
+    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> ima pristup za: <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
     <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Upravljaj dozvolama za fitnes i velnes"</string>
 </resources>

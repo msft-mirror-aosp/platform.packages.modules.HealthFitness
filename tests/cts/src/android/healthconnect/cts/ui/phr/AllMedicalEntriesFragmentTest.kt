@@ -17,9 +17,9 @@ package android.healthconnect.cts.ui.phr
 
 import android.healthconnect.cts.lib.ActivityLauncher.launchMainActivity
 import android.healthconnect.cts.lib.TestAppProxy
-import android.healthconnect.cts.lib.UiTestUtils.clickOnTextAndWaitForNewWindow
 import android.healthconnect.cts.lib.UiTestUtils.findObject
 import android.healthconnect.cts.lib.UiTestUtils.findText
+import android.healthconnect.cts.lib.UiTestUtils.navigateToNewPage
 import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndFindText
 import android.healthconnect.cts.phr.utils.PhrDataFactory.DIFFERENT_FHIR_DATA_IMMUNIZATION
 import android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION
@@ -30,7 +30,6 @@ import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import androidx.test.uiautomator.By
-import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
 import com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD
 import com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE
 import org.junit.After
@@ -38,11 +37,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-@RequiresFlagsEnabled(
-    FLAG_NEW_INFORMATION_ARCHITECTURE,
-    FLAG_PERSONAL_HEALTH_RECORD,
-    FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
-)
+@RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
 class AllMedicalEntriesFragmentTest : HealthConnectBaseTest() {
     @get:Rule val mCheckFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
 
@@ -75,11 +70,8 @@ class AllMedicalEntriesFragmentTest : HealthConnectBaseTest() {
     @Test
     fun allMedicalEntriesFragment_showsAvailableEntries() {
         context.launchMainActivity {
-            scrollDownToAndFindText("Browse health records")
-            clickOnTextAndWaitForNewWindow("Browse health records")
-
-            scrollDownToAndFindText("Vaccines")
-            clickOnTextAndWaitForNewWindow("Vaccines")
+            navigateToNewPage("Browse health records")
+            navigateToNewPage("Vaccines")
 
             findText("Entries")
             findText("Access")
@@ -91,14 +83,11 @@ class AllMedicalEntriesFragmentTest : HealthConnectBaseTest() {
     @Test
     fun allMedicalEntriesFragment_navigatesToAccessScreen() {
         context.launchMainActivity {
-            scrollDownToAndFindText("Browse health records")
-            clickOnTextAndWaitForNewWindow("Browse health records")
-
-            scrollDownToAndFindText("Vaccines")
-            clickOnTextAndWaitForNewWindow("Vaccines")
+            navigateToNewPage("Browse health records")
+            navigateToNewPage("Vaccines")
 
             findText("Entries")
-            clickOnTextAndWaitForNewWindow("Access")
+            navigateToNewPage("Access")
             scrollDownToAndFindText("Can write vaccines")
         }
     }

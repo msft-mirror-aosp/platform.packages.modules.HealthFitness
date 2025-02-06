@@ -28,7 +28,6 @@ import static android.healthconnect.cts.utils.TestUtils.distinctByUuid;
 import static android.healthconnect.cts.utils.TestUtils.getChangeLogs;
 import static android.healthconnect.cts.utils.TestUtils.getRecordIds;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
-import static android.healthconnect.cts.utils.TestUtils.insertStepsRecordViaTestApp;
 import static android.healthconnect.cts.utils.TestUtils.readRecords;
 import static android.healthconnect.cts.utils.TestUtils.readRecordsWithPagination;
 import static android.healthconnect.cts.utils.TestUtils.updateRecords;
@@ -64,6 +63,7 @@ import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.StepsRecord;
+import android.healthconnect.cts.lib.TestAppProxy;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.DataFactory;
 import android.healthconnect.cts.utils.TestUtils;
@@ -71,7 +71,6 @@ import android.platform.test.annotations.AppModeFull;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -96,10 +95,10 @@ import java.util.UUID;
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
 @RunWith(AndroidJUnit4.class)
 public class StepsRecordTest {
-    private static final String TAG = "StepsRecordTest";
     private static final String PACKAGE_NAME = "android.healthconnect.cts";
+    private static final String PKG_TEST_APP = "android.healthconnect.cts.testapp.readWritePerms.A";
 
-    private Context mContext;
+    private TestAppProxy mTestApp;
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
@@ -109,7 +108,7 @@ public class StepsRecordTest {
 
     @Before
     public void setUp() throws InterruptedException {
-        mContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        mTestApp = TestAppProxy.forPackageName(PKG_TEST_APP);
         TestUtils.deleteAllStagedRemoteData();
     }
 
@@ -580,8 +579,7 @@ public class StepsRecordTest {
 
         TestUtils.assertRecordNotFound(id1, StepsRecord.class);
         TestUtils.assertRecordNotFound(id2, StepsRecord.class);
-        // TODO(b/331350683): Uncomment once LocalTimeRangeFilter#endTime is exclusive
-        // TestUtils.assertRecordFound(id3, StepsRecord.class);
+        TestUtils.assertRecordFound(id3, StepsRecord.class);
     }
 
     @Test
@@ -1635,10 +1633,11 @@ public class StepsRecordTest {
     }
 
     @Test
-    public void updateRecordsFromAnotherApp_byId_fail() {
+    public void updateRecordsFromAnotherApp_byId_fail() throws Exception {
         Instant now = Instant.now();
         String insertedId =
-                insertStepsRecordViaTestApp(mContext, now.minusMillis(2), now.minusMillis(1), 1);
+                mTestApp.insertRecord(
+                        DataFactory.getStepsRecord(1, now.minusMillis(2), now.minusMillis(1)));
 
         List<Record> updatedRecords =
                 List.of(
@@ -1650,9 +1649,10 @@ public class StepsRecordTest {
     }
 
     @Test
-    public void updateRecordsFromAnotherApp_byClientRecordId_fail() {
+    public void updateRecordsFromAnotherApp_byClientRecordId_fail() throws Exception {
         Instant now = Instant.now();
-        insertStepsRecordViaTestApp(mContext, now.minusMillis(2), now.minusMillis(1), "id1", 1);
+        mTestApp.insertRecord(
+                DataFactory.getStepsRecord(1, now.minusMillis(2), now.minusMillis(1), "id1"));
 
         List<Record> updatedRecords =
                 List.of(getCompleteStepsRecord(now.minusMillis(2), now.minusMillis(1), "id1", 10));

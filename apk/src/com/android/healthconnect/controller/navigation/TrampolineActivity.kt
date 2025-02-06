@@ -20,6 +20,7 @@ package com.android.healthconnect.controller.navigation
 
 import android.content.Intent
 import android.content.Intent.EXTRA_PACKAGE_NAME
+import android.content.Intent.EXTRA_REASON
 import android.health.connect.HealthConnectManager
 import android.os.Bundle
 import android.util.Log
@@ -46,6 +47,7 @@ class TrampolineActivity : Hilt_TrampolineActivity() {
 
     companion object {
         private const val TAG = "TrampolineActivity"
+        private const val REASON_PRIVACY_DASHBOARD = "privacy_dashboard"
     }
 
     @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
@@ -120,11 +122,17 @@ class TrampolineActivity : Hilt_TrampolineActivity() {
             // If unexpected intent, fall default to WearPermissionManagerActivity.
         }
         val extraPackageName: String? = intent.getStringExtra(EXTRA_PACKAGE_NAME)
+        val extraReason: String? = intent.getStringExtra(EXTRA_REASON)
 
         return if (extraPackageName != null) {
             // AppInfo page.
             Intent(this, WearViewAppInfoPermissionsActivity::class.java).apply {
                 putExtra(EXTRA_PACKAGE_NAME, extraPackageName)
+            }
+        } else if (extraReason == REASON_PRIVACY_DASHBOARD) {
+            // PrivacyDashboard page.
+            Intent(this, WearSettingsPermissionActivity::class.java).apply {
+                putExtra(EXTRA_REASON, REASON_PRIVACY_DASHBOARD)
             }
         } else {
             // PermissionManager page.

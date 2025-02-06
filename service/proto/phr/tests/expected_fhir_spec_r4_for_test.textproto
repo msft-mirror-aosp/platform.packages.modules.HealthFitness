@@ -19,7 +19,7 @@ resource_type_to_config {
       key: "education"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_IMMUNIZATION_EDUCATION
       }
     }
     allowed_field_names_to_config {
@@ -152,7 +152,7 @@ resource_type_to_config {
       key: "performer"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_IMMUNIZATION_PERFORMER
       }
     }
     allowed_field_names_to_config {
@@ -173,14 +173,14 @@ resource_type_to_config {
       key: "protocolApplied"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_IMMUNIZATION_PROTOCOLAPPLIED
       }
     }
     allowed_field_names_to_config {
       key: "reaction"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_IMMUNIZATION_REACTION
       }
     }
     allowed_field_names_to_config {
@@ -439,7 +439,7 @@ resource_type_to_config {
       key: "reaction"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_ALLERGYINTOLERANCE_REACTION
       }
     }
     allowed_field_names_to_config {
@@ -531,7 +531,7 @@ resource_type_to_config {
       key: "component"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_OBSERVATION_COMPONENT
       }
     }
     allowed_field_names_to_config {
@@ -706,7 +706,7 @@ resource_type_to_config {
       key: "referenceRange"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_OBSERVATION_REFERENCERANGE
       }
     }
     allowed_field_names_to_config {
@@ -939,7 +939,7 @@ resource_type_to_config {
       key: "evidence"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_CONDITION_EVIDENCE
       }
     }
     allowed_field_names_to_config {
@@ -1065,7 +1065,7 @@ resource_type_to_config {
       key: "stage"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_CONDITION_STAGE
       }
     }
     allowed_field_names_to_config {
@@ -1187,7 +1187,7 @@ resource_type_to_config {
       key: "focalDevice"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_PROCEDURE_FOCALDEVICE
       }
     }
     allowed_field_names_to_config {
@@ -1320,7 +1320,7 @@ resource_type_to_config {
       key: "performer"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_PROCEDURE_PERFORMER
       }
     }
     allowed_field_names_to_config {
@@ -1427,7 +1427,7 @@ resource_type_to_config {
       key: "batch"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_MEDICATION_BATCH
       }
     }
     allowed_field_names_to_config {
@@ -1483,7 +1483,7 @@ resource_type_to_config {
       key: "ingredient"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_MEDICATION_INGREDIENT
       }
     }
     allowed_field_names_to_config {
@@ -1586,7 +1586,7 @@ resource_type_to_config {
       key: "dispenseRequest"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_MEDICATIONREQUEST_DISPENSEREQUEST
       }
     }
     allowed_field_names_to_config {
@@ -1824,7 +1824,7 @@ resource_type_to_config {
       key: "substitution"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_MEDICATIONREQUEST_SUBSTITUTION
       }
     }
     allowed_field_names_to_config {
@@ -2101,14 +2101,14 @@ resource_type_to_config {
       key: "communication"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_PATIENT_COMMUNICATION
       }
     }
     allowed_field_names_to_config {
       key: "contact"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_PATIENT_CONTACT
       }
     }
     allowed_field_names_to_config {
@@ -2185,7 +2185,7 @@ resource_type_to_config {
       key: "link"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_PATIENT_LINK
       }
     }
     allowed_field_names_to_config {
@@ -2391,7 +2391,7 @@ resource_type_to_config {
       key: "qualification"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_PRACTITIONER_QUALIFICATION
       }
     }
     allowed_field_names_to_config {
@@ -2438,7 +2438,7 @@ resource_type_to_config {
       key: "availableTime"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_PRACTITIONERROLE_AVAILABLETIME
       }
     }
     allowed_field_names_to_config {
@@ -2529,7 +2529,7 @@ resource_type_to_config {
       key: "notAvailable"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_PRACTITIONERROLE_NOTAVAILABLE
       }
     }
     allowed_field_names_to_config {
@@ -2618,7 +2618,7 @@ resource_type_to_config {
       key: "classHistory"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_ENCOUNTER_CLASSHISTORY
       }
     }
     allowed_field_names_to_config {
@@ -2632,7 +2632,7 @@ resource_type_to_config {
       key: "diagnosis"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_ENCOUNTER_DIAGNOSIS
       }
     }
     allowed_field_names_to_config {
@@ -2653,7 +2653,7 @@ resource_type_to_config {
       key: "hospitalization"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_ENCOUNTER_HOSPITALIZATION
       }
     }
     allowed_field_names_to_config {
@@ -2695,7 +2695,7 @@ resource_type_to_config {
       key: "location"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_ENCOUNTER_LOCATION
       }
     }
     allowed_field_names_to_config {
@@ -2723,7 +2723,7 @@ resource_type_to_config {
       key: "participant"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_ENCOUNTER_PARTICIPANT
       }
     }
     allowed_field_names_to_config {
@@ -2786,7 +2786,7 @@ resource_type_to_config {
       key: "statusHistory"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_ENCOUNTER_STATUSHISTORY
       }
     }
     allowed_field_names_to_config {
@@ -2870,7 +2870,7 @@ resource_type_to_config {
       key: "hoursOfOperation"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_LOCATION_HOURSOFOPERATION
       }
     }
     allowed_field_names_to_config {
@@ -2961,7 +2961,7 @@ resource_type_to_config {
       key: "position"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_LOCATION_POSITION
       }
     }
     allowed_field_names_to_config {
@@ -3029,7 +3029,7 @@ resource_type_to_config {
       key: "contact"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_ORGANIZATION_CONTACT
       }
     }
     allowed_field_names_to_config {
@@ -3285,6 +3285,83 @@ fhir_data_type_configs {
   }
 }
 fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_ALLERGYINTOLERANCE_REACTION
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "description"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "exposureRoute"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "manifestation"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "note"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_ANNOTATION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "onset"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DATE_TIME
+      }
+    }
+    allowed_field_names_to_config {
+      key: "severity"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "substance"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+    required_fields: "manifestation"
+  }
+}
+fhir_data_type_configs {
   fhir_type: R4_FHIR_TYPE_ANNOTATION
   kind: KIND_COMPLEX_TYPE
   fhir_complex_type_config {
@@ -3521,6 +3598,95 @@ fhir_data_type_configs {
   }
 }
 fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_CONDITION_EVIDENCE
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "code"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "detail"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_REFERENCE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+  }
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_CONDITION_STAGE
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "assessment"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_REFERENCE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "summary"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "type"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+  }
+}
+fhir_data_type_configs {
   fhir_type: R4_FHIR_TYPE_CONTACT_DETAIL
   kind: KIND_COMPLEX_TYPE
   fhir_complex_type_config {
@@ -3715,14 +3881,14 @@ fhir_data_type_configs {
       key: "codeFilter"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_DATAREQUIREMENT_CODEFILTER
       }
     }
     allowed_field_names_to_config {
       key: "dateFilter"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_DATAREQUIREMENT_DATEFILTER
       }
     }
     allowed_field_names_to_config {
@@ -3764,7 +3930,7 @@ fhir_data_type_configs {
       key: "sort"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_DATAREQUIREMENT_SORT
       }
     }
     allowed_field_names_to_config {
@@ -3795,6 +3961,152 @@ fhir_data_type_configs {
       typed_field_names: "subjectReference"
       is_required: false
     }
+  }
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_DATAREQUIREMENT_CODEFILTER
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "code"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_CODING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "path"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "searchParam"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "valueSet"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CANONICAL
+      }
+    }
+  }
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_DATAREQUIREMENT_DATEFILTER
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "path"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "searchParam"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "valueDateTime"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DATE_TIME
+      }
+    }
+    allowed_field_names_to_config {
+      key: "valueDuration"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DURATION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "valuePeriod"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_PERIOD
+      }
+    }
+    multi_type_fields {
+      name: "value[x]"
+      typed_field_names: "valueDateTime"
+      typed_field_names: "valuePeriod"
+      typed_field_names: "valueDuration"
+      is_required: false
+    }
+  }
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_DATAREQUIREMENT_SORT
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "direction"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "path"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    required_fields: "direction"
+    required_fields: "path"
   }
 }
 fhir_data_type_configs {
@@ -3893,7 +4205,7 @@ fhir_data_type_configs {
       key: "doseAndRate"
       value {
         is_array: true
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_DOSAGE_DOSEANDRATE
       }
     }
     allowed_field_names_to_config {
@@ -3996,6 +4308,81 @@ fhir_data_type_configs {
   }
 }
 fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_DOSAGE_DOSEANDRATE
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "doseQuantity"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_QUANTITY
+      }
+    }
+    allowed_field_names_to_config {
+      key: "doseRange"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_RANGE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "rateQuantity"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_QUANTITY
+      }
+    }
+    allowed_field_names_to_config {
+      key: "rateRange"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_RANGE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "rateRatio"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_RATIO
+      }
+    }
+    allowed_field_names_to_config {
+      key: "type"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+    multi_type_fields {
+      name: "dose[x]"
+      typed_field_names: "doseRange"
+      typed_field_names: "doseQuantity"
+      is_required: false
+    }
+    multi_type_fields {
+      name: "rate[x]"
+      typed_field_names: "rateRatio"
+      typed_field_names: "rateRange"
+      typed_field_names: "rateQuantity"
+      is_required: false
+    }
+  }
+}
+fhir_data_type_configs {
   fhir_type: R4_FHIR_TYPE_DURATION
   kind: KIND_COMPLEX_TYPE
   fhir_complex_type_config {
@@ -4068,6 +4455,335 @@ fhir_data_type_configs {
         r4_type: R4_FHIR_TYPE_STRING
       }
     }
+  }
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_ENCOUNTER_CLASSHISTORY
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "class"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "period"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_PERIOD
+      }
+    }
+    required_fields: "class"
+    required_fields: "period"
+  }
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_ENCOUNTER_DIAGNOSIS
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "condition"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_REFERENCE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "rank"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_POSITIVE_INT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "use"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+    required_fields: "condition"
+  }
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_ENCOUNTER_HOSPITALIZATION
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "admitSource"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "destination"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_REFERENCE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "dietPreference"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "dischargeDisposition"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "origin"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_REFERENCE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "preAdmissionIdentifier"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_IDENTIFIER
+      }
+    }
+    allowed_field_names_to_config {
+      key: "reAdmission"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "specialArrangement"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "specialCourtesy"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+  }
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_ENCOUNTER_LOCATION
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "location"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_REFERENCE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "period"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_PERIOD
+      }
+    }
+    allowed_field_names_to_config {
+      key: "physicalType"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "status"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+      }
+    }
+    required_fields: "location"
+  }
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_ENCOUNTER_PARTICIPANT
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "individual"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_REFERENCE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "period"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_PERIOD
+      }
+    }
+    allowed_field_names_to_config {
+      key: "type"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+  }
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_ENCOUNTER_STATUSHISTORY
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "period"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_PERIOD
+      }
+    }
+    allowed_field_names_to_config {
+      key: "status"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+      }
+    }
+    required_fields: "period"
+    required_fields: "status"
   }
 }
 fhir_data_type_configs {
@@ -4694,6 +5410,239 @@ fhir_data_type_configs {
   }
 }
 fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_IMMUNIZATION_EDUCATION
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "documentType"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "presentationDate"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DATE_TIME
+      }
+    }
+    allowed_field_names_to_config {
+      key: "publicationDate"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DATE_TIME
+      }
+    }
+    allowed_field_names_to_config {
+      key: "reference"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_URI
+      }
+    }
+  }
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_IMMUNIZATION_PERFORMER
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "actor"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_REFERENCE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "function"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    required_fields: "actor"
+  }
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_IMMUNIZATION_PROTOCOLAPPLIED
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "authority"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_REFERENCE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "doseNumberPositiveInt"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_POSITIVE_INT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "doseNumberString"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "series"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "seriesDosesPositiveInt"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_POSITIVE_INT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "seriesDosesString"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "targetDisease"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+    multi_type_fields {
+      name: "doseNumber[x]"
+      typed_field_names: "doseNumberPositiveInt"
+      typed_field_names: "doseNumberString"
+      is_required: true
+    }
+    multi_type_fields {
+      name: "seriesDoses[x]"
+      typed_field_names: "seriesDosesPositiveInt"
+      typed_field_names: "seriesDosesString"
+      is_required: false
+    }
+  }
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_IMMUNIZATION_REACTION
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "date"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DATE_TIME
+      }
+    }
+    allowed_field_names_to_config {
+      key: "detail"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_REFERENCE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "reported"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_BOOLEAN
+      }
+    }
+  }
+}
+fhir_data_type_configs {
   fhir_type: R4_FHIR_TYPE_INSTANT
   kind: KIND_PRIMITIVE_TYPE
 }
@@ -4702,8 +5651,386 @@ fhir_data_type_configs {
   kind: KIND_PRIMITIVE_TYPE
 }
 fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_LOCATION_HOURSOFOPERATION
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "allDay"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_BOOLEAN
+      }
+    }
+    allowed_field_names_to_config {
+      key: "closingTime"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_TIME
+      }
+    }
+    allowed_field_names_to_config {
+      key: "daysOfWeek"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_CODE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "openingTime"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_TIME
+      }
+    }
+  }
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_LOCATION_POSITION
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "altitude"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DECIMAL
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "latitude"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DECIMAL
+      }
+    }
+    allowed_field_names_to_config {
+      key: "longitude"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DECIMAL
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    required_fields: "latitude"
+    required_fields: "longitude"
+  }
+}
+fhir_data_type_configs {
   fhir_type: R4_FHIR_TYPE_MARKDOWN
   kind: KIND_PRIMITIVE_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_MEDICATION_BATCH
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "expirationDate"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DATE_TIME
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "lotNumber"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+  }
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_MEDICATION_INGREDIENT
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "isActive"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_BOOLEAN
+      }
+    }
+    allowed_field_names_to_config {
+      key: "itemCodeableConcept"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "itemReference"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_REFERENCE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "strength"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_RATIO
+      }
+    }
+    multi_type_fields {
+      name: "item[x]"
+      typed_field_names: "itemCodeableConcept"
+      typed_field_names: "itemReference"
+      is_required: true
+    }
+  }
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_MEDICATIONREQUEST_DISPENSEREQUEST
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "dispenseInterval"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DURATION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "expectedSupplyDuration"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DURATION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "initialFill"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_MEDICATIONREQUEST_DISPENSEREQUEST_INITIALFILL
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "numberOfRepeatsAllowed"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_UNSIGNED_INT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "performer"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_REFERENCE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "quantity"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_QUANTITY
+      }
+    }
+    allowed_field_names_to_config {
+      key: "validityPeriod"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_PERIOD
+      }
+    }
+  }
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_MEDICATIONREQUEST_DISPENSEREQUEST_INITIALFILL
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "duration"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DURATION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "quantity"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_QUANTITY
+      }
+    }
+  }
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_MEDICATIONREQUEST_SUBSTITUTION
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "allowedBoolean"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_BOOLEAN
+      }
+    }
+    allowed_field_names_to_config {
+      key: "allowedCodeableConcept"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "reason"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+    multi_type_fields {
+      name: "allowed[x]"
+      typed_field_names: "allowedBoolean"
+      typed_field_names: "allowedCodeableConcept"
+      is_required: true
+    }
+  }
 }
 fhir_data_type_configs {
   fhir_type: R4_FHIR_TYPE_META
@@ -4838,8 +6165,280 @@ fhir_data_type_configs {
   }
 }
 fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_OBSERVATION_COMPONENT
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "code"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "dataAbsentReason"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "interpretation"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "referenceRange"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_OBSERVATION_REFERENCERANGE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "valueBoolean"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_BOOLEAN
+      }
+    }
+    allowed_field_names_to_config {
+      key: "valueCodeableConcept"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "valueDateTime"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DATE_TIME
+      }
+    }
+    allowed_field_names_to_config {
+      key: "valueInteger"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_INTEGER
+      }
+    }
+    allowed_field_names_to_config {
+      key: "valuePeriod"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_PERIOD
+      }
+    }
+    allowed_field_names_to_config {
+      key: "valueQuantity"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_QUANTITY
+      }
+    }
+    allowed_field_names_to_config {
+      key: "valueRange"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_RANGE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "valueRatio"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_RATIO
+      }
+    }
+    allowed_field_names_to_config {
+      key: "valueSampledData"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_SAMPLED_DATA
+      }
+    }
+    allowed_field_names_to_config {
+      key: "valueString"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "valueTime"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_TIME
+      }
+    }
+    required_fields: "code"
+    multi_type_fields {
+      name: "value[x]"
+      typed_field_names: "valueQuantity"
+      typed_field_names: "valueCodeableConcept"
+      typed_field_names: "valueString"
+      typed_field_names: "valueBoolean"
+      typed_field_names: "valueInteger"
+      typed_field_names: "valueRange"
+      typed_field_names: "valueRatio"
+      typed_field_names: "valueSampledData"
+      typed_field_names: "valueTime"
+      typed_field_names: "valueDateTime"
+      typed_field_names: "valuePeriod"
+      is_required: false
+    }
+  }
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_OBSERVATION_REFERENCERANGE
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "age"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_RANGE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "appliesTo"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "high"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_QUANTITY
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "low"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_QUANTITY
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "text"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "type"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+  }
+}
+fhir_data_type_configs {
   fhir_type: R4_FHIR_TYPE_OID
   kind: KIND_PRIMITIVE_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_ORGANIZATION_CONTACT
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "address"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_ADDRESS
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "name"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_HUMAN_NAME
+      }
+    }
+    allowed_field_names_to_config {
+      key: "purpose"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "telecom"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_CONTACT_POINT
+      }
+    }
+  }
 }
 fhir_data_type_configs {
   fhir_type: R4_FHIR_TYPE_PARAMETER_DEFINITION
@@ -4913,6 +6512,167 @@ fhir_data_type_configs {
   }
 }
 fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_PATIENT_COMMUNICATION
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "language"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "preferred"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_BOOLEAN
+      }
+    }
+    required_fields: "language"
+  }
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_PATIENT_CONTACT
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "address"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_ADDRESS
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "gender"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "name"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_HUMAN_NAME
+      }
+    }
+    allowed_field_names_to_config {
+      key: "organization"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_REFERENCE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "period"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_PERIOD
+      }
+    }
+    allowed_field_names_to_config {
+      key: "relationship"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "telecom"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_CONTACT_POINT
+      }
+    }
+  }
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_PATIENT_LINK
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "other"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_REFERENCE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "type"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+      }
+    }
+    required_fields: "other"
+    required_fields: "type"
+  }
+}
+fhir_data_type_configs {
   fhir_type: R4_FHIR_TYPE_PERIOD
   kind: KIND_COMPLEX_TYPE
   fhir_complex_type_config {
@@ -4949,6 +6709,250 @@ fhir_data_type_configs {
 fhir_data_type_configs {
   fhir_type: R4_FHIR_TYPE_POSITIVE_INT
   kind: KIND_PRIMITIVE_TYPE
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_PRACTITIONER_QUALIFICATION
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "code"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "identifier"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_IDENTIFIER
+      }
+    }
+    allowed_field_names_to_config {
+      key: "issuer"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_REFERENCE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "period"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_PERIOD
+      }
+    }
+    required_fields: "code"
+  }
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_PRACTITIONERROLE_AVAILABLETIME
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "allDay"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_BOOLEAN
+      }
+    }
+    allowed_field_names_to_config {
+      key: "availableEndTime"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_TIME
+      }
+    }
+    allowed_field_names_to_config {
+      key: "availableStartTime"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_TIME
+      }
+    }
+    allowed_field_names_to_config {
+      key: "daysOfWeek"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_CODE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+  }
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_PRACTITIONERROLE_NOTAVAILABLE
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "description"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "during"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_PERIOD
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    required_fields: "description"
+  }
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_PROCEDURE_FOCALDEVICE
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "action"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "manipulated"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_REFERENCE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    required_fields: "manipulated"
+  }
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_PROCEDURE_PERFORMER
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "actor"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_REFERENCE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "function"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODEABLE_CONCEPT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "modifierExtension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "onBehalfOf"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_REFERENCE
+      }
+    }
+    required_fields: "actor"
+  }
 }
 fhir_data_type_configs {
   fhir_type: R4_FHIR_TYPE_QUANTITY
@@ -5390,8 +7394,154 @@ fhir_data_type_configs {
       key: "repeat"
       value {
         is_array: false
-        r4_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
+        r4_type: R4_FHIR_TYPE_TIMING_REPEAT
       }
+    }
+  }
+}
+fhir_data_type_configs {
+  fhir_type: R4_FHIR_TYPE_TIMING_REPEAT
+  kind: KIND_COMPLEX_TYPE
+  fhir_complex_type_config {
+    allowed_field_names_to_config {
+      key: "boundsDuration"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DURATION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "boundsPeriod"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_PERIOD
+      }
+    }
+    allowed_field_names_to_config {
+      key: "boundsRange"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_RANGE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "count"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_POSITIVE_INT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "countMax"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_POSITIVE_INT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "dayOfWeek"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_CODE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "duration"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DECIMAL
+      }
+    }
+    allowed_field_names_to_config {
+      key: "durationMax"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DECIMAL
+      }
+    }
+    allowed_field_names_to_config {
+      key: "durationUnit"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "extension"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_EXTENSION
+      }
+    }
+    allowed_field_names_to_config {
+      key: "frequency"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_POSITIVE_INT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "frequencyMax"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_POSITIVE_INT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "id"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_STRING
+      }
+    }
+    allowed_field_names_to_config {
+      key: "offset"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_UNSIGNED_INT
+      }
+    }
+    allowed_field_names_to_config {
+      key: "period"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DECIMAL
+      }
+    }
+    allowed_field_names_to_config {
+      key: "periodMax"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_DECIMAL
+      }
+    }
+    allowed_field_names_to_config {
+      key: "periodUnit"
+      value {
+        is_array: false
+        r4_type: R4_FHIR_TYPE_CODE
+      }
+    }
+    allowed_field_names_to_config {
+      key: "timeOfDay"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_TIME
+      }
+    }
+    allowed_field_names_to_config {
+      key: "when"
+      value {
+        is_array: true
+        r4_type: R4_FHIR_TYPE_CODE
+      }
+    }
+    multi_type_fields {
+      name: "bounds[x]"
+      typed_field_names: "boundsDuration"
+      typed_field_names: "boundsRange"
+      typed_field_names: "boundsPeriod"
+      is_required: false
     }
   }
 }
@@ -5563,8 +7713,4 @@ fhir_data_type_configs {
 fhir_data_type_configs {
   fhir_type: R4_FHIR_TYPE_XHTML
   kind: KIND_PRIMITIVE_TYPE
-}
-fhir_data_type_configs {
-  fhir_type: R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION
-  kind: KIND_COMPLEX_TYPE
 }

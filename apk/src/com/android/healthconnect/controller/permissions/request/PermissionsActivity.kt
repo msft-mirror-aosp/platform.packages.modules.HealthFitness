@@ -23,6 +23,8 @@ import android.content.Intent.EXTRA_PACKAGE_NAME
 import android.content.pm.PackageManager
 import android.content.pm.PackageManager.EXTRA_REQUEST_PERMISSIONS_NAMES
 import android.content.pm.PackageManager.EXTRA_REQUEST_PERMISSIONS_RESULTS
+import android.content.pm.PackageManager.FLAG_PERMISSION_REVOKE_WHEN_REQUESTED
+import android.health.connect.HealthPermissions
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS
@@ -41,6 +43,7 @@ import com.android.healthconnect.controller.migration.api.MigrationRestoreState.
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
 import com.android.healthconnect.controller.onboarding.OnboardingActivity
 import com.android.healthconnect.controller.onboarding.OnboardingActivity.Companion.shouldRedirectToOnboardingActivity
+import com.android.healthconnect.controller.permissions.api.GetHealthPermissionsFlagsUseCase
 import com.android.healthconnect.controller.permissions.data.PermissionState
 import com.android.healthconnect.controller.permissions.request.wear.WearGrantPermissionsActivity
 import com.android.healthconnect.controller.shared.HealthPermissionReader
@@ -49,6 +52,7 @@ import com.android.healthconnect.controller.utils.activity.EmbeddingUtils.maybeR
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled
 import com.android.healthfitness.flags.Flags
+import com.android.settingslib.collapsingtoolbar.EdgeToEdgeUtils
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -65,6 +69,7 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
 
     @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
+    @Inject lateinit var getHealthPermissionsFlagsUseCase: GetHealthPermissionsFlagsUseCase
 
     private val requestPermissionsViewModel: RequestPermissionViewModel by viewModels()
 
@@ -87,10 +92,11 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
                 finish()
                 return
             }
-            val wearIntent = Intent(this, WearGrantPermissionsActivity::class.java).apply {
-                putExtra(EXTRA_PACKAGE_NAME, getPackageNameExtra())
-                putExtra(EXTRA_REQUEST_PERMISSIONS_NAMES, getPermissionStrings())
-            }
+            val wearIntent =
+                Intent(this, WearGrantPermissionsActivity::class.java).apply {
+                    putExtra(EXTRA_PACKAGE_NAME, getPackageNameExtra())
+                    putExtra(EXTRA_REQUEST_PERMISSIONS_NAMES, getPermissionStrings())
+                }
             startActivity(wearIntent)
             finish()
             return
@@ -118,15 +124,20 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
 
         setContentView(R.layout.activity_permissions)
 
-        if (savedInstanceState == null && shouldRedirectToOnboardingActivity(this)) {
-            openOnboardingActivity.launch(OnboardingActivity.createIntent(this))
-        }
+        // Some actions don't apply to apps that get health permissions via split-permission.
+        if (!isRequestFromSplitPermission()) {
+            // Check if we need to show onboarding screen.
+            if (savedInstanceState == null && shouldRedirectToOnboardingActivity(this)) {
+                openOnboardingActivity.launch(OnboardingActivity.createIntent(this))
+            }
 
-        val rationaleIntentDeclared =
-            healthPermissionReader.isRationaleIntentDeclared(getPackageNameExtra())
-        if (!rationaleIntentDeclared) {
-            Log.e(TAG, "App should support rationale intent, finishing!")
-            finish()
+            // Check that app has declared rationale intent.
+            val rationaleIntentDeclared =
+                healthPermissionReader.isRationaleIntentDeclared(getPackageNameExtra())
+            if (!rationaleIntentDeclared) {
+                Log.e(TAG, "App should support rationale intent, finishing!")
+                finish()
+            }
         }
 
         requestPermissionsViewModel.init(getPackageNameExtra(), getPermissionStrings())
@@ -193,6 +204,8 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
                 }
             }
         }
+
+        EdgeToEdgeUtils.enable(this)
     }
 
     private fun maybeShowMigrationDialog(migrationRestoreState: MigrationRestoreState) {
@@ -241,6 +254,68 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
         } else if (migrationUiState == MigrationUiState.COMPLETE) {
             maybeShowWhatsNewDialog(this)
         }
+    }
+
+    /**
+     * Returns true if the request is being made as the result of a split permission from
+     * BODY_SENSORS call.
+     */
+    private fun isRequestFromSplitPermission(): Boolean {
+        if (!Flags.replaceBodySensorPermissionEnabled()) {
+            return false
+        }
+
+        val declaredPermissions =
+            healthPermissionReader.getDeclaredHealthPermissions(getPackageNameExtra())
+        // Split permission only applies to READ_HEART_RATE.
+        if (!declaredPermissions.contains(HealthPermissions.READ_HEART_RATE)) {
+            return false
+        }
+
+        // If there are other health permissions (other than READ_HEALTH_DATA_IN_BACKGROUND)
+        // don't consider this a pure split-permission request.
+        if (declaredPermissions.size > 2) {
+            return false
+        }
+
+        val declaresBackgroundPermission =
+            declaredPermissions.contains(HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND)
+        // If there are two health permissions declared, make sure the other is
+        // READ_HEALTH_DATA_IN_BACKGROUND.
+        if (declaredPermissions.size == 2 && !declaresBackgroundPermission) {
+            return false
+        }
+
+        val permissionsToCheck =
+            if (declaresBackgroundPermission) {
+                listOf(
+                    HealthPermissions.READ_HEART_RATE,
+                    HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND,
+                )
+            } else {
+                listOf(HealthPermissions.READ_HEART_RATE)
+            }
+
+        // Check the READ_HEART_RATE permission flag to see if it's a split-permission.
+        val permissionToFlags =
+            getHealthPermissionsFlagsUseCase(getPackageNameExtra(), permissionsToCheck)
+
+        if (declaresBackgroundPermission) {
+            // READ_HEALTH_DATA_IN_BACKGROUND is not due to split-permission.
+            if (
+                permissionToFlags.get(HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND)?.let { flags
+                    ->
+                    (flags and FLAG_PERMISSION_REVOKE_WHEN_REQUESTED) == 0
+                } ?: true
+            ) {
+                return false
+            }
+        }
+
+        // READ_HEART_RATE is not due to split-permission.
+        return permissionToFlags.get(HealthPermissions.READ_HEART_RATE)?.let { flags ->
+            (flags and FLAG_PERMISSION_REVOKE_WHEN_REQUESTED) != 0
+        } ?: false
     }
 
     private fun handlePermissionResults(resultCode: Int = RESULT_OK) {

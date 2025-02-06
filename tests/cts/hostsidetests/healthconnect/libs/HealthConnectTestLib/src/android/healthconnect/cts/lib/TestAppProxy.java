@@ -49,6 +49,7 @@ import android.os.Bundle;
 
 import com.android.cts.install.lib.TestApp;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -61,7 +62,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class TestAppProxy {
     private static final String TEST_APP_RECEIVER_CLASS_NAME =
             "android.healthconnect.cts.testhelper.TestAppReceiver";
-    private static final long POLLING_TIMEOUT_MILLIS = TimeUnit.SECONDS.toMillis(30);
+    private static final long POLLING_TIMEOUT_MILLIS = TimeUnit.SECONDS.toMillis(55);
 
     public static final TestAppProxy APP_WRITE_PERMS_ONLY =
             TestAppProxy.forPackageName("android.healthconnect.cts.testapp.writePermsOnly");
@@ -150,6 +151,15 @@ public class TestAppProxy {
         Bundle requestBundle = BundleHelper.fromReadRecordsRequestUsingIds(request);
         Bundle responseBundle = getFromTestApp(requestBundle);
         return BundleHelper.toReadRecordsResponse(responseBundle);
+    }
+
+    /** Aggregate steps records from HC on behalf of the app. */
+    public Long aggregateStepsCountTotal(
+            Instant startTime, Instant endTime, List<String> packageNames) throws Exception {
+        Bundle requestBundle =
+                BundleHelper.fromAggregateStepsCountTotalRequest(startTime, endTime, packageNames);
+        Bundle responseBundle = getFromTestApp(requestBundle);
+        return BundleHelper.toAggregateStepsCountTotalResponse(responseBundle);
     }
 
     /** Gets changelogs from HC on behalf of the app. */

@@ -35,20 +35,15 @@ public final class BackupChange implements Parcelable {
     // Note: The module should ensure that this uid doesn't allow us to infer any user data.
     @NonNull private final String mUid;
 
-    // Version how the data was encoded.
-    private final int mVersion;
-
     private final boolean mIsDeletion;
 
     // Only present if isDeletion is false.
-    // The data is returned as bytes rather than records to keep the data opaque from GMSCore.
-    // As long as GMSCore doesn't parse the data, it doesn't know what type of data this is.
+    // The data is returned as bytes rather than records to keep the data opaque from the client.
+    // As long as the client doesn't parse the data, it doesn't know what type of data this is.
     @Nullable private final byte[] mData;
 
-    public BackupChange(
-            @NonNull String uid, int version, boolean isDeletion, @Nullable byte[] data) {
+    public BackupChange(@NonNull String uid, boolean isDeletion, @Nullable byte[] data) {
         mUid = uid;
-        mVersion = version;
         mIsDeletion = isDeletion;
         mData = data;
     }
@@ -57,29 +52,27 @@ public final class BackupChange implements Parcelable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof BackupChange that)) return false;
-        return mVersion == that.mVersion
-                && mIsDeletion == that.mIsDeletion
+        return mIsDeletion == that.mIsDeletion
                 && mUid.equals(that.mUid)
                 && Arrays.equals(mData, that.mData);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(mUid, mVersion, mIsDeletion);
+        int result = Objects.hash(mUid, mIsDeletion);
         result = 31 * result + Arrays.hashCode(mData);
         return result;
     }
 
     private BackupChange(Parcel in) {
         mUid = in.readString();
-        mVersion = in.readInt();
         mIsDeletion = in.readByte() != 0;
         mData = in.readBlob();
     }
 
     @NonNull
     public static final Creator<BackupChange> CREATOR =
-            new Creator<BackupChange>() {
+            new Creator<>() {
                 @Override
                 public BackupChange createFromParcel(Parcel in) {
                     return new BackupChange(in);
@@ -94,10 +87,6 @@ public final class BackupChange implements Parcelable {
     @NonNull
     public String getUid() {
         return mUid;
-    }
-
-    public int getVersion() {
-        return mVersion;
     }
 
     public boolean isDeletion() {
@@ -117,7 +106,6 @@ public final class BackupChange implements Parcelable {
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeString(mUid);
-        dest.writeInt(mVersion);
         dest.writeByte((byte) (mIsDeletion ? 1 : 0));
         dest.writeBlob(mData);
     }

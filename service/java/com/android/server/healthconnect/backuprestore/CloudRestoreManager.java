@@ -17,13 +17,29 @@
 package com.android.server.healthconnect.backuprestore;
 
 import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTORE;
+import static com.android.server.healthconnect.backuprestore.RecordProtoConverter.PROTO_VERSION;
 
 import android.annotation.FlaggedApi;
-import android.health.connect.backuprestore.BackupChange;
+import android.annotation.Nullable;
 import android.health.connect.backuprestore.BackupSettings;
+import android.health.connect.backuprestore.RestoreChange;
+import android.health.connect.internal.datatypes.RecordInternal;
 import android.util.Slog;
 
+import com.android.server.healthconnect.proto.backuprestore.BackupData;
+import com.android.server.healthconnect.proto.backuprestore.Record;
+import com.android.server.healthconnect.proto.backuprestore.Settings;
+import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
+import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
+
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Manages Cloud Restore operations.
@@ -35,21 +51,99 @@ public class CloudRestoreManager {
 
     private static final String TAG = "CloudRestoreManager";
 
-    public CloudRestoreManager() {}
+    private final TransactionManager mTransactionManager;
+    private final DeviceInfoHelper mDeviceInfoHelper;
+    private final AppInfoHelper mAppInfoHelper;
+    private final RecordProtoConverter mRecordProtoConverter;
+    private final HealthDataCategoryPriorityHelper mPriorityHelper;
+    private final PreferenceHelper mPreferenceHelper;
+
+    public CloudRestoreManager(
+            TransactionManager transactionManager,
+            DeviceInfoHelper deviceInfoHelper,
+            AppInfoHelper appInfoHelper,
+            HealthDataCategoryPriorityHelper priorityHelper,
+            PreferenceHelper preferenceHelper) {
+        mTransactionManager = transactionManager;
+        mDeviceInfoHelper = deviceInfoHelper;
+        mAppInfoHelper = appInfoHelper;
+        mRecordProtoConverter = new RecordProtoConverter();
+        mPriorityHelper = priorityHelper;
+        mPreferenceHelper = preferenceHelper;
+    }
 
     /** Takes the serialized user settings and overwrites existing settings. */
     public void pushSettingsForRestore(BackupSettings newSettings) {
         Slog.i(TAG, "Restoring user settings.");
-        throw new UnsupportedOperationException("Not implemented yet.");
+        CloudBackupSettingsHelper cloudBackupSettingsHelper =
+                new CloudBackupSettingsHelper(mPriorityHelper, mPreferenceHelper, mAppInfoHelper);
+
+        byte[] data = newSettings.getData();
+        Settings settings;
+        try {
+            settings = Settings.parseFrom(data);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(
+                    "Unable to parse BackupSettings object back into"
+                            + "Settings Record. Details: ",
+                    e.getCause());
+        }
+        cloudBackupSettingsHelper.restoreUserSettings(settings);
     }
 
     /** Checks whether data with a certain version could be restored. */
     public boolean canRestore(int dataVersion) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return dataVersion <= PROTO_VERSION;
     }
 
     /** Restores backup data changes. */
-    public void pushChangesForRestore(List<BackupChange> changes) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+    public void pushChangesForRestore(List<RestoreChange> changes) {
+        Slog.i(TAG, "Restoring " + changes.size() + " changes");
+        List<Record> records =
+                changes.stream().map(this::toRecord).filter(Objects::nonNull).toList();
+        UpsertTransactionRequest upsertRequest =
+                UpsertTransactionRequest.createForRestore(
+                        records.stream()
+                                .map(this::toRecordInternal)
+                                .filter(Objects::nonNull)
+                                .toList(),
+                        mDeviceInfoHelper,
+                        mAppInfoHelper);
+        var insertedRecords =
+                mTransactionManager.insertAllRecords(mAppInfoHelper, null, upsertRequest);
+
+        records.stream()
+                .collect(
+                        Collectors.groupingBy(
+                                Record::getPackageName,
+                                LinkedHashMap::new,
+                                Collectors.mapping(
+                                        mRecordProtoConverter::getRecordTypeId,
+                                        Collectors.toSet())))
+                .forEach(
+                        (packageName, recordTypes) ->
+                                mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
+                                        recordTypes, packageName));
+        Slog.i(TAG, "Restored " + insertedRecords.size() + " records out of " + changes.size());
+    }
+
+    @Nullable
+    private Record toRecord(RestoreChange backupChange) {
+        try {
+            return BackupData.parseFrom(backupChange.getData()).getRecord();
+        } catch (Exception e) {
+            Slog.e(TAG, "Failed to parse record", e);
+            return null;
+        }
+    }
+
+    @Nullable
+    private RecordInternal<?> toRecordInternal(Record record) {
+        try {
+            return mRecordProtoConverter.toRecordInternal(record);
+        } catch (Exception e) {
+            Slog.e(TAG, "Failed to convert record", e);
+            return null;
+        }
     }
 }

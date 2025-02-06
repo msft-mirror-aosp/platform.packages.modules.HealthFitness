@@ -24,24 +24,18 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.Arrays;
-import java.util.Objects;
 
 /** @hide */
 @FlaggedApi(FLAG_CLOUD_BACKUP_AND_RESTORE)
 public final class BackupSettings implements Parcelable {
 
-    // Version how the data was encoded.
-    private final int mVersion;
-
     @NonNull private final byte[] mData;
 
-    public BackupSettings(int version, @NonNull byte[] data) {
-        mVersion = version;
+    public BackupSettings(@NonNull byte[] data) {
         mData = data;
     }
 
     private BackupSettings(Parcel in) {
-        mVersion = in.readInt();
         mData = in.readBlob();
     }
 
@@ -49,14 +43,12 @@ public final class BackupSettings implements Parcelable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof BackupSettings that)) return false;
-        return mVersion == that.mVersion && Arrays.equals(mData, that.mData);
+        return Arrays.equals(mData, that.mData);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(mVersion);
-        result = 31 * result + Arrays.hashCode(mData);
-        return result;
+        return Arrays.hashCode(mData);
     }
 
     @NonNull
@@ -74,11 +66,6 @@ public final class BackupSettings implements Parcelable {
             };
 
     @NonNull
-    public int getVersion() {
-        return mVersion;
-    }
-
-    @NonNull
     public byte[] getData() {
         return mData;
     }
@@ -90,7 +77,6 @@ public final class BackupSettings implements Parcelable {
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeInt(mVersion);
         dest.writeBlob(mData);
     }
 }

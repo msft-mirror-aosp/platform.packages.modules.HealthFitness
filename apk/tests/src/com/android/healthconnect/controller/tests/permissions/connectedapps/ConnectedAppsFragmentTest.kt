@@ -263,22 +263,7 @@ class ConnectedAppsFragmentTest {
     }
 
     @Test
-    @EnableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
-    fun allowedApps_newIAEnabled_confirmationDialogDisplayed_checkboxInDialogDisplayed() {
-        val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = ALLOWED))
-        whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
-        whenever(viewModel.alertDialogActive).then { MutableLiveData(true) }
-
-        launchFragment<ConnectedAppsFragment>(Bundle())
-
-        onView(withText("Also delete all Health Connect data"))
-            .inRoot(RootMatchers.isDialog())
-            .check(matches(isDisplayed()))
-    }
-
-    @Test
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
-    fun allowedApps_phrEnabled_confirmationDialogDisplayed_checkboxInDialogDisplayed() {
+    fun allowedApps_confirmationDialogDisplayed_checkboxInDialogDisplayed() {
         val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = ALLOWED))
         whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
         whenever(viewModel.alertDialogActive).then { MutableLiveData(true) }
@@ -444,9 +429,8 @@ class ConnectedAppsFragmentTest {
         onView(withText("secondApp")).check(matches(isAbove(withText("thirdApp"))))
     }
 
-    @EnableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE)
     @Test
-    fun whenClickOnInactiveApp_newIaFlagEnabled_showsDeleteDataDialog() {
+    fun whenClickOnInactiveApp_showsDeleteDataDialog() {
         val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = INACTIVE))
         whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
 
@@ -457,38 +441,6 @@ class ConnectedAppsFragmentTest {
         onView(withTagValue(`is`("Delete button inactive app"))).perform(click())
 
         onView(withText("Permanently delete all $TEST_APP_NAME data?"))
-            .check(matches(isDisplayed()))
-    }
-
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
-    @Test
-    fun whenClickOnInactiveApp_phrFlagEnabled_showsDeleteDataDialog() {
-        val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = INACTIVE))
-        whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
-
-        launchFragment<ConnectedAppsFragment>(Bundle())
-
-        onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
-        onView(withText(R.string.inactive_apps)).check(matches(isDisplayed()))
-        onView(withTagValue(`is`("Delete button inactive app"))).perform(click())
-
-        onView(withText("Permanently delete all $TEST_APP_NAME data?"))
-            .check(matches(isDisplayed()))
-    }
-
-    @DisableFlags(Flags.FLAG_NEW_INFORMATION_ARCHITECTURE, Flags.FLAG_PERSONAL_HEALTH_RECORD)
-    @Test
-    fun whenClickOnInactiveApp_oldDeletion_showsDeleteDataDialog() {
-        val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = INACTIVE))
-        whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
-
-        launchFragment<ConnectedAppsFragment>(Bundle())
-
-        onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
-        onView(withText(R.string.inactive_apps)).check(matches(isDisplayed()))
-        onView(withTagValue(`is`("Delete button inactive app"))).perform(click())
-
-        onView(withText("Permanently delete $TEST_APP_NAME data from all time?"))
             .check(matches(isDisplayed()))
     }
 

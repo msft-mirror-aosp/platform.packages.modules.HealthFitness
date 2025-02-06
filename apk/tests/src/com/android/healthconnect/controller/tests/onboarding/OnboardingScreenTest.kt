@@ -87,18 +87,20 @@ class OnboardingScreenTest {
             )
             .check(matches(isDisplayed()))
         onView(withId(R.id.onboarding_image)).check(matches(isDisplayed()))
-        onView(withId(R.id.share_icon)).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(withText("Share data with your apps"))
+        onView(
+                withText(
+                    "Share data with your apps\n" +
+                        "Choose the data each app can read or write to Health\u00A0Connect"
+                )
+            )
             .perform(scrollTo())
             .check(matches(isDisplayed()))
-        onView(withText("Choose the data each app can read or write to Health\u00A0Connect"))
-            .perform(scrollTo())
-            .check(matches(isDisplayed()))
-        onView(withId(R.id.manage_icon)).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(withText("Manage your settings and privacy"))
-            .perform(scrollTo())
-            .check(matches(isDisplayed()))
-        onView(withText("Change app permissions and manage your data at any time"))
+        onView(
+                withText(
+                    "Manage your settings and privacy\n" +
+                        "Change app permissions and manage your data at any time"
+                )
+            )
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Get started")).check(matches(isDisplayed()))
@@ -118,19 +120,23 @@ class OnboardingScreenTest {
             )
             .check(matches(isDisplayed()))
         onView(withId(R.id.onboarding_image)).check(matches(isDisplayed()))
-        onView(withId(R.id.share_icon)).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(withText("With Health\u00A0Connect you can")).check(matches(isDisplayed()))
-        onView(withText("Share data with your apps"))
+        onView(withText("With Health\u00A0Connect you can"))
             .perform(scrollTo())
             .check(matches(isDisplayed()))
-        onView(withText("Choose the data each app can read or write to Health\u00A0Connect"))
+        onView(
+                withText(
+                    "Share data with your apps\n" +
+                        "Choose the data each app can read or write to Health\u00A0Connect"
+                )
+            )
             .perform(scrollTo())
             .check(matches(isDisplayed()))
-        onView(withId(R.id.manage_icon)).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(withText("Manage your settings and privacy"))
-            .perform(scrollTo())
-            .check(matches(isDisplayed()))
-        onView(withText("Change app permissions and manage your data at any time"))
+        onView(
+                withText(
+                    "Manage your settings and privacy\n" +
+                        "Change app permissions and manage your data at any time"
+                )
+            )
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Get started")).check(matches(isDisplayed()))
@@ -166,15 +172,15 @@ class OnboardingScreenTest {
     @Test
     fun onboardingScreen_actions_isClickable() {
         startOnboardingActivity()
-        onView(withId(R.id.go_back_button)).check(matches(isClickable()))
-        onView(withId(R.id.get_started_button)).check(matches(isClickable()))
+        onView(withText("Go back")).check(matches(isClickable()))
+        onView(withText("Get started")).check(matches(isClickable()))
     }
 
     @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     @Test
     fun onboardingScreen_withHealthRecords_actions_isClickable() {
         startOnboardingActivity()
-        onView(withId(R.id.go_back_button)).check(matches(isClickable()))
-        onView(withId(R.id.get_started_button)).check(matches(isClickable()))
+        onView(withText("Go back")).check(matches(isClickable()))
+        onView(withText("Get started")).check(matches(isClickable()))
     }
 }

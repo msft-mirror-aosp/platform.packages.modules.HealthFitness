@@ -25,19 +25,24 @@ import android.healthconnect.cts.lib.UiTestUtils.findObject
 import android.healthconnect.cts.lib.UiTestUtils.findText
 import android.healthconnect.cts.lib.UiTestUtils.findTextAndClick
 import android.healthconnect.cts.lib.UiTestUtils.grantPermissionViaPackageManager
+import android.healthconnect.cts.lib.UiTestUtils.navigateToNewPage
 import android.healthconnect.cts.lib.UiTestUtils.revokePermissionViaPackageManager
 import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
 import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndClick
+import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndFindText
 import android.healthconnect.cts.lib.UiTestUtils.scrollToEnd
 import android.healthconnect.cts.lib.UiTestUtils.verifyTextNotFound
 import android.healthconnect.cts.lib.UiTestUtils.waitForObjectNotFound
 import android.healthconnect.cts.utils.PermissionHelper.getGrantedHealthPermissions
 import android.healthconnect.cts.utils.TestUtils
 import android.healthconnect.cts.utils.TestUtils.readAllRecords
+import android.platform.test.annotations.RequiresFlagsDisabled
+import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import androidx.test.uiautomator.By
 import com.android.healthfitness.flags.AconfigFlagHelper
+import com.android.settingslib.widget.theme.flags.Flags.FLAG_IS_EXPRESSIVE_DESIGN_ENABLED
 import com.google.common.truth.Truth.assertThat
 import java.time.Duration.ofSeconds
 import org.junit.After
@@ -108,9 +113,10 @@ abstract class BaseDataTypeTest<T : Record> : HealthConnectBaseTest() {
     @Test
     fun dataAndAccess_showsEntries_deletesEntry() {
         context.launchMainActivity {
-            scrollDownToAndClick(By.text("Data and access"))
-            scrollDownTo(By.text(dataCategoryString))
-            scrollDownToAndClick(By.text(dataTypeString))
+            navigateToNewPage("Data and access")
+
+            scrollDownToAndFindText(dataCategoryString)
+            navigateToNewPage(dataTypeString)
 
             findText("No data")
             findDescAndClick("Previous day")
@@ -147,11 +153,10 @@ abstract class BaseDataTypeTest<T : Record> : HealthConnectBaseTest() {
         TestUtils.insertRecords(listOfNotNull(sameCategoryRecord, anotherCategoryRecord))
 
         context.launchMainActivity {
-            scrollDownToAndClick(By.text("Data and access"))
-            scrollToEnd()
+            navigateToNewPage("Data and access")
 
             findDescAndClick("Enter deletion")
-            findTextAndClick(dataTypeString)
+            scrollDownToAndClick(By.text(dataTypeString))
             findDescAndClick("Delete data")
             findTextAndClick("Delete")
             findObject(By.text("Done"), timeout = ofSeconds(3))
@@ -176,10 +181,20 @@ abstract class BaseDataTypeTest<T : Record> : HealthConnectBaseTest() {
     }
 
     @Test
-    fun seeAllRecentAccess_showsDataCategory() {
+    @RequiresFlagsDisabled(FLAG_IS_EXPRESSIVE_DESIGN_ENABLED)
+    fun legacySeeAllRecentAccess_showsDataCategory() {
         context.launchMainActivity {
-            findTextAndClick("See all recent access")
-            findText("Write: ${dataCategoryString}")
+            navigateToNewPage("See all recent access")
+            scrollDownToAndFindText("Write: ${dataCategoryString}")
+        }
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_IS_EXPRESSIVE_DESIGN_ENABLED)
+    fun expressiveSeeAllRecentAccess_showsDataCategory() {
+        context.launchMainActivity {
+            navigateToNewPage("View all")
+            scrollDownToAndFindText("Write: ${dataCategoryString}")
         }
     }
 
@@ -191,10 +206,10 @@ abstract class BaseDataTypeTest<T : Record> : HealthConnectBaseTest() {
         }
 
         context.launchMainActivity {
-            scrollDownToAndClick(By.text("App permissions"))
-            findTextAndClick(APP_WITH_READ_WRITE_PERMISSIONS_LABEL)
+            navigateToNewPage("App permissions")
+            navigateToNewPage(APP_WITH_READ_WRITE_PERMISSIONS_LABEL)
             if (AconfigFlagHelper.isPersonalHealthRecordEnabled()) {
-                findTextAndClick("Fitness and wellness")
+                navigateToNewPage("Fitness and wellness")
             }
             findTextAndClick("Allow all")
         }

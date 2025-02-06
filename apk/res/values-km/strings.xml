@@ -47,7 +47,7 @@
     <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"នាំចេញ និងនាំចូលទិន្នន័យ"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"ការចូលប្រើថ្មីៗ"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"មិនមានកម្មវិធីណាមួយបានចូលប្រើ Health Connect ថ្មីៗនេះទេ"</string>
-    <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"មើលគ្រប់ការចូលប្រើប្រាស់ថ្មីៗនេះ"</string>
+    <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"មើលការចូលប្រើប្រាស់ថ្មីៗទាំងអស់"</string>
     <string name="recent_access_screen_description" msgid="331101209889185402">"មើលថាតើកម្មវិធីណាខ្លះបានចូលប្រើប្រាស់ទិន្នន័យរបស់អ្នកក្នុងរយៈពេល 24 ម៉ោងចុងក្រោយ"</string>
     <string name="today_header" msgid="1006837293203834373">"ថ្ងៃនេះ"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"ម្សិលមិញ"</string>
@@ -56,6 +56,10 @@
     <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"គ្រប់គ្រង​ការអនុញ្ញាត"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"ម៉ោង៖ <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
+    <string name="recent_access_empty_state_title" msgid="4767157641389217682">"គ្មានការចូលប្រើនាពេលថ្មីៗទេ"</string>
+    <string name="recent_access_empty_state_description" msgid="6334951450158128989">"កម្មវិធីដែលបានចូលប្រើទិន្នន័យរបស់អ្នកនាពេលថ្មីៗនេះនឹងបង្ហាញនៅទីនេះដោយស្វ័យប្រវត្តិ"</string>
+    <string name="recent_access_view_all_button" msgid="825946958049641541">"មើលទាំងអស់"</string>
+    <string name="recent_access_error" msgid="2258399573560888960">"មិនអាចផ្ទុកសិទ្ធិចូលប្រើថ្មីៗបានទេ"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"សកម្មភាព"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"សកម្មភាព"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"រង្វាស់រាងកាយ"</string>
@@ -352,8 +356,8 @@
     <string name="vital_signs_uppercase_label" msgid="289862347143374640">"សញ្ញា​ជីវិត"</string>
     <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"សញ្ញាសរីរាង្គសំខាន់ៗ"</string>
     <string name="vital_signs_content_description" msgid="914944352640528612">"អានសញ្ញាសរីរាង្គសំខាន់ៗ"</string>
-    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"ការ​ចេះ​គិត​គូរ"</string>
-    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"ការ​ចេះ​គិត​គូរ"</string>
+    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"ការតាំងសតិ"</string>
+    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"ការតាំងសតិ"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"អានទិន្នន័យអំពីការ​ចេះ​គិត​គូរ"</string>
     <string name="mindfulness_write_content_description" msgid="7925112426563398421">"សរសេរទិន្នន័យអំពីការ​ចេះ​គិត​គូរ"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"អនុញ្ញាតឱ្យ “<xliff:g id="APP_NAME">%1$s</xliff:g>” អាន"</string>
@@ -541,10 +545,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect រក្សាទុក​ទិន្នន័យសុខភាព និងសម្បទា​របស់អ្នក ដោយផ្តល់ឱ្យ​អ្នកនូវ​វិធីសាមញ្ញ​ក្នុងការធ្វើសមកាលកម្ម​កម្មវិធីផ្សេងៗ​នៅលើឧបករណ៍​របស់អ្នក"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect រក្សាទុក និងធ្វើសមកាលកម្មទិន្នន័យសុខភាព និង​សម្បទារបស់អ្នកពីកម្មវិធីផ្សេងៗ។\n\n"<b>"ទិន្នន័យសម្បទា និងសុខុមាលភាព"</b>"រួមមានវគ្គហាត់ប្រាណ ជំហាន អាហារូបត្ថម្ភ ដំណេក និងអ្វីៗជាច្រើនទៀត\n\n"<b>"កំណត់ត្រាសុខភាព"</b>" រួមទាំង​វ៉ាក់សាំង លទ្ធផលពី​មន្ទីរពិសោធន៍ និង​អ្វីៗជាច្រើនទៀត"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"តាមរយៈការប្រើ Health Connect អ្នកអាច"</string>
-    <string name="share_data" msgid="3481932156368883946">"ចែករំលែកទិន្នន័យជាមួយកម្មវិធីរបស់អ្នក"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"ជ្រើសរើសទិន្នន័យដែលកម្មវិធីនីមួយៗអាចអាន ឬសរសេរទៅកាន់ Health Connect បាន"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"គ្រប់គ្រងការកំណត់ និងឯកជនភាពរបស់អ្នក"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"ផ្លាស់ប្ដូរការអនុញ្ញាតកម្មវិធី និងគ្រប់គ្រងទិន្នន័យរបស់អ្នកបានគ្រប់ពេល"</string>
+    <string name="share_data_text" msgid="6898398345784931678"><b>"ចែករំលែកទិន្នន័យជាមួយកម្មវិធីរបស់អ្នក"</b>\n"ជ្រើសរើសទិន្នន័យដែលកម្មវិធីនីមួយៗអាចអាន ឬសរសេរទៅកាន់ Health Connect"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"គ្រប់គ្រងការកំណត់ និងឯកជនភាពរបស់អ្នក"</b>\n"ផ្លាស់ប្ដូរការអនុញ្ញាតកម្មវិធី និងគ្រប់គ្រងទិន្នន័យរបស់អ្នកបានគ្រប់ពេល"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"ថយ​ក្រោយ"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"ចាប់ផ្ដើម"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"លុប​​ទិន្នន័យ"</string>
@@ -1143,7 +1145,7 @@
     <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"លុបទិន្នន័យ <xliff:g id="APP_NAME">%s</xliff:g> ដែលបានជ្រើសរើសជាអចិន្ត្រៃយ៍ឬ?"</string>
     <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"លុបធាតុទាំងអស់ជាអចិន្ត្រៃយ៍សម្រាប់ថ្ងៃទី <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> ឬ?"</string>
     <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"លុបធាតុទាំងអស់ជាអចិន្ត្រៃយ៍សម្រាប់សប្តាហ៍នៃ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
-    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"លុបធាតុទាំងអស់ជាអចិន្ត្រៃយ៍សម្រាប់ថ្ងៃទី <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> ឬ?"</string>
+    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"លុបធាតុទាំងអស់ជាអចិន្ត្រៃយ៍សម្រាប់ខែ<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"លុបធាតុដែលបានជ្រើសរើសជាអចិន្ត្រៃយ៍សម្រាប់ថ្ងៃទី <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"លុបធាតុដែលបានជ្រើសរើសជាអចិន្ត្រៃយ៍សម្រាប់សប្តាហ៍នៃថ្ងៃទី <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"លុបធាតុដែលបានជ្រើសរើសជាអចិន្ត្រៃយ៍សម្រាប់ខែ<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>

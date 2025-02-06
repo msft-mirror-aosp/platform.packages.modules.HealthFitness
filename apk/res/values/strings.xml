@@ -62,6 +62,11 @@
     <string name="separator" description="Separator (comma and whitespace in English) for a potentially long list of data type names listed in data access entry, as in 'Write: Steps, Distance, Calories'. [CHAR_LIMIT=NONE]">,\u0020</string>
     <string name="manage_permissions" description="Text for floating action button that takes users from Recent Access apps to the App permissions screen [CHAR LIMIT=40]">Manage permissions</string>
     <string name="recent_access_time_content_descritption" description="Content description for time section of recent access preference providing better context for accessibility talk back. [CHAR_LIMIT=NONE]">Time: <xliff:g example="13:05" id="recent_access_time">%1$s</xliff:g></string>
+
+    <string name="recent_access_empty_state_title" description="Title of section shown when no apps have recently accessed health data [CHAR_LIMIT=NONE]">No recent access</string>
+    <string name="recent_access_empty_state_description" description="Description of section shown when no apps have recently accessed health data [CHAR_LIMIT=NONE]">Apps which have recently accessed your data will automatically show here</string>
+    <string name="recent_access_view_all_button" description="Label on a button leading to another screen showing all the writes and reads performed by connected apps in the last 24 hours. [CHAR LIMIT=50]">View all</string>
+    <string name="recent_access_error" description="Text indicating to the user that there was an error while loading recent access [CHAR_LIMIT=NONE]">Could not load recent access</string>
     <!--endregion-->
 
     <!--region Data categories  -->
@@ -737,10 +742,8 @@
     <string name="onboarding_description" description="Content description of Health Connect app on the onboarding page">Health&#160;Connect stores your health and fitness data, giving you a simple way to sync the different apps on your device</string>
     <string name="onboarding_description_health_records" description="Content description of Health Connect app on the onboarding page that includes health records">Health&#160;Connect stores and syncs your health and fitness data from different apps.\n\n<b>Fitness and wellness data,</b> including exercise sessions, steps, nutrition, sleep and more\n\n<b>Health records,</b> including vaccines, lab results and more</string>
     <string name="onboarding_description_with_health_connect" description="Content description of Health Connect app on the onboarding page that explains what the user can do with this app">With Health&#160;Connect you can</string>
-    <string name="share_data" description="Label used to show how the user can share data with apps">Share data with your apps</string>
-    <string name="share_data_description" description="Content description for how the user can share data with apps">Choose the data each app can read or write to Health&#160;Connect</string>
-    <string name="manage_your_settings" description="Label used to show how the user can manage settings and privacy">Manage your settings and privacy</string>
-    <string name="manage_your_settings_description" description="Content description for how the user can change app permissions and manage data">Change app permissions and manage your data at any time</string>
+    <string name="share_data_text" description="Text explaining how the user can share data with apps"><b>Share data with your apps</b>\nChoose the data each app can read or write to Health&#160;Connect</string>
+    <string name="manage_your_settings_text" description="Text explaining how the user can change app permissions and manage data"><b>Manage your settings and privacy</b>\nChange app permissions and manage your data at any time</string>
     <string name="onboarding_go_back_button_text" description="Content description for button to exit from onboarding page">Go back</string>
     <string name="onboarding_get_started_button_text" description="Content description for button to get started with Health Connect app">Get started</string>
     <string name="previously_opened" description="Label used as key to track if user has opened Health Connect previously" translatable="false">Previously Opened</string>
@@ -1676,6 +1679,12 @@
     <string name="allow_all_the_time_prompt" description="Title to ask user select all the time or while in use.">Allow <xliff:g id="app_name" example="Run Tracker">%1$s</xliff:g> access to fitness and wellness data all the time?</string>
     <string name="current_access" description="Subtitle to indicate which data types the app currently has permission to."><xliff:g id="app_name" example="Run Tracker">%1$s</xliff:g> has access to <xliff:g id="data_types" example="Heart rate, Skin temp">%2$s</xliff:g>.</string>
     <string name="manage_fitness_and_wellness_permissions" description="Label for button to manager fitness and wellness permissions for an app.">Manage fitness and wellness permissions</string>
+    <!-- endregion -->
+
+    <!-- region Privacy Dashboard  -->
+    <string name="used_by_apps_count" description="Text to indicate how many apps used this permission in past 24 hours.">{count, plural, =1 {Used by 1 app} other {Used by # apps}}</string>
+    <string name="not_used_in_past_24_hours" description="Text to indicate no app used this permission in past 24 hours.">Not used in past 24 hours</string>
+    <string name="accessed" description="Text to indicate last accessed time to a permission.">Accessed <xliff:g example="13:05" id="recent_access_time">%1$s</xliff:g></string>
     <!-- endregion -->
 
     <!-- endregion -->

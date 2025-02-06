@@ -30,7 +30,6 @@ android_test {
     ],
     srcs: [
         ":healthfitness-cts-testapp-srcs",
-        ":healthfitness-permissions-testapp-srcs",
         "src/android/healthconnect/cts/*.java",
         "src/android/healthconnect/cts/aggregation/*.java",
         "src/android/healthconnect/cts/backgroundread/*.java",
@@ -67,7 +66,6 @@ android_test {
     data: [
         ":HealthFitnessCtsTestApp",
         ":HealthFitnessCtsTestApp2",
-        ":HealthFitnessPermsTestApp",
         ":CtsHealthConnectTestAppAWithNormalReadWritePermission",
         ":CtsHealthConnectTestAppWithWritePermissionsOnly",
     ],
@@ -226,6 +224,7 @@ android_test {
         "cts-healthconnect-phr-lib",
         "cts-install-lib",
         "cts-healthconnect-utils",
+        "aconfig_settingstheme_exported_flags_java_lib",
     ],
     min_sdk_version: "34",
     sdk_version: "test_current",
@@ -303,6 +302,7 @@ android_test {
         "cts-wm-util",
         "modules-utils-build",
         "testng",
+        "cts-healthconnect-lib",
         "cts-healthconnect-utils",
     ],
     min_sdk_version: "34",
@@ -310,6 +310,6 @@ android_test {
     test_config: "AndroidTestHistoricAccessLimitWithPermission.xml",
     manifest: "AndroidManifestHistoricAccessLimitWithPermission.xml",
     data: [
-        ":HealthFitnessPermsTestApp",
+        ":CtsHealthConnectTestAppAWithNormalReadWritePermission",
     ],
 }

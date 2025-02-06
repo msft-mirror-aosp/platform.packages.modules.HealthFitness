@@ -16,9 +16,11 @@
 package com.android.server.healthconnect.backuprestore;
 
 import static android.health.connect.Constants.DEFAULT_LONG;
+import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
 import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 
 import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTORE;
+import static com.android.server.healthconnect.backuprestore.RecordProtoConverter.PROTO_VERSION;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
@@ -36,7 +38,6 @@ import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.util.Pair;
 
-import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.proto.backuprestore.BackupData;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
@@ -60,12 +61,12 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
- * Performs various operations on the Health Connect database for cloud backup and restore.
+ * Performs various operations on the Health Connect database for cloud backup.
  *
  * @hide
  */
 @FlaggedApi(FLAG_CLOUD_BACKUP_AND_RESTORE)
-public class BackupRestoreDatabaseHelper {
+public class CloudBackupDatabaseHelper {
     private final AppInfoHelper mAppInfoHelper;
     private final TransactionManager mTransactionManager;
     private final AccessLogsHelper mAccessLogsHelper;
@@ -77,11 +78,9 @@ public class BackupRestoreDatabaseHelper {
     private final ReadAccessLogsHelper mReadAccessLogsHelper;
     private final RecordProtoConverter mRecordProtoConverter = new RecordProtoConverter();
 
-    // TODO: b/377648858 - maybe also allow client passes its own page size.
-    @VisibleForTesting static final int MAXIMUM_PAGE_SIZE = 5000;
-    private static final String TAG = "BackupRestoreDatabaseHelper";
+    private static final String TAG = "CloudBackupRestoreDatabaseHelper";
 
-    public BackupRestoreDatabaseHelper(
+    public CloudBackupDatabaseHelper(
             TransactionManager transactionManager,
             AppInfoHelper appInfoHelper,
             AccessLogsHelper accessLogsHelper,
@@ -149,12 +148,12 @@ public class BackupRestoreDatabaseHelper {
         String changeLogsTablePageToken =
                 changeLogsPageToken == null ? getChangeLogsPageToken() : changeLogsPageToken;
 
-        //  TODO: b/377648858 - find a better approach to force the dependent data type orders
+        // TODO: b/377648858 - find a better approach to force the dependent data type orders
         List<Integer> recordTypes = getRecordTypes();
 
         List<BackupChange> backupChanges = new ArrayList<>();
         long nextDataTablePageToken = dataTablePageToken;
-        int pageSize = MAXIMUM_PAGE_SIZE;
+        int pageSize = DEFAULT_PAGE_SIZE;
         String nextDataTableName = dataTableName;
 
         for (var recordType : recordTypes) {
@@ -200,7 +199,7 @@ public class BackupRestoreDatabaseHelper {
                                 /* shouldRecordAccessLog= */ false);
                 backupChanges.addAll(convertRecordsToBackupChange(readResult.first));
                 nextDataTablePageToken = readResult.second.encode();
-                pageSize = MAXIMUM_PAGE_SIZE - backupChanges.size();
+                pageSize = DEFAULT_PAGE_SIZE - backupChanges.size();
                 nextDataTableName = recordHelper.getMainTableName();
                 if (nextDataTablePageToken == EMPTY_PAGE_TOKEN.encode()) {
                     int recordIndex = recordTypes.indexOf(recordType);
@@ -228,7 +227,8 @@ public class BackupRestoreDatabaseHelper {
                         nextDataTableName,
                         nextDataTablePageToken,
                         changeLogsTablePageToken);
-        return new GetChangesForBackupResponse(backupChanges, backupChangeTokenRowId);
+        return new GetChangesForBackupResponse(
+                PROTO_VERSION, backupChanges, backupChangeTokenRowId);
     }
 
     private String getChangeLogsPageToken() {
@@ -297,7 +297,8 @@ public class BackupRestoreDatabaseHelper {
                         null,
                         EMPTY_PAGE_TOKEN.encode(),
                         changeLogsResponse.getNextPageToken());
-        return new GetChangesForBackupResponse(backupChanges, backupChangeTokenRowId);
+        return new GetChangesForBackupResponse(
+                PROTO_VERSION, backupChanges, backupChangeTokenRowId);
     }
 
     private List<BackupChange> convertRecordsToBackupChange(List<RecordInternal<?>> records) {
@@ -310,8 +311,6 @@ public class BackupRestoreDatabaseHelper {
                             }
                             return new BackupChange(
                                     record.getUuid().toString(),
-                                    // TODO: b/377648858 - add proper encryption version.
-                                    /* version= */ 0,
                                     /* isDeletion= */ false,
                                     serializeRecordInternal(record));
                         })
@@ -325,8 +324,6 @@ public class BackupRestoreDatabaseHelper {
                         deletedLog ->
                                 new BackupChange(
                                         deletedLog.getDeletedRecordId(),
-                                        // TODO: b/369799948 - add proper encryption version.
-                                        /* version= */ 0,
                                         /* isDeletion= */ true,
                                         null))
                 .toList();

@@ -29,11 +29,13 @@ import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager.EXTRA_REQUEST_PERMISSIONS_NAMES
 import android.content.pm.PackageManager.EXTRA_REQUEST_PERMISSIONS_RESULTS
+import android.content.pm.PackageManager.FLAG_PERMISSION_REVOKE_WHEN_REQUESTED
 import android.content.pm.PackageManager.FLAG_PERMISSION_USER_FIXED
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.health.connect.HealthPermissions.READ_EXERCISE
 import android.health.connect.HealthPermissions.READ_HEALTH_DATA_HISTORY
+import android.health.connect.HealthPermissions.READ_HEART_RATE
 import android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES
 import android.health.connect.HealthPermissions.READ_MEDICAL_DATA_CONDITIONS
@@ -46,12 +48,16 @@ import android.health.connect.HealthPermissions.WRITE_SKIN_TEMPERATURE
 import android.health.connect.HealthPermissions.WRITE_SLEEP
 import android.platform.test.annotations.DisableFlags
 import android.platform.test.annotations.EnableFlags
+import android.platform.test.annotations.RequiresFlagsEnabled
+import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import android.platform.test.flag.junit.SetFlagsRule
+import android.os.Build
 import android.widget.Button
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launchActivityForResult
 import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
@@ -61,6 +67,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToLastPosition
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.filters.SdkSuppress
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.migration.MigrationViewModel
@@ -73,6 +80,8 @@ import com.android.healthconnect.controller.permissions.api.HealthPermissionMana
 import com.android.healthconnect.controller.permissions.api.LoadAccessDateUseCase
 import com.android.healthconnect.controller.permissions.request.PermissionsActivity
 import com.android.healthconnect.controller.service.HealthPermissionManagerModule
+import com.android.healthconnect.controller.tests.utils.BODY_SENSORS_TEST_APP_NAME
+import com.android.healthconnect.controller.tests.utils.BODY_SENSORS_TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.NOW
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
@@ -118,6 +127,7 @@ class PermissionsActivityTest {
     }
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
+    @get:Rule val checkFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
     @get:Rule val setFlagsRule = SetFlagsRule()
 
     @BindValue val permissionManager: HealthPermissionManager = FakeHealthPermissionManager()
@@ -181,7 +191,7 @@ class PermissionsActivityTest {
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(scrollToLastPosition<RecyclerView.ViewHolder>())
-        Espresso.onIdle()
+        onIdle()
 
         onView(withText("Exercise")).check(matches(isDisplayed()))
         onView(withText("Sleep")).check(matches(isDisplayed()))
@@ -212,7 +222,7 @@ class PermissionsActivityTest {
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(scrollToLastPosition<RecyclerView.ViewHolder>())
-        Espresso.onIdle()
+        onIdle()
 
         onView(withText("Exercise")).check(doesNotExist())
         onView(withText("Sleep")).check(matches(isDisplayed()))
@@ -246,7 +256,7 @@ class PermissionsActivityTest {
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(scrollToLastPosition<RecyclerView.ViewHolder>())
-        Espresso.onIdle()
+        onIdle()
 
         onView(withText("Exercise")).check(doesNotExist())
         onView(withText("Sleep")).check(matches(isDisplayed()))
@@ -504,7 +514,7 @@ class PermissionsActivityTest {
         onView(withText("Conditions")).perform(click())
         onView(withText("Allow")).perform(click())
 
-        Espresso.onIdle()
+        onIdle()
 
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(scrollToLastPosition<RecyclerView.ViewHolder>())
@@ -542,7 +552,7 @@ class PermissionsActivityTest {
         onView(withText("Conditions")).perform(click())
         onView(withText("Don't allow")).perform(click())
 
-        Espresso.onIdle()
+        onIdle()
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(scrollToLastPosition<RecyclerView.ViewHolder>())
         onView(withText("Sleep")).check(matches(isDisplayed()))
@@ -577,7 +587,7 @@ class PermissionsActivityTest {
         onView(withText("Conditions")).perform(click())
         onView(withText("Allow")).perform(click())
 
-        Espresso.onIdle()
+        onIdle()
 
         onView(withText("Allow $TEST_APP_NAME to access data in the background?"))
             .check(matches(isDisplayed()))
@@ -619,6 +629,140 @@ class PermissionsActivityTest {
             .isEqualTo(expectedResults)
 
         assertThat(permissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME)).isEmpty()
+    }
+
+    @Test
+    fun requestFitnessPermissions_onboardingNotDone_redirectsToOnboarding() {
+        val permissions =
+            arrayOf(READ_EXERCISE, READ_SLEEP, WRITE_ACTIVE_CALORIES_BURNED, WRITE_SLEEP)
+        val startActivityIntent = getPermissionScreenIntent(permissions)
+        showOnboarding(context, true)
+
+        launchActivityForResult<PermissionsActivity>(startActivityIntent)
+
+        onIdle()
+        onView(withId(R.id.onboarding)).check(matches(isDisplayed()))
+    }
+
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
+    @RequiresFlagsEnabled(
+        Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED,
+        android.permission.flags.Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED
+    )
+    @Test
+    fun requestFitnessPermissions_notSplitPermissionRequest_redirectsToOnboarding() {
+        val permissions = arrayOf(READ_HEART_RATE)
+        val startActivityIntent = getPermissionScreenIntent(
+            permissions, BODY_SENSORS_TEST_APP_PACKAGE_NAME)
+        (permissionManager as FakeHealthPermissionManager).setHealthPermissionFlags(
+            BODY_SENSORS_TEST_APP_PACKAGE_NAME,
+            mapOf(READ_HEART_RATE to FLAG_PERMISSION_USER_FIXED),
+        )
+        // Ensure this app has never shown onboarding before.
+        showOnboarding(context, true)
+
+        launchActivityForResult<PermissionsActivity>(startActivityIntent)
+
+        onIdle()
+        onView(withId(R.id.onboarding)).check(matches(isDisplayed()))
+    }
+
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
+    @RequiresFlagsEnabled(
+        Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED,
+        android.permission.flags.Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED
+    )
+    @Test
+    fun requestFitnessPermissions_legacyBodySensorsApp_onboardingSkipped() {
+        val permissions = arrayOf(READ_HEART_RATE)
+        val startActivityIntent = getPermissionScreenIntent(
+            permissions, BODY_SENSORS_TEST_APP_PACKAGE_NAME)
+        (permissionManager as FakeHealthPermissionManager).setHealthPermissionFlags(
+            BODY_SENSORS_TEST_APP_PACKAGE_NAME,
+            mapOf(READ_HEART_RATE to FLAG_PERMISSION_REVOKE_WHEN_REQUESTED,
+                  READ_HEALTH_DATA_IN_BACKGROUND to FLAG_PERMISSION_REVOKE_WHEN_REQUESTED),
+        )
+        // Ensure this app has never shown onboarding before.
+        showOnboarding(context, true)
+
+        val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
+
+        onIdle()
+        onView(withId(R.id.onboarding)).check(doesNotExist())
+        onView(withText("Allow")).check(matches(isDisplayed()))
+    }
+
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
+    @RequiresFlagsEnabled(
+        Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED,
+        android.permission.flags.Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED
+    )
+    @Test
+    fun requestFitnessPermissions_legacyBodySensors_canGrantPermissions() {
+        val permissions = arrayOf(READ_HEART_RATE)
+        val startActivityIntent = getPermissionScreenIntent(
+            permissions, BODY_SENSORS_TEST_APP_PACKAGE_NAME)
+        (permissionManager as FakeHealthPermissionManager).setHealthPermissionFlags(
+            BODY_SENSORS_TEST_APP_PACKAGE_NAME,
+            mapOf(READ_HEART_RATE to FLAG_PERMISSION_REVOKE_WHEN_REQUESTED,
+                  READ_HEALTH_DATA_IN_BACKGROUND to FLAG_PERMISSION_REVOKE_WHEN_REQUESTED),
+        )
+
+        val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
+        onView(withId(androidx.preference.R.id.recycler_view))
+            .perform(scrollToLastPosition<RecyclerView.ViewHolder>())
+        onView(withText("Heart rate")).perform(click())
+        onView(withText("Allow")).perform(click())
+
+        assertThat(scenario.result.resultCode).isEqualTo(Activity.RESULT_OK)
+        val returnedIntent = scenario.result.resultData
+        assertThat(returnedIntent.getStringArrayExtra(EXTRA_REQUEST_PERMISSIONS_NAMES))
+            .isEqualTo(permissions)
+        val expectedResults = intArrayOf(PERMISSION_GRANTED)
+        assertThat(returnedIntent.getIntArrayExtra(EXTRA_REQUEST_PERMISSIONS_RESULTS))
+            .isEqualTo(expectedResults)
+        assertThat(permissionManager.getGrantedHealthPermissions(
+            BODY_SENSORS_TEST_APP_PACKAGE_NAME))
+            .containsExactlyElementsIn(listOf(READ_HEART_RATE))
+    }
+
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
+    @RequiresFlagsEnabled(
+        Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED,
+        android.permission.flags.Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED
+    )
+    @Test
+    fun requestFitnessPermissions_legacyBodySensors_canGrantBackgroundPermission() {
+        val permissions = arrayOf(READ_HEART_RATE, READ_HEALTH_DATA_IN_BACKGROUND)
+        val startActivityIntent = getPermissionScreenIntent(
+            permissions, BODY_SENSORS_TEST_APP_PACKAGE_NAME)
+        (permissionManager as FakeHealthPermissionManager).setHealthPermissionFlags(
+            BODY_SENSORS_TEST_APP_PACKAGE_NAME,
+            mapOf(READ_HEART_RATE to FLAG_PERMISSION_REVOKE_WHEN_REQUESTED,
+                  READ_HEALTH_DATA_IN_BACKGROUND to FLAG_PERMISSION_REVOKE_WHEN_REQUESTED),
+        )
+
+        val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
+        onView(withId(androidx.preference.R.id.recycler_view))
+            .perform(scrollToLastPosition<RecyclerView.ViewHolder>())
+        onView(withText("Heart rate")).perform(click())
+        onView(withText("Allow")).perform(click())
+        onView(withText("Allow $BODY_SENSORS_TEST_APP_NAME to access data in the background?"))
+            .check(matches(isDisplayed()))
+        onView(withText("Allow")).perform(click())
+        onIdle()
+
+        assertThat(scenario.result.resultCode).isEqualTo(Activity.RESULT_OK)
+        val returnedIntent = scenario.result.resultData
+        assertThat(returnedIntent.getStringArrayExtra(EXTRA_REQUEST_PERMISSIONS_NAMES))
+            .isEqualTo(permissions)
+        val expectedResults = intArrayOf(PERMISSION_GRANTED, PERMISSION_GRANTED)
+        assertThat(returnedIntent.getIntArrayExtra(EXTRA_REQUEST_PERMISSIONS_RESULTS))
+            .isEqualTo(expectedResults)
+        assertThat(permissionManager.getGrantedHealthPermissions(
+            BODY_SENSORS_TEST_APP_PACKAGE_NAME))
+            .containsExactlyElementsIn(
+                listOf(READ_HEART_RATE, READ_HEALTH_DATA_IN_BACKGROUND))
     }
 
     @Test
@@ -706,7 +850,7 @@ class PermissionsActivityTest {
         onView(withText("Exercise")).perform(click())
         onView(withText("Allow")).perform(click())
 
-        Espresso.onIdle()
+        onIdle()
 
         onView(withText("Allow $TEST_APP_NAME to access past data?")).check(matches(isDisplayed()))
         assertThat(permissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME))
@@ -737,7 +881,7 @@ class PermissionsActivityTest {
         onView(withText("Exercise")).perform(click())
         onView(withText("Don't allow")).perform(click())
 
-        Espresso.onIdle()
+        onIdle()
 
         onView(withText("Allow $TEST_APP_NAME to access past data?")).check(matches(isDisplayed()))
         assertThat(permissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME))
@@ -946,11 +1090,11 @@ class PermissionsActivityTest {
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(scrollToLastPosition<RecyclerView.ViewHolder>())
-        Espresso.onIdle()
+        onIdle()
 
         onView(withText("Sleep")).perform(click())
         onView(withText("Allow")).perform(click())
-        Espresso.onIdle()
+        onIdle()
         // At this point, READ_EXERCISE should be USER_FIXED
         assertThat(
                 permissionManager
@@ -1002,14 +1146,14 @@ class PermissionsActivityTest {
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(scrollToLastPosition<RecyclerView.ViewHolder>())
-        Espresso.onIdle()
+        onIdle()
 
         onView(withText("Immunizations")).check(matches(isDisplayed()))
         onView(withText("Immunizations")).perform(click())
         scenario.onActivity { activity: PermissionsActivity ->
             activity.findViewById<Button>(R.id.allow).callOnClick()
         }
-        Espresso.onIdle()
+        onIdle()
         // At this point, READ_MEDICAL_DATA_ALLERGY_INTOLERANCE should be USER_FIXED
         assertThat(
                 permissionManager
@@ -1023,7 +1167,7 @@ class PermissionsActivityTest {
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         }
-        Espresso.onIdle()
+        onIdle()
 
         // The fragment should have checked for the USER_FIXED permission but not end the activity
         // because we are in a flow
@@ -1039,7 +1183,7 @@ class PermissionsActivityTest {
         onView(withText("Allow $TEST_APP_NAME to access data in the background?"))
             .check(matches(isDisplayed()))
 
-        Espresso.onIdle()
+        onIdle()
         onView(withText("Allow")).perform(click())
 
         assertThat(scenario.result.resultCode).isEqualTo(Activity.RESULT_OK)
@@ -1066,10 +1210,12 @@ class PermissionsActivityTest {
             .isEqualTo(expectedResults)
     }
 
-    private fun getPermissionScreenIntent(permissions: Array<String>): Intent =
+    private fun getPermissionScreenIntent(
+            permissions: Array<String>,
+            testAppName: String = TEST_APP_PACKAGE_NAME): Intent =
         Intent.makeMainActivity(ComponentName(context, PermissionsActivity::class.java))
             .putExtra(EXTRA_REQUEST_PERMISSIONS_NAMES, permissions)
-            .putExtra(EXTRA_PACKAGE_NAME, TEST_APP_PACKAGE_NAME)
+            .putExtra(EXTRA_PACKAGE_NAME, testAppName)
             .addFlags(FLAG_ACTIVITY_NEW_TASK)
             .addFlags(FLAG_ACTIVITY_CLEAR_TASK)
 }

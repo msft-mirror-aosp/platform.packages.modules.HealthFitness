@@ -32,7 +32,6 @@ import com.android.compatibility.common.util.UiDumpUtils
 import java.time.Duration
 import java.time.Instant
 import java.util.concurrent.TimeoutException
-import java.util.regex.Pattern
 
 /** UI testing helper. */
 object UiTestUtils {
@@ -44,6 +43,7 @@ object UiTestUtils {
     private val NOT_DISPLAYED_TIMEOUT = Duration.ofMillis(500)
     private val FIND_OBJECT_TIMEOUT = Duration.ofMillis(500)
     private val NEW_WINDOW_TIMEOUT_MILLIS = 3000L
+    private val RETRY_TIMEOUT_MILLIS = 5000L
 
     private val TAG = UiTestUtils::class.java.simpleName
 
@@ -120,6 +120,21 @@ object UiTestUtils {
 
     fun clickOnTextAndWaitForNewWindow(text: String) {
         findText(text).clickAndWait(Until.newWindow(), NEW_WINDOW_TIMEOUT_MILLIS)
+    }
+
+    fun navigateToNewPage(text: String) {
+        scrollDownToAndFindText(text)
+        clickOnTextAndWaitForNewWindow(text)
+    }
+
+    fun navigateToSeeAppData(appName: String) {
+        navigateToAppPermissions(appName)
+        navigateToNewPage("See app data")
+    }
+
+    fun navigateToAppPermissions(appName: String) {
+        navigateToNewPage("App permissions")
+        navigateToNewPage(appName)
     }
 
     /**
@@ -245,36 +260,26 @@ object UiTestUtils {
     }
 
     fun skipOnboardingIfAppears() {
-        val uiObject = findObjectOrNull(By.text("Get started"))
-        uiObject?.click()
+        getUiDevice().waitForIdle()
 
-        val uiObject2 = findObjectOrNull(By.text("GET STARTED"))
-        uiObject2?.click()
+        val getStartedButton =
+            findObjectWithRetry({ _ -> findObjectOrNull(By.text("Get started")) })
+        if (getStartedButton != null) {
+            clickOnTextAndWaitForNewWindow("Get started")
+        } else {
+            val getStartedButton2 =
+                findObjectWithRetry({ _ -> findObjectOrNull(By.text("GET STARTED")) })
+            if (getStartedButton2 != null) {
+                clickOnTextAndWaitForNewWindow("GET STARTED")
+            } else {
+                Log.i(TAG, "No onboarding button found!")
+            }
+        }
     }
 
     /** Clicks on [UiObject2] with given [text]. */
     fun clickOnText(string: String) {
         waitDisplayed(By.text(string)) { it.click() }
-    }
-
-    /** Clicks on [UiObject2] if the description contains given [string]. */
-    fun clickOnDescContains(string: String) {
-        waitDisplayed(By.descContains(string)) { it.click() }
-    }
-
-    fun deleteAllDataAndNavigateToHomeScreen() {
-        navigateBackToHomeScreen()
-        clickOnText("Data and access")
-        clickOnText("Delete all data")
-        try {
-            clickOnText("Delete all data")
-            clickOnText("Next")
-            clickOnText("Delete")
-            clickOnText("Done")
-        } catch (e: Exception) {
-            // No-op if all data is already deleted and the delete button is disabled.
-        }
-        navigateBackToHomeScreen()
     }
 
     fun navigateBackToHomeScreen() {
@@ -297,24 +302,9 @@ object UiTestUtils {
         }
     }
 
-    fun navigateUp() {
-        clickOnContentDescription("Navigate up")
-    }
-
     /** Clicks on [UiObject2] with given [string] content description. */
     fun clickOnContentDescription(string: String) {
         waitDisplayed(By.desc(string)) { it.click() }
-    }
-
-    fun waitTextDisplayed(text: String) {
-        waitDisplayed(By.text(text))
-    }
-
-    /** Waits for all the given [textToFind] to be displayed. */
-    fun waitAllTextDisplayed(vararg textToFind: CharSequence?) {
-        for (text in textToFind) {
-            if (text != null) waitDisplayed(By.text(text.toString()))
-        }
     }
 
     /** Waits for the given [selector] not to be displayed. */
@@ -322,18 +312,6 @@ object UiTestUtils {
         waitFor("$selector not to be displayed", timeout) {
             waitFindObjectOrNull(selector, it.toMillis()) == null
         }
-    }
-
-    /** Waits for all the given [textToFind] not to be displayed. */
-    fun waitAllTextNotDisplayed(vararg textToFind: CharSequence?) {
-        for (text in textToFind) {
-            if (text != null) waitNotDisplayed(By.text(text.toString()))
-        }
-    }
-
-    /** Waits for a button with the given [label] not to be displayed. */
-    fun waitButtonNotDisplayed(label: CharSequence) {
-        waitNotDisplayed(buttonSelector(label))
     }
 
     fun UiDevice.rotate() {
@@ -347,17 +325,20 @@ object UiTestUtils {
         waitForIdle()
     }
 
-    fun UiDevice.resetRotation() {
-        if (!isNaturalOrientation) {
-            unfreezeRotation()
-            setOrientationNatural()
-            freezeRotation()
-            waitForIdle()
+    private fun findObjectWithRetry(
+        automatorMethod: (timeoutMillis: Long) -> UiObject2?,
+        timeoutMillis: Long = RETRY_TIMEOUT_MILLIS,
+    ): UiObject2? {
+        val startTime = SystemClock.elapsedRealtime()
+        return try {
+            automatorMethod(timeoutMillis)
+        } catch (e: StaleObjectException) {
+            val remainingTime = timeoutMillis - (SystemClock.elapsedRealtime() - startTime)
+            if (remainingTime <= 0) {
+                throw e
+            }
+            automatorMethod(remainingTime)
         }
-    }
-
-    private fun buttonSelector(label: CharSequence): BySelector {
-        return By.clickable(true).text(Pattern.compile("$label|${label.toString().uppercase()}"))
     }
 
     private fun waitFor(

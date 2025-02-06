@@ -67,4 +67,20 @@ public class WhereClausesTest {
         assertThat(level1.get(/* withWhereKeyword= */ true))
                 .isEqualTo(" WHERE (bar = 'value' OR (foo IN (1, 2, 3)))");
     }
+
+    @Test
+    public void testAddWhereBetweenClause() {
+        WhereClauses clause = new WhereClauses(AND);
+        clause.addWhereBetweenClause("foo", 1, 3);
+        assertThat(clause.get(/* withWhereKeyword= */ true))
+                .isEqualTo(" WHERE foo >= 1 AND foo < 3");
+    }
+
+    @Test
+    public void testAddWhereBetweenTimeClause() {
+        WhereClauses clause = new WhereClauses(OR);
+        clause.addWhereBetweenTimeClause("bar", 1, 3);
+        assertThat(clause.get(/* withWhereKeyword= */ true))
+                .isEqualTo(" WHERE bar >= 1 AND bar < 3");
+    }
 }

@@ -56,6 +56,10 @@
     <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"ຈັດການການອະນຸຍາດ"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"ເວລາ: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
+    <string name="recent_access_empty_state_title" msgid="4767157641389217682">"ບໍ່ມີການເຂົ້າເຖິງຫຼ້າສຸດ"</string>
+    <string name="recent_access_empty_state_description" msgid="6334951450158128989">"ແອັບທີ່ມີສິດເຂົ້າເຖິງຂໍ້ມູນຂອງທ່ານເມື່ອບໍ່ດົນມານີ້ຈະສະແດງຢູ່ບ່ອນນີ້ໂດຍອັດຕະໂນມັດ"</string>
+    <string name="recent_access_view_all_button" msgid="825946958049641541">"ເບິ່ງທັງໝົດ"</string>
+    <string name="recent_access_error" msgid="2258399573560888960">"ບໍ່ສາມາດໂຫຼດສິດເຂົ້າເຖິງຫຼ້າສຸດ"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"ກິດຈະກຳ"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"ກິດຈະກຳ"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"ການວັດແທກຮ່າງກາຍ"</string>
@@ -352,8 +356,8 @@
     <string name="vital_signs_uppercase_label" msgid="289862347143374640">"ສັນຍານຊີບ"</string>
     <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"ສັນຍານຊີບ"</string>
     <string name="vital_signs_content_description" msgid="914944352640528612">"ອ່ານສັນຍານຊີບ"</string>
-    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"ສະຕິຊອບ"</string>
-    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"ສະຕິຊອບ"</string>
+    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"ການຈະເລີນສະຕິ"</string>
+    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"ການຈະເລີນສະຕິ"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"ອ່ານຂໍ້ມູນສະຕິຊອບ"</string>
     <string name="mindfulness_write_content_description" msgid="7925112426563398421">"ຂຽນຂໍ້ມູນສະຕິຊອບ"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"ອະນຸຍາດໃຫ້ “<xliff:g id="APP_NAME">%1$s</xliff:g>” ອ່ານ"</string>
@@ -541,10 +545,8 @@
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect ຈະຈັດເກັບຂໍ້ມູນສຸຂະພາບ ແລະ ການອອກກຳລັງກາຍຂອງທ່ານ, ເຊິ່ງເຮັດໃຫ້ທ່ານຊິ້ງຂໍ້ມູນແອັບຕ່າງໆຢູ່ອຸປະກອນຂອງທ່ານໄດ້ຢ່າງງ່າຍດາຍ"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect ຈະຈັດເກັບ ແລະ ຊິ້ງຂໍ້ມູນດ້ານສຸຂະພາບ ແລະ ການອອກກຳລັງກາຍຂອງທ່ານຈາກແອັບຕ່າງໆ.\n\n"<b>"ຂໍ້ມູນການອອກກຳລັງກາຍ ແລະ ຄວາມແຂງແຮງສົມບູນ,"</b>" ຮວມທັງເຊດຊັນການອອກກຳລັງກາຍ, ຈຳນວນກ້າວ, ໂພຊະນາການ, ການນອນຫຼັບ ແລະ ອື່ນໆ\n\n"<b>"ຂໍ້ມູນສຸຂະພາບ,"</b>" ຮວມທັງວັກຊີນ, ຜົນກວດ ແລະ ອື່ນໆ"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect ຊ່ວຍໃຫ້ທ່ານເຮັດສິ່ງຕໍ່ໄປນີ້ໄດ້"</string>
-    <string name="share_data" msgid="3481932156368883946">"ແບ່ງປັນຂໍ້ມູນກັບແອັບຂອງທ່ານ"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"ເລືອກຂໍ້ມູນທີ່ແຕ່ລະແອັບສາມາດອ່ານ ຫຼື ຂຽນລົງໃສ່ Health Connect ໄດ້"</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"ຈັດການການຕັ້ງຄ່າ ແລະ ຄວາມເປັນສ່ວນຕົວຂອງທ່ານ"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"ປ່ຽນການອະນຸຍາດແອັບ ແລະ ຈັດການຂໍ້ມູນຂອງທ່ານໄດ້ທຸກເວລາ"</string>
+    <string name="share_data_text" msgid="6898398345784931678"><b>"ແບ່ງປັນຂໍ້ມູນກັບແອັບຕ່າງໆຂອງທ່ານ"</b>\n"ເລືອກຂໍ້ມູນທີ່ແຕ່ລະແອັບຈະສາມາດອ່ານ ຫຼື ຂຽນໃສ່ໃນ Health Connect ໄດ້"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"ຈັດການການຕັ້ງຄ່າ ແລະ ຄວາມເປັນສ່ວນຕົວຂອງທ່ານ"</b>\n"ປ່ຽນການອະນຸຍາດແອັບ ແລະ ຈັດການຂໍ້ມູນຂອງທ່ານໄດ້ທຸກເວລາ"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"ກັບຄືນ"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"ເລີ່ມຕົ້ນການນຳໃຊ້"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"ລຶບຂໍ້ມູນ"</string>

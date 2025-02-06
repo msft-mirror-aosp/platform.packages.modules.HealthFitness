@@ -39,6 +39,9 @@
     <action
         android:id="@+id/action_homeFragment_to_phrOptions"
         app:destination="@id/phr_options_screen" />
+    <action
+        android:id="@+id/action_home_screen_to_permissionsRequestScreen"
+        app:destination="@id/permissions_request_screen" />
   </fragment>
 
   <fragment
@@ -102,5 +105,12 @@
       tools:layout="@layout/fragment_phr_options">
   </fragment>
 
+  <fragment
+      android:id="@+id/permissions_request_screen"
+      android:label="permissions_request"
+      android:name="com.android.healthconnect.testapps.toolbox.ui.PermissionsRequestFragment"
+      tools:layout="@layout/fragment_permissions_request">
+
+  </fragment>
 
 </navigation>

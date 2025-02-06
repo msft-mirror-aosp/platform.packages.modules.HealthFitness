@@ -157,6 +157,8 @@ import java.util.UUID;
 @FlaggedApi(FLAG_CLOUD_BACKUP_AND_RESTORE)
 public final class RecordProtoConverter {
 
+    public static final int PROTO_VERSION = 1;
+
     private final Map<Integer, Class<? extends RecordInternal<?>>> mDataTypeClassMap =
             HealthConnectMappings.getInstance().getRecordIdToInternalRecordClassMap();
 
@@ -166,8 +168,8 @@ public final class RecordProtoConverter {
                     InvocationTargetException,
                     InstantiationException,
                     IllegalAccessException {
-        int recordId = getRecordId(recordProto);
-        Class<? extends RecordInternal<?>> recordClass = mDataTypeClassMap.get(recordId);
+        int recordTypeId = getRecordTypeId(recordProto);
+        Class<? extends RecordInternal<?>> recordClass = mDataTypeClassMap.get(recordTypeId);
         Objects.requireNonNull(recordClass);
         RecordInternal<?> recordInternal = recordClass.getConstructor().newInstance();
         populateRecordInternal(recordProto, recordInternal);
@@ -188,9 +190,6 @@ public final class RecordProtoConverter {
                         .setRecordingMethod(recordInternal.getRecordingMethod());
         if (recordInternal.getPackageName() != null) {
             builder.setPackageName(recordInternal.getPackageName());
-        }
-        if (recordInternal.getAppName() != null) {
-            builder.setAppName(recordInternal.getAppName());
         }
         if (recordInternal.getClientRecordId() != null) {
             builder.setClientRecordId(recordInternal.getClientRecordId());
@@ -1057,9 +1056,6 @@ public final class RecordProtoConverter {
         if (recordProto.hasPackageName()) {
             recordInternal.setPackageName(recordProto.getPackageName());
         }
-        if (recordProto.hasAppName()) {
-            recordInternal.setAppName(recordProto.getAppName());
-        }
         recordInternal.setLastModifiedTime(recordProto.getLastModifiedTime());
         if (recordProto.hasClientRecordId()) {
             recordInternal.setClientRecordId(recordProto.getClientRecordId());
@@ -1819,7 +1815,7 @@ public final class RecordProtoConverter {
     }
 
     @RecordTypeIdentifier.RecordType
-    private int getRecordId(Record protoRecord) {
+    int getRecordTypeId(Record protoRecord) {
         if (protoRecord.hasIntervalRecord()) {
             return getIntervalRecordId(protoRecord.getIntervalRecord());
         }

@@ -18,6 +18,7 @@ package com.android.server.healthconnect.backuprestore;
 import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 
 import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTORE;
+import static com.android.server.healthconnect.backuprestore.RecordProtoConverter.PROTO_VERSION;
 
 import android.annotation.FlaggedApi;
 import android.annotation.NonNull;
@@ -29,7 +30,6 @@ import android.health.connect.backuprestore.GetSettingsForBackupResponse;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.util.Slog;
 
-import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
@@ -55,10 +55,10 @@ public final class CloudBackupManager {
     private static final String TAG = "CloudBackupManager";
 
     private final TransactionManager mTransactionManager;
-    private final BackupRestoreDatabaseHelper mDatabaseHelper;
+    private final CloudBackupDatabaseHelper mDatabaseHelper;
     private final HealthDataCategoryPriorityHelper mPriorityHelper;
     private final PreferenceHelper mPreferenceHelper;
-    private final ExportImportSettingsStorage mExportImportSettingsStorage;
+    private final AppInfoHelper mAppInfoHelper;
 
     public CloudBackupManager(
             TransactionManager transactionManager,
@@ -71,14 +71,13 @@ public final class CloudBackupManager {
             ChangeLogsRequestHelper changeLogsRequestHelper,
             HealthDataCategoryPriorityHelper priorityHelper,
             PreferenceHelper preferenceHelper,
-            ExportImportSettingsStorage exportImportSettingsStorage,
             ReadAccessLogsHelper readAccessLogsHelper) {
         mTransactionManager = transactionManager;
         mPriorityHelper = priorityHelper;
         mPreferenceHelper = preferenceHelper;
-        mExportImportSettingsStorage = exportImportSettingsStorage;
+        mAppInfoHelper = appInfoHelper;
         mDatabaseHelper =
-                new BackupRestoreDatabaseHelper(
+                new CloudBackupDatabaseHelper(
                         transactionManager,
                         appInfoHelper,
                         accessLogsHelper,
@@ -117,7 +116,7 @@ public final class CloudBackupManager {
                 String emptyChangeToken =
                         BackupChangeTokenHelper.getBackupChangeTokenRowId(
                                 mTransactionManager, null, EMPTY_PAGE_TOKEN.encode(), null);
-                return new GetChangesForBackupResponse(List.of(), emptyChangeToken);
+                return new GetChangesForBackupResponse(PROTO_VERSION, List.of(), emptyChangeToken);
             }
             if (backupChangeToken.getDataTableName() != null) {
                 return mDatabaseHelper.getChangesAndTokenFromDataTables(
@@ -142,13 +141,11 @@ public final class CloudBackupManager {
     @NonNull
     public GetSettingsForBackupResponse getSettingsForBackup() {
         Slog.i(TAG, "Formatting user settings for export.");
-        BackupSettingsHelper backupSettingsHelper =
-                new BackupSettingsHelper(
-                        mPriorityHelper, mPreferenceHelper, mExportImportSettingsStorage);
+        CloudBackupSettingsHelper cloudBackupSettingsHelper =
+                new CloudBackupSettingsHelper(mPriorityHelper, mPreferenceHelper, mAppInfoHelper);
 
-        int version = 0;
-        byte[] data = backupSettingsHelper.collectUserSettings().toByteArray();
+        byte[] data = cloudBackupSettingsHelper.collectUserSettings().toByteArray();
 
-        return new GetSettingsForBackupResponse(new BackupSettings(version, data));
+        return new GetSettingsForBackupResponse(PROTO_VERSION, new BackupSettings(data));
     }
 }

@@ -22,7 +22,6 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.migration.MigrationActivity.Companion.maybeRedirectToMigrationActivity
 import com.android.healthconnect.controller.migration.MigrationActivity.Companion.maybeShowWhatsNewDialog
@@ -30,7 +29,6 @@ import com.android.healthconnect.controller.migration.MigrationViewModel
 import com.android.healthconnect.controller.migration.MigrationViewModel.MigrationFragmentState
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
 import com.android.healthconnect.controller.navigation.DestinationChangedListener
-import com.android.healthfitness.flags.Flags.newInformationArchitecture
 import com.android.settingslib.collapsingtoolbar.CollapsingToolbarBaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -49,9 +47,6 @@ class DataManagementActivity : Hilt_DataManagementActivity() {
         )
 
         setContentView(R.layout.activity_data_management)
-        if (savedInstanceState == null && newInformationArchitecture()) {
-            updateNavGraphToNewIA()
-        }
 
         val currentMigrationState = migrationViewModel.getCurrentMigrationUiState()
         if (maybeRedirectToMigrationActivity(this, currentMigrationState)) {
@@ -73,16 +68,6 @@ class DataManagementActivity : Hilt_DataManagementActivity() {
                 }
             }
         }
-    }
-
-    private fun updateNavGraphToNewIA() {
-        val navRes = R.navigation.data_nav_graph_new_ia
-        val finalHost = NavHostFragment.create(navRes)
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.nav_host_fragment, finalHost)
-            .setPrimaryNavigationFragment(finalHost)
-            .commit()
     }
 
     override fun onStart() {

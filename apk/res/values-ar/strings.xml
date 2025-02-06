@@ -29,7 +29,7 @@
     <string name="no_data" msgid="1906986019249068659">"ما مِن بيانات"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"أذونات التطبيقات"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"إدارة التطبيقات والأذونات"</string>
-    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"تم منح الإذن إلى <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> من إجمالي <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> تطبيق"</string>
+    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"التطبيقات التي لديها إذن: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> من أصل <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"التطبيقات التي تملك الإذن بالوصول: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> من إجمالي <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"التطبيقات التي تملك الإذن بالوصول: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"يملك تطبيق واحد (<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>) الإذن بالوصول"</string>
@@ -38,7 +38,7 @@
     <string name="entry_details_title" msgid="590184849040247850">"تفاصيل الإدخال"</string>
     <string name="browse_data_title" msgid="5232691805953326097">"تصفّح البيانات"</string>
     <string name="browse_data_subtitle" msgid="7025164374898103993">"الاطّلاع على البيانات والتطبيقات التي يمكنها الوصول إليها"</string>
-    <string name="manage_data_summary" msgid="8537870912521944449">"الحذف التلقائي ومصادر البيانات والاحتفاظ بنسخة احتياطية من البيانات واستعادتها"</string>
+    <string name="manage_data_summary" msgid="8537870912521944449">"الحذف التلقائي، ومصادر البيانات، والاحتفاظ بنسخة احتياطية من البيانات واستعادتها"</string>
     <string name="backup_title" msgid="211503191266235085">"الاحتفاظ بنسخة احتياطية"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"مصادر البيانات وأولوية التطبيقات"</string>
     <string name="set_units_title" msgid="2657822539603758029">"ضبط الوحدات"</string>
@@ -47,15 +47,19 @@
     <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"يتيح تصدير البيانات واستيرادها"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"التطبيقات التي وصلت مؤخرًا إلى البيانات الصحية"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"لم تستخدم أي تطبيقات Health Connect مؤخرًا."</string>
-    <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"الاطّلاع على كل عمليات الوصول الحديثة"</string>
-    <string name="recent_access_screen_description" msgid="331101209889185402">"معرفة التطبيقات التي وصلت إلى بياناتك الصحية في آخر 24 ساعة."</string>
+    <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"عرض كل هذه التطبيقات"</string>
+    <string name="recent_access_screen_description" msgid="331101209889185402">"إليك التطبيقات التي وصلت إلى بياناتك الصحية في آخر 24 ساعة:"</string>
     <string name="today_header" msgid="1006837293203834373">"اليوم"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"أمس"</string>
-    <string name="read_data_access_label" msgid="8968758932021241976">"القراءة: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="write_data_access_label" msgid="105976369853871061">"الكتابة: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="read_data_access_label" msgid="8968758932021241976">"بإمكانه قراءة: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"بإمكانه كتابة: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="separator" msgid="5521285473288943819">"، "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"إدارة الأذونات"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"الوقت: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
+    <string name="recent_access_empty_state_title" msgid="4767157641389217682">"ما من تطبيقات وصلت مؤخرًا إلى بياناتك"</string>
+    <string name="recent_access_empty_state_description" msgid="6334951450158128989">"ستظهر هنا تلقائيًا التطبيقات التي وصلت مؤخرًا إلى بياناتك"</string>
+    <string name="recent_access_view_all_button" msgid="825946958049641541">"عرض الكل"</string>
+    <string name="recent_access_error" msgid="2258399573560888960">"تعذّر تحميل معلومات الوصول الأخير"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"النشاط"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"النشاط"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"قياسات الجسم"</string>
@@ -113,7 +117,7 @@
     <string name="background_read_medical_combined_request_description_fitness_granted" msgid="919785628751851996">"السماح لهذا التطبيق بالوصول إلى هذه البيانات حتى في حال عدم استخدامه"</string>
     <string name="background_read_combined_request_title" msgid="4184649296697480520">"الوصول إلى البيانات في الخلفية"</string>
     <string name="background_read_combined_request_description" msgid="2423480522986545286">"السماح لهذا التطبيق بالوصول إلى بيانات Health Connect حتى في حال عدم استخدامه"</string>
-    <string name="history_read_medical_combined_request_title" msgid="1262267962861942478">"الوصول إلى بيانات الصحة واللياقة البدنية"</string>
+    <string name="history_read_medical_combined_request_title" msgid="1262267962861942478">"الوصول إلى بيانات الصحة واللياقة البدنية السابقة"</string>
     <string name="history_read_medical_combined_request_description" msgid="7550922315652791771">"السماح لهذا التطبيق بالوصول إلى البيانات التي تمّت إضافتها قبل ‎<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="history_read_medical_combined_request_description_fallback" msgid="3567968660826834911">"السماح لهذا التطبيق بالوصول إلى جميع البيانات السابقة"</string>
     <string name="history_read_combined_request_title" msgid="9023811767370482028">"الوصول إلى البيانات السابقة"</string>
@@ -129,7 +133,7 @@
     <string name="background_read_medical_access_description_fitness_granted" msgid="2584567718805499407">"السماح لهذا التطبيق بالوصول إلى هذه البيانات حتى في حال عدم استخدامه"</string>
     <string name="background_read_access_title" msgid="4184498185599147117">"الوصول إلى البيانات في الخلفية"</string>
     <string name="background_read_access_description" msgid="2360433029368320323">"السماح لهذا التطبيق بالوصول إلى بيانات Health Connect حتى في حال عدم استخدامه"</string>
-    <string name="history_read_medical_access_title" msgid="1375462150672418692">"الوصول إلى بيانات الصحة واللياقة البدنية"</string>
+    <string name="history_read_medical_access_title" msgid="1375462150672418692">"الوصول إلى بيانات الصحة واللياقة البدنية السابقة"</string>
     <string name="history_read_medical_access_description" msgid="5615959269427106141">"السماح لهذا التطبيق بالوصول إلى البيانات التي تمّت إضافتها قبل ‎<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="history_read_medical_access_description_fallback" msgid="3888547064992673535">"السماح لهذا التطبيق بالوصول إلى جميع البيانات السابقة"</string>
     <string name="history_read_access_title" msgid="870048398702887144">"الوصول إلى البيانات السابقة"</string>
@@ -138,8 +142,8 @@
     <string name="history_read_medical_access_read_warning" msgid="8878271647163400440">"لا تتم قراءة أي بيانات لياقة بدنية حاليًا لأنّ \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" لم يحصل على أي أذونات بالقراءة"</string>
     <string name="additional_access_medical_read_footer" msgid="4640796038121080343">"بإمكان \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" الوصول إلى البيانات السابقة لسجلّاتك الصحية. لتغيير هذا الإعداد، أوقِف أذونات السجلّات الصحية لهذا التطبيق."</string>
     <string name="additional_access_medical_read_footer_link" msgid="2797623091827504856">"إدارة أذونات السجلّات الصحية"</string>
-    <string name="additional_access_combined_footer" msgid="5967785355544362840">"يجب منح إذن واحد بالقراءة على الأقل لتفعيل وصول هذا التطبيق إلى البيانات في الخلفية أو البيانات السابقة"</string>
-    <string name="additional_access_background_footer" msgid="1638739578431818525">"يجب منح إذن واحد بالقراءة على الأقل لتفعيل وصول هذا التطبيق إلى البيانات في الخلفية"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"يجب منح إذن واحد بالقراءة على الأقل لتفعيل أذونات وصول هذا التطبيق إلى البيانات السابقة أو البيانات في الخلفية"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"يجب منح إذن واحد بالقراءة على الأقل لتفعيل إذن وصول هذا التطبيق إلى البيانات في الخلفية"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"يجب منح إذن واحد بالقراءة على الأقل لتفعيل وصول هذا التطبيق إلى البيانات السابقة"</string>
     <string name="historic_access_description" msgid="3309195636349468633">"السماح لهذا التطبيق بالوصول إلى جميع بيانات Health Connect السابقة"</string>
     <string name="background_read_description" msgid="3203594555849969283">"السماح لهذا التطبيق بالوصول إلى بيانات Health Connect في حال عدم استخدام التطبيق"</string>
@@ -325,9 +329,9 @@
     <string name="vaccines_uppercase_label" msgid="1101176371071123187">"بيانات اللقاحات"</string>
     <string name="vaccines_lowercase_label" msgid="4991324441768127447">"بيانات اللقاحات"</string>
     <string name="vaccines_content_description" msgid="7152741514791951684">"قراءة بيانات اللقاحات"</string>
-    <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"النتائج المعملية"</string>
-    <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"النتائج المعملية"</string>
-    <string name="laboratory_results_content_description" msgid="7888886103734085841">"قراءة النتائج المعملية"</string>
+    <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"نتائج التحاليل الطبية"</string>
+    <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"نتائج التحاليل الطبية"</string>
+    <string name="laboratory_results_content_description" msgid="7888886103734085841">"قراءة نتائج التحاليل الطبية"</string>
     <string name="medications_uppercase_label" msgid="4783281053427990225">"بيانات الأدوية"</string>
     <string name="medications_lowercase_label" msgid="7808038774503092207">"بيانات الأدوية"</string>
     <string name="medications_content_description" msgid="6165382876281780190">"قراءة بيانات الأدوية"</string>
@@ -356,7 +360,7 @@
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"اليقظة والوعي التام"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"قراءة بيانات جلسة اليقظة والوعي التام"</string>
     <string name="mindfulness_write_content_description" msgid="7925112426563398421">"كتابة بيانات جلسة اليقظة والوعي التام"</string>
-    <string name="read_permission_category" msgid="6002099618259628632">"منح تطبيق \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" الإذن بالقراءة"</string>
+    <string name="read_permission_category" msgid="6002099618259628632">"السماح لتطبيق \"<xliff:g id="APP_NAME">%1$s</xliff:g>\"  بقراءة التالي"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"منح التطبيق \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" الإذن بالكتابة"</string>
     <string name="request_permissions_allow" msgid="4201324235711040631">"السماح"</string>
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"السماح بالكل"</string>
@@ -371,8 +375,8 @@
     <string name="request_permissions_rationale" msgid="2642076968583316986">"يمكنك الاطّلاع على <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> لمعرفة كيفية معالجة \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" لبياناتك"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"سياسة الخصوصية"</string>
     <string name="medical_request_header" msgid="2300521519021510027">"هل تريد السماح لـ \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" بالوصول إلى السجلات الصحية؟"</string>
-    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"إذا منحت هذا الإذن، سيتمكّن هذا التطبيق من قراءة البيانات وكتابتها، مثل البيانات المتعلّقة بالحساسية والنتائج المعملية واللقاحات وغير ذلك\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
-    <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"إذا منحت هذا الإذن، سيتمكّن هذا التطبيق من قراءة البيانات، مثل البيانات المتعلّقة بالحساسية والنتائج المعملية واللقاحات وغير ذلك\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"إذا منحت هذا الإذن، سيتمكّن هذا التطبيق من قراءة البيانات وكتابتها، مثل البيانات المتعلّقة بالحساسية ونتائج التحاليل الطبية واللقاحات وغير ذلك\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"إذا منحت هذا الإذن، سيتمكّن هذا التطبيق من قراءة البيانات، مثل البيانات المتعلّقة بالحساسية ونتائج التحاليل الطبية واللقاحات وغير ذلك\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"لمحة عن السجلات الصحية"</string>
     <string name="medical_request_data_to_share" msgid="6778034304921873317">"تشمل البيانات المراد مشاركتها ما يلي:"</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"إذا منحت هذا الإذن، سيتمكّن \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" من مشاركة السجلات الصحية مع تطبيق Health Connect."</string>
@@ -418,7 +422,7 @@
     <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"مطلوب التحديث"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"الإعدادات والمساعدة"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"إزالة إمكانية وصول كل التطبيقات للبيانات"</string>
-    <string name="manage_permissions_read_header" msgid="2031153753057983683">"مسموح للتطبيق بقراءة البيانات التالية:"</string>
+    <string name="manage_permissions_read_header" msgid="2031153753057983683">"مسموح له بقراءة البيانات التالية:"</string>
     <string name="manage_permissions_write_header" msgid="6876806848658168370">"مسموح له بكتابة البيانات التالية:"</string>
     <string name="no_apps_allowed" msgid="5794833581324128108">"لم يتم السماح لأي تطبيقات."</string>
     <string name="no_apps_denied" msgid="743327680286446017">"لم يتم رفض أي تطبيقات"</string>
@@ -439,15 +443,15 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"تم الوصول إلى البيانات في آخر 24 ساعة"</string>
     <string name="app_access_title" msgid="7137018424885371763">"إمكانية وصول التطبيق إلى البيانات"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"ليس لديك الآن أي تطبيقات متوافقة مثبَّتة"</string>
-    <string name="additional_access_label" msgid="4645249249222528341">"إذن الوصول الإضافي"</string>
-    <string name="additional_access_summary" msgid="1076197455435130191">"البيانات السابقة وبيانات الخلفية"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"أذونات وصول إضافية"</string>
+    <string name="additional_access_summary" msgid="1076197455435130191">"البيانات السابقة والبيانات في الخلفية"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"تمت إزالة الأذونات الإضافية لهذا التطبيق"</string>
     <string name="permissions_header" msgid="6519976063360071569">"الأذونات"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"الصحة واللياقة البدنية"</string>
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"التمارين الرياضية والنوم والتغذية وغيرها"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"السجلّات الصحية"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"السجلّات الصحية"</string>
-    <string name="medical_permissions_summary" msgid="5526004634109548577">"نتائج معملية وأدوية ولقاحات وغيرها"</string>
+    <string name="medical_permissions_summary" msgid="5526004634109548577">"نتائج التحاليل الطبية والأدوية واللقاحات وغيرها"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"أذونات التطبيقات التي تمت إزالتها"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"أزال تطبيق Health Connect أذونات \"<xliff:g id="APP_DATA">%s</xliff:g>\"."</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"أزال تطبيق Health Connect أذونات \"<xliff:g id="APP_DATA_0">%1$s</xliff:g>\" و\"<xliff:g id="APP_DATA_TWO">%2$s</xliff:g>\"."</string>
@@ -539,12 +543,10 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"الانتقال إلى \"متجر Play\""</string>
     <string name="onboarding_title" msgid="8550656211291180188">"بدء استخدام Health Connect"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"يُخزِّن تطبيق Health Connect بيانات الصحة واللياقة البدنية، ما يمنحك طريقة بسيطة لمزامنة التطبيقات المختلفة على جهازك"</string>
-    <string name="onboarding_description_health_records" msgid="6586657048844511252">"يُخزِّن تطبيق Health Connect بيانات الصحة واللياقة البدنية الواردة من تطبيقات مختلفة ويزامنها.\n\n"<b>"بيانات الصحة واللياقة البدنية،"</b>" بما في ذلك جلسات التمارين الرياضية والخطوات والتغذية والنوم وغير ذلك\n\n"<b>"السجلّات الصحية،"</b>" بما في ذلك اللقاحات والنتائج المعملية وغير ذلك"</string>
+    <string name="onboarding_description_health_records" msgid="6586657048844511252">"يُخزِّن تطبيق Health Connect بيانات الصحة واللياقة البدنية الواردة من تطبيقات مختلفة ويزامنها.\n\n"<b>"بيانات الصحة واللياقة البدنية،"</b>" بما في ذلك جلسات التمارين الرياضية والخطوات والتغذية والنوم وغير ذلك\n\n"<b>"السجلّات الصحية،"</b>" بما في ذلك اللقاحات ونتائج التحاليل الطبية وغير ذلك"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"عند استخدام Health Connect، يمكنك:"</string>
-    <string name="share_data" msgid="3481932156368883946">"مشاركة البيانات مع تطبيقاتك"</string>
-    <string name="share_data_description" msgid="2919871301634375092">"اختَر البيانات التي يمكن لكل تطبيق قراءتها من تطبيق Health Connect أو كتابتها فيه."</string>
-    <string name="manage_your_settings" msgid="7391184508015127137">"إدارة الإعدادات والخصوصية"</string>
-    <string name="manage_your_settings_description" msgid="557943168930365334">"يمكنك تغيير أذونات التطبيق وإدارة البيانات في أي وقت."</string>
+    <string name="share_data_text" msgid="6898398345784931678"><b>"مشاركة البيانات مع تطبيقاتك"</b>\n"بإمكانك اختيار البيانات التي يمكن لكل تطبيق قراءتها من تطبيق Health Connect أو كتابتها فيه"</string>
+    <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"إدارة إعداداتك وخصوصيتك"</b>\n"يمكنك تغيير أذونات التطبيق وإدارة بياناتك متى شئت"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"الرجوع"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"بدء"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"حذف البيانات"</string>
@@ -1117,8 +1119,8 @@
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"بدء استخدام Health Connect"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"مزامنة التطبيقات الرئيسية لمشاركة بيانات الصحة واللياقة البدنية بينها"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"إعداد"</string>
-    <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"ربط المزيد من التطبيقات"</string>
-    <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"بدء مشاركة البيانات بين \"<xliff:g id="APP_NAME">%s</xliff:g>\" والتطبيقات المختصّة بالصحة على هاتفك"</string>
+    <string name="connect_more_apps_banner_title" msgid="4746581834305054229">"ننصحك بربط المزيد من التطبيقات"</string>
+    <string name="connect_more_apps_banner_content" msgid="8104544246031860111">"ما عليك سوى مشاركة البيانات بين \"<xliff:g id="APP_NAME">%s</xliff:g>\" والتطبيقات المختصّة بالصحة على هاتفك"</string>
     <string name="connect_more_apps_set_up_button" msgid="4491201768717567269">"إعداد"</string>
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"عرض التطبيقات المتوافقة"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"العثور على المزيد من التطبيقات لمزامنة البيانات مع \"<xliff:g id="APP_NAME">%s</xliff:g>\" من خلال تطبيق Health Connect"</string>
@@ -1162,7 +1164,7 @@
     <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"آخر استخدام للإذن أمس: ‎<xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
     <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"آخر استخدام للإذن في ‎<xliff:g id="TIME_DATE_0">%1$s</xliff:g>: ‏<xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
     <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"السماح طوال الوقت"</string>
-    <string name="request_permissions_allow_selected" msgid="218527615680495438">"تم اختيار \"سماح\""</string>
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"السماح بالأذونات المحدّدة"</string>
     <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"أثناء استخدام التطبيق"</string>
     <string name="request_permissions_deny_all" msgid="4123735770293545320">"رفض الكل"</string>
     <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"هل تريد السماح لتطبيق \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" بالوصول إلى بيانات الصحة واللياقة البدنية؟"</string>
@@ -1175,18 +1177,18 @@
     <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"أثناء استخدام التطبيق"</string>
     <string name="view_permissions_mode" msgid="5954826327563393399">"يمكن لتطبيق \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" الوصول إلى جميع بيانات الصحة واللياقة البدنية <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
     <string name="allowed_to_access" msgid="4179317387300812335">"مسموح له بالوصول إلى البيانات"</string>
-    <string name="allowed_to_read" msgid="2775365229411407406">"مسموح له بقراءة البيانات"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"مسموح له بقراءة التالي"</string>
     <string name="give_permission_prompt" msgid="5788144216023065504">"تمنح هذه الأذونات \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" إمكانية الوصول إلى بيانات أدوات الاستشعار في جهازك."</string>
-    <string name="allowed_apps_count" msgid="2289260267605628310">"تم السماح بالوصول إلى البيانات لعدد من التطبيقات يبلغ <xliff:g id="NUMBER_0">%1$d</xliff:g> من أصل <xliff:g id="OTHER_NUMBER">%2$d</xliff:g>"</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"عدد التطبيقات المسموح لها: <xliff:g id="NUMBER_0">%1$d</xliff:g> من أصل <xliff:g id="OTHER_NUMBER">%2$d</xliff:g>"</string>
     <string name="no_apps_requesting" msgid="8088684445910698363">"ما مِن تطبيقات تطلب هذا الإذن"</string>
-    <string name="allowed" msgid="4158456017482263737">"مسموح له"</string>
-    <string name="not_allowed" msgid="6092523505093372147">"غير مسموح له"</string>
+    <string name="allowed" msgid="4158456017482263737">"التطيقات المسموح لها"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"التطبيقات غير الحاصلة على إذن"</string>
     <string name="access_sensor_note" msgid="7949933977197789634">"يمكن للتطبيقات التي لديها هذا الإذن الوصول إلى بيانات <xliff:g id="DATA_TYPE">%s</xliff:g> من أدوات الاستشعار في جهازك."</string>
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"هل تريد إزالة إذن الوصول إلى بيانات <xliff:g id="DATA_TYPE">%s</xliff:g> لجميع التطبيقات على ساعتك؟"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"علامة اختيار"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"علامة خطأ"</string>
     <string name="current_allow_mode" msgid="6716206063077569218">"يمكن لـ \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" حاليًا الوصول إلى بيانات الصحة واللياقة البدنية <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
     <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"هل تريد السماح لـ \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" بالوصول إلى بيانات الصحة واللياقة البدنية في كل الأوقات؟"</string>
-    <string name="current_access" msgid="1457167070428176139">"لدى \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" إذن بالوصول إلى <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
+    <string name="current_access" msgid="1457167070428176139">"لدى \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" إذن بالوصول إلى بيانات <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
     <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"إدارة أذونات الصحة واللياقة البدنية"</string>
 </resources>

@@ -18,7 +18,9 @@ package android.healthconnect.cts.aggregation;
 
 import static android.health.connect.datatypes.ActiveCaloriesBurnedRecord.ACTIVE_CALORIES_TOTAL;
 import static android.health.connect.datatypes.DistanceRecord.DISTANCE_TOTAL;
+import static android.health.connect.datatypes.NutritionRecord.IRON_TOTAL;
 import static android.health.connect.datatypes.StepsCadenceRecord.STEPS_CADENCE_RATE_MAX;
+import static android.health.connect.datatypes.StepsCadenceRecord.STEPS_CADENCE_RATE_MIN;
 import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
 import static android.health.connect.datatypes.WeightRecord.WEIGHT_AVG;
 import static android.health.connect.datatypes.WeightRecord.WEIGHT_MAX;
@@ -60,11 +62,13 @@ import android.health.connect.HealthConnectException;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.TimeInstantRangeFilter;
+import android.health.connect.datatypes.NutritionRecord;
 import android.health.connect.datatypes.StepsCadenceRecord;
 import android.health.connect.datatypes.WeightRecord;
 import android.health.connect.datatypes.units.Energy;
 import android.health.connect.datatypes.units.Length;
 import android.health.connect.datatypes.units.Mass;
+import android.healthconnect.cts.lib.TestAppProxy;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 
@@ -84,11 +88,14 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AggregationApisTest {
+    private static final String PKG_TEST_APP = "android.healthconnect.cts.testapp.readWritePerms.A";
     private static final int MAXIMUM_GROUP_SIZE = 5000;
+
     private final Context mContext = ApplicationProvider.getApplicationContext();
     private final String mPackageName = mContext.getPackageName();
     private final ZoneOffset mCurrentZone =
             ZoneOffset.systemDefault().getRules().getOffset(Instant.now());
+    private final TestAppProxy mTestApp = TestAppProxy.forPackageName(PKG_TEST_APP);
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
@@ -470,6 +477,50 @@ public class AggregationApisTest {
         assertThat(thrown).hasMessageThat().contains("Number of buckets");
     }
 
+    @Test
+    public void aggregateWithInstantFilter_stepsCadenceMin() throws Exception {
+        Instant time = Instant.now().minus(1, DAYS);
+        insertRecords(
+                List.of(
+                        getStepsCadenceRecord(
+                                time,
+                                time.plus(8, HOURS),
+                                UTC,
+                                getStepsCadenceRecordSample(54.1, time.plus(1, HOURS)),
+                                getStepsCadenceRecordSample(39.2, time.plus(2, HOURS)),
+                                getStepsCadenceRecordSample(44.7, time.plus(3, HOURS)),
+                                getStepsCadenceRecordSample(369.2, time.plus(4, HOURS)),
+                                getStepsCadenceRecordSample(3.0, time.plus(6, HOURS)))));
+
+        TimeInstantRangeFilter timeFilter = getTimeFilter(time, time.plus(3, HOURS));
+        AggregateRecordsRequest<Double> aggregateRecordsRequest =
+                new AggregateRecordsRequest.Builder<Double>(timeFilter)
+                        .addAggregationType(STEPS_CADENCE_RATE_MIN)
+                        .build();
+
+        AggregateRecordsResponse<Double> response = getAggregateResponse(aggregateRecordsRequest);
+        assertDoubleWithTolerance(response.get(STEPS_CADENCE_RATE_MIN), 39.2);
+    }
+
+    @Test
+    public void aggregateWithInstantFilter_nutritionData() throws Exception {
+        Instant time = Instant.now().minus(1, DAYS);
+        insertRecords(
+                List.of(
+                        getNutritionIronRecord(time, time.plus(1, HOURS), UTC, 5),
+                        getNutritionIronRecord(time, time.plus(1, HOURS), UTC, 20)));
+        mTestApp.insertRecord(getNutritionIronRecord(time, time.plus(2, HOURS), UTC, 10));
+
+        TimeInstantRangeFilter timeFilter = getTimeFilter(time, time.plus(3, HOURS));
+        AggregateRecordsRequest<Mass> aggregateRecordsRequest =
+                new AggregateRecordsRequest.Builder<Mass>(timeFilter)
+                        .addAggregationType(IRON_TOTAL)
+                        .build();
+
+        AggregateRecordsResponse<Mass> response = getAggregateResponse(aggregateRecordsRequest);
+        assertDoubleWithTolerance(response.get(IRON_TOTAL).getInGrams(), 35);
+    }
+
     private static StepsCadenceRecord getStepsCadenceRecord(
             Instant start,
             Instant end,
@@ -479,6 +530,15 @@ public class AggregationApisTest {
                         getEmptyMetadata(), start, end, Arrays.asList(samples))
                 .setStartZoneOffset(offset)
                 .setEndZoneOffset(offset)
+                .build();
+    }
+
+    private static NutritionRecord getNutritionIronRecord(
+            Instant start, Instant end, ZoneOffset offset, double ironGrams) {
+        return new NutritionRecord.Builder(getEmptyMetadata(), start, end)
+                .setStartZoneOffset(offset)
+                .setEndZoneOffset(offset)
+                .setIron(Mass.fromGrams(ironGrams))
                 .build();
     }
 

@@ -33,6 +33,7 @@ import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_R4
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_R4B;
 
 import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION;
+import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_EXTENSION_VALIDATION;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_ADDRESS;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_AGE;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_ANNOTATION;
@@ -40,29 +41,46 @@ import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_ATT
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_BASE64_BINARY;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_BOOLEAN;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_CANONICAL;
-import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_CODE;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_CODEABLE_CONCEPT;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_CODEABLE_REFERENCE;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_CODING;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_CONTACT_POINT;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_DATE;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_DATE_TIME;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_DECIMAL;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_DOSAGE;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_DURATION;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_EXTENSION;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_HUMAN_NAME;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_ID;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_IDENTIFIER;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_IMMUNIZATION_EDUCATION;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_IMMUNIZATION_PERFORMER;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_IMMUNIZATION_PROTOCOLAPPLIED;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_IMMUNIZATION_REACTION;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_INSTANT;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_INTEGER;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_LOCATION_POSITION;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_MARKDOWN;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_MEDICATIONREQUEST_DISPENSEREQUEST;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_MEDICATIONREQUEST_DISPENSEREQUEST_INITIALFILL;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_MEDICATION_BATCH;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_MEDICATION_INGREDIENT;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_META;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_NARRATIVE;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_OBSERVATION_COMPONENT;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_OBSERVATION_REFERENCERANGE;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_OID;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_ORGANIZATION_CONTACT;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_PATIENT_CONTACT;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_PERIOD;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_POSITIVE_INT;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_PRACTITIONERROLE_AVAILABLETIME;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_PRACTITIONER_QUALIFICATION;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_QUANTITY;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_RANGE;
+import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_RATIO_RANGE;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_REFERENCE;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_RESOURCE;
 import static com.android.server.healthconnect.proto.R4FhirType.R4_FHIR_TYPE_STRING;
@@ -131,7 +149,7 @@ public class FhirSpecProviderTest {
                     R4_FHIR_TYPE_XHTML);
 
     private static final Set<R4FhirType> R4_COMPLEX_TYPES_WITHOUT_VALIDATION =
-            Set.of(R4_FHIR_TYPE_RESOURCE, R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION);
+            Set.of(R4_FHIR_TYPE_RESOURCE);
 
     private static final Correspondence<MultiTypeFieldConfig, MultiTypeFieldConfig>
             MULTI_TYPE_CONFIG_EQUIVALENCE =
@@ -183,14 +201,14 @@ public class FhirSpecProviderTest {
         }
     }
 
-    @EnableFlags({FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION})
+    @EnableFlags({FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION, FLAG_PHR_FHIR_EXTENSION_VALIDATION})
     @Test
     public void testGetFhirComplexTypeConfig_allTypesWithoutValidation_returnNull() {
         FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
 
         for (R4FhirType type : R4_COMPLEX_TYPES_WITHOUT_VALIDATION) {
             assertWithMessage("Expected to be null for type: " + type.name())
-                    .that(spec.getFhirComplexTypeConfig(type))
+                    .that(spec.getFhirComplexTypeConfig(type, FHIR_VERSION_R4))
                     .isNull();
         }
     }
@@ -204,11 +222,11 @@ public class FhirSpecProviderTest {
             assertThrows(
                     "Expected exception for type: " + type.name(),
                     IllegalArgumentException.class,
-                    () -> spec.getFhirComplexTypeConfig(type));
+                    () -> spec.getFhirComplexTypeConfig(type, FHIR_VERSION_R4));
         }
     }
 
-    @EnableFlags({FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION})
+    @EnableFlags({FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION, FLAG_PHR_FHIR_EXTENSION_VALIDATION})
     @Test
     public void testGetFhirComplexTypeConfig_complexTypes_returnNonEmptyConfig() {
         FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
@@ -222,7 +240,7 @@ public class FhirSpecProviderTest {
                         .toList();
 
         for (R4FhirType type : expectedComplexTypesWithConfig) {
-            FhirComplexTypeConfig config = spec.getFhirComplexTypeConfig(type);
+            FhirComplexTypeConfig config = spec.getFhirComplexTypeConfig(type, FHIR_VERSION_R4);
 
             assertWithMessage("Expected config for type: " + type.name())
                     .that(config)
@@ -309,8 +327,7 @@ public class FhirSpecProviderTest {
                                 createFhirFieldConfig(false, R4_FHIR_TYPE_QUANTITY)),
                         Map.entry(
                                 "performer",
-                                createFhirFieldConfig(
-                                        true, R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION)),
+                                createFhirFieldConfig(true, R4_FHIR_TYPE_IMMUNIZATION_PERFORMER)),
                         Map.entry("note", createFhirFieldConfig(true, R4_FHIR_TYPE_ANNOTATION)),
                         Map.entry(
                                 "reasonCode",
@@ -325,8 +342,7 @@ public class FhirSpecProviderTest {
                                 createFhirFieldConfig(true, R4_FHIR_TYPE_CODEABLE_CONCEPT)),
                         Map.entry(
                                 "education",
-                                createFhirFieldConfig(
-                                        true, R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION)),
+                                createFhirFieldConfig(true, R4_FHIR_TYPE_IMMUNIZATION_EDUCATION)),
                         Map.entry(
                                 "programEligibility",
                                 createFhirFieldConfig(true, R4_FHIR_TYPE_CODEABLE_CONCEPT)),
@@ -335,12 +351,11 @@ public class FhirSpecProviderTest {
                                 createFhirFieldConfig(false, R4_FHIR_TYPE_CODEABLE_CONCEPT)),
                         Map.entry(
                                 "reaction",
-                                createFhirFieldConfig(
-                                        true, R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION)),
+                                createFhirFieldConfig(true, R4_FHIR_TYPE_IMMUNIZATION_REACTION)),
                         Map.entry(
                                 "protocolApplied",
                                 createFhirFieldConfig(
-                                        true, R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION)));
+                                        true, R4_FHIR_TYPE_IMMUNIZATION_PROTOCOLAPPLIED)));
 
         FhirComplexTypeConfig immunizationConfig =
                 spec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_IMMUNIZATION);
@@ -429,14 +444,18 @@ public class FhirSpecProviderTest {
                                 .build());
         Map<String, FhirFieldConfig> atLeastExpectedFieldConfigsMap =
                 Map.of(
-                        "encounter", createFhirFieldConfig(false, R4_FHIR_TYPE_REFERENCE),
-                        "valueQuantity", createFhirFieldConfig(false, R4_FHIR_TYPE_QUANTITY),
-                        "valueDateTime", createFhirFieldConfig(false, R4_FHIR_TYPE_DATE_TIME),
+                        "encounter",
+                        createFhirFieldConfig(false, R4_FHIR_TYPE_REFERENCE),
+                        "valueQuantity",
+                        createFhirFieldConfig(false, R4_FHIR_TYPE_QUANTITY),
+                        "valueDateTime",
+                        createFhirFieldConfig(false, R4_FHIR_TYPE_DATE_TIME),
                         "dataAbsentReason",
-                                createFhirFieldConfig(false, R4_FHIR_TYPE_CODEABLE_CONCEPT),
+                        createFhirFieldConfig(false, R4_FHIR_TYPE_CODEABLE_CONCEPT),
                         "referenceRange",
-                                createFhirFieldConfig(
-                                        true, R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION));
+                        createFhirFieldConfig(true, R4_FHIR_TYPE_OBSERVATION_REFERENCERANGE),
+                        "component",
+                        createFhirFieldConfig(true, R4_FHIR_TYPE_OBSERVATION_COMPONENT));
 
         FhirComplexTypeConfig observationConfig =
                 spec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_OBSERVATION);
@@ -500,11 +519,8 @@ public class FhirSpecProviderTest {
                 Map.of(
                         "manufacturer", createFhirFieldConfig(false, R4_FHIR_TYPE_REFERENCE),
                         "ingredient",
-                                createFhirFieldConfig(
-                                        true, R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION),
-                        "batch",
-                                createFhirFieldConfig(
-                                        false, R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION));
+                                createFhirFieldConfig(true, R4_FHIR_TYPE_MEDICATION_INGREDIENT),
+                        "batch", createFhirFieldConfig(false, R4_FHIR_TYPE_MEDICATION_BATCH));
 
         FhirComplexTypeConfig medicationConfig =
                 spec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_MEDICATION);
@@ -565,9 +581,7 @@ public class FhirSpecProviderTest {
                         "name", createFhirFieldConfig(true, R4_FHIR_TYPE_HUMAN_NAME),
                         "deceasedBoolean", createFhirFieldConfig(false, R4_FHIR_TYPE_BOOLEAN),
                         "photo", createFhirFieldConfig(true, R4_FHIR_TYPE_ATTACHMENT),
-                        "contact",
-                                createFhirFieldConfig(
-                                        true, R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION));
+                        "contact", createFhirFieldConfig(true, R4_FHIR_TYPE_PATIENT_CONTACT));
 
         FhirComplexTypeConfig patientConfig =
                 spec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_PATIENT);
@@ -588,7 +602,7 @@ public class FhirSpecProviderTest {
                         "telecom", createFhirFieldConfig(true, R4_FHIR_TYPE_CONTACT_POINT),
                         "qualification",
                                 createFhirFieldConfig(
-                                        true, R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION));
+                                        true, R4_FHIR_TYPE_PRACTITIONER_QUALIFICATION));
 
         FhirComplexTypeConfig practitionerConfig =
                 spec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_PRACTITIONER);
@@ -609,7 +623,7 @@ public class FhirSpecProviderTest {
                         "healthcareService", createFhirFieldConfig(true, R4_FHIR_TYPE_REFERENCE),
                         "availableTime",
                                 createFhirFieldConfig(
-                                        true, R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION),
+                                        true, R4_FHIR_TYPE_PRACTITIONERROLE_AVAILABLETIME),
                         "endpoint", createFhirFieldConfig(true, R4_FHIR_TYPE_REFERENCE));
 
         FhirComplexTypeConfig practitionerRoleConfig =
@@ -629,9 +643,7 @@ public class FhirSpecProviderTest {
                 Map.of(
                         "operationalStatus", createFhirFieldConfig(false, R4_FHIR_TYPE_CODING),
                         "address", createFhirFieldConfig(false, R4_FHIR_TYPE_ADDRESS),
-                        "position",
-                                createFhirFieldConfig(
-                                        false, R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION));
+                        "position", createFhirFieldConfig(false, R4_FHIR_TYPE_LOCATION_POSITION));
 
         FhirComplexTypeConfig locationConfig =
                 spec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_LOCATION);
@@ -650,9 +662,7 @@ public class FhirSpecProviderTest {
                 Map.of(
                         "name", createFhirFieldConfig(false, R4_FHIR_TYPE_STRING),
                         "alias", createFhirFieldConfig(true, R4_FHIR_TYPE_STRING),
-                        "contact",
-                                createFhirFieldConfig(
-                                        true, R4_FHIR_TYPE_CHILD_TYPE_SKIP_VALIDATION));
+                        "contact", createFhirFieldConfig(true, R4_FHIR_TYPE_ORGANIZATION_CONTACT));
 
         FhirComplexTypeConfig organizationConfig =
                 spec.getFhirResourceTypeConfig(FHIR_RESOURCE_TYPE_ORGANIZATION);
@@ -680,7 +690,7 @@ public class FhirSpecProviderTest {
                         "assigner", createFhirFieldConfig(false, R4_FHIR_TYPE_REFERENCE));
 
         FhirComplexTypeConfig receivedConfig =
-                spec.getFhirComplexTypeConfig(R4_FHIR_TYPE_IDENTIFIER);
+                spec.getFhirComplexTypeConfig(R4_FHIR_TYPE_IDENTIFIER, FHIR_VERSION_R4);
 
         assertThat(receivedConfig.getRequiredFieldsList())
                 .containsExactlyElementsIn(expectedRequiredFields);
@@ -700,7 +710,8 @@ public class FhirSpecProviderTest {
                         "start", createFhirFieldConfig(false, R4_FHIR_TYPE_DATE_TIME),
                         "end", createFhirFieldConfig(false, R4_FHIR_TYPE_DATE_TIME));
 
-        FhirComplexTypeConfig receivedConfig = spec.getFhirComplexTypeConfig(R4_FHIR_TYPE_PERIOD);
+        FhirComplexTypeConfig receivedConfig =
+                spec.getFhirComplexTypeConfig(R4_FHIR_TYPE_PERIOD, FHIR_VERSION_R4);
 
         assertThat(receivedConfig.getRequiredFieldsList())
                 .containsExactlyElementsIn(expectedRequiredFields);
@@ -721,7 +732,7 @@ public class FhirSpecProviderTest {
                         "text", createFhirFieldConfig(false, R4_FHIR_TYPE_STRING));
 
         FhirComplexTypeConfig receivedConfig =
-                spec.getFhirComplexTypeConfig(R4_FHIR_TYPE_CODEABLE_CONCEPT);
+                spec.getFhirComplexTypeConfig(R4_FHIR_TYPE_CODEABLE_CONCEPT, FHIR_VERSION_R4);
 
         assertThat(receivedConfig.getRequiredFieldsList())
                 .containsExactlyElementsIn(expectedRequiredFields);
@@ -744,7 +755,8 @@ public class FhirSpecProviderTest {
                         "display", createFhirFieldConfig(false, R4_FHIR_TYPE_STRING),
                         "userSelected", createFhirFieldConfig(false, R4_FHIR_TYPE_BOOLEAN));
 
-        FhirComplexTypeConfig receivedConfig = spec.getFhirComplexTypeConfig(R4_FHIR_TYPE_CODING);
+        FhirComplexTypeConfig receivedConfig =
+                spec.getFhirComplexTypeConfig(R4_FHIR_TYPE_CODING, FHIR_VERSION_R4);
 
         assertThat(receivedConfig.getRequiredFieldsList())
                 .containsExactlyElementsIn(expectedRequiredFields);
@@ -774,7 +786,7 @@ public class FhirSpecProviderTest {
                         "text", createFhirFieldConfig(false, R4_FHIR_TYPE_MARKDOWN));
 
         FhirComplexTypeConfig receivedConfig =
-                spec.getFhirComplexTypeConfig(R4_FHIR_TYPE_ANNOTATION);
+                spec.getFhirComplexTypeConfig(R4_FHIR_TYPE_ANNOTATION, FHIR_VERSION_R4);
 
         assertThat(receivedConfig.getRequiredFieldsList())
                 .containsExactlyElementsIn(expectedRequiredFields);
@@ -800,12 +812,194 @@ public class FhirSpecProviderTest {
                         "system", createFhirFieldConfig(false, R4_FHIR_TYPE_URI),
                         "code", createFhirFieldConfig(false, R4_FHIR_TYPE_CODE));
 
-        FhirComplexTypeConfig receivedConfig = spec.getFhirComplexTypeConfig(R4_FHIR_TYPE_QUANTITY);
+        FhirComplexTypeConfig receivedConfig =
+                spec.getFhirComplexTypeConfig(R4_FHIR_TYPE_QUANTITY, FHIR_VERSION_R4);
 
         assertThat(receivedConfig.getRequiredFieldsList())
                 .containsExactlyElementsIn(expectedRequiredFields);
         assertThat(receivedConfig.getAllowedFieldNamesToConfigMap())
                 .containsAtLeastEntriesIn(expectedFieldConfigsMap);
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION})
+    @Test
+    public void testGetFhirComplexTypeConfig_doubleChildTypeMedicationRequest_returnsConfig() {
+        FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
+        List<String> expectedRequiredFields = List.of();
+        Map<String, FhirFieldConfig> expectedFieldConfigsMap =
+                Map.of(
+                        "id", createFhirFieldConfig(false, R4_FHIR_TYPE_STRING),
+                        "extension", createFhirFieldConfig(true, R4_FHIR_TYPE_EXTENSION),
+                        "modifierExtension", createFhirFieldConfig(true, R4_FHIR_TYPE_EXTENSION),
+                        "initialFill",
+                                createFhirFieldConfig(
+                                        false,
+                                        R4_FHIR_TYPE_MEDICATIONREQUEST_DISPENSEREQUEST_INITIALFILL),
+                        "dispenseInterval", createFhirFieldConfig(false, R4_FHIR_TYPE_DURATION),
+                        "validityPeriod", createFhirFieldConfig(false, R4_FHIR_TYPE_PERIOD),
+                        "numberOfRepeatsAllowed",
+                                createFhirFieldConfig(false, R4_FHIR_TYPE_UNSIGNED_INT),
+                        "quantity", createFhirFieldConfig(false, R4_FHIR_TYPE_QUANTITY),
+                        "expectedSupplyDuration",
+                                createFhirFieldConfig(false, R4_FHIR_TYPE_DURATION),
+                        "performer", createFhirFieldConfig(false, R4_FHIR_TYPE_REFERENCE));
+        Map<String, FhirFieldConfig> expectedFieldConfigsMapDoubleChildType =
+                Map.of(
+                        "id", createFhirFieldConfig(false, R4_FHIR_TYPE_STRING),
+                        "extension", createFhirFieldConfig(true, R4_FHIR_TYPE_EXTENSION),
+                        "modifierExtension", createFhirFieldConfig(true, R4_FHIR_TYPE_EXTENSION),
+                        "quantity", createFhirFieldConfig(false, R4_FHIR_TYPE_QUANTITY),
+                        "duration", createFhirFieldConfig(false, R4_FHIR_TYPE_DURATION));
+
+        FhirComplexTypeConfig receivedConfig =
+                spec.getFhirComplexTypeConfig(
+                        R4_FHIR_TYPE_MEDICATIONREQUEST_DISPENSEREQUEST, FHIR_VERSION_R4);
+        FhirComplexTypeConfig doubleChildTypeConfig =
+                spec.getFhirComplexTypeConfig(
+                        R4_FHIR_TYPE_MEDICATIONREQUEST_DISPENSEREQUEST_INITIALFILL,
+                        FHIR_VERSION_R4);
+
+        assertThat(receivedConfig.getRequiredFieldsList())
+                .containsExactlyElementsIn(expectedRequiredFields);
+        assertThat(receivedConfig.getAllowedFieldNamesToConfigMap())
+                .containsAtLeastEntriesIn(expectedFieldConfigsMap);
+        assertThat(doubleChildTypeConfig.getAllowedFieldNamesToConfigMap())
+                .containsAtLeastEntriesIn(expectedFieldConfigsMapDoubleChildType);
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION, FLAG_PHR_FHIR_EXTENSION_VALIDATION})
+    @Test
+    public void testGetFhirComplexTypeConfig_extensionForR4_returnsConfig() {
+        FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
+        List<String> expectedRequiredFields = List.of("url");
+        Map<String, FhirFieldConfig> expectedFieldConfigsMap =
+                Map.of(
+                        "id", createFhirFieldConfig(false, R4_FHIR_TYPE_STRING),
+                        "extension", createFhirFieldConfig(true, R4_FHIR_TYPE_EXTENSION),
+                        "url", createFhirFieldConfig(false, R4_FHIR_TYPE_URI),
+                        "valueBoolean", createFhirFieldConfig(false, R4_FHIR_TYPE_BOOLEAN),
+                        "valueCodeableConcept",
+                                createFhirFieldConfig(false, R4_FHIR_TYPE_CODEABLE_CONCEPT));
+
+        FhirComplexTypeConfig receivedConfig =
+                spec.getFhirComplexTypeConfig(R4_FHIR_TYPE_EXTENSION, FHIR_VERSION_R4);
+
+        assertThat(receivedConfig.getRequiredFieldsList())
+                .containsExactlyElementsIn(expectedRequiredFields);
+        assertThat(receivedConfig.getAllowedFieldNamesToConfigMap())
+                .containsAtLeastEntriesIn(expectedFieldConfigsMap);
+        assertThat(receivedConfig.getAllowedFieldNamesToConfigMap())
+                .doesNotContainKey("valueRatioRange");
+        assertThat(receivedConfig.getAllowedFieldNamesToConfigMap())
+                .doesNotContainKey("valueCodeableReference");
+        assertThat(receivedConfig.getMultiTypeFieldsList()).hasSize(1);
+        MultiTypeFieldConfig multiTypeConfig = receivedConfig.getMultiTypeFieldsList().get(0);
+        assertThat(multiTypeConfig.getIsRequired()).isEqualTo(false);
+        assertThat(multiTypeConfig.getName()).isEqualTo("value[x]");
+        assertThat(multiTypeConfig.getTypedFieldNamesList())
+                .containsAtLeast("valueBoolean", "valueCodeableConcept");
+        assertThat(multiTypeConfig.getTypedFieldNamesList()).doesNotContain("valueRatioRange");
+        assertThat(multiTypeConfig.getTypedFieldNamesList())
+                .doesNotContain("valueCodeableReference");
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION, FLAG_PHR_FHIR_EXTENSION_VALIDATION})
+    @Test
+    public void testGetFhirComplexTypeConfig_extensionForR4B_returnsConfigWithAdditionalFields() {
+        FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4B);
+        List<String> expectedRequiredFields = List.of("url");
+        Map<String, FhirFieldConfig> expectedFieldConfigsMap =
+                Map.of(
+                        "id", createFhirFieldConfig(false, R4_FHIR_TYPE_STRING),
+                        "extension", createFhirFieldConfig(true, R4_FHIR_TYPE_EXTENSION),
+                        "url", createFhirFieldConfig(false, R4_FHIR_TYPE_URI),
+                        "valueBoolean", createFhirFieldConfig(false, R4_FHIR_TYPE_BOOLEAN),
+                        "valueCodeableConcept",
+                                createFhirFieldConfig(false, R4_FHIR_TYPE_CODEABLE_CONCEPT),
+                        "valueRatioRange", createFhirFieldConfig(false, R4_FHIR_TYPE_RATIO_RANGE),
+                        "valueCodeableReference",
+                                createFhirFieldConfig(false, R4_FHIR_TYPE_CODEABLE_REFERENCE));
+
+        FhirComplexTypeConfig receivedConfig =
+                spec.getFhirComplexTypeConfig(R4_FHIR_TYPE_EXTENSION, FHIR_VERSION_R4B);
+
+        assertThat(receivedConfig.getRequiredFieldsList())
+                .containsExactlyElementsIn(expectedRequiredFields);
+        assertThat(receivedConfig.getAllowedFieldNamesToConfigMap())
+                .containsAtLeastEntriesIn(expectedFieldConfigsMap);
+        assertThat(receivedConfig.getMultiTypeFieldsList()).hasSize(1);
+        MultiTypeFieldConfig multiTypeConfig = receivedConfig.getMultiTypeFieldsList().get(0);
+        assertThat(multiTypeConfig.getIsRequired()).isEqualTo(false);
+        assertThat(multiTypeConfig.getName()).isEqualTo("value[x]");
+        assertThat(multiTypeConfig.getTypedFieldNamesList())
+                .containsAtLeast(
+                        "valueBoolean",
+                        "valueCodeableConcept",
+                        "valueRatioRange",
+                        "valueCodeableReference");
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION, FLAG_PHR_FHIR_EXTENSION_VALIDATION})
+    @Test
+    public void testGetFhirComplexTypeConfig_ratioRange_returnsConfig() {
+        FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
+        List<String> expectedRequiredFields = List.of();
+        Map<String, FhirFieldConfig> expectedFieldConfigsMap =
+                Map.of(
+                        "id", createFhirFieldConfig(false, R4_FHIR_TYPE_STRING),
+                        "extension", createFhirFieldConfig(true, R4_FHIR_TYPE_EXTENSION),
+                        "lowNumerator", createFhirFieldConfig(false, R4_FHIR_TYPE_QUANTITY),
+                        "highNumerator", createFhirFieldConfig(false, R4_FHIR_TYPE_QUANTITY),
+                        "denominator", createFhirFieldConfig(false, R4_FHIR_TYPE_QUANTITY));
+
+        FhirComplexTypeConfig receivedConfig =
+                spec.getFhirComplexTypeConfig(R4_FHIR_TYPE_RATIO_RANGE, FHIR_VERSION_R4);
+
+        assertThat(receivedConfig.getRequiredFieldsList())
+                .containsExactlyElementsIn(expectedRequiredFields);
+        assertThat(receivedConfig.getAllowedFieldNamesToConfigMap())
+                .containsExactlyEntriesIn(expectedFieldConfigsMap);
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION, FLAG_PHR_FHIR_EXTENSION_VALIDATION})
+    @Test
+    public void testGetFhirComplexTypeConfig_codeableReference_returnsConfig() {
+        FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
+        List<String> expectedRequiredFields = List.of();
+        Map<String, FhirFieldConfig> expectedFieldConfigsMap =
+                Map.of(
+                        "id",
+                        createFhirFieldConfig(false, R4_FHIR_TYPE_STRING),
+                        "extension",
+                        createFhirFieldConfig(true, R4_FHIR_TYPE_EXTENSION),
+                        "concept",
+                        createFhirFieldConfig(false, R4_FHIR_TYPE_CODEABLE_CONCEPT),
+                        "reference",
+                        createFhirFieldConfig(false, R4_FHIR_TYPE_REFERENCE));
+
+        FhirComplexTypeConfig receivedConfig =
+                spec.getFhirComplexTypeConfig(R4_FHIR_TYPE_CODEABLE_REFERENCE, FHIR_VERSION_R4);
+
+        assertThat(receivedConfig.getRequiredFieldsList())
+                .containsExactlyElementsIn(expectedRequiredFields);
+        assertThat(receivedConfig.getAllowedFieldNamesToConfigMap())
+                .containsExactlyEntriesIn(expectedFieldConfigsMap);
+    }
+
+    @EnableFlags({FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION})
+    @Test
+    public void testGetFhirComplexTypeConfig_contentReferenceInSpec_configReferencesCorrectType() {
+        FhirSpecProvider spec = new FhirSpecProvider(FHIR_VERSION_R4);
+
+        // The Observation.component.referenceRange spec has a "contentReference" to the
+        // Observation.referenceRange child type, so should have the same type
+        FhirComplexTypeConfig receivedConfig =
+                spec.getFhirComplexTypeConfig(R4_FHIR_TYPE_OBSERVATION_COMPONENT, FHIR_VERSION_R4);
+
+        assertThat(receivedConfig.getAllowedFieldNamesToConfigMap())
+                .containsEntry(
+                        "referenceRange",
+                        createFhirFieldConfig(true, R4_FHIR_TYPE_OBSERVATION_REFERENCERANGE));
     }
 
     private static FhirFieldConfig createFhirFieldConfig(boolean isArray, R4FhirType r4Type) {

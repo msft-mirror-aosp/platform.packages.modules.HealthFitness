@@ -50,8 +50,11 @@ import static android.healthconnect.cts.utils.TestUtils.startMigrationWithShellP
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
 import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION;
+import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION;
+import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_EXTENSION_VALIDATION;
 import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_PRIMITIVE_TYPE_VALIDATION;
 import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_STRUCTURAL_VALIDATION;
+import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_VALIDATION_DISALLOW_EMPTY_OBJECTS_ARRAYS;
 import static com.android.healthfitness.flags.Flags.FLAG_PHR_UPSERT_FIX_PARCEL_SIZE_CALCULATION;
 import static com.android.healthfitness.flags.Flags.FLAG_PHR_UPSERT_FIX_USE_SHARED_MEMORY;
 
@@ -714,6 +717,39 @@ public class UpsertMedicalResourcesCtsTest {
         FLAG_PERSONAL_HEALTH_RECORD,
         FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
         FLAG_PHR_FHIR_STRUCTURAL_VALIDATION,
+        FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION,
+        FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION
+    })
+    public void testUpsertMedicalResources_nestedComplexTypeNotJsonObject_throws()
+            throws Exception {
+        MedicalDataSource dataSource = mUtil.createDataSource(getCreateMedicalDataSourceRequest());
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        String immunizationResource =
+                new ImmunizationBuilder()
+                        .set(
+                                "statusReason",
+                                new JSONObject(
+                                        "{ \"coding\":"
+                                            + " \"simple_string_instead_of_expected_json_object\""
+                                            + " }"))
+                        .toJson();
+        UpsertMedicalResourceRequest request =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSource.getId(), FHIR_VERSION_R4, immunizationResource)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(request), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PHR_FHIR_STRUCTURAL_VALIDATION,
         FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION
     })
     public void testUpsertMedicalResources_arrayFieldIsNotArray_throws() throws Exception {
@@ -829,6 +865,123 @@ public class UpsertMedicalResourcesCtsTest {
         UpsertMedicalResourceRequest request =
                 new UpsertMedicalResourceRequest.Builder(
                                 dataSource.getId(), FHIR_VERSION_R4, allergyResource)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(request), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testUpsertMedicalResources_r4BResourceNewExtensionField_succeeds()
+            throws Exception {
+        MedicalDataSource dataSource =
+                mUtil.createDataSource(
+                        new CreateMedicalDataSourceRequest.Builder(
+                                        DATA_SOURCE_FHIR_BASE_URI,
+                                        DATA_SOURCE_DISPLAY_NAME,
+                                        FHIR_VERSION_R4B)
+                                .build());
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        JSONArray extensionJson =
+                new JSONArray(
+                        """
+                        [{
+                            \"url\":
+                                \"http://hl7.org/fhir/StructureDefinition/immunization-procedure\",
+                            \"valueCodeableReference\": {
+                                \"reference\": { \"reference\": \"Procedure/123\" }
+                            }
+                        }]
+                        """);
+        String immunizationResource =
+                new ImmunizationBuilder().set("extension", extensionJson).toJson();
+        UpsertMedicalResourceRequest request =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSource.getId(), FHIR_VERSION_R4B, immunizationResource)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(request), Executors.newSingleThreadExecutor(), receiver);
+
+        receiver.verifyNoExceptionOrThrow();
+    }
+
+    @Test
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PHR_FHIR_STRUCTURAL_VALIDATION,
+        FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION,
+        FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION,
+        FLAG_PHR_FHIR_EXTENSION_VALIDATION
+    })
+    public void testUpsertMedicalResources_r4ResourceWithR4BOnlyExtensionField_throws()
+            throws Exception {
+        MedicalDataSource dataSource =
+                mUtil.createDataSource(
+                        new CreateMedicalDataSourceRequest.Builder(
+                                        DATA_SOURCE_FHIR_BASE_URI,
+                                        DATA_SOURCE_DISPLAY_NAME,
+                                        FHIR_VERSION_R4)
+                                .build());
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        // CodeableReference is a new R4B data type and not supported in R4, so the
+        // extension.valueCodeableReference field does not exist in an R4 resource.
+        JSONArray extensionJson =
+                new JSONArray(
+                        """
+                        [{
+                            \"url\":
+                                \"http://hl7.org/fhir/StructureDefinition/immunization-procedure\",
+                            \"valueCodeableReference\": {
+                                \"reference\": { \"reference\": \"Procedure/123\" }
+                            }
+                        }]
+                        """);
+        String immunizationResource =
+                new ImmunizationBuilder().set("extension", extensionJson).toJson();
+        UpsertMedicalResourceRequest request =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSource.getId(), FHIR_VERSION_R4, immunizationResource)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(request), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PHR_FHIR_STRUCTURAL_VALIDATION,
+        FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION,
+        FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION,
+    })
+    public void testUpsertMedicalResources_childTypeHasUnknownField_throws() throws Exception {
+        MedicalDataSource dataSource = mUtil.createDataSource(getCreateMedicalDataSourceRequest());
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        // The "performer" field is a child type defined by the Immunization resource
+        String immunizationResource =
+                new ImmunizationBuilder()
+                        .set(
+                                "performer",
+                                new JSONArray(
+                                        """
+                                        [{
+                                            \"unknown_field\": \"test\"
+                                        }]
+                                        """))
+                        .toJson();
+        UpsertMedicalResourceRequest request =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSource.getId(), FHIR_VERSION_R4, immunizationResource)
                         .build();
 
         mManager.upsertMedicalResources(
@@ -974,6 +1127,24 @@ public class UpsertMedicalResourcesCtsTest {
 
         assertThat(receiver.getResponse().size()).isEqualTo(1);
         assertThat(receiver.getResponse().get(0).getId().getFhirResourceId()).isEqualTo("null");
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testUpsertMedicalResources_resourceHasTextNarrativeSet_succeeds()
+            throws InterruptedException {
+        MedicalDataSource dataSource = mUtil.createDataSource(getCreateMedicalDataSourceRequest());
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        String immunizationJson = new ImmunizationBuilder().setTextNarrative().toJson();
+        UpsertMedicalResourceRequest upsertRequest =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSource.getId(), FHIR_VERSION_R4, immunizationJson)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(upsertRequest), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.getResponse().size()).isEqualTo(1);
     }
 
     @Test
@@ -1210,6 +1381,56 @@ public class UpsertMedicalResourcesCtsTest {
         // The "primarySource" field is of primitive type "boolean" and cannot be a string.
         String immunizationResource =
                 new ImmunizationBuilder().set("primarySource", "true").toJson();
+        UpsertMedicalResourceRequest request =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSource.getId(), FHIR_VERSION_R4, immunizationResource)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(request), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PHR_FHIR_STRUCTURAL_VALIDATION,
+        FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION,
+        FLAG_PHR_FHIR_VALIDATION_DISALLOW_EMPTY_OBJECTS_ARRAYS,
+    })
+    public void testUpsertMedicalResources_emptyObject_throws() throws Exception {
+        MedicalDataSource dataSource = mUtil.createDataSource(getCreateMedicalDataSourceRequest());
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        String immunizationResource =
+                new ImmunizationBuilder().set("statusReason", new JSONObject("{}")).toJson();
+        UpsertMedicalResourceRequest request =
+                new UpsertMedicalResourceRequest.Builder(
+                                dataSource.getId(), FHIR_VERSION_R4, immunizationResource)
+                        .build();
+
+        mManager.upsertMedicalResources(
+                List.of(request), Executors.newSingleThreadExecutor(), receiver);
+
+        assertThat(receiver.assertAndGetException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PHR_FHIR_STRUCTURAL_VALIDATION,
+        FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION,
+        FLAG_PHR_FHIR_VALIDATION_DISALLOW_EMPTY_OBJECTS_ARRAYS,
+    })
+    public void testUpsertMedicalResources_emptyArray_throws() throws Exception {
+        MedicalDataSource dataSource = mUtil.createDataSource(getCreateMedicalDataSourceRequest());
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        String immunizationResource =
+                new ImmunizationBuilder().set("identifier", new JSONArray("[]")).toJson();
         UpsertMedicalResourceRequest request =
                 new UpsertMedicalResourceRequest.Builder(
                                 dataSource.getId(), FHIR_VERSION_R4, immunizationResource)

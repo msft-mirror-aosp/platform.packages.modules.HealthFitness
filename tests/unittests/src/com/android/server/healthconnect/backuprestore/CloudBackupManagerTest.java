@@ -15,10 +15,11 @@
  */
 package com.android.server.healthconnect.backuprestore;
 
+import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
 import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 
-import static com.android.server.healthconnect.backuprestore.BackupRestoreDatabaseHelper.MAXIMUM_PAGE_SIZE;
-import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
+import static com.android.server.healthconnect.backuprestore.RecordProtoConverter.PROTO_VERSION;
+import static com.android.server.healthconnect.testing.storage.TransactionTestUtils.createStepsRecord;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -26,7 +27,6 @@ import static org.junit.Assert.assertThrows;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteException;
-import android.health.connect.HealthConnectManager;
 import android.health.connect.backuprestore.GetChangesForBackupResponse;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
@@ -38,13 +38,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.EnvironmentFixture;
-import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
-import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.HealthConnectContext;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
@@ -56,9 +53,11 @@ import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsReques
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
+import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
+import com.android.server.healthconnect.testing.fixtures.SQLiteDatabaseFixture;
+import com.android.server.healthconnect.testing.storage.TransactionTestUtils;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -84,7 +83,6 @@ public class CloudBackupManagerTest {
     @Rule(order = 2)
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(HealthConnectManager.class)
                     .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .build();
 
@@ -123,8 +121,6 @@ public class CloudBackupManagerTest {
         ChangeLogsHelper changeLogsHelper = healthConnectInjector.getChangeLogsHelper();
         ChangeLogsRequestHelper changeLogsRequestHelper =
                 healthConnectInjector.getChangeLogsRequestHelper();
-        ExportImportSettingsStorage exportImportSettingsStorage =
-                healthConnectInjector.getExportImportSettingsStorage();
 
         mCloudBackupManager =
                 new CloudBackupManager(
@@ -138,7 +134,6 @@ public class CloudBackupManagerTest {
                         changeLogsRequestHelper,
                         priorityHelper,
                         preferenceHelper,
-                        exportImportSettingsStorage,
                         healthConnectInjector.getReadAccessLogsHelper());
     }
 
@@ -171,7 +166,7 @@ public class CloudBackupManagerTest {
     @Test
     public void getChangesForBackup_dataTableIsNotNull_succeed() {
         List<RecordInternal<?>> records = new ArrayList<>();
-        for (int recordNumber = 0; recordNumber < MAXIMUM_PAGE_SIZE + 1; recordNumber++) {
+        for (int recordNumber = 0; recordNumber < DEFAULT_PAGE_SIZE + 1; recordNumber++) {
             records.add(
                     createStepsRecord(
                             // Add offsets to start time and end time for distinguishing different
@@ -192,9 +187,9 @@ public class CloudBackupManagerTest {
     @Test
     public void getChangesForBackup_changeLogsTokenInvalid_invalidateToken() {
         List<RecordInternal<?>> records = new ArrayList<>();
-        // Use MAXIMUM_PAGE_SIZE + 1 to make sure the returned change token, which to be used for
+        // Use DEFAULT_PAGE_SIZE + 1 to make sure the returned change token, which to be used for
         // the second call of getChangesForBackup, is not empty.
-        for (int recordNumber = 0; recordNumber < MAXIMUM_PAGE_SIZE + 1; recordNumber++) {
+        for (int recordNumber = 0; recordNumber < DEFAULT_PAGE_SIZE + 1; recordNumber++) {
             records.add(
                     createStepsRecord(
                             // Add offsets to start time and end time for distinguishing different
@@ -251,5 +246,11 @@ public class CloudBackupManagerTest {
             // Add backup_change_token_table back to not affect other tests.
             BackupChangeTokenHelper.applyBackupTokenUpgrade(database.getWritableDatabase());
         }
+    }
+
+    @Test
+    public void getSettingsForBackup_returnsProtoVersion() {
+        var response = mCloudBackupManager.getSettingsForBackup();
+        assertThat(response.getVersion()).isEqualTo(PROTO_VERSION);
     }
 }

@@ -53,19 +53,14 @@ class LoadImportStatusUseCaseTest {
 
     @Test
     fun invoke_callsHealthDataImportManager() = runTest {
-        val importStatus =
-            ImportStatus(
-                DATA_IMPORT_ERROR_NONE,
-                /** isImportOngoing= */
-                true)
+        val importStatus = ImportStatus(DATA_IMPORT_ERROR_NONE)
         (healthDataImportManager as FakeHealthDataImportManager).setImportStatus(importStatus)
         val result = useCase.invoke()
 
         assertThat(result is ExportImportUseCaseResult.Success).isTrue()
         val importStatusResult = (result as ExportImportUseCaseResult.Success).data
-        assertThat(importStatusResult.dataImportError)
-            .isEqualTo(ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE)
-        assertThat(importStatusResult.isImportOngoing).isEqualTo(true)
+        assertThat(importStatusResult.dataImportState)
+            .isEqualTo(ImportUiState.DataImportState.DATA_IMPORT_ERROR_NONE)
     }
 
     @Test

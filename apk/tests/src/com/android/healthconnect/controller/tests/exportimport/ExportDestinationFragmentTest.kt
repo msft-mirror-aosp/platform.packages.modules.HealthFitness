@@ -24,7 +24,9 @@ import android.content.Intent
 import android.health.connect.exportimport.ExportImportDocumentProvider
 import android.health.connect.exportimport.ScheduledExportStatus
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.platform.test.annotations.DisableFlags
 import android.platform.test.annotations.EnableFlags
 import android.platform.test.flag.junit.SetFlagsRule
 import android.provider.DocumentsContract
@@ -1198,6 +1200,8 @@ class ExportDestinationFragmentTest {
 
     @Test
     @EnableFlags(Flags.FLAG_EXPORT_IMPORT_FAST_FOLLOW)
+    @DisableFlags(Flags.FLAG_EXPORT_IMPORT_NICE_TO_HAVE)
+    // TODO(b/393617190) Remove test when export_import_nice_to_have is enabled and removed
     fun exportDestinationFragment_nextExportSequentialNumberPresent_showsDefaultNameWithNumber() {
         val documentProviders =
             listOf(
@@ -1223,6 +1227,39 @@ class ExportDestinationFragmentTest {
         onView(withId(R.id.export_import_next_button)).perform(click())
 
         intended(hasExtra(Intent.EXTRA_TITLE, "Health Connect (42).zip"))
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_EXPORT_IMPORT_FAST_FOLLOW, Flags.FLAG_EXPORT_IMPORT_NICE_TO_HAVE)
+    fun exportDestinationFragment_showsFileNameWithManufacturerAndModel() {
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY,
+                )
+            )
+        fakeHealthDataExportManager.setExportImportDocumentProviders(documentProviders)
+        fakeHealthDataExportManager.setScheduledExportStatus(
+            ScheduledExportStatus.Builder()
+                .setDataExportError(ScheduledExportStatus.DATA_EXPORT_ERROR_NONE)
+                .setPeriodInDays(ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays)
+                .setNextExportSequentialNumber(42)
+                .build()
+        )
+        launchFragment<ExportDestinationFragment>(Bundle())
+
+        onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE)).perform(click())
+        onView(withId(R.id.export_import_next_button)).perform(click())
+
+        val brand: String = Build.BRAND
+        val model: String = Build.MODEL
+
+        intended(hasExtra(Intent.EXTRA_TITLE, "$brand $model Health Connect (42).zip"
+        ))
     }
 
     private fun documentProviderWithTitle(title: String): Matcher<View>? =

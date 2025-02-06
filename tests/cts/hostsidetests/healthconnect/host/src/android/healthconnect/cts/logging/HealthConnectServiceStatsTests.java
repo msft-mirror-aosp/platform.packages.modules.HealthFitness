@@ -106,94 +106,292 @@ public class HealthConnectServiceStatsTests extends BaseHostJUnit4Test implement
         FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
         FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
     })
-    public void testPhrApiAndStatusLogs() throws Exception {
+    public void testPhrApiAndStatusLogs_testCreateMedicalDataSourceSuccess() throws Exception {
         if (!isHardwareSupported(getDevice())) {
             return;
         }
+        List<StatsLog.EventMetricData> data =
+                uploadAtomConfigAndTriggerTest("testCreateMedicalDataSourceSuccess");
 
-        List<AssertApiCallParams> testCases =
-                List.of(
-                        createAssertApiCallParams(
-                                "testCreateMedicalDataSourceSuccess",
-                                CREATE_MEDICAL_DATA_SOURCE,
-                                SUCCESS),
-                        createAssertApiCallParams(
-                                "testCreateMedicalDataSourceError",
-                                CREATE_MEDICAL_DATA_SOURCE,
-                                ERROR),
-                        createAssertApiCallParams(
-                                "testGetMedicalDataSourcesByIdsSuccess",
-                                GET_MEDICAL_DATA_SOURCES_BY_IDS,
-                                SUCCESS),
-                        createAssertApiCallParams(
-                                "testGetMedicalDataSourcesByIdsError",
-                                GET_MEDICAL_DATA_SOURCES_BY_IDS,
-                                ERROR),
-                        createAssertApiCallParams(
-                                "testGetMedicalDataSourcesByRequestSuccess",
-                                GET_MEDICAL_DATA_SOURCES_BY_REQUESTS,
-                                SUCCESS),
-                        createAssertApiCallParams(
-                                "testGetMedicalDataSourcesByRequestError",
-                                GET_MEDICAL_DATA_SOURCES_BY_REQUESTS,
-                                ERROR),
-                        createAssertApiCallParams(
-                                "testDeleteMedicalDataSourceWithDataSuccess",
-                                DELETE_MEDICAL_DATA_SOURCE_WITH_DATA,
-                                SUCCESS),
-                        createAssertApiCallParams(
-                                "testDeleteMedicalDataSourceWithDataError",
-                                DELETE_MEDICAL_DATA_SOURCE_WITH_DATA,
-                                ERROR),
-                        createAssertApiCallParams(
-                                "testUpsertMedicalResourcesSuccess",
-                                UPSERT_MEDICAL_RESOURCES,
-                                SUCCESS),
-                        createAssertApiCallParams(
-                                "testUpsertMedicalResourcesError", UPSERT_MEDICAL_RESOURCES, ERROR),
-                        createAssertApiCallParams(
-                                "testReadMedicalResourcesByIdsSuccess",
-                                READ_MEDICAL_RESOURCES_BY_IDS,
-                                SUCCESS),
-                        createAssertApiCallParams(
-                                "testReadMedicalResourcesByIdsError",
-                                READ_MEDICAL_RESOURCES_BY_IDS,
-                                ERROR),
-                        createAssertApiCallParams(
-                                "testReadMedicalResourcesByRequestsSuccess",
-                                READ_MEDICAL_RESOURCES_BY_REQUESTS,
-                                SUCCESS),
-                        createAssertApiCallParams(
-                                "testReadMedicalResourcesByRequestsError",
-                                READ_MEDICAL_RESOURCES_BY_REQUESTS,
-                                ERROR),
-                        createAssertApiCallParams(
-                                "testDeleteMedicalResourcesByIdsSuccess",
-                                DELETE_MEDICAL_RESOURCES_BY_IDS,
-                                SUCCESS),
-                        createAssertApiCallParams(
-                                "testDeleteMedicalResourcesByIdsError",
-                                DELETE_MEDICAL_RESOURCES_BY_IDS,
-                                ERROR),
-                        createAssertApiCallParams(
-                                "testDeleteMedicalResourcesByRequestSuccess",
-                                DELETE_MEDICAL_RESOURCES_BY_REQUESTS,
-                                SUCCESS),
-                        createAssertApiCallParams(
-                                "testDeleteMedicalResourcesByRequestError",
-                                DELETE_MEDICAL_RESOURCES_BY_REQUESTS,
-                                ERROR));
+        assertApiStatus(data, CREATE_MEDICAL_DATA_SOURCE, SUCCESS);
+    }
 
-        for (AssertApiCallParams params : testCases) {
-            setUp();
-
-            List<StatsLog.EventMetricData> data =
-                    uploadAtomConfigAndTriggerTest(params.methodNameToTriggerApi);
-
-            assertApiStatus(data, params.apiMethod, params.apiStatus);
-
-            tearDown();
+    @Test
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
+    })
+    public void testPhrApiAndStatusLogs_testCreateMedicalDataSourceError() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
         }
+        List<StatsLog.EventMetricData> data =
+                uploadAtomConfigAndTriggerTest("testCreateMedicalDataSourceError");
+
+        assertApiStatus(data, CREATE_MEDICAL_DATA_SOURCE, ERROR);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
+    })
+    public void testPhrApiAndStatusLogs_testGetMedicalDataSourcesByIdsSuccess() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
+        List<StatsLog.EventMetricData> data =
+                uploadAtomConfigAndTriggerTest("testGetMedicalDataSourcesByIdsSuccess");
+
+        assertApiStatus(data, GET_MEDICAL_DATA_SOURCES_BY_IDS, SUCCESS);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
+    })
+    public void testPhrApiAndStatusLogs_testGetMedicalDataSourcesByIdsError() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
+        List<StatsLog.EventMetricData> data =
+                uploadAtomConfigAndTriggerTest("testGetMedicalDataSourcesByIdsError");
+
+        assertApiStatus(data, GET_MEDICAL_DATA_SOURCES_BY_IDS, ERROR);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
+    })
+    public void testPhrApiAndStatusLogs_testGetMedicalDataSourcesByRequestSuccess()
+            throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
+        List<StatsLog.EventMetricData> data =
+                uploadAtomConfigAndTriggerTest("testGetMedicalDataSourcesByRequestSuccess");
+
+        assertApiStatus(data, GET_MEDICAL_DATA_SOURCES_BY_REQUESTS, SUCCESS);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
+    })
+    public void testPhrApiAndStatusLogs_testGetMedicalDataSourcesByRequestError() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
+        List<StatsLog.EventMetricData> data =
+                uploadAtomConfigAndTriggerTest("testGetMedicalDataSourcesByRequestError");
+
+        assertApiStatus(data, GET_MEDICAL_DATA_SOURCES_BY_REQUESTS, ERROR);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
+    })
+    public void testPhrApiAndStatusLogs_testDeleteMedicalDataSourceWithDataSuccess()
+            throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
+        List<StatsLog.EventMetricData> data =
+                uploadAtomConfigAndTriggerTest("testDeleteMedicalDataSourceWithDataSuccess");
+
+        assertApiStatus(data, DELETE_MEDICAL_DATA_SOURCE_WITH_DATA, SUCCESS);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
+    })
+    public void testPhrApiAndStatusLogs_testDeleteMedicalDataSourceWithDataError()
+            throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
+        List<StatsLog.EventMetricData> data =
+                uploadAtomConfigAndTriggerTest("testDeleteMedicalDataSourceWithDataError");
+
+        assertApiStatus(data, DELETE_MEDICAL_DATA_SOURCE_WITH_DATA, ERROR);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
+    })
+    public void testPhrApiAndStatusLogs_testUpsertMedicalResourcesSuccess() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
+        List<StatsLog.EventMetricData> data =
+                uploadAtomConfigAndTriggerTest("testUpsertMedicalResourcesSuccess");
+
+        assertApiStatus(data, UPSERT_MEDICAL_RESOURCES, SUCCESS);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
+    })
+    public void testPhrApiAndStatusLogs_testUpsertMedicalResourcesError() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
+        List<StatsLog.EventMetricData> data =
+                uploadAtomConfigAndTriggerTest("testUpsertMedicalResourcesError");
+
+        assertApiStatus(data, UPSERT_MEDICAL_RESOURCES, ERROR);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
+    })
+    public void testPhrApiAndStatusLogs_testReadMedicalResourcesByIdsSuccess() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
+        List<StatsLog.EventMetricData> data =
+                uploadAtomConfigAndTriggerTest("testReadMedicalResourcesByIdsSuccess");
+
+        assertApiStatus(data, READ_MEDICAL_RESOURCES_BY_IDS, SUCCESS);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
+    })
+    public void testPhrApiAndStatusLogs_testReadMedicalResourcesByIdsError() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
+        List<StatsLog.EventMetricData> data =
+                uploadAtomConfigAndTriggerTest("testReadMedicalResourcesByIdsError");
+
+        assertApiStatus(data, READ_MEDICAL_RESOURCES_BY_IDS, ERROR);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
+    })
+    public void testPhrApiAndStatusLogs_testReadMedicalResourcesByRequestsSuccess()
+            throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
+        List<StatsLog.EventMetricData> data =
+                uploadAtomConfigAndTriggerTest("testReadMedicalResourcesByRequestsSuccess");
+
+        assertApiStatus(data, READ_MEDICAL_RESOURCES_BY_REQUESTS, SUCCESS);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
+    })
+    public void testPhrApiAndStatusLogs_testReadMedicalResourcesByRequestsError() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
+        List<StatsLog.EventMetricData> data =
+                uploadAtomConfigAndTriggerTest("testReadMedicalResourcesByRequestsError");
+
+        assertApiStatus(data, READ_MEDICAL_RESOURCES_BY_REQUESTS, ERROR);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
+    })
+    public void testPhrApiAndStatusLogs_testDeleteMedicalResourcesByIdsSuccess() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
+        List<StatsLog.EventMetricData> data =
+                uploadAtomConfigAndTriggerTest("testDeleteMedicalResourcesByIdsSuccess");
+
+        assertApiStatus(data, DELETE_MEDICAL_RESOURCES_BY_IDS, SUCCESS);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
+    })
+    public void testPhrApiAndStatusLogs_testDeleteMedicalResourcesByIdsError() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
+        List<StatsLog.EventMetricData> data =
+                uploadAtomConfigAndTriggerTest("testDeleteMedicalResourcesByIdsError");
+
+        assertApiStatus(data, DELETE_MEDICAL_RESOURCES_BY_IDS, ERROR);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
+    })
+    public void testPhrApiAndStatusLogs_testDeleteMedicalResourcesByRequestSuccess()
+            throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
+        List<StatsLog.EventMetricData> data =
+                uploadAtomConfigAndTriggerTest("testDeleteMedicalResourcesByRequestSuccess");
+
+        assertApiStatus(data, DELETE_MEDICAL_RESOURCES_BY_REQUESTS, SUCCESS);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
+    })
+    public void testPhrApiAndStatusLogs_testDeleteMedicalResourcesByRequestError()
+            throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
+        List<StatsLog.EventMetricData> data =
+                uploadAtomConfigAndTriggerTest("testDeleteMedicalResourcesByRequestError");
+
+        assertApiStatus(data, DELETE_MEDICAL_RESOURCES_BY_REQUESTS, ERROR);
     }
 
     @Test

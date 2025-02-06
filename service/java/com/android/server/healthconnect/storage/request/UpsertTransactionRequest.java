@@ -63,7 +63,7 @@ public class UpsertTransactionRequest {
     /** Create an upsert request for insert API calls. */
     public static UpsertTransactionRequest createForInsert(
             String packageName,
-            List<RecordInternal<?>> recordInternals,
+            List<? extends RecordInternal<?>> recordInternals,
             DeviceInfoHelper deviceInfoHelper,
             AppInfoHelper appInfoHelper,
             ArrayMap<String, Boolean> extraPermsStateMap) {
@@ -78,16 +78,17 @@ public class UpsertTransactionRequest {
                 recordInternals,
                 deviceInfoHelper,
                 appInfoHelper,
-                true /* isInsertRequest */,
-                true /* shouldGenerateAccessLogs */,
-                true /* shouldPreferNewRecord */,
+                /* isInsertRequest= */ true,
+                /* shouldGenerateAccessLogs= */ true,
+                /* shouldPreferNewRecord= */ true,
+                /* updateLastModifiedTime= */ true,
                 extraPermsStateMap);
     }
 
     /** Create an upsert request for update API calls. */
     public static UpsertTransactionRequest createForUpdate(
             String packageName,
-            List<RecordInternal<?>> recordInternals,
+            List<? extends RecordInternal<?>> recordInternals,
             DeviceInfoHelper deviceInfoHelper,
             AppInfoHelper appInfoHelper,
             ArrayMap<String, Boolean> extraPermsStateMap) {
@@ -103,15 +104,16 @@ public class UpsertTransactionRequest {
                 recordInternals,
                 deviceInfoHelper,
                 appInfoHelper,
-                false /* isInsertRequest */,
-                true /* shouldGenerateAccessLogs */,
-                true /* shouldPreferNewRecord */,
+                /* isInsertRequest= */ false,
+                /* shouldGenerateAccessLogs= */ true,
+                /* shouldPreferNewRecord= */ true,
+                /* updateLastModifiedTime= */ true,
                 extraPermsStateMap);
     }
 
     /** Create an upsert request for restore operation. */
     public static UpsertTransactionRequest createForRestore(
-            List<RecordInternal<?>> recordInternals,
+            List<? extends RecordInternal<?>> recordInternals,
             DeviceInfoHelper deviceInfoHelper,
             AppInfoHelper appInfoHelper) {
         // Ensure each record has a record id set.
@@ -123,20 +125,22 @@ public class UpsertTransactionRequest {
                 recordInternals,
                 deviceInfoHelper,
                 appInfoHelper,
-                true /* isInsertRequest */,
-                false /* shouldGenerateAccessLogs */,
-                false /* shouldPreferNewRecord */,
-                null /* extraPermsStateMap */);
+                /* isInsertRequest= */ true,
+                /* shouldGenerateAccessLogs= */ false,
+                /* shouldPreferNewRecord= */ false,
+                /* updateLastModifiedTime= */ false,
+                /* extraPermsStateMap= */ null);
     }
 
     private UpsertTransactionRequest(
             @Nullable String packageName,
-            List<RecordInternal<?>> recordInternals,
+            List<? extends RecordInternal<?>> recordInternals,
             DeviceInfoHelper deviceInfoHelper,
             AppInfoHelper appInfoHelper,
             boolean isInsertRequest,
             boolean shouldGenerateAccessLogs,
             boolean shouldPreferNewRecord,
+            boolean updateLastModifiedTime,
             @Nullable ArrayMap<String, Boolean> extraPermsStateMap) {
         if (shouldGenerateAccessLogs) {
             Objects.requireNonNull(packageName);
@@ -146,7 +150,9 @@ public class UpsertTransactionRequest {
             appInfoHelper.populateAppInfoId(recordInternal, /* requireAllFields= */ true);
             deviceInfoHelper.populateDeviceInfoId(recordInternal);
             mRecordTypes.add(recordInternal.getRecordType());
-            recordInternal.setLastModifiedTime(Instant.now().toEpochMilli());
+            if (updateLastModifiedTime) {
+                recordInternal.setLastModifiedTime(Instant.now().toEpochMilli());
+            }
             addRequest(recordInternal, isInsertRequest, extraPermsStateMap);
         }
         mShouldGenerateAccessLogs = shouldGenerateAccessLogs;

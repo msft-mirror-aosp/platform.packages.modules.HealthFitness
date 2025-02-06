@@ -64,6 +64,7 @@
     <uses-permission android:name="android.permission.health.WRITE_TOTAL_CALORIES_BURNED"/>
     <uses-permission android:name="android.permission.health.WRITE_MINDFULNESS"/>
     <uses-permission android:name="android.permission.health.WRITE_MEDICAL_DATA"/>
+    <uses-permission android:name="android.permission.health.WRITE_PLANNED_EXERCISE"/>
 
     <uses-permission android:name="android.permission.health.READ_STEPS"/>
     <uses-permission android:name="android.permission.health.READ_HEART_RATE"/>
@@ -104,6 +105,10 @@
     <uses-permission android:name="android.permission.health.READ_NUTRITION"/>
     <uses-permission android:name="android.permission.health.READ_TOTAL_CALORIES_BURNED"/>
     <uses-permission android:name="android.permission.health.READ_MINDFULNESS"/>
+    <uses-permission android:name="android.permission.health.READ_PLANNED_EXERCISE"/>
+
+    <!-- Used to check if App Ops considers the app to be in the background -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application android:label="CtsHealthConnectTestAppAWithNormalReadWritePermission">
         <activity android:name="android.healthconnect.cts.testhelper.TestAppActivity"

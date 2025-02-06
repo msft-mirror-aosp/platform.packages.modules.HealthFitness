@@ -26,8 +26,8 @@ import static com.android.healthfitness.flags.Flags.FLAG_ACTIVITY_INTENSITY_DB;
 import static com.android.healthfitness.flags.Flags.FLAG_ECOSYSTEM_METRICS;
 import static com.android.healthfitness.flags.Flags.FLAG_ECOSYSTEM_METRICS_DB_CHANGES;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
-import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createBloodPressureRecord;
-import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
+import static com.android.server.healthconnect.testing.storage.TransactionTestUtils.createBloodPressureRecord;
+import static com.android.server.healthconnect.testing.storage.TransactionTestUtils.createStepsRecord;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -41,7 +41,6 @@ import static org.mockito.Mockito.verify;
 
 import android.content.Context;
 import android.health.connect.DeleteUsingFiltersRequest;
-import android.health.connect.HealthConnectManager;
 import android.health.connect.PageTokenWrapper;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
@@ -66,8 +65,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.EnvironmentFixture;
-import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
@@ -77,11 +74,13 @@ import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
+import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
+import com.android.server.healthconnect.testing.fixtures.SQLiteDatabaseFixture;
+import com.android.server.healthconnect.testing.storage.TransactionTestUtils;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -113,7 +112,6 @@ public class TransactionManagerTest {
     @Rule(order = 2)
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(HealthConnectManager.class)
                     .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();
@@ -577,7 +575,7 @@ public class TransactionManagerTest {
                 /* shouldRecordAccessLog= */ true);
 
         List<ReadAccessLogsHelper.ReadAccessLog> readAccessLogs =
-                mReadAccessLogsHelper.queryReadAccessLogs();
+                mReadAccessLogsHelper.queryReadAccessLogs(0).getReadAccessLogs();
         assertThat(readAccessLogs.size()).isEqualTo(1);
         ReadAccessLogsHelper.ReadAccessLog readAccessLog = readAccessLogs.get(0);
         assertThat(readAccessLog.getRecordWithinPast30Days()).isEqualTo(true);
@@ -749,7 +747,7 @@ public class TransactionManagerTest {
                 /* shouldRecordAccessLog= */ true);
 
         List<ReadAccessLogsHelper.ReadAccessLog> readAccessLogs =
-                mReadAccessLogsHelper.queryReadAccessLogs();
+                mReadAccessLogsHelper.queryReadAccessLogs(0).getReadAccessLogs();
         assertThat(readAccessLogs.size()).isEqualTo(1);
         ReadAccessLogsHelper.ReadAccessLog readAccessLog = readAccessLogs.get(0);
         assertThat(readAccessLog.getRecordWithinPast30Days()).isEqualTo(true);
