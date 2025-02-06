@@ -53,8 +53,8 @@ import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.StepsRecord;
 import android.healthconnect.cts.lib.TestAppProxy;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
+import android.healthconnect.cts.utils.HealthConnectReceiver;
 import android.healthconnect.cts.utils.TestUtils;
-import android.healthconnect.test.app.DefaultOutcomeReceiver;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -67,7 +67,6 @@ import org.junit.runner.RunWith;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 @RunWith(AndroidJUnit4.class)
 public class BackgroundReadTest {
@@ -287,17 +286,13 @@ public class BackgroundReadTest {
         mTestApp.getChangeLogs(changeLogsRequest);
     }
 
-    private List<String> insertStepsRecordsDirectly(List<Record> recordsToInsert) {
-        DefaultOutcomeReceiver<InsertRecordsResponse> outcomeReceiver =
-                new DefaultOutcomeReceiver<>();
-
-        mManager.insertRecords(
-                recordsToInsert, Executors.newSingleThreadExecutor(), outcomeReceiver);
-
-        if (outcomeReceiver.getError() != null) {
-            throw new IllegalStateException("Insert steps record failed!");
-        }
-        return getRecordIds(outcomeReceiver.getResult().getRecords());
+    private List<String> insertStepsRecordsDirectly(List<Record> recordsToInsert)
+            throws InterruptedException {
+        InsertRecordsResponse response =
+                HealthConnectReceiver.callAndGetResponse(
+                        (executor, receiver) ->
+                                mManager.insertRecords(recordsToInsert, executor, receiver));
+        return getRecordIds(response.getRecords());
     }
 
     private void grantBackgroundReadPermissionForTestApp() {
