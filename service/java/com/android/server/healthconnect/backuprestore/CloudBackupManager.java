@@ -146,6 +146,6 @@ public final class CloudBackupManager {
 
         byte[] data = cloudBackupSettingsHelper.collectUserSettings().toByteArray();
 
-        return new GetSettingsForBackupResponse(new BackupSettings(PROTO_VERSION, data));
+        return new GetSettingsForBackupResponse(PROTO_VERSION, new BackupSettings(data));
     }
 }

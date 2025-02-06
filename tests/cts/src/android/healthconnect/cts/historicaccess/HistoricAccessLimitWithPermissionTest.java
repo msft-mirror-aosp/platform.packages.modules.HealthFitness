@@ -45,8 +45,8 @@ import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.datatypes.WeightRecord;
 import android.health.connect.datatypes.units.Mass;
+import android.healthconnect.cts.lib.TestAppProxy;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
-import android.healthconnect.cts.utils.TestReceiver;
 import android.healthconnect.cts.utils.TestUtils;
 
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -62,10 +62,12 @@ import java.util.List;
 
 public class HistoricAccessLimitWithPermissionTest {
 
-    private static final String TEST_APP_PACKAGE_NAME = "android.healthconnect.test.app";
+    private static final String TEST_APP_PACKAGE_NAME =
+            "android.healthconnect.cts.testapp.readWritePerms.A";
 
     private Context mContext;
     private Instant mNow;
+    private TestAppProxy mTestApp;
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
@@ -77,8 +79,8 @@ public class HistoricAccessLimitWithPermissionTest {
     public void setUp() throws InterruptedException {
         mContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         mNow = Instant.now();
+        mTestApp = TestAppProxy.forPackageName(TEST_APP_PACKAGE_NAME);
         deleteAllStagedRemoteData();
-        TestReceiver.reset();
     }
 
     @After
@@ -87,8 +89,7 @@ public class HistoricAccessLimitWithPermissionTest {
     }
 
     @Test
-    public void testReadIntervalRecordsByFilters_expectCorrectResponse()
-            throws InterruptedException {
+    public void testReadIntervalRecordsByFilters_expectCorrectResponse() throws Exception {
         String ownRecordId1 = insertStepsRecord(daysBeforeNow(10), daysBeforeNow(9), 10);
         String ownRecordId2 = insertStepsRecord(daysBeforeNow(11), daysBeforeNow(10), 11);
         String ownRecordId3 = insertStepsRecord(daysBeforeNow(50), daysBeforeNow(40), 12);
@@ -113,8 +114,7 @@ public class HistoricAccessLimitWithPermissionTest {
     }
 
     @Test
-    public void testReadInstantRecordsByFilters_expectCorrectResponse()
-            throws InterruptedException {
+    public void testReadInstantRecordsByFilters_expectCorrectResponse() throws Exception {
         String ownRecordId1 = insertWeightRecord(daysBeforeNow(10), 10);
         String ownRecordId2 = insertWeightRecord(daysBeforeNow(11), 11);
         String ownRecordId3 = insertWeightRecord(daysBeforeNow(50), 12);
@@ -139,7 +139,7 @@ public class HistoricAccessLimitWithPermissionTest {
     }
 
     @Test
-    public void testReadIntervalRecordsByIds_expectCorrectResponse() throws InterruptedException {
+    public void testReadIntervalRecordsByIds_expectCorrectResponse() throws Exception {
         List<String> insertedRecordIds =
                 List.of(
                         insertStepsRecord(daysBeforeNow(10), daysBeforeNow(9), 10),
@@ -158,7 +158,7 @@ public class HistoricAccessLimitWithPermissionTest {
     }
 
     @Test
-    public void testReadInstantRecordsByIds_expectCorrectResponse() throws InterruptedException {
+    public void testReadInstantRecordsByIds_expectCorrectResponse() throws Exception {
         List<String> insertedRecordIds =
                 List.of(
                         insertWeightRecord(daysBeforeNow(10), 10),
@@ -177,7 +177,7 @@ public class HistoricAccessLimitWithPermissionTest {
     }
 
     @Test
-    public void testAggregateIntervalRecords_expectCorrectResponse() throws InterruptedException {
+    public void testAggregateIntervalRecords_expectCorrectResponse() throws Exception {
         setupAggregation(mContext.getPackageName(), HealthDataCategory.ACTIVITY);
         long ownRecordValueAfterHistoricLimit = 20;
         long ownRecordValueBeforeHistoricLimit = 300;
@@ -214,7 +214,7 @@ public class HistoricAccessLimitWithPermissionTest {
     }
 
     @Test
-    public void testAggregateInstantRecords_expectCorrectResponse() throws InterruptedException {
+    public void testAggregateInstantRecords_expectCorrectResponse() throws Exception {
         setupAggregation(mContext.getPackageName(), HealthDataCategory.BODY_MEASUREMENTS);
         double ownRecordValueAfterHistoricLimit = 20;
         double ownRecordValueBeforeHistoricLimit = 300;
@@ -246,7 +246,7 @@ public class HistoricAccessLimitWithPermissionTest {
     }
 
     @Test
-    public void testGetChangeLogs_expectCorrectResponse() throws InterruptedException {
+    public void testGetChangeLogs_expectCorrectResponse() throws Exception {
         String token =
                 getChangeLogToken(
                                 new ChangeLogTokenRequest.Builder()
@@ -279,12 +279,13 @@ public class HistoricAccessLimitWithPermissionTest {
         return insertRecordAndGetId(getWeightRecord(value, time));
     }
 
-    private String insertStepsRecordViaTestApp(Instant startTime, Instant endTime, long value) {
-        return TestUtils.insertStepsRecordViaTestApp(mContext, startTime, endTime, value);
+    private String insertStepsRecordViaTestApp(Instant startTime, Instant endTime, long value)
+            throws Exception {
+        return mTestApp.insertRecord(getStepsRecord(value, startTime, endTime));
     }
 
-    private String insertWeightRecordViaTestApp(Instant startTime, double value) {
-        return TestUtils.insertWeightRecordViaTestApp(mContext, startTime, value);
+    private String insertWeightRecordViaTestApp(Instant time, double value) throws Exception {
+        return mTestApp.insertRecord(getWeightRecord(value, time));
     }
 
     private Instant daysBeforeNow(int days) {

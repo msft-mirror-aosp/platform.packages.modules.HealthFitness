@@ -304,6 +304,7 @@ android_test {
         "cts-wm-util",
         "modules-utils-build",
         "testng",
+        "cts-healthconnect-lib",
         "cts-healthconnect-utils",
     ],
     min_sdk_version: "34",
@@ -311,6 +312,6 @@ android_test {
     test_config: "AndroidTestHistoricAccessLimitWithPermission.xml",
     manifest: "AndroidManifestHistoricAccessLimitWithPermission.xml",
     data: [
-        ":HealthFitnessPermsTestApp",
+        ":CtsHealthConnectTestAppAWithNormalReadWritePermission",
     ],
 }

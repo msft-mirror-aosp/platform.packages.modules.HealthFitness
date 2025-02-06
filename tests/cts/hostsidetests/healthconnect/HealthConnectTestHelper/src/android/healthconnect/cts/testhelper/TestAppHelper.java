@@ -16,6 +16,7 @@
 
 package android.healthconnect.cts.testhelper;
 
+import static android.healthconnect.cts.lib.BundleHelper.AGGREGATE_STEPS_COUNT_TOTAL_QUERY;
 import static android.healthconnect.cts.lib.BundleHelper.CREATE_MEDICAL_DATA_SOURCE_QUERY;
 import static android.healthconnect.cts.lib.BundleHelper.DELETE_MEDICAL_DATA_SOURCE_WITH_DATA_QUERY;
 import static android.healthconnect.cts.lib.BundleHelper.DELETE_MEDICAL_RESOURCES_BY_IDS_QUERY;
@@ -39,6 +40,8 @@ import static android.healthconnect.cts.lib.BundleHelper.UPSERT_MEDICAL_RESOURCE
 
 import android.content.Context;
 import android.content.Intent;
+import android.health.connect.AggregateRecordsRequest;
+import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.GetMedicalDataSourcesRequest;
@@ -87,6 +90,8 @@ final class TestAppHelper {
             case UPDATE_RECORDS_QUERY -> handleUpdateRecords(context, bundle);
             case READ_RECORDS_QUERY -> handleReadRecords(context, bundle);
             case READ_RECORDS_USING_IDS_QUERY -> handleReadRecordsUsingIds(context, bundle);
+            case AGGREGATE_STEPS_COUNT_TOTAL_QUERY ->
+                    handleAggregateStepsCountTotalQuery(context, bundle);
             case READ_CHANGE_LOGS_QUERY -> handleGetChangeLogs(context, bundle);
             case GET_CHANGE_LOG_TOKEN_QUERY -> handleGetChangeLogToken(context, bundle);
             case CREATE_MEDICAL_DATA_SOURCE_QUERY -> handleCreateMedicalDataSource(context, bundle);
@@ -134,6 +139,17 @@ final class TestAppHelper {
                 BundleHelper.toReadRecordsRequestUsingIds(bundle);
         List<? extends Record> records = TestUtils.readRecords(request, context);
         return BundleHelper.fromReadRecordsResponse(records);
+    }
+
+    private static Bundle handleAggregateStepsCountTotalQuery(Context context, Bundle bundle)
+            throws Exception {
+        AggregateRecordsRequest<Long> request =
+                BundleHelper.toAggregateStepsCountTotalRequest(bundle);
+        HealthConnectReceiver<AggregateRecordsResponse<Long>> receiver =
+                new HealthConnectReceiver<>();
+        TestUtils.getHealthConnectManager(context)
+                .aggregate(request, Executors.newSingleThreadExecutor(), receiver);
+        return BundleHelper.fromAggregateStepsCountTotalResponse(receiver.getResponse());
     }
 
     private static Bundle handleDeleteRecords(Context context, Bundle bundle) throws Exception {

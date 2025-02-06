@@ -28,14 +28,11 @@ import static com.android.server.healthconnect.proto.backuprestore.Settings.Ener
 import static com.android.server.healthconnect.proto.backuprestore.Settings.HeightUnitProto;
 import static com.android.server.healthconnect.proto.backuprestore.Settings.TemperatureUnitProto;
 import static com.android.server.healthconnect.proto.backuprestore.Settings.WeightUnitProto;
-import static com.android.server.healthconnect.storage.ExportImportSettingsStorage.EXPORT_PERIOD_PREFERENCE_KEY;
-import static com.android.server.healthconnect.storage.ExportImportSettingsStorage.EXPORT_URI_PREFERENCE_KEY;
 
 import static com.google.common.truth.Truth.assertThat;
 
 import android.content.Context;
 import android.health.connect.HealthDataCategory;
-import android.net.Uri;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -47,7 +44,6 @@ import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.proto.backuprestore.Settings;
 import com.android.server.healthconnect.proto.backuprestore.Settings.AppInfo;
-import com.android.server.healthconnect.proto.backuprestore.Settings.ExportSettingsProto;
 import com.android.server.healthconnect.proto.backuprestore.Settings.PrioritizedAppIds;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
@@ -77,7 +73,6 @@ public class CloudBackupSettingsHelperTest {
     private static final String TEST_PACKAGE_NAME_2 = "other.app";
     private static final String TEST_PACKAGE_NAME_3 = "another.app";
     private static final String TEST_PACKAGE_NAME_4 = "not.installed.app";
-    private static final Uri TEST_URI = Uri.parse("content://exports/hcbackup.zip");
 
     private PreferenceHelper mPreferenceHelper;
     private HealthDataCategoryPriorityHelper mPriorityHelper;
@@ -243,69 +238,6 @@ public class CloudBackupSettingsHelperTest {
         assertThat(userSettings.getWeightUnitSetting()).isEqualTo(WeightUnitProto.POUND);
         assertThat(userSettings.getHeightUnitSetting()).isEqualTo(HeightUnitProto.FEET);
         assertThat(userSettings.getDistanceUnitSetting()).isEqualTo(DistanceUnitProto.MILES);
-    }
-
-    @Test
-    public void exportSettingsDaily_setsExportSettingsCorrectly() {
-        mPreferenceHelper.insertOrReplacePreference(EXPORT_URI_PREFERENCE_KEY, TEST_URI.toString());
-        mPreferenceHelper.insertOrReplacePreference(EXPORT_PERIOD_PREFERENCE_KEY, "1");
-
-        Settings userSettings = mCloudBackupSettingsHelper.collectUserSettings();
-
-        ExportSettingsProto exportSettingsProto =
-                ExportSettingsProto.newBuilder()
-                        .setUri(TEST_URI.toString())
-                        .setFrequency(1)
-                        .build();
-
-        assertThat(userSettings.hasExportSettings()).isTrue();
-
-        ExportSettingsProto actualSettings = userSettings.getExportSettings();
-
-        assertThat(actualSettings).isNotNull();
-        assertThat(actualSettings).isEqualTo(exportSettingsProto);
-    }
-
-    @Test
-    public void exportSettingsWeekly_setsExportSettingsCorrectly() {
-        mPreferenceHelper.insertOrReplacePreference(EXPORT_URI_PREFERENCE_KEY, TEST_URI.toString());
-        mPreferenceHelper.insertOrReplacePreference(EXPORT_PERIOD_PREFERENCE_KEY, "7");
-
-        Settings userSettings = mCloudBackupSettingsHelper.collectUserSettings();
-
-        ExportSettingsProto exportSettingsProto =
-                ExportSettingsProto.newBuilder()
-                        .setUri(TEST_URI.toString())
-                        .setFrequency(7)
-                        .build();
-
-        assertThat(userSettings.hasExportSettings()).isTrue();
-
-        ExportSettingsProto actualSettings = userSettings.getExportSettings();
-
-        assertThat(actualSettings).isNotNull();
-        assertThat(actualSettings).isEqualTo(exportSettingsProto);
-    }
-
-    @Test
-    public void exportSettingsMonthly_setsExportSettingsCorrectly() {
-        mPreferenceHelper.insertOrReplacePreference(EXPORT_URI_PREFERENCE_KEY, TEST_URI.toString());
-        mPreferenceHelper.insertOrReplacePreference(EXPORT_PERIOD_PREFERENCE_KEY, "30");
-
-        Settings userSettings = mCloudBackupSettingsHelper.collectUserSettings();
-
-        ExportSettingsProto exportSettingsProto =
-                ExportSettingsProto.newBuilder()
-                        .setUri(TEST_URI.toString())
-                        .setFrequency(30)
-                        .build();
-
-        assertThat(userSettings.hasExportSettings()).isTrue();
-
-        ExportSettingsProto actualSettings = userSettings.getExportSettings();
-
-        assertThat(actualSettings).isNotNull();
-        assertThat(actualSettings).isEqualTo(exportSettingsProto);
     }
 
     @Test

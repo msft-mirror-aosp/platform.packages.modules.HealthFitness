@@ -312,10 +312,10 @@
     <string name="resting_heart_rate_lowercase_label" msgid="4533866739695973169">"mapigo ya moyo ya kawaida"</string>
     <string name="resting_heart_rate_read_content_description" msgid="1068160055773401020">"Isome data ya mapigo ya moyo ya kawaida"</string>
     <string name="resting_heart_rate_write_content_description" msgid="8848198128082739995">"Iandike data ya mapigo ya moyo ya kawaida"</string>
-    <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Kiwango cha joto kwenye ngozi"</string>
-    <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"kiwango cha joto kwenye ngozi"</string>
-    <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Soma kiwango cha joto kwenye ngozi"</string>
-    <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Andika kiwango cha joto kwenye ngozi"</string>
+    <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Halijoto ya ngozi"</string>
+    <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"halijoto ya ngozi"</string>
+    <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Kusoma halijoto ya ngozi"</string>
+    <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Kuandika halijoto ya ngozi"</string>
     <string name="browse_health_records_intro" msgid="1611488691642390523">"Hii inajumuisha rekodi zote za afya zilizosawazishwa na kuwekwa kwenye Health Connect. Huenda hii isiwe rekodi yako kamili ya matibabu na haijumuishi maelezo ya kimatibabu ya rekodi zako za afya."</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Rekodi zote za afya"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"rekodi zote za afya"</string>

@@ -29,8 +29,6 @@ import static com.android.server.healthconnect.proto.backuprestore.Settings.Ener
 import static com.android.server.healthconnect.proto.backuprestore.Settings.HeightUnitProto.HEIGHT_UNIT_UNSPECIFIED;
 import static com.android.server.healthconnect.proto.backuprestore.Settings.TemperatureUnitProto.TEMPERATURE_UNIT_UNSPECIFIED;
 import static com.android.server.healthconnect.proto.backuprestore.Settings.WeightUnitProto.WEIGHT_UNIT_UNSPECIFIED;
-import static com.android.server.healthconnect.storage.ExportImportSettingsStorage.EXPORT_PERIOD_PREFERENCE_KEY;
-import static com.android.server.healthconnect.storage.ExportImportSettingsStorage.EXPORT_URI_PREFERENCE_KEY;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -89,8 +87,6 @@ public class CloudRestoreManagerTest {
     private static final String TEST_PACKAGE_NAME = "package.name";
     private static final String TEST_PACKAGE_NAME_2 = "other.app";
     private static final String TEST_PACKAGE_NAME_3 = "another.app";
-    private static final String EXPORT_URI = "content://path/to/export/location";
-    private static final String EXPORT_URI_2 = "content://different/path/to/export/to";
 
     @Rule(order = 1)
     public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
@@ -204,7 +200,7 @@ public class CloudRestoreManagerTest {
     }
 
     @Test
-    public void whenPushSettingsForRestoreCalled_noExportSettings_settingsSuccessfullyRestored() {
+    public void whenPushSettingsForRestoreCalled_settingsSuccessfullyRestored() {
         CloudBackupSettingsHelper cloudBackupSettingsHelper =
                 new CloudBackupSettingsHelper(mPriorityHelper, mPreferenceHelper, mAppInfoHelper);
 
@@ -217,35 +213,9 @@ public class CloudRestoreManagerTest {
         Map<Integer, Settings.PrioritizedAppIds> expectedPriorityList = new HashMap<>();
         expectedPriorityList.put(HealthDataCategory.ACTIVITY, expectedAppIds);
 
-        setupInitialSettings(false);
-        Settings settingsToRestore = createSettingsToRestore(false, false);
-        BackupSettings backupSettings = new BackupSettings(1, settingsToRestore.toByteArray());
-
-        mCloudRestoreManager.pushSettingsForRestore(backupSettings);
-
-        Settings currentSettings = cloudBackupSettingsHelper.collectUserSettings();
-
-        assertSettingsCorrectlyUpdated(settingsToRestore, currentSettings, expectedPriorityList);
-    }
-
-    @Test
-    public void whenPushSettingsForRestoreCalled_withExportSettings_settingsSuccessfullyRestored() {
-        CloudBackupSettingsHelper cloudBackupSettingsHelper =
-                new CloudBackupSettingsHelper(mPriorityHelper, mPreferenceHelper, mAppInfoHelper);
-
-        Settings.PrioritizedAppIds expectedAppIds =
-                Settings.PrioritizedAppIds.newBuilder()
-                        .addAppId(mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME))
-                        .addAppId(mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME_2))
-                        .addAppId(mAppInfoHelper.getAppInfoId(TEST_PACKAGE_NAME_3))
-                        .build();
-        Map<Integer, Settings.PrioritizedAppIds> expectedPriorityList = new HashMap<>();
-        expectedPriorityList.put(HealthDataCategory.ACTIVITY, expectedAppIds);
-
-        setupInitialSettings(true);
-        Settings settingsToRestore = createSettingsToRestore(true, false);
-
-        BackupSettings backupSettings = new BackupSettings(1, settingsToRestore.toByteArray());
+        setupInitialSettings();
+        Settings settingsToRestore = createSettingsToRestore(false);
+        BackupSettings backupSettings = new BackupSettings(settingsToRestore.toByteArray());
 
         mCloudRestoreManager.pushSettingsForRestore(backupSettings);
 
@@ -272,9 +242,9 @@ public class CloudRestoreManagerTest {
         Map<Integer, Settings.PrioritizedAppIds> expectedPriorityList = new HashMap<>();
         expectedPriorityList.put(HealthDataCategory.ACTIVITY, expectedAppIds);
 
-        setupInitialSettings(false);
-        Settings settingsToRestore = createSettingsToRestore(false, true);
-        BackupSettings backupSettings = new BackupSettings(1, settingsToRestore.toByteArray());
+        setupInitialSettings();
+        Settings settingsToRestore = createSettingsToRestore(true);
+        BackupSettings backupSettings = new BackupSettings(settingsToRestore.toByteArray());
 
         mCloudRestoreManager.pushSettingsForRestore(backupSettings);
 
@@ -283,7 +253,7 @@ public class CloudRestoreManagerTest {
         assertSettingsCorrectlyUpdated(settingsToRestore, currentSettings, expectedPriorityList);
     }
 
-    private void setupInitialSettings(boolean includeExportSettings) {
+    private void setupInitialSettings() {
         mPriorityHelper.setPriorityOrder(
                 HealthDataCategory.ACTIVITY, List.of(TEST_PACKAGE_NAME, TEST_PACKAGE_NAME_2));
         mPreferenceHelper.insertOrReplacePreference(
@@ -299,15 +269,9 @@ public class CloudRestoreManagerTest {
                 WEIGHT_UNIT_PREF_KEY, Settings.WeightUnitProto.POUND.toString());
         mPreferenceHelper.insertOrReplacePreference(
                 DISTANCE_UNIT_PREF_KEY, Settings.DistanceUnitProto.KILOMETERS.toString());
-
-        if (includeExportSettings) {
-            mPreferenceHelper.insertOrReplacePreference(EXPORT_URI_PREFERENCE_KEY, EXPORT_URI);
-            mPreferenceHelper.insertOrReplacePreference(EXPORT_PERIOD_PREFERENCE_KEY, "7");
-        }
     }
 
-    private Settings createSettingsToRestore(
-            boolean includeExportSettings, boolean setEnergyUnitAsUnspecified) {
+    private Settings createSettingsToRestore(boolean setEnergyUnitAsUnspecified) {
 
         Settings.PrioritizedAppIds newAppIds =
                 Settings.PrioritizedAppIds.newBuilder()
@@ -319,14 +283,6 @@ public class CloudRestoreManagerTest {
         newPriorityList.put(HealthDataCategory.ACTIVITY, newAppIds);
 
         Settings.Builder settingsRecordBuilder = Settings.newBuilder();
-
-        if (includeExportSettings) {
-            settingsRecordBuilder.setExportSettings(
-                    Settings.ExportSettingsProto.newBuilder()
-                            .setFrequency(30)
-                            .setUri(EXPORT_URI_2)
-                            .build());
-        }
 
         Settings.EnergyUnitProto energyUnitSetting =
                 setEnergyUnitAsUnspecified
@@ -381,11 +337,6 @@ public class CloudRestoreManagerTest {
         assertSame(
                 settingsFromBackup.getDistanceUnitSetting(),
                 restoredSettings.getDistanceUnitSetting());
-
-        if (settingsFromBackup.hasExportSettings()) {
-            assertThat(settingsFromBackup.getExportSettings())
-                    .isEqualTo(restoredSettings.getExportSettings());
-        }
 
         assertThat(expectedMergedPriorityList.get(HealthDataCategory.ACTIVITY).getAppIdList())
                 .isEqualTo(

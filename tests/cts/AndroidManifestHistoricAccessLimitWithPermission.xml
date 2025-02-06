@@ -43,7 +43,7 @@
     <!-- To get visibility of the app with health permissions definitions,
          required for testing defined permissions. -->
     <queries>
-        <package android:name="android.healthconnect.test.app"/>
+        <package android:name="android.healthconnect.cts.testapp.readWritePerms.A"/>
     </queries>
 
     <uses-permission android:name="android.permission.health.READ_HEALTH_DATA_HISTORY"/>

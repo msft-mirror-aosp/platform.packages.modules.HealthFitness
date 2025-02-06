@@ -16,6 +16,10 @@
 
 package android.healthconnect.cts.lib;
 
+import static java.util.Objects.requireNonNull;
+
+import android.health.connect.AggregateRecordsRequest;
+import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.GetMedicalDataSourcesRequest;
@@ -47,13 +51,16 @@ import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.MenstruationPeriodRecord;
 import android.health.connect.datatypes.Metadata;
+import android.health.connect.datatypes.PlannedExerciseSessionRecord;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.SleepSessionRecord;
 import android.health.connect.datatypes.SleepSessionRecord.Stage;
 import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.datatypes.TotalCaloriesBurnedRecord;
+import android.health.connect.datatypes.WeightRecord;
 import android.health.connect.datatypes.units.Energy;
 import android.health.connect.datatypes.units.Length;
+import android.health.connect.datatypes.units.Mass;
 import android.health.connect.datatypes.units.Power;
 import android.healthconnect.cts.utils.ToStringUtils;
 import android.os.Bundle;
@@ -80,6 +87,8 @@ public final class BundleHelper {
     public static final String READ_RECORDS_QUERY = PREFIX + "READ_RECORDS_QUERY";
     public static final String READ_RECORDS_USING_IDS_QUERY =
             PREFIX + "READ_RECORDS_USING_IDS_QUERY";
+    public static final String AGGREGATE_STEPS_COUNT_TOTAL_QUERY =
+            PREFIX + "AGGREGATE_STEPS_COUNT_TOTAL_QUERY";
     public static final String READ_CHANGE_LOGS_QUERY = PREFIX + "READ_CHANGE_LOGS_QUERY";
     public static final String DELETE_RECORDS_QUERY = PREFIX + "DELETE_RECORDS_QUERY";
     public static final String UPDATE_RECORDS_QUERY = PREFIX + "UPDATE_RECORDS_QUERY";
@@ -147,6 +156,8 @@ public final class BundleHelper {
     private static final String PACKAGE_NAME = PREFIX + "PACKAGE_NAME";
     private static final String CLIENT_ID = PREFIX + "CLIENT_ID";
     private static final String RECORD_ID = PREFIX + "RECORD_ID";
+    private static final String AGGREGATE_STEPS_COUNT_TOTAL_RESULT =
+            PREFIX + "AGGREGATE_STEPS_COUNT_TOTAL_RESULT";
     private static final String MEDICAL_DATA_SOURCE_ID = PREFIX + "MEDICAL_DATA_SOURCE_ID";
     private static final String METADATA = PREFIX + "METADATA";
     private static final String DEVICE = PREFIX + "DEVICE";
@@ -157,6 +168,7 @@ public final class BundleHelper {
     private static final String COUNT = PREFIX + "COUNT";
     private static final String LENGTH_IN_METERS = PREFIX + "LENGTH_IN_METERS";
     private static final String ENERGY_IN_CALORIES = PREFIX + "ENERGY_IN_CALORIES";
+    private static final String WEIGHT_IN_GRAMS = PREFIX + "WEIGHT_IN_GRAMS";
     private static final String SAMPLE_TIMES = PREFIX + "SAMPLE_TIMES";
     private static final String SAMPLE_VALUES = PREFIX + "SAMPLE_VALUES";
     private static final String EXERCISE_ROUTE_TIMESTAMPS = PREFIX + "EXERCISE_ROUTE_TIMESTAMPS";
@@ -179,6 +191,8 @@ public final class BundleHelper {
             PREFIX + "EXERCISE_SEGMENT_REP_COUNTS";
     private static final String NOTES = PREFIX + "NOTES";
     private static final String TITLE = PREFIX + "TITLE";
+    private static final String PLANNED_EXERCISE_SESSION_ID =
+            PREFIX + "PLANNED_EXERCISE_SESSION_ID";
     private static final String START_ZONE_OFFSET = PREFIX + "START_ZONE_OFFSET";
     private static final String END_ZONE_OFFSET = PREFIX + "END_ZONE_OFFSET";
 
@@ -342,6 +356,58 @@ public final class BundleHelper {
     /** Converts a bundle to a read records response. */
     public static <T extends Record> List<T> toReadRecordsResponse(Bundle bundle) {
         return (List<T>) toRecordList(bundle.getParcelableArrayList(RECORD_LIST, Bundle.class));
+    }
+
+    /** Converts an aggregate steps count total request to a bundle. */
+    public static Bundle fromAggregateStepsCountTotalRequest(
+            Instant startTime, Instant endTime, List<String> packageNames) {
+        Bundle bundle = new Bundle();
+        bundle.putString(QUERY_TYPE, AGGREGATE_STEPS_COUNT_TOTAL_QUERY);
+        bundle.putLong(START_TIME_MILLIS, startTime.toEpochMilli());
+        bundle.putLong(END_TIME_MILLIS, endTime.toEpochMilli());
+        bundle.putStringArrayList(PACKAGE_NAME, new ArrayList<>(packageNames));
+        return bundle;
+    }
+
+    /** Converts a bundle to an aggregate steps count total request. */
+    public static AggregateRecordsRequest<Long> toAggregateStepsCountTotalRequest(Bundle bundle) {
+        Instant startTime = Instant.ofEpochMilli(bundle.getLong(START_TIME_MILLIS));
+        Instant endTime = Instant.ofEpochMilli(bundle.getLong(END_TIME_MILLIS));
+        TimeInstantRangeFilter timeInstantRangeFilter =
+                new TimeInstantRangeFilter.Builder()
+                        .setStartTime(startTime)
+                        .setEndTime(endTime)
+                        .build();
+
+        AggregateRecordsRequest.Builder<Long> request =
+                new AggregateRecordsRequest.Builder<Long>(timeInstantRangeFilter)
+                        .addAggregationType(StepsRecord.STEPS_COUNT_TOTAL);
+
+        List<String> packageNames = requireNonNull(bundle.getStringArrayList(PACKAGE_NAME));
+        for (String packageName : packageNames) {
+            request.addDataOriginsFilter(
+                    new DataOrigin.Builder().setPackageName(packageName).build());
+        }
+
+        return request.build();
+    }
+
+    /** Converts an aggregate steps count total response to a bundle. */
+    public static Bundle fromAggregateStepsCountTotalResponse(
+            AggregateRecordsResponse<Long> response) {
+        Bundle bundle = new Bundle();
+        Long result = response.get(StepsRecord.STEPS_COUNT_TOTAL);
+        if (result != null) {
+            bundle.putLong(AGGREGATE_STEPS_COUNT_TOTAL_RESULT, result);
+        }
+        return bundle;
+    }
+
+    /** Converts a bundle to an aggregate steps count total response. */
+    public static Long toAggregateStepsCountTotalResponse(Bundle bundle) {
+        return bundle.containsKey(AGGREGATE_STEPS_COUNT_TOTAL_RESULT)
+                ? bundle.getLong(AGGREGATE_STEPS_COUNT_TOTAL_RESULT)
+                : null;
     }
 
     /** Converts a delete records request to a bundle. */
@@ -737,6 +803,10 @@ public final class BundleHelper {
             values = getTotalCaloriesBurnedRecord(totalCaloriesBurnedRecord);
         } else if (record instanceof MenstruationPeriodRecord) {
             values = new Bundle();
+        } else if (record instanceof WeightRecord weightRecord) {
+            values = getWeightRecord(weightRecord);
+        } else if (record instanceof PlannedExerciseSessionRecord plannedExerciseSessionRecord) {
+            values = getPlannedExerciseSessionRecord(plannedExerciseSessionRecord);
         } else {
             throw new IllegalArgumentException(
                     "Unsupported record type: " + record.getClass().getName());
@@ -803,6 +873,11 @@ public final class BundleHelper {
                     metadata, startTime, endTime, startZoneOffset, endZoneOffset, values);
         } else if (Objects.equals(recordClassName, MenstruationPeriodRecord.class.getName())) {
             return new MenstruationPeriodRecord.Builder(metadata, startTime, endTime).build();
+        } else if (Objects.equals(recordClassName, WeightRecord.class.getName())) {
+            return createWeightRecord(metadata, startTime, startZoneOffset, values);
+        } else if (Objects.equals(recordClassName, PlannedExerciseSessionRecord.class.getName())) {
+            return createPlannedExerciseSessionRecord(
+                    metadata, startTime, endTime, startZoneOffset, endZoneOffset, values);
         }
 
         throw new IllegalArgumentException("Unsupported record type: " + recordClassName);
@@ -919,6 +994,7 @@ public final class BundleHelper {
 
         values.putCharSequence(TITLE, record.getTitle());
         values.putCharSequence(NOTES, record.getNotes());
+        values.putString(PLANNED_EXERCISE_SESSION_ID, record.getPlannedExerciseSessionId());
 
         return values;
     }
@@ -1032,6 +1108,7 @@ public final class BundleHelper {
 
         record.setTitle(values.getCharSequence(TITLE));
         record.setNotes(values.getCharSequence(NOTES));
+        record.setPlannedExerciseSessionId(values.getString(PLANNED_EXERCISE_SESSION_ID));
         record.setStartZoneOffset(startZoneOffset);
         record.setEndZoneOffset(endZoneOffset);
 
@@ -1085,6 +1162,18 @@ public final class BundleHelper {
     private static Bundle getTotalCaloriesBurnedRecord(TotalCaloriesBurnedRecord record) {
         Bundle values = new Bundle();
         values.putDouble(ENERGY_IN_CALORIES, record.getEnergy().getInCalories());
+        return values;
+    }
+
+    private static Bundle getWeightRecord(WeightRecord record) {
+        Bundle values = new Bundle();
+        values.putDouble(WEIGHT_IN_GRAMS, record.getWeight().getInGrams());
+        return values;
+    }
+
+    private static Bundle getPlannedExerciseSessionRecord(PlannedExerciseSessionRecord record) {
+        Bundle values = new Bundle();
+        values.putInt(EXERCISE_SESSION_TYPE, record.getExerciseType());
         return values;
     }
 
@@ -1186,6 +1275,28 @@ public final class BundleHelper {
         double energyInCalories = values.getDouble(ENERGY_IN_CALORIES);
         return new TotalCaloriesBurnedRecord.Builder(
                         metadata, startTime, endTime, Energy.fromCalories(energyInCalories))
+                .setStartZoneOffset(startZoneOffset)
+                .setEndZoneOffset(endZoneOffset)
+                .build();
+    }
+
+    private static WeightRecord createWeightRecord(
+            Metadata metadata, Instant time, ZoneOffset zoneOffset, Bundle values) {
+        double weightInGrams = values.getDouble(WEIGHT_IN_GRAMS);
+        return new WeightRecord.Builder(metadata, time, Mass.fromGrams(weightInGrams))
+                .setZoneOffset(zoneOffset)
+                .build();
+    }
+
+    private static PlannedExerciseSessionRecord createPlannedExerciseSessionRecord(
+            Metadata metadata,
+            Instant startTime,
+            Instant endTime,
+            ZoneOffset startZoneOffset,
+            ZoneOffset endZoneOffset,
+            Bundle values) {
+        int exerciseType = values.getInt(EXERCISE_SESSION_TYPE);
+        return new PlannedExerciseSessionRecord.Builder(metadata, exerciseType, startTime, endTime)
                 .setStartZoneOffset(startZoneOffset)
                 .setEndZoneOffset(endZoneOffset)
                 .build();

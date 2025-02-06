@@ -251,6 +251,6 @@ public class CloudBackupManagerTest {
     @Test
     public void getSettingsForBackup_returnsProtoVersion() {
         var response = mCloudBackupManager.getSettingsForBackup();
-        assertThat(response.getSettings().getVersion()).isEqualTo(PROTO_VERSION);
+        assertThat(response.getVersion()).isEqualTo(PROTO_VERSION);
     }
 }

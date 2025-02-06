@@ -16,9 +16,6 @@
 
 package com.android.server.healthconnect.backuprestore;
 
-import static com.android.server.healthconnect.storage.ExportImportSettingsStorage.EXPORT_PERIOD_PREFERENCE_KEY;
-import static com.android.server.healthconnect.storage.ExportImportSettingsStorage.EXPORT_URI_PREFERENCE_KEY;
-
 import android.util.Slog;
 
 import com.android.internal.annotations.VisibleForTesting;
@@ -27,7 +24,6 @@ import com.android.server.healthconnect.proto.backuprestore.Settings.AppInfo;
 import com.android.server.healthconnect.proto.backuprestore.Settings.AutoDeleteFrequencyProto;
 import com.android.server.healthconnect.proto.backuprestore.Settings.DistanceUnitProto;
 import com.android.server.healthconnect.proto.backuprestore.Settings.EnergyUnitProto;
-import com.android.server.healthconnect.proto.backuprestore.Settings.ExportSettingsProto;
 import com.android.server.healthconnect.proto.backuprestore.Settings.HeightUnitProto;
 import com.android.server.healthconnect.proto.backuprestore.Settings.PrioritizedAppIds;
 import com.android.server.healthconnect.proto.backuprestore.Settings.TemperatureUnitProto;
@@ -87,8 +83,6 @@ public final class CloudBackupSettingsHelper {
                         .setHeightUnitSetting(getHeightPreference())
                         .setWeightUnitSetting(getWeightPreference())
                         .setDistanceUnitSetting(getDistancePreference());
-        Optional<ExportSettingsProto> exportSettings = getExportSettings();
-        exportSettings.ifPresent(builder::setExportSettings);
         return builder.build();
     }
 
@@ -101,13 +95,6 @@ public final class CloudBackupSettingsHelper {
                 mPriorityHelper.getHealthDataCategoryToAppIdPriorityMapImmutable(),
                 fromProtoToPriorityList(newUserSettings.getPriorityListMap()));
         restoreAppInfo(newUserSettings.getAppInfoMap());
-        if (newUserSettings.hasExportSettings()) {
-            mPreferenceHelper.insertOrReplacePreference(
-                    EXPORT_URI_PREFERENCE_KEY, newUserSettings.getExportSettings().getUri());
-            mPreferenceHelper.insertOrReplacePreference(
-                    EXPORT_PERIOD_PREFERENCE_KEY,
-                    String.valueOf(newUserSettings.getExportSettings().getFrequency()));
-        }
         AutoDeleteFrequencyProto newAutoDeleteFrequency = newUserSettings.getAutoDeleteFrequency();
         if (newAutoDeleteFrequency != AutoDeleteFrequencyProto.AUTO_DELETE_RANGE_UNSPECIFIED) {
             mPreferenceHelper.insertOrReplacePreference(
@@ -232,20 +219,6 @@ public final class CloudBackupSettingsHelper {
         return preference == null
                 ? AutoDeleteFrequencyProto.AUTO_DELETE_RANGE_UNSPECIFIED
                 : AutoDeleteFrequencyProto.valueOf(preference);
-    }
-
-    private Optional<ExportSettingsProto> getExportSettings() {
-        String exportUriPreference = mPreferenceHelper.getPreference(EXPORT_URI_PREFERENCE_KEY);
-        String exportFrequencyPreference =
-                mPreferenceHelper.getPreference(EXPORT_PERIOD_PREFERENCE_KEY);
-        if (exportUriPreference == null || exportFrequencyPreference == null) {
-            return Optional.empty();
-        }
-        return Optional.of(
-                ExportSettingsProto.newBuilder()
-                        .setUri(exportUriPreference)
-                        .setFrequency(Integer.parseInt(exportFrequencyPreference))
-                        .build());
     }
 
     private TemperatureUnitProto getTemperaturePreference() {

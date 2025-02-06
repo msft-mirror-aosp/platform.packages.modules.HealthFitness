@@ -24,7 +24,6 @@ import android.healthconnect.cts.utils.TestUtils
 import android.server.wm.WindowManagerStateHelper
 import android.util.Log
 import androidx.test.core.app.ApplicationProvider
-import com.android.compatibility.common.util.DisableAnimationRule
 import com.android.compatibility.common.util.FreezeRotationRule
 import com.android.compatibility.common.util.SystemUtil.eventually
 import com.android.compatibility.common.util.SystemUtil.runShellCommandOrThrow
@@ -33,8 +32,6 @@ import org.junit.Before
 import org.junit.Rule
 
 open class HealthConnectBaseTest {
-    @get:Rule val disableAnimationRule = DisableAnimationRule()
-
     @get:Rule val freezeRotationRule = FreezeRotationRule()
 
     @get:Rule
@@ -62,8 +59,9 @@ open class HealthConnectBaseTest {
     /** This assumes that the lock method is SWIPE or NONE. */
     private fun unlockDevice() {
         val keyguardManager = context.getSystemService(KeyguardManager::class.java)
-        // Wakes up the device
+        // Wakes up the device in case setup failed
         runShellCommandOrThrow("input keyevent KEYCODE_WAKEUP")
+        runShellCommandOrThrow("wm dismiss-keyguard")
         // Check if there is a lock screen set (we assume SWIPE)
         if ("false".equals(runShellCommandOrThrow("cmd lock_settings get-disabled"))) {
             // Unlock screen only when it's lock settings enabled to prevent showing "wallpaper
