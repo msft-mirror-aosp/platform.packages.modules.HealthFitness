@@ -21,6 +21,7 @@ import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 
 import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTORE;
 import static com.android.server.healthconnect.backuprestore.RecordProtoConverter.PROTO_VERSION;
+import static com.android.server.healthconnect.exportimport.DatabaseMerger.RECORD_TYPE_MIGRATION_ORDERING_OVERRIDES;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
@@ -59,6 +60,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Performs various operations on the Health Connect database for cloud backup.
@@ -77,6 +79,7 @@ public class CloudBackupDatabaseHelper {
     private final ChangeLogsRequestHelper mChangeLogsRequestHelper;
     private final ReadAccessLogsHelper mReadAccessLogsHelper;
     private final RecordProtoConverter mRecordProtoConverter = new RecordProtoConverter();
+    private final List<Integer> mRecordTypes;
 
     private static final String TAG = "CloudBackupRestoreDatabaseHelper";
 
@@ -99,6 +102,16 @@ public class CloudBackupDatabaseHelper {
         mChangeLogsHelper = changeLogsHelper;
         mChangeLogsRequestHelper = changeLogsRequestHelper;
         mReadAccessLogsHelper = readAccessLogsHelper;
+        mRecordTypes =
+                Stream.concat(
+                                RECORD_TYPE_MIGRATION_ORDERING_OVERRIDES.stream()
+                                        .flatMap(List::stream),
+                                mHealthConnectMappings
+                                        .getRecordIdToExternalRecordClassMap()
+                                        .keySet()
+                                        .stream())
+                        .distinct()
+                        .toList();
     }
 
     /**
@@ -148,15 +161,12 @@ public class CloudBackupDatabaseHelper {
         String changeLogsTablePageToken =
                 changeLogsPageToken == null ? getChangeLogsPageToken() : changeLogsPageToken;
 
-        // TODO: b/377648858 - find a better approach to force the dependent data type orders
-        List<Integer> recordTypes = getRecordTypes();
-
         List<BackupChange> backupChanges = new ArrayList<>();
         long nextDataTablePageToken = dataTablePageToken;
         int pageSize = DEFAULT_PAGE_SIZE;
         String nextDataTableName = dataTableName;
 
-        for (var recordType : recordTypes) {
+        for (var recordType : mRecordTypes) {
             RecordHelper<?> recordHelper =
                     mInternalHealthConnectMappings.getRecordHelper(recordType);
             if (nextDataTableName != null
@@ -200,15 +210,15 @@ public class CloudBackupDatabaseHelper {
                 pageSize = DEFAULT_PAGE_SIZE - backupChanges.size();
                 nextDataTableName = recordHelper.getMainTableName();
                 if (nextDataTablePageToken == EMPTY_PAGE_TOKEN.encode()) {
-                    int recordIndex = recordTypes.indexOf(recordType);
+                    int recordIndex = mRecordTypes.indexOf(recordType);
                     // An empty page token indicates no more data in one data table, update the
                     // table name to the next data type.
-                    if (recordIndex + 1 >= recordTypes.size()) {
+                    if (recordIndex + 1 >= mRecordTypes.size()) {
                         nextDataTableName = null;
                     } else {
                         RecordHelper<?> nextRecordHelper =
                                 mInternalHealthConnectMappings.getRecordHelper(
-                                        recordTypes.get(recordIndex + 1));
+                                        mRecordTypes.get(recordIndex + 1));
                         nextDataTableName = nextRecordHelper.getMainTableName();
                     }
                     break;
@@ -234,7 +244,7 @@ public class CloudBackupDatabaseHelper {
         ChangeLogsRequestHelper.TokenRequest tokenRequest =
                 new ChangeLogsRequestHelper.TokenRequest(
                         List.of(),
-                        getRecordTypes(),
+                        mRecordTypes,
                         // Pass empty string to avoid package filters.
                         /* requestingPackageName= */ "",
                         rowId);
@@ -324,11 +334,6 @@ public class CloudBackupDatabaseHelper {
                                         deletedLog.getDeletedRecordId(),
                                         /* isDeletion= */ true,
                                         null))
-                .toList();
-    }
-
-    private List<Integer> getRecordTypes() {
-        return mHealthConnectMappings.getRecordIdToExternalRecordClassMap().keySet().stream()
                 .toList();
     }
 
