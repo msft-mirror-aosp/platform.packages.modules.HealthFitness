@@ -153,12 +153,12 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
         } else {
             // TODO(b/326058390): Handle local time filter for series data types
             startTimeColumnName =
-                    getSeriesTimestampColumnName() != null
-                            ? getSeriesTimestampColumnName()
+                    getSampleTimestampsColumnName() != null
+                            ? getSampleTimestampsColumnName()
                             : physicalTimeColumnName;
             endTimeColumnName =
-                    getSeriesTimestampColumnName() != null
-                            ? getSeriesTimestampColumnName()
+                    getSampleTimestampsColumnName() != null
+                            ? getSampleTimestampsColumnName()
                             : getEndTimeColumnName();
         }
         params.setTimeColumnName(startTimeColumnName);
@@ -724,7 +724,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
      * type is a SeriesRecord
      */
     @Nullable
-    public String getSeriesTimestampColumnName() {
+    public String getSampleTimestampsColumnName() {
         return null;
     }
 
