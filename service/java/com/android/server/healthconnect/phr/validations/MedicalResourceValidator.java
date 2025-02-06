@@ -143,7 +143,8 @@ public class MedicalResourceValidator {
                         extractedFhirResourceTypeString, extractedFhirResourceId);
 
         if (mFhirResourceValidator != null) {
-            mFhirResourceValidator.validateFhirResource(parsedFhirJsonObj, fhirResourceTypeInt);
+            mFhirResourceValidator.validateFhirResource(
+                    parsedFhirJsonObj, fhirResourceTypeInt, mFhirVersion);
         }
 
         @MedicalResourceType
