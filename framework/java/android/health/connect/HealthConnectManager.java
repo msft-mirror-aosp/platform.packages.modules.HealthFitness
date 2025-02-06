@@ -2118,6 +2118,10 @@ public class HealthConnectManager {
      * returned. The returned list of {@link MedicalResource}s will be in the same order as the
      * {@code requests}.
      *
+     * <p>Note that a {@link MedicalDataSource} needs to be created using {@link
+     * #createMedicalDataSource} before any {@link MedicalResource}s can be upserted for this
+     * source.
+     *
      * <p>Medical data is represented using the <a href="https://hl7.org/fhir/">Fast Healthcare
      * Interoperability Resources (FHIR)</a> standard. The FHIR resource provided in {@link
      * UpsertMedicalResourceRequest#getData()} is expected to be valid FHIR in JSON representation
@@ -2125,6 +2129,10 @@ public class HealthConnectManager {
      * href="https://hl7.org/fhir/resourcelist.html">FHIR spec</a>. Structural validation checks
      * such as resource structure, field types and presence of required fields are performed, but
      * these checks may not cover all FHIR spec requirements and may change in future versions.
+     *
+     * <p>Data written to Health Connect should be for a single individual only. However, the API
+     * allows for multiple Patient resources to be written to account for the possibility of
+     * multiple Patient resources being present in one individual's medical record.
      *
      * <p>Each {@link UpsertMedicalResourceRequest} also has to meet the following requirements.
      *
@@ -2531,16 +2539,20 @@ public class HealthConnectManager {
      * Creates a {@link MedicalDataSource} in HealthConnect based on the {@link
      * CreateMedicalDataSourceRequest} request values.
      *
-     * <p>A {@link MedicalDataSource} needs to be created before any {@link MedicalResource}s for
-     * that source can be inserted.
-     *
      * <p>Medical data is represented using the <a href="https://hl7.org/fhir/">Fast Healthcare
      * Interoperability Resources (FHIR)</a> standard.
+     *
+     * <p>A {@link MedicalDataSource} needs to be created before any {@link MedicalResource}s for
+     * that source can be inserted. Separate {@link MedicalDataSource}s should be created for
+     * medical records coming from different sources (e.g. different FHIR endpoints, different
+     * healthcare systems), unless the data has been reconciled and all records have a unique
+     * combination of resource type and resource id.
      *
      * <p>The {@link CreateMedicalDataSourceRequest.Builder#setDisplayName display name} must be
      * unique per app, and {@link CreateMedicalDataSourceRequest.Builder#setFhirVersion} FHIR
      * version} must be a version supported by Health Connect, as documented on the {@link
-     * FhirVersion}.
+     * FhirVersion}. See {@link CreateMedicalDataSourceRequest.Builder#setFhirBaseUri} for more
+     * details on the FHIR base URI.
      *
      * @param request Creation request.
      * @param executor Executor on which to invoke the callback.
