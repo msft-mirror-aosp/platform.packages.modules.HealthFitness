@@ -39,7 +39,6 @@ import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteDat
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponse;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponseGroupByDuration;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponseGroupByPeriod;
-import static android.healthconnect.cts.utils.TestUtils.insertNutritionIronRecordViaTestApp;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
 import static android.healthconnect.cts.utils.TestUtils.setupAggregation;
 
@@ -69,6 +68,7 @@ import android.health.connect.datatypes.WeightRecord;
 import android.health.connect.datatypes.units.Energy;
 import android.health.connect.datatypes.units.Length;
 import android.health.connect.datatypes.units.Mass;
+import android.healthconnect.cts.lib.TestAppProxy;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 
@@ -88,11 +88,14 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AggregationApisTest {
+    private static final String PKG_TEST_APP = "android.healthconnect.cts.testapp.readWritePerms.A";
     private static final int MAXIMUM_GROUP_SIZE = 5000;
+
     private final Context mContext = ApplicationProvider.getApplicationContext();
     private final String mPackageName = mContext.getPackageName();
     private final ZoneOffset mCurrentZone =
             ZoneOffset.systemDefault().getRules().getOffset(Instant.now());
+    private final TestAppProxy mTestApp = TestAppProxy.forPackageName(PKG_TEST_APP);
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
@@ -506,7 +509,7 @@ public class AggregationApisTest {
                 List.of(
                         getNutritionIronRecord(time, time.plus(1, HOURS), UTC, 5),
                         getNutritionIronRecord(time, time.plus(1, HOURS), UTC, 20)));
-        insertNutritionIronRecordViaTestApp(mContext, time, time.plus(2, HOURS), null, 10);
+        mTestApp.insertRecord(getNutritionIronRecord(time, time.plus(2, HOURS), UTC, 10));
 
         TimeInstantRangeFilter timeFilter = getTimeFilter(time, time.plus(3, HOURS));
         AggregateRecordsRequest<Mass> aggregateRecordsRequest =
