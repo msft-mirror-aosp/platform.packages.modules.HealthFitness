@@ -28,9 +28,6 @@ import androidx.fragment.app.commitNow
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.deletion.DeletionConstants.FRAGMENT_TAG_DELETION
-import com.android.healthconnect.controller.deletion.DeletionFragment
-import com.android.healthconnect.controller.deletion.DeletionViewModel
 import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel
 import com.android.healthconnect.controller.permissions.additionalaccess.DisableExerciseRoutePermissionDialog
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel.RevokeAllState
@@ -41,6 +38,8 @@ import com.android.healthconnect.controller.permissions.shared.DisconnectHealthP
 import com.android.healthconnect.controller.permissions.shared.DisconnectHealthPermissionsDialogFragment.Companion.DISCONNECT_ALL_EVENT
 import com.android.healthconnect.controller.permissions.shared.DisconnectHealthPermissionsDialogFragment.Companion.DISCONNECT_CANCELED_EVENT
 import com.android.healthconnect.controller.permissions.shared.DisconnectHealthPermissionsDialogFragment.Companion.KEY_DELETE_DATA
+import com.android.healthconnect.controller.selectabledeletion.DeletionFragment
+import com.android.healthconnect.controller.selectabledeletion.DeletionViewModel
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.Constants.SHOW_MANAGE_APP_SECTION
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromFitnessPermissionType
@@ -80,6 +79,7 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
         private const val FOOTER_KEY = "connected_app_footer"
         private const val KEY_ADDITIONAL_ACCESS = "additional_access"
         private const val DISABLE_EXERCISE_ROUTE_DIALOG_TAG = "disable_exercise_route"
+        private const val FRAGMENT_TAG_DELETION = "FRAGMENT_TAG_DELETION"
         private const val PARAGRAPH_SEPARATOR = "\n\n"
     }
 
@@ -165,7 +165,7 @@ class FitnessAppFragment : Hilt_FitnessAppFragment() {
             }
         }
 
-        deletionViewModel.appPermissionReloadNeeded.observe(viewLifecycleOwner) { isReloadNeeded ->
+        deletionViewModel.appPermissionTypesReloadNeeded.observe(viewLifecycleOwner) { isReloadNeeded ->
             if (isReloadNeeded) appPermissionViewModel.loadPermissionsForPackage(packageName)
         }
 
