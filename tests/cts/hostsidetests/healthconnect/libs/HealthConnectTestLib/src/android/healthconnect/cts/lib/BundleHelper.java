@@ -51,6 +51,7 @@ import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.MenstruationPeriodRecord;
 import android.health.connect.datatypes.Metadata;
+import android.health.connect.datatypes.NutritionRecord;
 import android.health.connect.datatypes.PlannedExerciseSessionRecord;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.SleepSessionRecord;
@@ -169,6 +170,7 @@ public final class BundleHelper {
     private static final String LENGTH_IN_METERS = PREFIX + "LENGTH_IN_METERS";
     private static final String ENERGY_IN_CALORIES = PREFIX + "ENERGY_IN_CALORIES";
     private static final String WEIGHT_IN_GRAMS = PREFIX + "WEIGHT_IN_GRAMS";
+    private static final String IRON_IN_GRAMS = PREFIX + "IRON_IN_GRAMS";
     private static final String SAMPLE_TIMES = PREFIX + "SAMPLE_TIMES";
     private static final String SAMPLE_VALUES = PREFIX + "SAMPLE_VALUES";
     private static final String EXERCISE_ROUTE_TIMESTAMPS = PREFIX + "EXERCISE_ROUTE_TIMESTAMPS";
@@ -807,6 +809,8 @@ public final class BundleHelper {
             values = getWeightRecord(weightRecord);
         } else if (record instanceof PlannedExerciseSessionRecord plannedExerciseSessionRecord) {
             values = getPlannedExerciseSessionRecord(plannedExerciseSessionRecord);
+        } else if (record instanceof NutritionRecord nutritionRecord) {
+            values = getNutritionRecord(nutritionRecord);
         } else {
             throw new IllegalArgumentException(
                     "Unsupported record type: " + record.getClass().getName());
@@ -877,6 +881,9 @@ public final class BundleHelper {
             return createWeightRecord(metadata, startTime, startZoneOffset, values);
         } else if (Objects.equals(recordClassName, PlannedExerciseSessionRecord.class.getName())) {
             return createPlannedExerciseSessionRecord(
+                    metadata, startTime, endTime, startZoneOffset, endZoneOffset, values);
+        } else if (Objects.equals(recordClassName, NutritionRecord.class.getName())) {
+            return createNutritionRecord(
                     metadata, startTime, endTime, startZoneOffset, endZoneOffset, values);
         }
 
@@ -1177,6 +1184,14 @@ public final class BundleHelper {
         return values;
     }
 
+    private static Bundle getNutritionRecord(NutritionRecord record) {
+        Bundle values = new Bundle();
+        if (record.getIron() != null) {
+            values.putDouble(IRON_IN_GRAMS, record.getIron().getInGrams());
+        }
+        return values;
+    }
+
     private static HeartRateRecord createHeartRateRecord(
             Metadata metadata,
             Instant startTime,
@@ -1300,6 +1315,23 @@ public final class BundleHelper {
                 .setStartZoneOffset(startZoneOffset)
                 .setEndZoneOffset(endZoneOffset)
                 .build();
+    }
+
+    private static NutritionRecord createNutritionRecord(
+            Metadata metadata,
+            Instant startTime,
+            Instant endTime,
+            ZoneOffset startZoneOffset,
+            ZoneOffset endZoneOffset,
+            Bundle values) {
+        NutritionRecord.Builder record =
+                new NutritionRecord.Builder(metadata, startTime, endTime)
+                        .setStartZoneOffset(startZoneOffset)
+                        .setEndZoneOffset(endZoneOffset);
+        if (values.containsKey(IRON_IN_GRAMS)) {
+            record.setIron(Mass.fromGrams(values.getDouble(IRON_IN_GRAMS)));
+        }
+        return record.build();
     }
 
     private static Bundle fromMetadata(Metadata metadata) {
