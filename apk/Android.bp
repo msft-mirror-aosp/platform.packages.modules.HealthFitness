@@ -277,3 +277,15 @@ android_app {
         "healthfitness-aconfig-flags",
     ],
 }
+
+android_library {
+    name: "HealthConnectLibraryAndApplication",
+    srcs: ["src/**/HealthConnectApplication.kt"],
+    static_libs: [
+        "HealthConnectLibrary",
+        "hilt_android",
+    ],
+    visibility: [
+        "//vendor:__subpackages__",
+    ],
+}

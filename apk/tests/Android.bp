@@ -16,14 +16,22 @@ package {
     default_team: "trendy_team_android_health",
 }
 
-java_defaults {
-    name: "health-connect-controller-tests-default",
+filegroup {
+    name: "healthconnect-test-srcs",
     srcs: [
         "src/com/android/healthconnect/controller/tests/utils/**/*.java",
         "src/com/android/healthconnect/controller/tests/utils/**/*.kt",
         "src/**/HiltTestRunner.kt",
         "src/**/TestActivity.kt",
     ],
+    visibility: [
+        "//vendor:__subpackages__",
+    ],
+}
+
+java_defaults {
+    name: "health-connect-controller-tests-default",
+    srcs: [":healthconnect-test-srcs"],
     kotlin_lang_version: "1.9",
     defaults: ["modules-utils-testable-device-config-defaults"],
     sdk_version: "module_current",
@@ -83,15 +91,6 @@ java_defaults {
     ],
     test_config_template: "AndroidTestTemplate.xml",
     visibility: ["//visibility:private"],
-}
-
-filegroup {
-    name: "hilt-test-runner",
-    srcs: ["src/**/HiltTestRunner.kt"],
-    visibility: [
-        "//packages/modules/HealthFitness/apk/tests/screendiff",
-        "//vendor:__subpackages__",
-    ],
 }
 
 java_library {
