@@ -13,7 +13,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.android.healthconnect.controller.deletion
+package com.android.healthconnect.controller.selectabledeletion
 
 import android.app.Dialog
 import android.os.Bundle
@@ -26,7 +26,6 @@ import com.android.healthconnect.controller.utils.logging.FailedDialogElement
 import dagger.hilt.android.AndroidEntryPoint
 
 /** A deletion {@link DialogFragment} notifying user about a failed deletion. */
-@Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
 @AndroidEntryPoint(DialogFragment::class)
 class FailedDialogFragment : Hilt_FailedDialogFragment() {
 
