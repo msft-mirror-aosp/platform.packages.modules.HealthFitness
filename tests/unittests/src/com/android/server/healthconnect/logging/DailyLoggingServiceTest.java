@@ -16,15 +16,26 @@
 
 package com.android.server.healthconnect.logging;
 
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_ECOSYSTEM_STATS;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_ECOSYSTEM_STATS__READ__BASAL_METABOLIC_RATE;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_ECOSYSTEM_STATS__READ__BLOOD_GLUCOSE;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_ECOSYSTEM_STATS__READ__BLOOD_PRESSURE;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_ECOSYSTEM_STATS__READ__DISTANCE;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_ECOSYSTEM_STATS__READ__HEART_RATE;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_ECOSYSTEM_STATS__READ__HEIGHT;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_ECOSYSTEM_STATS__READ__STEPS;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PERMISSION_STATS;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_STORAGE_STATS;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_USAGE_STATS;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_RESTRICTED_ECOSYSTEM_STATS;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_STORAGE_STATS;
 import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_USAGE_STATS;
 import static android.health.connect.HealthPermissions.READ_DISTANCE;
 import static android.health.connect.HealthPermissions.READ_EXERCISE;
 import static android.health.connect.HealthPermissions.READ_STEPS;
 
+import static com.android.healthfitness.flags.Flags.FLAG_ECOSYSTEM_METRICS;
+import static com.android.healthfitness.flags.Flags.FLAG_ECOSYSTEM_METRICS_DB_CHANGES;
 import static com.android.healthfitness.flags.Flags.FLAG_PERMISSION_METRICS;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
@@ -33,12 +44,15 @@ import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 import android.health.HealthFitnessStatsLog;
+import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.platform.test.annotations.DisableFlags;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
@@ -56,10 +70,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatcher;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -76,6 +92,7 @@ public class DailyLoggingServiceTest {
 
     @Mock private UsageStatsCollector mUsageStatsCollector;
     @Mock private DatabaseStatsCollector mDatabaseStatsCollector;
+    @Mock private EcosystemStatsCollector mEcosystemStatsCollector;
     @Captor private ArgumentCaptor<List<String>> mStringListCaptor;
 
     private static final String CONNECTED_APP_PACKAGE_NAME = "connected.app";
@@ -89,7 +106,8 @@ public class DailyLoggingServiceTest {
         when(mDatabaseStatsCollector.getNumberOfIntervalRecordRows()).thenReturn(4L);
         when(mDatabaseStatsCollector.getNumberOfSeriesRecordRows()).thenReturn(5L);
 
-        DailyLoggingService.logDailyMetrics(mUsageStatsCollector, mDatabaseStatsCollector);
+        DailyLoggingService.logDailyMetrics(
+                mUsageStatsCollector, mDatabaseStatsCollector, mEcosystemStatsCollector);
 
         ExtendedMockito.verify(
                 () ->
@@ -131,7 +149,8 @@ public class DailyLoggingServiceTest {
                 .thenReturn(Map.of(CONNECTED_APP_PACKAGE_NAME, List.of(READ_DISTANCE)));
         when(mUsageStatsCollector.isUserMonthlyActive()).thenReturn(false);
 
-        DailyLoggingService.logDailyMetrics(mUsageStatsCollector, mDatabaseStatsCollector);
+        DailyLoggingService.logDailyMetrics(
+                mUsageStatsCollector, mDatabaseStatsCollector, mEcosystemStatsCollector);
 
         ExtendedMockito.verify(
                 () ->
@@ -151,7 +170,8 @@ public class DailyLoggingServiceTest {
                 .thenReturn(Map.of(CONNECTED_APP_PACKAGE_NAME, List.of(READ_DISTANCE)));
         when(mUsageStatsCollector.isUserMonthlyActive()).thenReturn(true);
 
-        DailyLoggingService.logDailyMetrics(mUsageStatsCollector, mDatabaseStatsCollector);
+        DailyLoggingService.logDailyMetrics(
+                mUsageStatsCollector, mDatabaseStatsCollector, mEcosystemStatsCollector);
 
         ExtendedMockito.verify(
                 () ->
@@ -175,7 +195,8 @@ public class DailyLoggingServiceTest {
                                 CONNECTED_APP_TWO_PACKAGE_NAME,
                                 List.of(READ_STEPS)));
 
-        DailyLoggingService.logDailyMetrics(mUsageStatsCollector, mDatabaseStatsCollector);
+        DailyLoggingService.logDailyMetrics(
+                mUsageStatsCollector, mDatabaseStatsCollector, mEcosystemStatsCollector);
 
         ExtendedMockito.verify(
                 () ->
@@ -207,7 +228,8 @@ public class DailyLoggingServiceTest {
                                 CONNECTED_APP_TWO_PACKAGE_NAME,
                                 List.of(READ_STEPS)));
 
-        DailyLoggingService.logDailyMetrics(mUsageStatsCollector, mDatabaseStatsCollector);
+        DailyLoggingService.logDailyMetrics(
+                mUsageStatsCollector, mDatabaseStatsCollector, mEcosystemStatsCollector);
 
         ExtendedMockito.verify(
                 () ->
@@ -223,7 +245,8 @@ public class DailyLoggingServiceTest {
     public void phrStats_flagDisabled_expectNoLogs() {
         when(mUsageStatsCollector.getNumberOfAppsCompatibleWithHealthConnect()).thenReturn(1);
 
-        DailyLoggingService.logDailyMetrics(mUsageStatsCollector, mDatabaseStatsCollector);
+        DailyLoggingService.logDailyMetrics(
+                mUsageStatsCollector, mDatabaseStatsCollector, mEcosystemStatsCollector);
 
         ExtendedMockito.verify(
                 () ->
@@ -253,7 +276,8 @@ public class DailyLoggingServiceTest {
         when(mUsageStatsCollector.getMedicalResourcesCount()).thenReturn(204);
         when(mUsageStatsCollector.getGrantedPhrAppsCount()).thenReturn(1L);
 
-        DailyLoggingService.logDailyMetrics(mUsageStatsCollector, mDatabaseStatsCollector);
+        DailyLoggingService.logDailyMetrics(
+                mUsageStatsCollector, mDatabaseStatsCollector, mEcosystemStatsCollector);
 
         ExtendedMockito.verify(
                 () ->
@@ -279,7 +303,8 @@ public class DailyLoggingServiceTest {
         when(mUsageStatsCollector.getMedicalResourcesCount()).thenReturn(204);
         when(mUsageStatsCollector.getGrantedPhrAppsCount()).thenReturn(0L);
 
-        DailyLoggingService.logDailyMetrics(mUsageStatsCollector, mDatabaseStatsCollector);
+        DailyLoggingService.logDailyMetrics(
+                mUsageStatsCollector, mDatabaseStatsCollector, mEcosystemStatsCollector);
 
         ExtendedMockito.verify(
                 () ->
@@ -308,7 +333,8 @@ public class DailyLoggingServiceTest {
                 .thenReturn(101L);
         when(mUsageStatsCollector.getMedicalResourcesCount()).thenReturn(1);
 
-        DailyLoggingService.logDailyMetrics(mUsageStatsCollector, mDatabaseStatsCollector);
+        DailyLoggingService.logDailyMetrics(
+                mUsageStatsCollector, mDatabaseStatsCollector, mEcosystemStatsCollector);
 
         ExtendedMockito.verify(
                 () -> HealthFitnessStatsLog.write(eq(HEALTH_CONNECT_PHR_STORAGE_STATS), eq(101L)),
@@ -326,11 +352,242 @@ public class DailyLoggingServiceTest {
         when(mUsageStatsCollector.getMedicalResourcesCount()).thenReturn(0);
         when(mUsageStatsCollector.getMedicalDataSourcesCount()).thenReturn(0);
 
-        DailyLoggingService.logDailyMetrics(mUsageStatsCollector, mDatabaseStatsCollector);
+        DailyLoggingService.logDailyMetrics(
+                mUsageStatsCollector, mDatabaseStatsCollector, mEcosystemStatsCollector);
 
         Mockito.verify(mDatabaseStatsCollector, never()).getFileBytes(any());
         ExtendedMockito.verify(
                 () -> HealthFitnessStatsLog.write(eq(HEALTH_CONNECT_PHR_STORAGE_STATS), anyInt()),
                 never());
+    }
+
+    @Test
+    @EnableFlags({
+        FLAG_ECOSYSTEM_METRICS,
+        FLAG_ECOSYSTEM_METRICS_DB_CHANGES,
+    })
+    public void flagsEnabled_testEcosystemMetrics_regularLogging() {
+        when(mEcosystemStatsCollector.getDataTypesReadOrWritten())
+                .thenReturn(
+                        Set.of(
+                                RecordTypeIdentifier.RECORD_TYPE_BASAL_METABOLIC_RATE,
+                                RecordTypeIdentifier.RECORD_TYPE_HEIGHT));
+        when(mEcosystemStatsCollector.getDataTypesRead())
+                .thenReturn(
+                        Set.of(
+                                RecordTypeIdentifier.RECORD_TYPE_BLOOD_GLUCOSE,
+                                RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE));
+        when(mEcosystemStatsCollector.getDataTypesWritten())
+                .thenReturn(
+                        Set.of(
+                                RecordTypeIdentifier.RECORD_TYPE_HEART_RATE,
+                                RecordTypeIdentifier.RECORD_TYPE_HEIGHT));
+        when(mEcosystemStatsCollector.getDataTypeShared())
+                .thenReturn(
+                        Set.of(
+                                RecordTypeIdentifier.RECORD_TYPE_STEPS,
+                                RecordTypeIdentifier.RECORD_TYPE_DISTANCE));
+        when(mEcosystemStatsCollector.getNumberOfAppPairings()).thenReturn(5);
+
+        DailyLoggingService.logDailyMetrics(
+                mUsageStatsCollector, mDatabaseStatsCollector, mEcosystemStatsCollector);
+
+        ExtendedMockito.verify(
+                () ->
+                        HealthFitnessStatsLog.write(
+                                eq(HEALTH_CONNECT_ECOSYSTEM_STATS),
+                                argThat(
+                                        new ArrayMatcher(
+                                                new int[] {
+                                                    HEALTH_CONNECT_ECOSYSTEM_STATS__READ__HEIGHT,
+                                                    HEALTH_CONNECT_ECOSYSTEM_STATS__READ__BASAL_METABOLIC_RATE
+                                                })),
+                                argThat(
+                                        new ArrayMatcher(
+                                                new int[] {
+                                                    HEALTH_CONNECT_ECOSYSTEM_STATS__READ__BLOOD_PRESSURE,
+                                                    HEALTH_CONNECT_ECOSYSTEM_STATS__READ__BLOOD_GLUCOSE
+                                                })),
+                                argThat(
+                                        new ArrayMatcher(
+                                                new int[] {
+                                                    HEALTH_CONNECT_ECOSYSTEM_STATS__READ__HEIGHT,
+                                                    HEALTH_CONNECT_ECOSYSTEM_STATS__READ__HEART_RATE
+                                                })),
+                                argThat(
+                                        new ArrayMatcher(
+                                                new int[] {
+                                                    HEALTH_CONNECT_ECOSYSTEM_STATS__READ__DISTANCE,
+                                                    HEALTH_CONNECT_ECOSYSTEM_STATS__READ__STEPS
+                                                })),
+                                eq(5)),
+                times(1));
+    }
+
+    @Test
+    @EnableFlags({
+        FLAG_ECOSYSTEM_METRICS,
+        FLAG_ECOSYSTEM_METRICS_DB_CHANGES,
+    })
+    public void flagsEnabled_testEcosystemMetrics_privateLogging() {
+        when(mEcosystemStatsCollector.getDirectionalAppPairings())
+                .thenReturn(
+                        Map.of(
+                                CONNECTED_APP_PACKAGE_NAME,
+                                Set.of(CONNECTED_APP_TWO_PACKAGE_NAME),
+                                CONNECTED_APP_TWO_PACKAGE_NAME,
+                                Set.of(CONNECTED_APP_PACKAGE_NAME)));
+        when(mEcosystemStatsCollector.getDirectionalAppPairingsPerDataType())
+                .thenReturn(
+                        Map.of(
+                                CONNECTED_APP_PACKAGE_NAME,
+                                Map.of(
+                                        RecordTypeIdentifier.RECORD_TYPE_DISTANCE,
+                                        Set.of(CONNECTED_APP_TWO_PACKAGE_NAME)),
+                                CONNECTED_APP_TWO_PACKAGE_NAME,
+                                Map.of(
+                                        RecordTypeIdentifier.RECORD_TYPE_HEART_RATE,
+                                        Set.of(CONNECTED_APP_PACKAGE_NAME))));
+
+        DailyLoggingService.logDailyMetrics(
+                mUsageStatsCollector, mDatabaseStatsCollector, mEcosystemStatsCollector);
+
+        ExtendedMockito.verify(
+                () ->
+                        HealthFitnessStatsLog.write(
+                                eq(HEALTH_CONNECT_RESTRICTED_ECOSYSTEM_STATS),
+                                eq(CONNECTED_APP_PACKAGE_NAME),
+                                eq(CONNECTED_APP_TWO_PACKAGE_NAME),
+                                eq(
+                                        HealthFitnessStatsLog
+                                                .HEALTH_CONNECT_RESTRICTED_ECOSYSTEM_STATS__DATA_TYPE__DATA_TYPE_UNKNOWN),
+                                eq(
+                                        HealthFitnessStatsLog
+                                                .HEALTH_CONNECT_RESTRICTED_ECOSYSTEM_STATS__METRIC_TYPE__METRIC_TYPE_DIRECTIONAL_PAIRING)),
+                times(1));
+        ExtendedMockito.verify(
+                () ->
+                        HealthFitnessStatsLog.write(
+                                eq(HEALTH_CONNECT_RESTRICTED_ECOSYSTEM_STATS),
+                                eq(CONNECTED_APP_PACKAGE_NAME),
+                                eq(CONNECTED_APP_TWO_PACKAGE_NAME),
+                                eq(
+                                        HealthFitnessStatsLog
+                                                .HEALTH_CONNECT_RESTRICTED_ECOSYSTEM_STATS__DATA_TYPE__DISTANCE),
+                                eq(
+                                        HealthFitnessStatsLog
+                                                .HEALTH_CONNECT_RESTRICTED_ECOSYSTEM_STATS__METRIC_TYPE__METRIC_TYPE_DIRECTIONAL_PAIRING_PER_DATA_TYPE)),
+                times(1));
+        ExtendedMockito.verify(
+                () ->
+                        HealthFitnessStatsLog.write(
+                                eq(HEALTH_CONNECT_RESTRICTED_ECOSYSTEM_STATS),
+                                eq(CONNECTED_APP_TWO_PACKAGE_NAME),
+                                eq(CONNECTED_APP_PACKAGE_NAME),
+                                eq(
+                                        HealthFitnessStatsLog
+                                                .HEALTH_CONNECT_RESTRICTED_ECOSYSTEM_STATS__DATA_TYPE__DATA_TYPE_UNKNOWN),
+                                eq(
+                                        HealthFitnessStatsLog
+                                                .HEALTH_CONNECT_RESTRICTED_ECOSYSTEM_STATS__METRIC_TYPE__METRIC_TYPE_DIRECTIONAL_PAIRING)),
+                times(1));
+        ExtendedMockito.verify(
+                () ->
+                        HealthFitnessStatsLog.write(
+                                eq(HEALTH_CONNECT_RESTRICTED_ECOSYSTEM_STATS),
+                                eq(CONNECTED_APP_TWO_PACKAGE_NAME),
+                                eq(CONNECTED_APP_PACKAGE_NAME),
+                                eq(
+                                        HealthFitnessStatsLog
+                                                .HEALTH_CONNECT_RESTRICTED_ECOSYSTEM_STATS__DATA_TYPE__HEART_RATE),
+                                eq(
+                                        HealthFitnessStatsLog
+                                                .HEALTH_CONNECT_RESTRICTED_ECOSYSTEM_STATS__METRIC_TYPE__METRIC_TYPE_DIRECTIONAL_PAIRING_PER_DATA_TYPE)),
+                times(1));
+    }
+
+    @Test
+    @DisableFlags({
+        FLAG_ECOSYSTEM_METRICS,
+        FLAG_ECOSYSTEM_METRICS_DB_CHANGES,
+    })
+    public void flagsDisabled_doNotLogEcosystemMetrics() {
+        when(mEcosystemStatsCollector.getDataTypesReadOrWritten())
+                .thenReturn(
+                        Set.of(
+                                RecordTypeIdentifier.RECORD_TYPE_BASAL_METABOLIC_RATE,
+                                RecordTypeIdentifier.RECORD_TYPE_HEIGHT));
+        when(mEcosystemStatsCollector.getDataTypesRead())
+                .thenReturn(
+                        Set.of(
+                                RecordTypeIdentifier.RECORD_TYPE_BLOOD_GLUCOSE,
+                                RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE));
+        when(mEcosystemStatsCollector.getDataTypesWritten())
+                .thenReturn(
+                        Set.of(
+                                RecordTypeIdentifier.RECORD_TYPE_HEART_RATE,
+                                RecordTypeIdentifier.RECORD_TYPE_HEIGHT));
+        when(mEcosystemStatsCollector.getDataTypeShared())
+                .thenReturn(
+                        Set.of(
+                                RecordTypeIdentifier.RECORD_TYPE_STEPS,
+                                RecordTypeIdentifier.RECORD_TYPE_DISTANCE));
+        when(mEcosystemStatsCollector.getNumberOfAppPairings()).thenReturn(5);
+        when(mEcosystemStatsCollector.getDirectionalAppPairings())
+                .thenReturn(
+                        Map.of(
+                                CONNECTED_APP_PACKAGE_NAME,
+                                Set.of(CONNECTED_APP_TWO_PACKAGE_NAME),
+                                CONNECTED_APP_TWO_PACKAGE_NAME,
+                                Set.of(CONNECTED_APP_PACKAGE_NAME)));
+        when(mEcosystemStatsCollector.getDirectionalAppPairingsPerDataType())
+                .thenReturn(
+                        Map.of(
+                                CONNECTED_APP_PACKAGE_NAME,
+                                Map.of(
+                                        RecordTypeIdentifier.RECORD_TYPE_DISTANCE,
+                                        Set.of(CONNECTED_APP_TWO_PACKAGE_NAME)),
+                                CONNECTED_APP_TWO_PACKAGE_NAME,
+                                Map.of(
+                                        RecordTypeIdentifier.RECORD_TYPE_HEART_RATE,
+                                        Set.of(CONNECTED_APP_PACKAGE_NAME))));
+
+        DailyLoggingService.logDailyMetrics(
+                mUsageStatsCollector, mDatabaseStatsCollector, mEcosystemStatsCollector);
+
+        ExtendedMockito.verify(
+                () ->
+                        HealthFitnessStatsLog.write(
+                                eq(HEALTH_CONNECT_ECOSYSTEM_STATS),
+                                any(),
+                                any(),
+                                any(),
+                                any(),
+                                anyInt()),
+                never());
+        ExtendedMockito.verify(
+                () ->
+                        HealthFitnessStatsLog.write(
+                                eq(HEALTH_CONNECT_RESTRICTED_ECOSYSTEM_STATS),
+                                anyString(),
+                                anyString(),
+                                anyInt(),
+                                anyInt()),
+                never());
+    }
+
+    public static class ArrayMatcher implements ArgumentMatcher<int[]> {
+        private final int[] expectedArray;
+
+        public ArrayMatcher(int[] expectedArray) {
+            this.expectedArray = expectedArray;
+        }
+
+        @Override
+        public boolean matches(int[] actualArray) {
+            Arrays.sort(actualArray);
+            Arrays.sort(expectedArray);
+            return Arrays.equals(expectedArray, actualArray);
+        }
     }
 }

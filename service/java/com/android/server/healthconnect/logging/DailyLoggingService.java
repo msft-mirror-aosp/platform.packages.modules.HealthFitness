@@ -33,9 +33,11 @@ public class DailyLoggingService {
     /** Log daily metrics. */
     public static void logDailyMetrics(
             UsageStatsCollector usageStatsCollector,
-            DatabaseStatsCollector databaseStatsCollector) {
+            DatabaseStatsCollector databaseStatsCollector,
+            EcosystemStatsCollector ecosystemStatsCollector) {
         logDatabaseStats(databaseStatsCollector, usageStatsCollector);
         logUsageStats(usageStatsCollector);
+        logEcosystemStats(ecosystemStatsCollector);
     }
 
     private static void logDatabaseStats(
@@ -53,6 +55,17 @@ public class DailyLoggingService {
             UsageStatsLogger.log(usageStatsCollector);
         } catch (Exception exception) {
             Slog.e(HEALTH_CONNECT_DAILY_LOGGING_SERVICE, "Failed to log usage stats", exception);
+        }
+    }
+
+    private static void logEcosystemStats(EcosystemStatsCollector ecosystemStatsCollector) {
+        try {
+            EcosystemStatsLogger.log(ecosystemStatsCollector);
+        } catch (Exception exception) {
+            Slog.e(
+                    HEALTH_CONNECT_DAILY_LOGGING_SERVICE,
+                    "Failed to log ecosystem stats",
+                    exception);
         }
     }
 }

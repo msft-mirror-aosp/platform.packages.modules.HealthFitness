@@ -330,7 +330,7 @@ public class ReadAccessLogsHelper extends DatabaseHelper {
         public ReadAccessLog(
                 String readerPackage,
                 String writerPackage,
-                int dataType,
+                @RecordTypeIdentifier.RecordType int dataType,
                 long readTimeStamp,
                 boolean isRecordWithinPast30Days) {
             this.mReaderPackage = readerPackage;
@@ -344,6 +344,7 @@ public class ReadAccessLogsHelper extends DatabaseHelper {
             return mReaderPackage;
         }
 
+        @RecordTypeIdentifier.RecordType
         public int getDataType() {
             return mDataType;
         }

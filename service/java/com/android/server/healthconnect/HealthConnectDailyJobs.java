@@ -27,6 +27,7 @@ import android.os.PersistableBundle;
 import android.os.UserHandle;
 
 import com.android.server.healthconnect.logging.DailyLoggingService;
+import com.android.server.healthconnect.logging.EcosystemStatsCollector;
 import com.android.server.healthconnect.logging.UsageStatsCollector;
 import com.android.server.healthconnect.storage.DailyCleanupJob;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseStatsCollector;
@@ -71,8 +72,10 @@ public class HealthConnectDailyJobs {
     public static void execute(
             UsageStatsCollector usageStatsCollector,
             DatabaseStatsCollector databaseStatsCollector,
-            DailyCleanupJob dailyCleanupJob) {
+            DailyCleanupJob dailyCleanupJob,
+            EcosystemStatsCollector ecosystemStatsCollector) {
         dailyCleanupJob.startDailyCleanup();
-        DailyLoggingService.logDailyMetrics(usageStatsCollector, databaseStatsCollector);
+        DailyLoggingService.logDailyMetrics(
+                usageStatsCollector, databaseStatsCollector, ecosystemStatsCollector);
     }
 }
