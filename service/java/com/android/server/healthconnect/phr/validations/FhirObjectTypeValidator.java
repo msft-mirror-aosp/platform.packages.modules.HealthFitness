@@ -20,6 +20,8 @@ import static android.health.connect.datatypes.FhirResource.FhirResourceType;
 
 import static com.android.server.healthconnect.phr.validations.FhirSpecProvider.FHIR_TYPE_PRIMITIVE_EXTENSION;
 
+import android.health.connect.datatypes.FhirVersion;
+
 import com.android.healthfitness.flags.Flags;
 import com.android.server.healthconnect.proto.FhirComplexTypeConfig;
 import com.android.server.healthconnect.proto.FhirFieldConfig;
@@ -68,7 +70,10 @@ public class FhirObjectTypeValidator {
      *
      * @throws IllegalArgumentException if the resource is invalid.
      */
-    void validate(JSONObject fhirJsonObject, @FhirResourceType int fhirResourceType) {
+    void validate(
+            JSONObject fhirJsonObject,
+            @FhirResourceType int fhirResourceType,
+            FhirVersion fhirVersion) {
         List<FhirComplexTypeJsonObject> nestedObjects =
                 validateTopLevelFieldsAndGetNestedObjects(
                         fhirJsonObject,
@@ -101,7 +106,7 @@ public class FhirObjectTypeValidator {
             }
 
             FhirComplexTypeConfig complexTypeConfig =
-                    mFhirSpec.getFhirComplexTypeConfig(nestedObject.getR4FhirType());
+                    mFhirSpec.getFhirComplexTypeConfig(nestedObject.getR4FhirType(), fhirVersion);
             if (complexTypeConfig == null) {
                 // If the FhirComplexTypeConfig is null, this means that the type should not be
                 // validated.

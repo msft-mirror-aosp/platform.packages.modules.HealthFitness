@@ -21,7 +21,6 @@ java_library {
     srcs: [
         "src/**/*.java",
         "src/**/*.kt",
-        ":healthfitness-permissions-testapp-srcs",
     ],
     static_libs: [
         "androidx.appcompat_appcompat",

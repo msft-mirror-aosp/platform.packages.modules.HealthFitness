@@ -26,6 +26,7 @@ import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteDat
 import static android.healthconnect.cts.utils.TestUtils.getRecordIds;
 import static android.healthconnect.cts.utils.TestUtils.setupAggregation;
 
+import static com.android.compatibility.common.util.SystemUtil.eventually;
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -36,6 +37,7 @@ import static java.time.temporal.ChronoUnit.HOURS;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static java.util.Objects.requireNonNull;
 
+import android.app.AppOpsManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.health.connect.HealthConnectException;
@@ -51,8 +53,8 @@ import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.StepsRecord;
 import android.healthconnect.cts.lib.TestAppProxy;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
+import android.healthconnect.cts.utils.HealthConnectReceiver;
 import android.healthconnect.cts.utils.TestUtils;
-import android.healthconnect.test.app.DefaultOutcomeReceiver;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -65,7 +67,6 @@ import org.junit.runner.RunWith;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 @RunWith(AndroidJUnit4.class)
 public class BackgroundReadTest {
@@ -89,6 +90,20 @@ public class BackgroundReadTest {
         mPackageManager = mContext.getPackageManager();
         mManager = requireNonNull(mContext.getSystemService(HealthConnectManager.class));
         mTestApp = TestAppProxy.forPackageNameInBackground(PKG_TEST_APP);
+
+        // Ensure that App Ops considers the test app to be in the background. This may take a few
+        // seconds if another test has recently launched it in the foreground.
+        AppOpsManager appOpsManager =
+                requireNonNull(mContext.getSystemService(AppOpsManager.class));
+        int uid = mPackageManager.getPackageUid(PKG_TEST_APP, /* flags= */ 0);
+        eventually(
+                () ->
+                        assertThat(
+                                        appOpsManager.unsafeCheckOp(
+                                                AppOpsManager.OPSTR_FINE_LOCATION,
+                                                uid,
+                                                PKG_TEST_APP))
+                                .isEqualTo(AppOpsManager.MODE_IGNORED));
 
         deleteAllStagedRemoteData();
     }
@@ -271,17 +286,13 @@ public class BackgroundReadTest {
         mTestApp.getChangeLogs(changeLogsRequest);
     }
 
-    private List<String> insertStepsRecordsDirectly(List<Record> recordsToInsert) {
-        DefaultOutcomeReceiver<InsertRecordsResponse> outcomeReceiver =
-                new DefaultOutcomeReceiver<>();
-
-        mManager.insertRecords(
-                recordsToInsert, Executors.newSingleThreadExecutor(), outcomeReceiver);
-
-        if (outcomeReceiver.getError() != null) {
-            throw new IllegalStateException("Insert steps record failed!");
-        }
-        return getRecordIds(outcomeReceiver.getResult().getRecords());
+    private List<String> insertStepsRecordsDirectly(List<Record> recordsToInsert)
+            throws InterruptedException {
+        InsertRecordsResponse response =
+                HealthConnectReceiver.callAndGetResponse(
+                        (executor, receiver) ->
+                                mManager.insertRecords(recordsToInsert, executor, receiver));
+        return getRecordIds(response.getRecords());
     }
 
     private void grantBackgroundReadPermissionForTestApp() {

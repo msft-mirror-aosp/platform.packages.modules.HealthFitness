@@ -184,4 +184,7 @@ enum R4FhirType {
     R4_FHIR_TYPE_USAGE_CONTEXT = 89;
     R4_FHIR_TYPE_UUID = 90;
     R4_FHIR_TYPE_XHTML = 91;
+    // These two types are added manually to handle two additional types present in R4B.
+    R4_FHIR_TYPE_CODEABLE_REFERENCE = 92;
+    R4_FHIR_TYPE_RATIO_RANGE = 93;
 }

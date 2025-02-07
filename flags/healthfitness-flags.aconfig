@@ -187,6 +187,15 @@ flag {
 }
 
 flag {
+    name: "phr_fhir_extension_validation"
+    namespace: "health_fitness_aconfig"
+    description: "Flag for validating the structure of Extension data type."
+    bug: "377706021"
+    is_fixed_read_only: true
+    is_exported: true
+}
+
+flag {
     name: "phr_upsert_fix_parcel_size_calculation"
     namespace: "health_fitness_aconfig"
     description: "Flag for fixing the UpsertMedicalResourceRequest parcel size calculation."

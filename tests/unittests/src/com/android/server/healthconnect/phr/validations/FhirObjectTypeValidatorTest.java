@@ -18,6 +18,7 @@ package com.android.server.healthconnect.phr.validations;
 
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_R4;
 
 import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION;
 import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_COMPLEX_TYPE_VALIDATION;
@@ -229,7 +230,7 @@ public class FhirObjectTypeValidatorTest {
                 new FhirObjectTypeValidator(new FhirSpecProvider(fhirSpec));
         JSONObject immunizationJson = new JSONObject(DEFAULT_IMMUNIZATION_JSON);
 
-        validator.validate(immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION);
+        validator.validate(immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION, FHIR_VERSION_R4);
     }
 
     @Test
@@ -253,7 +254,9 @@ public class FhirObjectTypeValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validate(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
 
         assertThat(exception).hasMessageThat().contains("Missing required field status");
     }
@@ -284,7 +287,9 @@ public class FhirObjectTypeValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validate(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
 
         assertThat(exception).hasMessageThat().contains("Missing required field vaccineCode");
     }
@@ -305,7 +310,7 @@ public class FhirObjectTypeValidatorTest {
                 new JSONObject(DEFAULT_IMMUNIZATION_JSON)
                         .put("_status", new JSONObject("{\"id\": \"123\"}"));
 
-        validator.validate(immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION);
+        validator.validate(immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION, FHIR_VERSION_R4);
     }
 
     @Test
@@ -338,7 +343,7 @@ public class FhirObjectTypeValidatorTest {
         JSONObject immunizationJson =
                 new JSONObject(DEFAULT_IMMUNIZATION_JSON).put("occurrenceString", "2024");
 
-        validator.validate(immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION);
+        validator.validate(immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION, FHIR_VERSION_R4);
     }
 
     @Test
@@ -375,7 +380,9 @@ public class FhirObjectTypeValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validate(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
 
         assertThat(exception).hasMessageThat().contains("Missing required field occurrence[x]");
     }
@@ -417,7 +424,9 @@ public class FhirObjectTypeValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validate(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
 
         assertThat(exception)
                 .hasMessageThat()
@@ -443,7 +452,9 @@ public class FhirObjectTypeValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validate(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
 
         assertThat(exception).hasMessageThat().contains("Found unexpected field unknown_field");
     }
@@ -468,7 +479,9 @@ public class FhirObjectTypeValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validate(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
 
         assertThat(exception)
                 .hasMessageThat()
@@ -495,7 +508,9 @@ public class FhirObjectTypeValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validate(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
 
         assertThat(exception).hasMessageThat().contains("Found null value in field: statusReason");
     }
@@ -520,7 +535,9 @@ public class FhirObjectTypeValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validate(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
 
         assertThat(exception)
                 .hasMessageThat()
@@ -553,7 +570,7 @@ public class FhirObjectTypeValidatorTest {
                                         }]
                                         """));
 
-        validator.validate(immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION);
+        validator.validate(immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION, FHIR_VERSION_R4);
     }
 
     @Test
@@ -584,7 +601,7 @@ public class FhirObjectTypeValidatorTest {
                                          ]
                                         """));
 
-        validator.validate(immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION);
+        validator.validate(immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION, FHIR_VERSION_R4);
     }
 
     @EnableFlags(FLAG_PHR_FHIR_BASIC_COMPLEX_TYPE_VALIDATION)
@@ -616,7 +633,9 @@ public class FhirObjectTypeValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validate(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
 
         assertThat(exception)
                 .hasMessageThat()
@@ -653,7 +672,9 @@ public class FhirObjectTypeValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validate(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
 
         assertThat(exception)
                 .hasMessageThat()
@@ -681,7 +702,9 @@ public class FhirObjectTypeValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validate(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
 
         assertThat(exception)
                 .hasMessageThat()
@@ -710,7 +733,9 @@ public class FhirObjectTypeValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validate(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
 
         assertThat(exception).hasMessageThat().contains("Found null value in field: primarySource");
     }
@@ -736,7 +761,9 @@ public class FhirObjectTypeValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validate(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
 
         assertThat(exception)
                 .hasMessageThat()
@@ -768,7 +795,9 @@ public class FhirObjectTypeValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validate(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
 
         assertThat(exception)
                 .hasMessageThat()
@@ -812,7 +841,9 @@ public class FhirObjectTypeValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validate(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
 
         assertThat(exception)
                 .hasMessageThat()
@@ -892,7 +923,9 @@ public class FhirObjectTypeValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validate(
-                                        allergyJson, FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE));
+                                        allergyJson,
+                                        FHIR_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
+                                        FHIR_VERSION_R4));
 
         assertThat(exception)
                 .hasMessageThat()
@@ -922,7 +955,9 @@ public class FhirObjectTypeValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validate(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
 
         assertThat(exception)
                 .hasMessageThat()
@@ -952,7 +987,9 @@ public class FhirObjectTypeValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validate(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
 
         assertThat(exception).hasMessageThat().contains("Found empty array in field: identifier");
     }
@@ -993,7 +1030,9 @@ public class FhirObjectTypeValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validate(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
 
         assertThat(exception)
                 .hasMessageThat()
@@ -1032,7 +1071,9 @@ public class FhirObjectTypeValidatorTest {
                         IllegalArgumentException.class,
                         () ->
                                 validator.validate(
-                                        immunizationJson, FHIR_RESOURCE_TYPE_IMMUNIZATION));
+                                        immunizationJson,
+                                        FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                                        FHIR_VERSION_R4));
 
         assertThat(exception)
                 .hasMessageThat()

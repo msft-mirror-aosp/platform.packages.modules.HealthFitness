@@ -70,7 +70,7 @@ public class CyclingPedalingCadenceRecordHelper
     }
 
     @Override
-    public String getSeriesTimestampColumnName() {
+    public String getSampleTimestampsColumnName() {
         return EPOCH_MILLIS_COLUMN_NAME;
     }
 

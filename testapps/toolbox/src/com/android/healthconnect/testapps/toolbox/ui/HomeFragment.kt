@@ -30,22 +30,11 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
-import com.android.healthconnect.testapps.toolbox.Constants.ADDITIONAL_PERMISSIONS
-import com.android.healthconnect.testapps.toolbox.Constants.FITNESS_PERMISSIONS
-import com.android.healthconnect.testapps.toolbox.Constants.FITNESS_READ_PERMISSIONS
-import com.android.healthconnect.testapps.toolbox.Constants.FITNESS_WRITE_PERMISSIONS
 import com.android.healthconnect.testapps.toolbox.Constants.HEALTH_PERMISSIONS
-import com.android.healthconnect.testapps.toolbox.Constants.MEDICAL_PERMISSIONS
-import com.android.healthconnect.testapps.toolbox.Constants.MEDICAL_READ_PERMISSIONS
-import com.android.healthconnect.testapps.toolbox.Constants.MEDICAL_WRITE_AND_OTHERS
-import com.android.healthconnect.testapps.toolbox.Constants.READ_HEALTH_DATA_HISTORY
-import com.android.healthconnect.testapps.toolbox.Constants.READ_HEALTH_DATA_IN_BACKGROUND
-import com.android.healthconnect.testapps.toolbox.Constants.WRITE_ALL_MEDICAL_DATA
 import com.android.healthconnect.testapps.toolbox.PerformanceTestingFragment
 import com.android.healthconnect.testapps.toolbox.R
 import com.android.healthconnect.testapps.toolbox.seed.SeedData
@@ -123,8 +112,8 @@ class HomeFragment : Fragment() {
         view.requireViewById<Button>(R.id.launch_health_connect_button).setOnClickListener {
             launchHealthConnect()
         }
-        view.requireViewById<Button>(R.id.request_data_type_permissions_button).setOnClickListener {
-            requestDataTypePermissions()
+        view.requireViewById<Button>(R.id.permissions_request_button).setOnClickListener {
+            goToPermissionsRequestScreen()
         }
         view.requireViewById<Button>(R.id.request_route_button).setOnClickListener {
             goToRequestRoute()
@@ -156,42 +145,6 @@ class HomeFragment : Fragment() {
         view.findViewById<Button>(R.id.phr_options_button).setOnClickListener { goToPhrOptions() }
         view.requireViewById<Button>(R.id.exit_process_button).setOnClickListener {
             exitProcess(status = 0)
-        }
-
-        view.findViewById<Button>(R.id.request_health_permissions).setOnClickListener {
-            requestHealthPermissions()
-        }
-
-        view.findViewById<Button>(R.id.request_additional_permissions).setOnClickListener {
-            requestAdditionalPermissions()
-        }
-
-        view.findViewById<Button>(R.id.request_bg_read_permission).setOnClickListener {
-            requestBgReadPermission()
-        }
-
-        view.findViewById<Button>(R.id.request_history_read_permission).setOnClickListener {
-            requestHistoryReadPermission()
-        }
-
-        view.findViewById<Button>(R.id.request_medical_write_permission).setOnClickListener {
-            requestMedicalWritePermission()
-        }
-
-        view
-            .findViewById<Button>(R.id.request_medical_write_and_other_health_permissions)
-            .setOnClickListener { requestMedicalWriteAndOtherPermissions() }
-
-        view.findViewById<Button>(R.id.request_medical_read).setOnClickListener {
-            requestMedicalReadPermissions()
-        }
-
-        view.findViewById<Button>(R.id.request_fitness_read).setOnClickListener {
-            requestFitnessRead()
-        }
-
-        view.findViewById<Button>(R.id.request_fitness_write).setOnClickListener {
-            requestFitnessWrite()
         }
 
         // view
@@ -232,38 +185,6 @@ class HomeFragment : Fragment() {
         homeFragmentViewModel.seedAllDataViewModel(requireContext(), manager)
     }
 
-    private fun isPermissionGranted(permission: String): Boolean {
-        return ContextCompat.checkSelfPermission(this.requireContext(), permission) ==
-            PackageManager.PERMISSION_GRANTED
-    }
-
-    private fun isMedicalPermissionMissing(): Boolean {
-        for (permission in MEDICAL_PERMISSIONS) {
-            if (!isPermissionGranted(permission)) {
-                return true
-            }
-        }
-        return false
-    }
-
-    private fun isDataTypePermissionMissing(): Boolean {
-        for (permission in FITNESS_PERMISSIONS) {
-            if (!isPermissionGranted(permission)) {
-                return true
-            }
-        }
-        return false
-    }
-
-    private fun isAdditionalPermissionMissing(): Boolean {
-        for (permission in ADDITIONAL_PERMISSIONS) {
-            if (!isPermissionGranted(permission)) {
-                return true
-            }
-        }
-        return false
-    }
-
     private fun togglePermissionIntentFilter() {
         val pm = requireActivity().applicationContext.packageManager
         val packageName = requireActivity().packageName
@@ -286,102 +207,8 @@ class HomeFragment : Fragment() {
         Toast.makeText(this.requireContext(), toastText, Toast.LENGTH_SHORT).show()
     }
 
-    private fun requestHealthPermissions() {
-        mRequestPermissionLauncher.launch(HEALTH_PERMISSIONS)
-        return
-    }
-
-    private fun requestDataTypePermissions() {
-        if (isDataTypePermissionMissing()) {
-            mRequestPermissionLauncher.launch(FITNESS_PERMISSIONS)
-            return
-        }
-        Toast.makeText(
-                this.requireContext(),
-                R.string.all_permissions_already_granted_toast,
-                Toast.LENGTH_LONG,
-            )
-            .show()
-    }
-
-    private fun requestAdditionalPermissions() {
-        if (isAdditionalPermissionMissing()) {
-            mRequestPermissionLauncher.launch(ADDITIONAL_PERMISSIONS)
-            return
-        }
-        Toast.makeText(
-                this.requireContext(),
-                R.string.all_permissions_already_granted_toast,
-                Toast.LENGTH_LONG,
-            )
-            .show()
-    }
-
-    private fun requestBgReadPermission() {
-        if (!isPermissionGranted(READ_HEALTH_DATA_IN_BACKGROUND)) {
-            mRequestPermissionLauncher.launch(arrayOf(READ_HEALTH_DATA_IN_BACKGROUND))
-        }
-
-        Toast.makeText(
-                this.requireContext(),
-                R.string.all_permissions_already_granted_toast,
-                Toast.LENGTH_LONG,
-            )
-            .show()
-    }
-
-    private fun requestHistoryReadPermission() {
-        if (!isPermissionGranted(READ_HEALTH_DATA_HISTORY)) {
-            mRequestPermissionLauncher.launch(arrayOf(READ_HEALTH_DATA_HISTORY))
-        }
-
-        Toast.makeText(
-                this.requireContext(),
-                R.string.all_permissions_already_granted_toast,
-                Toast.LENGTH_LONG,
-            )
-            .show()
-    }
-
-    private fun requestMedicalWritePermission() {
-        if (!isPermissionGranted(WRITE_ALL_MEDICAL_DATA)) {
-            mRequestPermissionLauncher.launch(arrayOf(WRITE_ALL_MEDICAL_DATA))
-        }
-
-        Toast.makeText(
-                this.requireContext(),
-                R.string.all_permissions_already_granted_toast,
-                Toast.LENGTH_LONG,
-            )
-            .show()
-    }
-
-    private fun requestMedicalWriteAndOtherPermissions() {
-        if (
-            !isPermissionGranted(WRITE_ALL_MEDICAL_DATA) &&
-                isDataTypePermissionMissing() &&
-                isAdditionalPermissionMissing()
-        ) {
-            mRequestPermissionLauncher.launch(MEDICAL_WRITE_AND_OTHERS)
-        }
-        Toast.makeText(
-                this.requireContext(),
-                R.string.all_permissions_already_granted_toast,
-                Toast.LENGTH_LONG,
-            )
-            .show()
-    }
-
-    private fun requestMedicalReadPermissions() {
-        mRequestPermissionLauncher.launch(MEDICAL_READ_PERMISSIONS)
-    }
-
-    private fun requestFitnessRead() {
-        mRequestPermissionLauncher.launch(FITNESS_READ_PERMISSIONS)
-    }
-
-    private fun requestFitnessWrite() {
-        mRequestPermissionLauncher.launch(FITNESS_WRITE_PERMISSIONS)
+    private fun goToPermissionsRequestScreen() {
+        mNavigationController.navigate(R.id.action_home_screen_to_permissionsRequestScreen)
     }
 
     private fun goToRequestRoute() {

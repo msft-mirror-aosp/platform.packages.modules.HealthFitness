@@ -30,7 +30,6 @@ android_test {
     ],
     srcs: [
         ":healthfitness-cts-testapp-srcs",
-        ":healthfitness-permissions-testapp-srcs",
         "src/android/healthconnect/cts/*.java",
         "src/android/healthconnect/cts/aggregation/*.java",
         "src/android/healthconnect/cts/backgroundread/*.java",
@@ -67,7 +66,6 @@ android_test {
     data: [
         ":HealthFitnessCtsTestApp",
         ":HealthFitnessCtsTestApp2",
-        ":HealthFitnessPermsTestApp",
         ":CtsHealthConnectTestAppAWithNormalReadWritePermission",
         ":CtsHealthConnectTestAppWithWritePermissionsOnly",
     ],

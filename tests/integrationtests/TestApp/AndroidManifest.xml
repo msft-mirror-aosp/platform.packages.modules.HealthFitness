@@ -49,8 +49,5 @@
                 <action android:name="any.action"/>
             </intent-filter>
         </activity>
-
-        <receiver android:name=".TestAppReceiver"
-                  android:exported="true"/>
     </application>
 </manifest>
