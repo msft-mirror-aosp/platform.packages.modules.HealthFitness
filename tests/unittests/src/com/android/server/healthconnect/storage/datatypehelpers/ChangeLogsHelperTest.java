@@ -37,6 +37,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.health.connect.accesslog.AccessLog;
 import android.health.connect.datatypes.RecordTypeIdentifier;
+import android.platform.test.annotations.DisableFlags;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 
@@ -169,6 +170,7 @@ public class ChangeLogsHelperTest {
     }
 
     @Test
+    @DisableFlags(Flags.FLAG_CLOUD_BACKUP_AND_RESTORE)
     public void getDeleteRequestForAutoDelete_byDefault_removeChangeLogsMoreThan32DaysOld() {
         insertChangeLog(
                 /* recordType= */ RECORD_TYPE_STEPS,
