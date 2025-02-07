@@ -20,7 +20,7 @@ import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.setFragmentResult
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.deletion.DeletionConstants.TRY_AGAIN_EVENT
+import com.android.healthconnect.controller.selectabledeletion.DeletionConstants.TRY_AGAIN_EVENT
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
 import com.android.healthconnect.controller.utils.logging.FailedDialogElement
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,12 +36,14 @@ class FailedDialogFragment : Hilt_FailedDialogFragment() {
             .setMessage(R.string.delete_dialog_failure_message)
             .setPositiveButton(
                 R.string.delete_dialog_failure_try_again_button,
-                FailedDialogElement.DELETION_DIALOG_ERROR_TRY_AGAIN_BUTTON) { _, _ ->
-                    setFragmentResult(TRY_AGAIN_EVENT, Bundle())
-                }
+                FailedDialogElement.DELETION_DIALOG_ERROR_TRY_AGAIN_BUTTON,
+            ) { _, _ ->
+                setFragmentResult(TRY_AGAIN_EVENT, Bundle())
+            }
             .setNeutralButton(
                 R.string.delete_dialog_failure_close_button,
-                FailedDialogElement.DELETION_DIALOG_ERROR_CLOSE_BUTTON)
+                FailedDialogElement.DELETION_DIALOG_ERROR_CLOSE_BUTTON,
+            )
             .create()
     }
 
