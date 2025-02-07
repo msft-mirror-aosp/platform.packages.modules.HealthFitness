@@ -1656,11 +1656,10 @@
 
     <!-- region App Info Permissions  -->
     <string name="fitness_and_wellness" description="Title to display fitness and wellness permissions.">Fitness and wellness</string>
-    <string name="view_permissions_all_the_time" description="Text to allow an app to read health data in background.">all the time</string>
-    <string name="view_permissions_while_in_use" description="Text to allow an app to read health data in foreground.">while in use</string>
     <string name="view_permissions_all_the_time_cap" description="Label for button to allow an app to read health data in background.">All the time</string>
     <string name="view_permissions_while_in_use_cap" description="Label for button to allow an app to read health data in foreground.">While in use</string>
-    <string name="view_permissions_mode" description="Text to allow an app to read health data in foreground or background."><xliff:g id="app_name" example="Run Tracker">%1$s</xliff:g> can access all of your fitness and wellness data <xliff:g id="allow_mode" example="all the time">%2$s</xliff:g></string>
+    <string name="view_permissions_description_all_the_time" description="Text that indicates an app is allowed to read health data all the time (in the foreground or background)."><xliff:g id="app_name" example="Run Tracker">%1$s</xliff:g> can access all of your fitness and wellness data all the time</string>
+    <string name="view_permissions_description_while_in_use" description="Text that indicates an app is only allowed to read health data while in use (in the foreground)."><xliff:g id="app_name" example="Run Tracker">%1$s</xliff:g> can access all of your fitness and wellness data while in use</string>
     <string name="allowed_to_access" description="Text to display view permission mode (all the time or while in use).">Allowed to access</string>
     <string name="allowed_to_read" description="Subtitle to display which permissions are allowed">Allowed to read</string>
     <string name="give_permission_prompt" description="Text to display what permissions are allowed.">These permissions give <xliff:g id="app_name" example="Run Tracker">%1$s</xliff:g> access to data from your device sensors.</string>
@@ -1675,7 +1674,8 @@
     <string name="remove_one_permission_for_all" description="Text to indicate removing a data type access for all apps.">Remove <xliff:g example="heart rate" id="data_type">%s</xliff:g> access for all apps on your watch?</string>
     <string name="icon_content_check_mark" description="Content description for icon to confirm removing one granular health permission for all apps.">Check mark</string>
     <string name="icon_content_cross_mark" description="Content description for icon to dismiss removing one granular health permission for all apps.">Cross mark</string>
-    <string name="current_allow_mode" description="Text to indicate currently the app is allowed all the time or while in use.">"Currently, <xliff:g id="app_name" example="Run Tracker">%1$s</xliff:g> can access fitness and wellness data <xliff:g id="allow_mode" example="all the time">%2$s</xliff:g></string>
+    <string name="current_allow_mode_all_the_time" description="Text to indicate that the app is currently allowed to use the permission all the time (in the foreground or background)">"Currently, <xliff:g id="app_name" example="Run Tracker">%1$s</xliff:g> can access fitness and wellness data all the time</string>
+    <string name="current_allow_mode_while_in_use" description="Text to indicate that the app is currently allowed to use the permission only while in use by the user (in the foreground).">"Currently, <xliff:g id="app_name" example="Run Tracker">%1$s</xliff:g> can access fitness and wellness data while in use</string>
     <string name="allow_all_the_time_prompt" description="Title to ask user select all the time or while in use.">Allow <xliff:g id="app_name" example="Run Tracker">%1$s</xliff:g> access to fitness and wellness data all the time?</string>
     <string name="current_access" description="Subtitle to indicate which data types the app currently has permission to."><xliff:g id="app_name" example="Run Tracker">%1$s</xliff:g> has access to <xliff:g id="data_types" example="Heart rate, Skin temp">%2$s</xliff:g>.</string>
     <string name="manage_fitness_and_wellness_permissions" description="Label for button to manager fitness and wellness permissions for an app.">Manage fitness and wellness permissions</string>

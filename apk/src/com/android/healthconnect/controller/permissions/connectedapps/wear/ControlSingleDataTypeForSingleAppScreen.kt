@@ -103,14 +103,14 @@ fun ControlSingleDataTypeForSingleAppScreen(
 
         // Allow mode text.
         item {
-            val message =
+            val resourceId =
                 if (backgroundReadStatus[appMetadata!!] == true) {
-                    stringResource(R.string.view_permissions_all_the_time)
+                    R.string.current_allow_mode_all_the_time
                 } else {
-                    stringResource(R.string.view_permissions_while_in_use)
+                    R.string.current_allow_mode_while_in_use
                 }
             Row(horizontalArrangement = Arrangement.Start) {
-                Text(stringResource(R.string.current_allow_mode, appMetadata!!.appName, message))
+                Text(stringResource(resourceId, appMetadata!!.appName))
             }
         }
     }
