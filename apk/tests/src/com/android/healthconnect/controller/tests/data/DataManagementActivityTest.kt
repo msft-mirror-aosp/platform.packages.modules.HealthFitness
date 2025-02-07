@@ -31,7 +31,6 @@ import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
-import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel
 import com.android.healthconnect.controller.data.DataManagementActivity
 import com.android.healthconnect.controller.data.alldata.AllDataViewModel
 import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
@@ -64,10 +63,6 @@ class DataManagementActivityTest {
     @BindValue
     val migrationViewModel: MigrationViewModel = Mockito.mock(MigrationViewModel::class.java)
 
-    @BindValue
-    val categoryViewModel: HealthDataCategoryViewModel =
-        Mockito.mock(HealthDataCategoryViewModel::class.java)
-
     @BindValue val allDataViewModel: AllDataViewModel = Mockito.mock(AllDataViewModel::class.java)
 
     private lateinit var context: Context
@@ -83,11 +78,6 @@ class DataManagementActivityTest {
         context = InstrumentationRegistry.getInstrumentation().context
 
         showOnboarding(context, show = false)
-        whenever(categoryViewModel.categoriesData).then {
-            MutableLiveData<HealthDataCategoryViewModel.CategoriesFragmentState>(
-                HealthDataCategoryViewModel.CategoriesFragmentState.WithData(emptyList())
-            )
-        }
         whenever(allDataViewModel.allData).then {
             MutableLiveData<AllDataViewModel.AllDataState>(
                 AllDataViewModel.AllDataState.WithData(

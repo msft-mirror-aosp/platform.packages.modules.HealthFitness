@@ -10,7 +10,6 @@ import androidx.navigation.fragment.findNavController
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.autodelete.AutoDeleteRange
 import com.android.healthconnect.controller.autodelete.AutoDeleteViewModel
-import com.android.healthconnect.controller.categories.HealthDataCategoriesFragment
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.utils.logging.ManageDataElement
@@ -57,12 +56,7 @@ class ManageDataFragment : Hilt_ManageDataFragment() {
         mDataSourcesPreference.logName = ManageDataElement.DATA_SOURCES_AND_PRIORITY_BUTTON
         mDataSourcesPreference.setOnPreferenceClickListener {
             findNavController()
-                .navigate(
-                    R.id.action_manageData_to_dataSources,
-                    bundleOf(
-                        HealthDataCategoriesFragment.CATEGORY_KEY to HealthDataCategory.UNKNOWN
-                    ),
-                )
+                .navigate(R.id.action_manageData_to_dataSources)
             true
         }
 
