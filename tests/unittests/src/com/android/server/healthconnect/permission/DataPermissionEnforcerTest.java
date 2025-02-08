@@ -20,6 +20,7 @@ import static android.content.pm.PackageManager.PERMISSION_DENIED;
 import static android.health.connect.HealthPermissions.READ_ACTIVE_CALORIES_BURNED;
 import static android.health.connect.HealthPermissions.READ_EXERCISE_ROUTE;
 import static android.health.connect.HealthPermissions.READ_EXERCISE_ROUTES;
+import static android.health.connect.HealthPermissions.READ_HEART_RATE;
 import static android.health.connect.HealthPermissions.READ_STEPS;
 import static android.health.connect.HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED;
 import static android.health.connect.HealthPermissions.WRITE_EXERCISE;
@@ -27,6 +28,7 @@ import static android.health.connect.HealthPermissions.WRITE_EXERCISE_ROUTE;
 import static android.health.connect.HealthPermissions.WRITE_STEPS;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_ACTIVE_CALORIES_BURNED;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION;
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_HEART_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS;
 import static android.permission.PermissionManager.PERMISSION_GRANTED;
 import static android.permission.PermissionManager.PERMISSION_HARD_DENIED;
@@ -35,22 +37,31 @@ import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentat
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import android.content.AttributionSource;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.health.connect.internal.datatypes.ExerciseRouteInternal;
 import android.health.connect.internal.datatypes.ExerciseSessionRecordInternal;
+import android.os.Build;
 import android.os.UserHandle;
 import android.permission.PermissionManager;
+import android.platform.test.annotations.EnableFlags;
+import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.ArrayMap;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SdkSuppress;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -62,7 +73,10 @@ import java.util.Set;
 
 @RunWith(AndroidJUnit4.class)
 public class DataPermissionEnforcerTest {
+
+    @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
     @Mock private PermissionManager mPermissionManager;
+    @Mock private PackageManager mPackageManager;
 
     @Mock private Context mContext;
 
@@ -81,6 +95,7 @@ public class DataPermissionEnforcerTest {
         mAttributionSource = buildAttributionSource();
 
         when(mContext.getUser()).thenReturn(UserHandle.CURRENT);
+        when(mContext.getPackageManager()).thenReturn(mPackageManager);
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(getInstrumentation().getContext())
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
@@ -160,6 +175,22 @@ public class DataPermissionEnforcerTest {
 
         mDataPermissionEnforcer.enforceRecordIdsReadPermissions(
                 List.of(RECORD_TYPE_STEPS, RECORD_TYPE_ACTIVE_CALORIES_BURNED), mAttributionSource);
+    }
+
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
+    @EnableFlags({Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED})
+    @Test(expected = SecurityException.class)
+    public void
+            testEnforceRecordIdsReadPermissions_permissionGranted_heartRateFromSplitPermission_throwsSecurityException() {
+        when(mPermissionManager.checkPermissionForDataDelivery(
+                        READ_HEART_RATE, mAttributionSource, null))
+                .thenReturn(PERMISSION_GRANTED);
+        when(mPackageManager.getPermissionFlags(
+                        eq(READ_HEART_RATE), eq(mAttributionSource.getPackageName()), any()))
+                .thenReturn(PackageManager.FLAG_PERMISSION_REVOKE_WHEN_REQUESTED);
+
+        mDataPermissionEnforcer.enforceRecordIdsReadPermissions(
+                List.of(RECORD_TYPE_HEART_RATE), mAttributionSource);
     }
 
     /** enforceReadAccessAndGetEnforceSelfRead */

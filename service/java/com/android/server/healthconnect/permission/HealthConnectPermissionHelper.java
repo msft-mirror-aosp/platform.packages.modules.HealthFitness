@@ -301,6 +301,14 @@ public final class HealthConnectPermissionHelper {
         return !isPackageRequestingSplitPermission(packageName, userHandle);
     }
 
+    /**
+     * Returns true if {@code permissionFlag} indicates the permission is implicit from permission
+     * split.
+     */
+    public static boolean isFromSplitPermission(int permissionFlag) {
+        return (permissionFlag & FLAG_PERMISSION_REVOKE_WHEN_REQUESTED) != 0;
+    }
+
     private boolean isPackageRequestingSplitPermission(String packageName, UserHandle userHandle) {
         PackageInfo packageInfo;
         try {
@@ -356,7 +364,7 @@ public final class HealthConnectPermissionHelper {
         Map<String, Integer> permissionFlags;
         try {
             permissionFlags =
-                getHealthPermissionsFlags(packageName, userHandle, permissionsToCheck);
+                    getHealthPermissionsFlags(packageName, userHandle, permissionsToCheck);
         } catch (IllegalArgumentException e) {
             // If the package can't be found, default to consider as not containing split
             // permission.
@@ -378,10 +386,6 @@ public final class HealthConnectPermissionHelper {
         int readHeartRatePermissionFlag =
                 permissionFlags.getOrDefault(HealthPermissions.READ_HEART_RATE, 0);
         return isFromSplitPermission(readHeartRatePermissionFlag);
-    }
-
-    private static boolean isFromSplitPermission(int permissionFlag) {
-        return (permissionFlag & FLAG_PERMISSION_REVOKE_WHEN_REQUESTED) != 0;
     }
 
     private void throwExceptionIncorrectPermissionState() {

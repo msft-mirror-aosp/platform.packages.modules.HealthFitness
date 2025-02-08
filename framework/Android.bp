@@ -73,6 +73,7 @@ java_sdk_library {
     apex_available: ["com.android.healthfitness"],
     impl_library_visibility: [
         "//packages/modules/HealthFitness:__subpackages__",
+        "//vendor:__subpackages__",
     ],
     static_libs: [
         "healthfitness-statsd",

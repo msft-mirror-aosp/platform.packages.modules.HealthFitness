@@ -37,24 +37,8 @@ class SuccessDialogFragment : Hilt_SuccessDialogFragment() {
         val deletionType = viewModel.deletionParameters.value!!.deletionType
         val navAction =
             when (deletionType) {
-                is DeletionType.DeleteDataEntry -> {
-                    R.id.action_dataEntriesFragment_to_connectedApps
-                }
-                is DeletionType.DeletionTypeAppData -> {
-                    R.id.action_connectedAppFragment_to_connectedApps
-                }
-                is DeletionType.DeletionTypeAllData -> {
-                    R.id.action_healthDataCategories_to_connectedApps
-                }
-                is DeletionType.DeletionTypeCategoryData -> {
-                    R.id.action_healthPermissionTypes_to_connectedApps
-                }
-                is DeletionType.DeletionTypeHealthPermissionTypeData -> {
-                    R.id.action_healthDataAccessFragment_to_connectedApps
-                }
-                is DeletionType.DeletionTypeHealthPermissionTypeFromApp -> {
-                    // Under data access
-                    R.id.action_healthDataAccessFragment_to_connectedApps
+                else -> {
+                    // do nothing
                 }
             }
 

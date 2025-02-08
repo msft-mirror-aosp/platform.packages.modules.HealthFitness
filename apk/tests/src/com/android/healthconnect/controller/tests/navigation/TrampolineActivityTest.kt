@@ -45,9 +45,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.autodelete.AutoDeleteRange.*
-import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel
-import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel.*
-import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel.CategoriesFragmentState.WithData
 import com.android.healthconnect.controller.data.alldata.AllDataViewModel
 import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
 import com.android.healthconnect.controller.exportimport.api.ExportStatusViewModel
@@ -103,9 +100,7 @@ class TrampolineActivityTest {
     @BindValue val migrationViewModel: MigrationViewModel = mock(MigrationViewModel::class.java)
     @BindValue
     val exportStatusViewModel: ExportStatusViewModel = mock(ExportStatusViewModel::class.java)
-    @BindValue
-    val categoryViewModel: HealthDataCategoryViewModel =
-        mock(HealthDataCategoryViewModel::class.java)
+
     @BindValue
     val appPermissionViewModel: AppPermissionViewModel = mock(AppPermissionViewModel::class.java)
     @BindValue val allDataViewModel: AllDataViewModel = Mockito.mock(AllDataViewModel::class.java)
@@ -270,10 +265,6 @@ class TrampolineActivityTest {
     @Test
     fun manageHealthDataIntent_launchesDataManagementActivity_newIA() {
         // setup data management screen.
-        whenever(categoryViewModel.categoriesData).then {
-            MutableLiveData<CategoriesFragmentState>(WithData(emptyList()))
-        }
-
         launchActivityForResult<TrampolineActivity>(createStartIntent(ACTION_MANAGE_HEALTH_DATA))
 
         onIdle()

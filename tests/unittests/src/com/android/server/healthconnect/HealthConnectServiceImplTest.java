@@ -58,6 +58,7 @@ import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW;
+import static com.android.healthfitness.flags.Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.DATA_DOWNLOAD_STATE_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.DATA_RESTORE_STATE_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.INTERNAL_RESTORE_STATE_STAGING_DONE;
@@ -130,6 +131,7 @@ import android.health.connect.ratelimiter.RateLimiter;
 import android.health.connect.restore.StageRemoteDataRequest;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.net.Uri;
+import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.os.Process;
 import android.os.RemoteException;
@@ -141,6 +143,7 @@ import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.ArrayMap;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SdkSuppress;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
@@ -946,6 +949,43 @@ public class HealthConnectServiceImplTest {
                         eq(mAppInfoHelper));
     }
 
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
+    @EnableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED
+    })
+    @Test
+    public void
+            testGetMedicalDataSources_byIds_fromBgWithBgReadPermFromSplit_callsHelperWithoutBgRead()
+                    throws Exception {
+        setUpPhrMocksWithIrrelevantResponses();
+        setDataManagementPermission(PERMISSION_DENIED);
+        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_VACCINES);
+        setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
+        when(mAppOpsManagerLocal.isUidInForeground(anyInt())).thenReturn(false);
+        setBackgroundReadPermission(PackageManager.PERMISSION_GRANTED);
+        when(mPackageManager.getPermissionFlags(
+                        eq(READ_HEALTH_DATA_IN_BACKGROUND),
+                        eq(mAttributionSource.getPackageName()),
+                        any()))
+                .thenReturn(PackageManager.FLAG_PERMISSION_REVOKE_WHEN_REQUESTED);
+
+        mHealthConnectService.getMedicalDataSourcesByIds(
+                mAttributionSource, List.of(DATA_SOURCE_ID), mMedicalDataSourcesResponseCallback);
+
+        verify(mMedicalDataSourcesResponseCallback, timeout(5000)).onResult(any());
+        verify(mMedicalDataSourcesResponseCallback, never()).onError(any());
+        verify(mMedicalDataSourceHelper, times(1))
+                .getMedicalDataSourcesByIdsWithPermissionChecks(
+                        eq(List.of(DATA_SOURCE_UUID)),
+                        any(),
+                        eq(mTestPackageName),
+                        anyBoolean(),
+                        /* isCalledFromBgWithoutBgRead= */ eq(true),
+                        eq(mAppInfoHelper));
+    }
+
     @Test
     @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSourcesByIds_maxPageSizeExceeded_throws() throws RemoteException {
@@ -1219,6 +1259,45 @@ public class HealthConnectServiceImplTest {
                         eq(mTestPackageName),
                         anyBoolean(),
                         /* isCalledFromBgWithoutBgRead= */ eq(false));
+    }
+
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
+    @EnableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED
+    })
+    @Test
+    public void
+            testGetMedicalDataSources_byRequest_fromBgWithBgReadPermFromSplit_callsHelperWithoutBgRead()
+                    throws Exception {
+        setUpPhrMocksWithIrrelevantResponses();
+        setDataManagementPermission(PERMISSION_DENIED);
+        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_VACCINES);
+        setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
+        when(mAppOpsManagerLocal.isUidInForeground(anyInt())).thenReturn(false);
+        setBackgroundReadPermission(PackageManager.PERMISSION_GRANTED);
+        Set<String> packageNames = Set.of("com.foo", "com.bar");
+        when(mPackageManager.getPermissionFlags(
+                        eq(READ_HEALTH_DATA_IN_BACKGROUND),
+                        eq(mAttributionSource.getPackageName()),
+                        any()))
+                .thenReturn(PackageManager.FLAG_PERMISSION_REVOKE_WHEN_REQUESTED);
+
+        mHealthConnectService.getMedicalDataSourcesByRequest(
+                mAttributionSource,
+                getGetMedicalDataSourceRequest(packageNames),
+                mMedicalDataSourcesResponseCallback);
+
+        verify(mMedicalDataSourcesResponseCallback, timeout(5000)).onResult(any());
+        verify(mMedicalDataSourcesResponseCallback, never()).onError(any());
+        verify(mMedicalDataSourceHelper, times(1))
+                .getMedicalDataSourcesByPackageWithPermissionChecks(
+                        eq(packageNames),
+                        any(),
+                        eq(mTestPackageName),
+                        anyBoolean(),
+                        /* isCalledFromBgWithoutBgRead= */ eq(true));
     }
 
     @Test
@@ -1752,6 +1831,43 @@ public class HealthConnectServiceImplTest {
                         /* isCalledFromBgWithoutBgRead= */ eq(false));
     }
 
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
+    @EnableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED
+    })
+    @Test
+    public void
+            testReadMedicalResources_byIds_fromBgWithBgReadPermFromSplit_callsHelperWithoutBgRead()
+                    throws Exception {
+        setDataManagementPermission(PERMISSION_DENIED);
+        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_VACCINES);
+        setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
+        setUpPhrMocksWithIrrelevantResponses();
+        when(mAppOpsManagerLocal.isUidInForeground(anyInt())).thenReturn(false);
+        setBackgroundReadPermission(PackageManager.PERMISSION_GRANTED);
+        List<MedicalResourceId> ids = List.of(getMedicalResourceId());
+        when(mPackageManager.getPermissionFlags(
+                        eq(READ_HEALTH_DATA_IN_BACKGROUND),
+                        eq(mAttributionSource.getPackageName()),
+                        any()))
+                .thenReturn(PackageManager.FLAG_PERMISSION_REVOKE_WHEN_REQUESTED);
+
+        mHealthConnectService.readMedicalResourcesByIds(
+                mAttributionSource, ids, mReadMedicalResourcesResponseCallback);
+
+        verify(mReadMedicalResourcesResponseCallback, timeout(5000)).onResult(any());
+        verify(mReadMedicalResourcesResponseCallback, never()).onError(any());
+        verify(mMedicalResourceHelper, times(1))
+                .readMedicalResourcesByIdsWithPermissionChecks(
+                        eq(ids),
+                        any(),
+                        eq(mTestPackageName),
+                        anyBoolean(),
+                        /* isCalledFromBgWithoutBgRead= */ eq(true));
+    }
+
     @Test
     @DisableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testReadMedicalResources_byRequest_flagOff_throws() throws Exception {
@@ -1933,6 +2049,43 @@ public class HealthConnectServiceImplTest {
                         eq(request.getPageSize()),
                         eq(mTestPackageName),
                         /* enforceSelfRead= */ eq(false));
+    }
+
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
+    @EnableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED
+    })
+    @Test
+    public void
+            testReadMedicalResources_byRequest_onlyReadPermission_withBgReadFromSplitPermission_enforceSelfRead()
+                    throws Exception {
+        setDataManagementPermission(PERMISSION_DENIED);
+        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_VACCINES);
+        setUpPhrMocksWithIrrelevantResponses();
+        when(mAppOpsManagerLocal.isUidInForeground(anyInt())).thenReturn(false);
+        setBackgroundReadPermission(PackageManager.PERMISSION_GRANTED);
+        ReadMedicalResourcesInitialRequest request =
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
+                        .build();
+        when(mPackageManager.getPermissionFlags(
+                        eq(READ_HEALTH_DATA_IN_BACKGROUND),
+                        eq(mAttributionSource.getPackageName()),
+                        any()))
+                .thenReturn(PackageManager.FLAG_PERMISSION_REVOKE_WHEN_REQUESTED);
+
+        mHealthConnectService.readMedicalResourcesByRequest(
+                mAttributionSource, request.toParcel(), mReadMedicalResourcesResponseCallback);
+
+        verify(mReadMedicalResourcesResponseCallback, timeout(5000)).onResult(any());
+        verify(mReadMedicalResourcesResponseCallback, never()).onError(any());
+        verify(mMedicalResourceHelper, times(1))
+                .readMedicalResourcesByRequestWithPermissionChecks(
+                        eq(PhrPageTokenWrapper.from(request.toParcel())),
+                        eq(request.getPageSize()),
+                        eq(mTestPackageName),
+                        /* enforceSelfRead= */ eq(true));
     }
 
     @Test

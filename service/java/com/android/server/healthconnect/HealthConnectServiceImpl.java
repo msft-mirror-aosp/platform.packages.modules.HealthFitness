@@ -620,6 +620,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                     uid,
                                     attributionSource.getPackageName()
                                             + "must be in foreground to call aggregate method");
+                            if (isBackgroundPermissionFromSplit(attributionSource)) {
+                                throw new SecurityException(
+                                        "READ_HEALTH_DATA_IN_BACKGROUND is from split permission,"
+                                                + " must be explicitly requested and granted");
+                            }
                         }
                         tryAcquireApiCallQuota(
                                 uid,
@@ -723,8 +728,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         } else if (!isInForeground) {
                             // If READ_HEALTH_DATA_IN_BACKGROUND permission is not granted,
                             // then enforce self read
-                            enforceSelfRead =
-                                    !isPermissionGranted(READ_HEALTH_DATA_IN_BACKGROUND, uid, pid);
+                            enforceSelfRead = shouldEnforceSelfRead(uid, pid, attributionSource);
                         }
                         if (request.getRecordIdFiltersParcel() == null) {
                             // Only enforce requested packages if this is a
@@ -1035,6 +1039,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 uid,
                                 callerPackageName
                                         + "must be in foreground to call getChangeLogs method");
+                        if (isBackgroundPermissionFromSplit(attributionSource)) {
+                            throw new SecurityException(
+                                    "READ_HEALTH_DATA_IN_BACKGROUND is from split permission,"
+                                            + " must be explicitly requested and granted");
+                        }
                     }
 
                     ChangeLogsRequestHelper.TokenRequest changeLogsTokenRequest =
@@ -2354,8 +2363,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         // permission is not granted, then enforce self read.
                         boolean isCalledFromBgWithoutBgRead =
                                 !isInForeground
-                                        && !isPermissionGranted(
-                                                READ_HEALTH_DATA_IN_BACKGROUND, uid, pid);
+                                        && shouldEnforceSelfRead(uid, pid, attributionSource);
 
                         if (Constants.DEBUG) {
                             Slog.d(
@@ -2458,8 +2466,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         // permission is not granted, then enforce self read.
                         boolean isCalledFromBgWithoutBgRead =
                                 !isInForeground
-                                        && !isPermissionGranted(
-                                                READ_HEALTH_DATA_IN_BACKGROUND, uid, pid);
+                                        && shouldEnforceSelfRead(uid, pid, attributionSource);
 
                         if (Constants.DEBUG) {
                             Slog.d(
@@ -2791,8 +2798,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         // permission is not granted, then enforce self read.
                         boolean isCalledFromBgWithoutBgRead =
                                 !isInForeground
-                                        && !isPermissionGranted(
-                                                READ_HEALTH_DATA_IN_BACKGROUND, uid, pid);
+                                        && shouldEnforceSelfRead(uid, pid, attributionSource);
 
                         if (Constants.DEBUG) {
                             Slog.d(
@@ -2904,8 +2910,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             // This is when read permission is granted but the app is reading from
                             // the background. Then we enforce self read if
                             // READ_HEALTH_DATA_IN_BACKGROUND permission is not granted.
-                            enforceSelfRead =
-                                    !isPermissionGranted(READ_HEALTH_DATA_IN_BACKGROUND, uid, pid);
+                            enforceSelfRead = shouldEnforceSelfRead(uid, pid, attributionSource);
                         }
                         if (Constants.DEBUG) {
                             Slog.d(
@@ -3636,6 +3641,33 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             mAppInfoHelper.syncAppInfoRecordTypesUsed(new HashSet<>(recordTypeIdsToDelete));
             mActivityDateHelper.reSyncByRecordTypeIds(recordTypeIdsToDelete);
         }
+    }
+
+    /**
+     * When read permission is granted but the app is reading from the background, enforce self read
+     * for this client if READ_HEALTH_DATA_IN_BACKGROUND permission is not granted.
+     */
+    private boolean shouldEnforceSelfRead(int uid, int pid, AttributionSource attributionSource) {
+        return !isPermissionGranted(READ_HEALTH_DATA_IN_BACKGROUND, uid, pid)
+                || isBackgroundPermissionFromSplit(attributionSource);
+    }
+
+    /** Returns true if READ_HEALTH_DATA_IN_BACKGROUND is from split permission. */
+    private boolean isBackgroundPermissionFromSplit(AttributionSource attributionSource) {
+        if (!Flags.replaceBodySensorPermissionEnabled()) {
+            return false;
+        }
+
+        String packageName = attributionSource.getPackageName();
+        if (packageName == null) {
+            // Cannot read permission flag from null package name, return default false.
+            return false;
+        }
+        UserHandle user = UserHandle.getUserHandleForUid(attributionSource.getUid());
+        int permissionFlags =
+                mContext.getPackageManager()
+                        .getPermissionFlags(READ_HEALTH_DATA_IN_BACKGROUND, packageName, user);
+        return HealthConnectPermissionHelper.isFromSplitPermission(permissionFlags);
     }
 
     private static void tryAndReturnResult(
