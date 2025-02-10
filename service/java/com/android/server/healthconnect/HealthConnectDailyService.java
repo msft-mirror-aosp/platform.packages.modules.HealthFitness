@@ -36,6 +36,7 @@ import android.util.Slog;
 import com.android.server.healthconnect.exportimport.ExportImportJobs;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
+import com.android.server.healthconnect.logging.EcosystemStatsCollector;
 import com.android.server.healthconnect.logging.UsageStatsCollector;
 import com.android.server.healthconnect.migration.MigrationStateChangeJob;
 import com.android.server.healthconnect.migration.MigrationStateManager;
@@ -92,6 +93,10 @@ public class HealthConnectDailyService extends JobService {
                         HealthConnectContext.create(context, sUserHandle));
         DatabaseStatsCollector databaseStatsCollector =
                 healthConnectInjector.getDatabaseStatsCollector();
+        EcosystemStatsCollector ecosystemStatsCollector =
+                new EcosystemStatsCollector(
+                        healthConnectInjector.getReadAccessLogsHelper(),
+                        healthConnectInjector.getChangeLogsHelper());
 
         // This service executes each incoming job on a Handler running on the application's
         // main thread. This means that we must offload the execution logic to background executor.
@@ -100,7 +105,10 @@ public class HealthConnectDailyService extends JobService {
                 HealthConnectThreadScheduler.scheduleInternalTask(
                         () -> {
                             HealthConnectDailyJobs.execute(
-                                    usageStatsCollector, databaseStatsCollector, dailyCleanupJob);
+                                    usageStatsCollector,
+                                    databaseStatsCollector,
+                                    dailyCleanupJob,
+                                    ecosystemStatsCollector);
                             jobFinished(params, false);
                         });
                 return true;
