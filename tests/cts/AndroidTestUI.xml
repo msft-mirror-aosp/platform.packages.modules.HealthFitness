@@ -32,14 +32,24 @@
         <option name="test-file-name" value="CtsHealthConnectTestAppBWithNormalReadWritePermission.apk"/>
     </target_preparer>
     <target_preparer class="com.android.tradefed.targetprep.RunCommandTargetPreparer">
-        <!-- Reset display and font -->
+        <!-- Reset display and font and disable animations -->
         <option name="run-command" value="settings put system font_scale 0.85" />
         <option name="run-command" value="wm density reset" />
         <option name="run-command" value="wm size reset" />
+        <!-- Dimiss keyguard -->
+        <option name="run-command" value="input keyevent KEYCODE_WAKEUP" />
+        <option name="run-command" value="wm dismiss-keyguard" />
         <!-- disable DeprecatedAbi warning -->
         <option name="run-command" value="setprop debug.wm.disable_deprecated_abi_dialog 1" />
     </target_preparer>
-
+    <target_preparer class="com.android.tradefed.targetprep.DeviceSetup">
+        <option name="force-skip-system-props" value="true" />
+        <option name="screen-always-on" value="on" />
+        <option name="set-global-setting" key="animator_duration_scale" value="0.0" />
+        <option name="set-global-setting" key="transition_animation_scale" value="0.0" />
+        <option name="set-global-setting" key="window_animation_scale" value="0.0" />
+        <option name="restore-settings" value="true" />
+    </target_preparer>
     <option
         name="config-descriptor:metadata"
         key="mainline-param"
