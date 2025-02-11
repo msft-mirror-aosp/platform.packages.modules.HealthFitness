@@ -22,7 +22,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.deletion.FailedDialogFragment
 import com.android.healthconnect.controller.selectabledeletion.DeletionConstants.CONFIRMATION_KEY
 import com.android.healthconnect.controller.selectabledeletion.DeletionConstants.START_DELETION_KEY
 import com.android.healthconnect.controller.selectabledeletion.DeletionConstants.TRY_AGAIN_EVENT

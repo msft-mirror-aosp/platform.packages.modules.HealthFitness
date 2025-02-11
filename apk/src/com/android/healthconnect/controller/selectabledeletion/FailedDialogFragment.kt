@@ -13,20 +13,19 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.android.healthconnect.controller.deletion
+package com.android.healthconnect.controller.selectabledeletion
 
 import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.setFragmentResult
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.deletion.DeletionConstants.TRY_AGAIN_EVENT
+import com.android.healthconnect.controller.selectabledeletion.DeletionConstants.TRY_AGAIN_EVENT
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
 import com.android.healthconnect.controller.utils.logging.FailedDialogElement
 import dagger.hilt.android.AndroidEntryPoint
 
 /** A deletion {@link DialogFragment} notifying user about a failed deletion. */
-@Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
 @AndroidEntryPoint(DialogFragment::class)
 class FailedDialogFragment : Hilt_FailedDialogFragment() {
 
@@ -37,12 +36,14 @@ class FailedDialogFragment : Hilt_FailedDialogFragment() {
             .setMessage(R.string.delete_dialog_failure_message)
             .setPositiveButton(
                 R.string.delete_dialog_failure_try_again_button,
-                FailedDialogElement.DELETION_DIALOG_ERROR_TRY_AGAIN_BUTTON) { _, _ ->
-                    setFragmentResult(TRY_AGAIN_EVENT, Bundle())
-                }
+                FailedDialogElement.DELETION_DIALOG_ERROR_TRY_AGAIN_BUTTON,
+            ) { _, _ ->
+                setFragmentResult(TRY_AGAIN_EVENT, Bundle())
+            }
             .setNeutralButton(
                 R.string.delete_dialog_failure_close_button,
-                FailedDialogElement.DELETION_DIALOG_ERROR_CLOSE_BUTTON)
+                FailedDialogElement.DELETION_DIALOG_ERROR_CLOSE_BUTTON,
+            )
             .create()
     }
 

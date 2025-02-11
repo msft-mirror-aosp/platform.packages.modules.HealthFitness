@@ -64,6 +64,7 @@ class ExerciseSessionItemViewBinder(
         val mapView = view.findViewById<MapView>(R.id.map_view)
         val mapContainer = view.findViewById<RoundView>(R.id.map_round_view)
         val checkBox = view.findViewById<CheckBox>(R.id.item_checkbox_button)
+
         header.text = data.header
         header.contentDescription = data.headerA11y
         notes.isVisible = !data.notes.isNullOrBlank()

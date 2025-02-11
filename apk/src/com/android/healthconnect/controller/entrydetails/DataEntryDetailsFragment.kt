@@ -13,7 +13,6 @@
  */
 package com.android.healthconnect.controller.entrydetails
 
-import android.health.connect.datatypes.MenstruationPeriodRecord
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -26,6 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.EntriesViewModel
+import com.android.healthconnect.controller.data.entries.ExerciseSessionItemViewBinder
 import com.android.healthconnect.controller.data.entries.FormattedEntry.ExercisePerformanceGoalEntry
 import com.android.healthconnect.controller.data.entries.FormattedEntry.ExerciseSessionEntry
 import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedSectionContent
@@ -39,30 +39,21 @@ import com.android.healthconnect.controller.data.entries.FormattedEntry.ReverseS
 import com.android.healthconnect.controller.data.entries.FormattedEntry.SeriesDataEntry
 import com.android.healthconnect.controller.data.entries.FormattedEntry.SessionHeader
 import com.android.healthconnect.controller.data.entries.FormattedEntry.SleepSessionEntry
-import com.android.healthconnect.controller.dataentries.ExerciseSessionItemViewBinder
-import com.android.healthconnect.controller.dataentries.OnDeleteEntryListener
-import com.android.healthconnect.controller.dataentries.PlannedExerciseSessionItemViewBinder
-import com.android.healthconnect.controller.dataentries.SeriesDataItemViewBinder
-import com.android.healthconnect.controller.dataentries.SleepSessionItemViewBinder
-import com.android.healthconnect.controller.deletion.DeletionConstants.DELETION_TYPE
-import com.android.healthconnect.controller.deletion.DeletionConstants.END_TIME
-import com.android.healthconnect.controller.deletion.DeletionConstants.START_DELETION_EVENT
-import com.android.healthconnect.controller.deletion.DeletionConstants.START_TIME
-import com.android.healthconnect.controller.deletion.DeletionType
+import com.android.healthconnect.controller.data.entries.PlannedExerciseSessionItemViewBinder
+import com.android.healthconnect.controller.data.entries.SeriesDataItemViewBinder
+import com.android.healthconnect.controller.data.entries.SleepSessionItemViewBinder
 import com.android.healthconnect.controller.entrydetails.DataEntryDetailsViewModel.DateEntryFragmentState
 import com.android.healthconnect.controller.entrydetails.DataEntryDetailsViewModel.DateEntryFragmentState.Loading
 import com.android.healthconnect.controller.entrydetails.DataEntryDetailsViewModel.DateEntryFragmentState.LoadingFailed
 import com.android.healthconnect.controller.entrydetails.DataEntryDetailsViewModel.DateEntryFragmentState.WithData
-import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.navigation.PERMISSION_TYPE_KEY
-import com.android.healthconnect.controller.shared.DataType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.shared.recyclerview.RecyclerViewAdapter
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.ToolbarElement
 import com.android.healthconnect.controller.utils.setupSharedMenu
 import dagger.hilt.android.AndroidEntryPoint
-import java.time.Instant
 import javax.inject.Inject
 
 @AndroidEntryPoint(Fragment::class)
@@ -97,50 +88,21 @@ class DataEntryDetailsFragment : Hilt_DataEntryDetailsFragment() {
     private lateinit var errorView: View
     private lateinit var detailsAdapter: RecyclerViewAdapter
     private var showDataOrigin: Boolean = false
-    private val onDeleteEntryListener by lazy {
-        object : OnDeleteEntryListener {
-            override fun onDeleteEntry(
-                id: String,
-                dataType: DataType,
-                index: Int,
-                startTime: Instant?,
-                endTime: Instant?,
-            ) {
-                deleteEntry(id, dataType, index, startTime, endTime)
-            }
-        }
-    }
     private val sleepSessionViewBinder by lazy {
-        SleepSessionItemViewBinder(
-            showSecondAction = false,
-            onItemClickedListener = null,
-            onDeleteEntryListenerClicked = onDeleteEntryListener,
-        )
+        SleepSessionItemViewBinder(onItemClickedListener = null)
     }
     private val plannedExerciseSessionViewBinder by lazy {
-        PlannedExerciseSessionItemViewBinder(
-            showSecondAction = false,
-            onItemClickedListener = null,
-            onDeleteEntryClicked = null,
-        )
+        PlannedExerciseSessionItemViewBinder(onItemClickedListener = null)
     }
     private val plannedExerciseBlockViewBinder by lazy { PlannedExerciseBlockViewBinder() }
     private val plannedExerciseStepViewBinder by lazy { PlannedExerciseStepViewBinder() }
     private val exercisePerformanceGoalViewBinder by lazy { ExercisePerformanceGoalViewBinder() }
     private val formattedSectionContentViewBinder by lazy { FormattedSectionContentViewBinder() }
     private val exerciseSessionItemViewBinder by lazy {
-        ExerciseSessionItemViewBinder(
-            showSecondAction = false,
-            onItemClickedListener = null,
-            onDeleteEntryClicked = onDeleteEntryListener,
-        )
+        ExerciseSessionItemViewBinder(onItemClickedListener = null)
     }
     private val heartRateItemViewBinder by lazy {
-        SeriesDataItemViewBinder(
-            showSecondAction = false,
-            onItemClickedListener = null,
-            onDeleteEntryClicked = onDeleteEntryListener,
-        )
+        SeriesDataItemViewBinder(onItemClickedListener = null)
     }
     private val itemDataEntrySeparatorViewBinder by lazy { ItemDataEntrySeparatorViewBinder() }
     private val sessionDetailViewBinder by lazy { SessionDetailViewBinder() }
@@ -245,32 +207,6 @@ class DataEntryDetailsFragment : Hilt_DataEntryDetailsFragment() {
                 errorView.isVisible = false
                 loadingView.isVisible = false
             }
-        }
-    }
-
-    private fun deleteEntry(
-        uuid: String,
-        dataType: DataType,
-        index: Int,
-        startTime: Instant?,
-        endTime: Instant?,
-    ) {
-        val deletionType = DeletionType.DeleteDataEntry(uuid, dataType, index)
-
-        if (deletionType.dataType == MenstruationPeriodRecord::class) {
-            childFragmentManager.setFragmentResult(
-                START_DELETION_EVENT,
-                bundleOf(
-                    DELETION_TYPE to deletionType,
-                    START_TIME to startTime,
-                    END_TIME to endTime,
-                ),
-            )
-        } else {
-            childFragmentManager.setFragmentResult(
-                START_DELETION_EVENT,
-                bundleOf(DELETION_TYPE to deletionType),
-            )
         }
     }
 }
