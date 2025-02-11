@@ -37,6 +37,7 @@ import androidx.navigation.fragment.findNavController
 import com.android.healthconnect.testapps.toolbox.Constants.HEALTH_PERMISSIONS
 import com.android.healthconnect.testapps.toolbox.PerformanceTestingFragment
 import com.android.healthconnect.testapps.toolbox.R
+import com.android.healthconnect.testapps.toolbox.read.HomeActivity
 import com.android.healthconnect.testapps.toolbox.seed.SeedData
 import com.android.healthconnect.testapps.toolbox.viewmodels.HomeFragmentViewModel
 import com.android.healthconnect.testapps.toolbox.viewmodels.PerformanceTestingViewModel
@@ -143,8 +144,13 @@ class HomeFragment : Fragment() {
             goToReadDataInForegroundPage()
         }
         view.findViewById<Button>(R.id.phr_options_button).setOnClickListener { goToPhrOptions() }
+
+
         view.requireViewById<Button>(R.id.exit_process_button).setOnClickListener {
             exitProcess(status = 0)
+        }
+        view.findViewById<Button>(R.id.new_screens_button).setOnClickListener {
+            startActivity(Intent(requireActivity(), HomeActivity::class.java))
         }
 
         // view
