@@ -835,7 +835,7 @@ public final class TestUtils {
     }
 
     @NonNull
-    static HealthConnectManager getHealthConnectManager() {
+    public static HealthConnectManager getHealthConnectManager() {
         return getHealthConnectManager(ApplicationProvider.getApplicationContext());
     }
 
@@ -1263,9 +1263,6 @@ public final class TestUtils {
             return mContributingPackages;
         }
     }
-
-    private static final class HealthConnectReceiver<T>
-            extends TestOutcomeReceiver<T, HealthConnectException> {}
 
     public static final class MigrationReceiver
             extends TestOutcomeReceiver<Void, MigrationException> {}

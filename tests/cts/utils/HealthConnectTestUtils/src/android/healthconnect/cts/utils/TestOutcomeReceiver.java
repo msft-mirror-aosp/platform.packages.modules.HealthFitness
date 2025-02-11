@@ -53,6 +53,17 @@ public class TestOutcomeReceiver<T, E extends RuntimeException> implements Outco
     }
 
     /**
+     * Returns the exception received. Fails if no response received within the default timeout.
+     *
+     * @throws InterruptedException if this is interrupted before any response received
+     */
+    public E assertAndGetException() throws InterruptedException {
+        assertThat(mLatch.await(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
+        assertThat(mResponse.get()).isNull();
+        return mException.get();
+    }
+
+    /**
      * Asserts that no exception is received within the default timeout. If an exception is received
      * it is rethrown by this method.
      */
