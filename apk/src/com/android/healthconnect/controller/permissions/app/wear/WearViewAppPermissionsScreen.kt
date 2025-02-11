@@ -185,13 +185,13 @@ fun WearViewAppPermissionsScreen(viewModel: AppPermissionViewModel) {
 
         item {
             Row(horizontalArrangement = Arrangement.Start) {
-                val accessText =
+                val resourceId =
                     if (allowAllTheTime) {
-                        res.getString(R.string.view_permissions_all_the_time)
+                        R.string.view_permissions_description_all_the_time
                     } else {
-                        res.getString(R.string.view_permissions_while_in_use)
+                        R.string.view_permissions_description_while_in_use
                     }
-                Text(res.getString(R.string.view_permissions_mode, appName, accessText))
+                Text(res.getString(resourceId, appName))
             }
         }
     }
