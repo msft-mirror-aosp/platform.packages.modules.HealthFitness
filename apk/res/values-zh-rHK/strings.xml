@@ -46,7 +46,7 @@
     <string name="manage_data_category_title" msgid="6328886061582616519">"管理資料"</string>
     <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"匯出及匯入資料"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"近期存取記錄"</string>
-    <string name="no_recent_access" msgid="4724297929902441784">"最近沒有應用程式存取 Health Connect"</string>
+    <string name="no_recent_access" msgid="4724297929902441784">"最近沒有應用程式存取「健康資料同步」"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"查看所有近期存取記錄"</string>
     <string name="recent_access_screen_description" msgid="331101209889185402">"查看過去 24 小時內，有哪些應用程式存取過你的資料"</string>
     <string name="today_header" msgid="1006837293203834373">"今天"</string>
@@ -583,7 +583,7 @@
     <string name="confirming_question_permission_type_app_data_one_day" msgid="4377296923865256246">"要永久刪除過去 24 小時由「<xliff:g id="APP_DATA">%2$s</xliff:g>」新增的<xliff:g id="DATA_TYPE">%1$s</xliff:g>資料嗎？"</string>
     <string name="confirming_question_permission_type_app_data_one_week" msgid="2253468260502709170">"要永久刪除過去 7 日由「<xliff:g id="APP_DATA">%2$s</xliff:g>」新增的<xliff:g id="DATA_TYPE">%1$s</xliff:g>資料嗎？"</string>
     <string name="confirming_question_permission_type_app_data_one_month" msgid="1656927839079630144">"要永久刪除過去 30 日由「<xliff:g id="APP_DATA">%2$s</xliff:g>」新增的<xliff:g id="DATA_TYPE">%1$s</xliff:g>資料嗎？"</string>
-    <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"同時從 Health Connect 移除「<xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g>」的所有權限"</string>
+    <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"同時從「健康資料同步」移除「<xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g>」的所有權限"</string>
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"要永久刪除「<xliff:g id="APP_DATA">%2$s</xliff:g>」新增的所有<xliff:g id="DATA_TYPE">%1$s</xliff:g>資料嗎？"</string>
     <string name="confirming_question_single_entry" msgid="2064578008447638932">"要從「健康資料同步」永久刪除此項目嗎？"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"已連結的應用程式將無法在 Health Connect 存取此資料"</string>
@@ -1171,11 +1171,12 @@
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"「<xliff:g id="APP_NAME">%1$s</xliff:g>」要求存取<xliff:g id="DATA_TYPES">%2$s</xliff:g>。\n\n請選擇要一律允許還是個別控制權限。"</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"要允許「<xliff:g id="APP_NAME">%1$s</xliff:g>」存取<xliff:g id="DATA_TYPE">%2$s</xliff:g>嗎？"</string>
     <string name="fitness_and_wellness" msgid="2002316898861559748">"健身和身心健康"</string>
-    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"一律允許"</string>
-    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"僅在使用時允許"</string>
     <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"一律允許"</string>
     <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"僅在使用時允許"</string>
-    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="ALLOW_MODE">%2$s</xliff:g>「<xliff:g id="APP_NAME">%1$s</xliff:g>」存取你的所有健身和身心健康資料"</string>
+    <!-- no translation found for view_permissions_description_all_the_time (3434945199164069475) -->
+    <skip />
+    <!-- no translation found for view_permissions_description_while_in_use (507698943902581557) -->
+    <skip />
     <string name="allowed_to_access" msgid="4179317387300812335">"允許存取"</string>
     <string name="allowed_to_read" msgid="2775365229411407406">"允許讀取"</string>
     <string name="give_permission_prompt" msgid="5788144216023065504">"這些權限允許「<xliff:g id="APP_NAME">%1$s</xliff:g>」存取裝置感應器的資料。"</string>
@@ -1187,8 +1188,17 @@
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"要移除手錶上所有應用程式的<xliff:g id="DATA_TYPE">%s</xliff:g>存取權嗎？"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"剔號"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"叉號"</string>
-    <string name="current_allow_mode" msgid="6716206063077569218">"目前，<xliff:g id="ALLOW_MODE">%2$s</xliff:g>「<xliff:g id="APP_NAME">%1$s</xliff:g>」存取健身和身心健康資料"</string>
+    <!-- no translation found for current_allow_mode_all_the_time (3329625277933258855) -->
+    <skip />
+    <!-- no translation found for current_allow_mode_while_in_use (6358053330935305061) -->
+    <skip />
     <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"一律允許「<xliff:g id="APP_NAME">%1$s</xliff:g>」存取健身和身心健康資料嗎？"</string>
     <string name="current_access" msgid="1457167070428176139">"「<xliff:g id="APP_NAME">%1$s</xliff:g>」可以存取<xliff:g id="DATA_TYPES">%2$s</xliff:g>。"</string>
     <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"管理健身和身心健康權限"</string>
+    <!-- no translation found for used_by_apps_count (1384912521974773617) -->
+    <skip />
+    <!-- no translation found for not_used_in_past_24_hours (7918784815693928054) -->
+    <skip />
+    <!-- no translation found for accessed (4424701457530587176) -->
+    <skip />
 </resources>

@@ -292,7 +292,7 @@
     <string name="body_temperature_lowercase_label" msgid="324124730971992259">"телесна температура"</string>
     <string name="body_temperature_read_content_description" msgid="5966765249024688738">"Четене на телесната температура"</string>
     <string name="body_temperature_write_content_description" msgid="5498016171067859369">"Записване на телесната температура"</string>
-    <string name="heart_rate_uppercase_label" msgid="4990167215137642430">"Сърдечен ритъм"</string>
+    <string name="heart_rate_uppercase_label" msgid="4990167215137642430">"Сърдечна честота"</string>
     <string name="heart_rate_lowercase_label" msgid="693492686337628283">"сърдечен ритъм"</string>
     <string name="heart_rate_read_content_description" msgid="4165867166260001259">"Четене на сърдечния ритъм"</string>
     <string name="heart_rate_write_content_description" msgid="2876667918366409170">"Записване на данни за сърдечния ритъм"</string>
@@ -543,7 +543,7 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Към Google Play Магазин"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Първи стъпки с Health Connect"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect съхранява данните за здравословното ви състояние и физическата ви активност и ви предоставя лесен начин да синхронизирате различните приложения на устройството си"</string>
-    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect съхранява и синхронизира данните за здравето и физическата ви активност от различни приложения.\n\n"<b>"Данните за физическата активност и благосъстоянието,"</b>" включително сесиите с упражнения, крачките, храненето, съня и др.\n\n"<b>"Здравните картони,"</b>" включително ваксини, лабораторни резултати и др."</string>
+    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect съхранява и синхронизира данните за здравето и физическата ви активност от различни приложения.\n\n"<b>"Данните за уелнес и физическата активност,"</b>" включително сесиите с упражнения, крачките, храненето, съня и др.\n\n"<b>"Здравните картони,"</b>" включително ваксини, лабораторни резултати и др."</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"С Health Connect можете да правите следното"</string>
     <string name="share_data_text" msgid="6898398345784931678"><b>"Споделяйте данни с приложенията си"</b>\n"Изберете данните, които всяко приложение може да чете и записва в Health Connect"</string>
     <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"Управлявайте настройките и поверителността си"</b>\n"Променяйте разрешенията за приложението и управлявайте данните си по всяко време"</string>
@@ -1171,11 +1171,12 @@
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> иска достъп до <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nМожете да изберете да разрешите всички или да ги контролирате поотделно."</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Да се разреши ли на <xliff:g id="APP_NAME">%1$s</xliff:g> достъп до <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
     <string name="fitness_and_wellness" msgid="2002316898861559748">"Физическа активност и уелнес"</string>
-    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"през цялото време"</string>
-    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"при използване"</string>
     <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"През цялото време"</string>
     <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"При използване"</string>
-    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> има достъп до всичките ви данни за физическата активност и благосъстоянието <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <!-- no translation found for view_permissions_description_all_the_time (3434945199164069475) -->
+    <skip />
+    <!-- no translation found for view_permissions_description_while_in_use (507698943902581557) -->
+    <skip />
     <string name="allowed_to_access" msgid="4179317387300812335">"С разрешение за достъп"</string>
     <string name="allowed_to_read" msgid="2775365229411407406">"С разрешение за четене"</string>
     <string name="give_permission_prompt" msgid="5788144216023065504">"Тези разрешения дават на <xliff:g id="APP_NAME">%1$s</xliff:g> достъп до данните от сензорите на устройството ви."</string>
@@ -1187,8 +1188,17 @@
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Да се премахне ли достъпът до <xliff:g id="DATA_TYPE">%s</xliff:g> за всички приложения на часовника ви?"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"Отметка"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"Кръстче"</string>
-    <string name="current_allow_mode" msgid="6716206063077569218">"Понастоящем <xliff:g id="APP_NAME">%1$s</xliff:g> има достъп до данните за физическата активност и благосъстоянието <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <!-- no translation found for current_allow_mode_all_the_time (3329625277933258855) -->
+    <skip />
+    <!-- no translation found for current_allow_mode_while_in_use (6358053330935305061) -->
+    <skip />
     <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Да се разреши ли на <xliff:g id="APP_NAME">%1$s</xliff:g> достъп до данните за физическата активност и благосъстоянието по всяко време?"</string>
     <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> има достъп до <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
     <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Управл. на разрешенията за физ. активност и благосъстоянието"</string>
+    <!-- no translation found for used_by_apps_count (1384912521974773617) -->
+    <skip />
+    <!-- no translation found for not_used_in_past_24_hours (7918784815693928054) -->
+    <skip />
+    <!-- no translation found for accessed (4424701457530587176) -->
+    <skip />
 </resources>

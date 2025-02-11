@@ -1171,11 +1171,12 @@
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> ilovasi <xliff:g id="DATA_TYPES">%2$s</xliff:g> uchun ruxsat olmoqchi.\n\nHammasiga ruxsat bering yoki ularni alohida boshqaring."</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"<xliff:g id="APP_NAME">%1$s</xliff:g> ilovasiga <xliff:g id="DATA_TYPE">%2$s</xliff:g> qurilmasidan foydalanishga ruxsat berilsinmi?"</string>
     <string name="fitness_and_wellness" msgid="2002316898861559748">"Fitnes va salomatlik"</string>
-    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"doimiy"</string>
-    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"ishlatilayotganda"</string>
     <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Doimiy"</string>
     <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Ishlatilayotganda"</string>
-    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> ilovasi salomatlik va fitnes maʼlumotlaridan <xliff:g id="ALLOW_MODE">%2$s</xliff:g> foydalanishi mumkin"</string>
+    <!-- no translation found for view_permissions_description_all_the_time (3434945199164069475) -->
+    <skip />
+    <!-- no translation found for view_permissions_description_while_in_use (507698943902581557) -->
+    <skip />
     <string name="allowed_to_access" msgid="4179317387300812335">"Ruxsat berilgan"</string>
     <string name="allowed_to_read" msgid="2775365229411407406">"Oʻqishga ruxsat berilgan"</string>
     <string name="give_permission_prompt" msgid="5788144216023065504">"Bunday ruxsatlar <xliff:g id="APP_NAME">%1$s</xliff:g> ilovasiga qurilma sensorlaridagi axborotlardan foydalanish imkonini beradi."</string>
@@ -1187,8 +1188,17 @@
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Soatdagi barcha ilovalarga quyidagi axborotlardan foydalanish ruxsati yopilsinmi: <xliff:g id="DATA_TYPE">%s</xliff:g>?"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"Tanlov belgisi"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"Xoch belgisi"</string>
-    <string name="current_allow_mode" msgid="6716206063077569218">"Hozirda <xliff:g id="APP_NAME">%1$s</xliff:g> ilovasi salomatlik va fitnes maʼlumotlaridan <xliff:g id="ALLOW_MODE">%2$s</xliff:g> foydalanishi mumkin"</string>
+    <!-- no translation found for current_allow_mode_all_the_time (3329625277933258855) -->
+    <skip />
+    <!-- no translation found for current_allow_mode_while_in_use (6358053330935305061) -->
+    <skip />
     <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"<xliff:g id="APP_NAME">%1$s</xliff:g> ilovasiga har doim fitnes va salomatlik axborotidan foydalanishga ruxsat berilsinmi?"</string>
     <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> ilovasining bunga ruxsati bor: <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
     <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Fitnes va salomatlik ruxsatlarini boshqarish"</string>
+    <!-- no translation found for used_by_apps_count (1384912521974773617) -->
+    <skip />
+    <!-- no translation found for not_used_in_past_24_hours (7918784815693928054) -->
+    <skip />
+    <!-- no translation found for accessed (4424701457530587176) -->
+    <skip />
 </resources>

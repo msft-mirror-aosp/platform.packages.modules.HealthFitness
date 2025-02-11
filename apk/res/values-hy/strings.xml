@@ -1171,11 +1171,12 @@
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին անհրաժեշտ է հետևյալ տվյալների հասանելիություն՝ <xliff:g id="DATA_TYPES">%2$s</xliff:g>։\n\nՏրամադրեք բոլոր թույլտվությունները կամ կառավարեք դրանք առանձին-առանձին։"</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին հասանելի դարձնե՞լ այս տվյալները՝ <xliff:g id="DATA_TYPE">%2$s</xliff:g>"</string>
     <string name="fitness_and_wellness" msgid="2002316898861559748">"Ֆիթնես և առողջություն"</string>
-    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"միշտ"</string>
-    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"օգտագործման ժամանակ"</string>
     <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Միշտ"</string>
     <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Օգտագործման ժամանակ"</string>
-    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g>-ին <xliff:g id="ALLOW_MODE">%2$s</xliff:g> հասանելի են ֆիթնեսի և առողջության վերաբերյալ ձեր բոլոր տվյալները"</string>
+    <!-- no translation found for view_permissions_description_all_the_time (3434945199164069475) -->
+    <skip />
+    <!-- no translation found for view_permissions_description_while_in_use (507698943902581557) -->
+    <skip />
     <string name="allowed_to_access" msgid="4179317387300812335">"Դիտելու թույլտվություն"</string>
     <string name="allowed_to_read" msgid="2775365229411407406">"Կարդալու թույլտվություն"</string>
     <string name="give_permission_prompt" msgid="5788144216023065504">"Այս թույլտվություններով <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածը կարող է դիտել տվյալները ձեր սարքի սենսորներից։"</string>
@@ -1187,8 +1188,17 @@
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Հեռացնե՞լ «<xliff:g id="DATA_TYPE">%s</xliff:g>» տվյալների հասանելիությունը ձեր ժամացույցի բոլոր հավելվածների համար։"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"Թռչնանիշ"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"Խաչանիշ"</string>
-    <string name="current_allow_mode" msgid="6716206063077569218">"Ներկայումս <xliff:g id="APP_NAME">%1$s</xliff:g>-ին <xliff:g id="ALLOW_MODE">%2$s</xliff:g> հասանելի են ֆիթնեսի և առողջության վերաբերյալ ձեր տվյալները"</string>
+    <!-- no translation found for current_allow_mode_all_the_time (3329625277933258855) -->
+    <skip />
+    <!-- no translation found for current_allow_mode_while_in_use (6358053330935305061) -->
+    <skip />
     <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Թույլ տա՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին միշտ օգտագործել ֆիթնեսի և առողջության վերաբերյալ տվյալները"</string>
     <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին հասանելի են հետևյալ տվյալները՝ <xliff:g id="DATA_TYPES">%2$s</xliff:g>"</string>
     <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Ֆիթնեսի և առողջության մասին տվյալներ"</string>
+    <!-- no translation found for used_by_apps_count (1384912521974773617) -->
+    <skip />
+    <!-- no translation found for not_used_in_past_24_hours (7918784815693928054) -->
+    <skip />
+    <!-- no translation found for accessed (4424701457530587176) -->
+    <skip />
 </resources>
