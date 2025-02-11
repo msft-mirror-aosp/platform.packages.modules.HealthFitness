@@ -24,7 +24,6 @@ import static android.health.connect.datatypes.HeartRateRecord.HEART_MEASUREMENT
 import static android.healthconnect.cts.lib.TestAppProxy.APP_WRITE_PERMS_ONLY;
 import static android.healthconnect.cts.utils.DataFactory.getCompleteStepsRecord;
 import static android.healthconnect.cts.utils.DataFactory.getHeartRateRecord;
-import static android.healthconnect.cts.utils.TestOutcomeReceiver.outcomeExecutor;
 import static android.healthconnect.cts.utils.TestUtils.getHealthConnectManager;
 import static android.healthconnect.cts.utils.TestUtils.readRecordsWithPagination;
 
@@ -81,6 +80,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.Executors;
 
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
 @RunWith(AndroidJUnit4.class)
@@ -117,7 +117,8 @@ public class HeartRateRecordTest {
         }
         // Use longer timeout for the large insert.
         HealthConnectReceiver<InsertRecordsResponse> receiver = new HealthConnectReceiver<>();
-        getHealthConnectManager().insertRecords(hearRateRecords, outcomeExecutor(), receiver);
+        getHealthConnectManager().insertRecords(
+                hearRateRecords, Executors.newSingleThreadExecutor(), receiver);
         receiver.verifyNoExceptionOrThrow(/* timeoutSeconds= */ 10);
     }
 
