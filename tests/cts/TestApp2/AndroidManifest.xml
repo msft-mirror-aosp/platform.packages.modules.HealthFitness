@@ -20,6 +20,13 @@
   <uses-permission android:name="android.permission.health.READ_HEIGHT"/>
   <uses-permission android:name="android.permission.health.WRITE_HEIGHT"/>
 
+  <uses-permission android:name="android.permission.health.READ_HEALTH_DATA_HISTORY"/>
+  <uses-permission android:name="android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND"/>
+
+  <uses-permission android:name="android.permission.health.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES"/>
+  <uses-permission android:name="android.permission.health.READ_MEDICAL_DATA_CONDITIONS"/>
+  <uses-permission android:name="android.permission.health.WRITE_MEDICAL_DATA"/>
+
   <application android:label="Health Connect cts test app 2">
     <uses-library android:name="android.test.runner"/>
 

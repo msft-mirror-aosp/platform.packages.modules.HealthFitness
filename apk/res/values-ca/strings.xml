@@ -23,6 +23,7 @@
     <string name="home_subtitle" msgid="2154213430054477787">"Gestiona les dades de salut i fitnes al dispositiu, i controla quines aplicacions poden accedir-hi"</string>
     <string name="data_title" msgid="4456619761533380816">"Dades i accés"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"Navega pels registres de salut"</string>
+    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"Consulta els teus registres de salut i quines aplicacions hi poden accedir"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Totes les categories"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Mostra totes les categories"</string>
     <string name="no_data" msgid="1906986019249068659">"No hi ha dades"</string>
@@ -52,7 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"Ahir"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Lectura: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"Escriptura: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="data_type_separator" msgid="1299848322898210658">", "</string>
+    <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Gestiona els permisos"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Hora: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Activitat"</string>
@@ -92,16 +93,56 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"accedir a les teves dades de salut"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Llegir les calories cremades"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Permet que l\'aplicació llegeixi les calories cremades"</string>
-    <string name="background_read_title" msgid="5061383169517186234">"Accedir a les dades en segon pla"</string>
-    <string name="background_read_request_title" msgid="8492898140120977977">"Vols permetre que <xliff:g id="APP_NAME">%1$s</xliff:g> accedeixi a les dades en segon pla?"</string>
+    <string name="background_read_single_request_title" msgid="4903874755139858906">"Vols permetre que <xliff:g id="APP_NAME">%1$s</xliff:g> accedeixi a les dades en segon pla?"</string>
+    <string name="background_read_medical_single_request_description_both_types_granted" msgid="7716161960428574364">"Si ho permets, aquesta aplicació podrà accedir a les dades de fitnes i benestar i als registres de salut quan no l\'estiguis utilitzant."</string>
+    <string name="background_read_medical_single_request_description_medical_granted" msgid="5162456401369633859">"Si ho permets, aquesta aplicació podrà accedir als registres de salut quan no l\'estiguis utilitzant."</string>
+    <string name="background_read_medical_single_request_description_fitness_granted" msgid="6850185345786666516">"Si ho permets, aquesta aplicació podrà accedir a les dades de fitnes i benestar quan no l\'estiguis utilitzant."</string>
+    <string name="background_read_single_request_description" msgid="2679634929322639576">"Si ho permets, aquesta aplicació podrà accedir a les dades de Salut connectada quan no l\'estiguis utilitzant."</string>
+    <string name="history_read_single_request_title" msgid="6848027207063414793">"Vols permetre que <xliff:g id="APP_NAME">%1$s</xliff:g> accedeixi a les dades anteriors?"</string>
+    <string name="history_read_medical_single_request_description" msgid="6408051015819625330">"Si ho permets, aquesta aplicació podrà accedir a les dades de fitnes i benestar afegides abans del dia <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="history_read_medical_single_request_description_fallback" msgid="6685832866184737207">"Si ho permets, aquesta aplicació podrà accedir a totes les dades anteriors de fitnes i benestar."</string>
+    <string name="history_read_single_request_description" msgid="9140843675330318112">"Si ho permets, aquesta aplicació podrà accedir a les dades de Salut connectada afegides abans del dia <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="history_read_single_request_description_fallback" msgid="7685531357676523654">"Si ho permets, aquesta aplicació podrà accedir a les dades anteriors de Salut connectada."</string>
+    <string name="additional_permissions_combined_request_title" msgid="5509177449679251301">"Vols permetre accés addicional a <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
+    <string name="additional_permissions_combined_request_description" msgid="7136418603696342323">"<xliff:g id="APP_NAME">%1$s</xliff:g> també vol accedir a la configuració de Salut connectada"</string>
+    <string name="background_read_medical_combined_request_title_both_types_granted" msgid="4225111383019900451">"Accedir a totes les dades en segon pla"</string>
+    <string name="background_read_medical_combined_request_title_medical_granted" msgid="7245376864667067106">"Accedir als registres de salut en segon pla"</string>
+    <string name="background_read_medical_combined_request_title_fitness_granted" msgid="2639416977416876229">"Accedir a les dades de fitnes i benestar en segon pla"</string>
+    <string name="background_read_medical_combined_request_description_both_types_granted" msgid="8812552783934180223">"Permet que aquesta aplicació accedeixi a les dades de fitnes i benestar i als registres de salut quan no l\'estiguis utilitzant"</string>
+    <string name="background_read_medical_combined_request_description_medical_granted" msgid="5140647084504657934">"Permet que aquesta aplicació accedeixi a aquestes dades quan no l\'estiguis utilitzant"</string>
+    <string name="background_read_medical_combined_request_description_fitness_granted" msgid="919785628751851996">"Permet que aquesta aplicació accedeixi a aquestes dades quan no l\'estiguis utilitzant"</string>
+    <string name="background_read_combined_request_title" msgid="4184649296697480520">"Accedir a les dades en segon pla"</string>
+    <string name="background_read_combined_request_description" msgid="2423480522986545286">"Permet que aquesta aplicació accedeixi a les dades de Salut connectada quan no l\'estiguis utilitzant"</string>
+    <string name="history_read_medical_combined_request_title" msgid="1262267962861942478">"Accedir a les dades anteriors de fitnes i benestar"</string>
+    <string name="history_read_medical_combined_request_description" msgid="7550922315652791771">"Permet que aquesta aplicació accedeixi a les dades afegides abans del dia <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_medical_combined_request_description_fallback" msgid="3567968660826834911">"Permet que aquesta aplicació accedeixi a totes les dades anteriors"</string>
+    <string name="history_read_combined_request_title" msgid="9023811767370482028">"Accedir a les dades anteriors"</string>
+    <string name="history_read_combined_request_description" msgid="1437787086896636484">"Permet que aquesta aplicació accedeixi a les dades de Salut connectada afegides abans del dia <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_combined_request_description_fallback" msgid="4974756796396067521">"Permet que aquesta aplicació accedeixi a les dades anteriors de Salut connectada"</string>
+    <string name="history_read_medical_combined_request_footer" msgid="5301940225768076844">"<xliff:g id="APP_NAME">%1$s</xliff:g> ja pot accedir a les dades anteriors dels teus registres de salut"</string>
+    <string name="history_read_medical_combined_request_footer_link" msgid="355676489585738987">"Més informació sobre els permisos"</string>
+    <string name="background_read_medical_access_title_both_types_granted" msgid="4475972082863444603">"Accedir a totes les dades en segon pla"</string>
+    <string name="background_read_medical_access_title_medical_granted" msgid="7852915238347056139">"Accedir als registres de salut en segon pla"</string>
+    <string name="background_read_medical_access_title_fitness_granted" msgid="8691675952190647227">"Accedir a les dades de fitnes i benestar en segon pla"</string>
+    <string name="background_read_medical_access_description_both_types_granted" msgid="7193350031798606366">"Permet que aquesta aplicació accedeixi a les dades de fitnes i benestar i als registres de salut quan no l\'estiguis utilitzant"</string>
+    <string name="background_read_medical_access_description_medical_granted" msgid="8570683510275055450">"Permet que aquesta aplicació accedeixi a aquestes dades quan no l\'estiguis utilitzant"</string>
+    <string name="background_read_medical_access_description_fitness_granted" msgid="2584567718805499407">"Permet que aquesta aplicació accedeixi a aquestes dades quan no l\'estiguis utilitzant"</string>
+    <string name="background_read_access_title" msgid="4184498185599147117">"Accedir a les dades en segon pla"</string>
+    <string name="background_read_access_description" msgid="2360433029368320323">"Permet que aquesta aplicació accedeixi a les dades de Salut connectada quan no l\'estiguis utilitzant"</string>
+    <string name="history_read_medical_access_title" msgid="1375462150672418692">"Accedir a les dades anteriors de fitnes i benestar"</string>
+    <string name="history_read_medical_access_description" msgid="5615959269427106141">"Permet que aquesta aplicació accedeixi a les dades afegides abans del dia <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_medical_access_description_fallback" msgid="3888547064992673535">"Permet que aquesta aplicació accedeixi a totes les dades anteriors"</string>
+    <string name="history_read_access_title" msgid="870048398702887144">"Accedir a les dades anteriors"</string>
+    <string name="history_read_access_description" msgid="800722432229526128">"Permet que aquesta aplicació accedeixi a les dades de Salut connectada afegides abans del dia <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_access_description_fallback" msgid="4151538305657852010">"Permet que aquesta aplicació accedeixi a totes les dades anteriors de Salut connectada"</string>
+    <string name="history_read_medical_access_read_warning" msgid="8878271647163400440">"Actualment no es llegeixen dades de fitnes perquè <xliff:g id="APP_NAME">%1$s</xliff:g> no té els permisos de lectura activats"</string>
+    <string name="additional_access_medical_read_footer" msgid="4640796038121080343">"<xliff:g id="APP_NAME">%1$s</xliff:g> ja pot accedir a les dades anteriors dels teus registres de salut. Per canviar-ho, desactiva els permisos de registre de salut per a aquesta aplicació"</string>
+    <string name="additional_access_medical_read_footer_link" msgid="2797623091827504856">"Gestiona els permisos de registre de salut"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Activa almenys un permís de lectura per poder activar l\'accés en segon pla o a les dades anteriors d\'aquesta aplicació"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"Activa almenys un permís de lectura per poder activar l\'accés en segon pla d\'aquesta aplicació"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"Activa almenys un permís de lectura per poder activar l\'accés a les dades anteriors d\'aquesta aplicació"</string>
+    <string name="historic_access_description" msgid="3309195636349468633">"Permet que aquesta aplicació accedeixi a les dades anteriors de Salut connectada"</string>
     <string name="background_read_description" msgid="3203594555849969283">"Permet que aquesta aplicació accedeixi a les dades de Salut connectada quan no l\'estiguis utilitzant"</string>
-    <string name="background_read_request_description" msgid="1664402237648709581">"Si ho permets, aquesta aplicació podrà accedir a les dades de Salut connectada quan no l\'estiguis utilitzant."</string>
-    <string name="historic_access_title" msgid="3584594624937737030">"Accedir a les dades anteriors"</string>
-    <string name="historic_access_request_title" msgid="4645920231853414742">"Vols permetre que <xliff:g id="APP_NAME">%1$s</xliff:g> accedeixi a les dades anteriors?"</string>
-    <string name="historic_access_description" msgid="2616669701088141765">"Permet que aquesta aplicació accedeixi a les dades de Salut connectada afegides abans del dia <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
-    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Permet que aquesta aplicació accedeixi a les dades anteriors de Salut connectada"</string>
-    <string name="historic_access_request_description" msgid="136335743939253358">"Si ho permets, aquesta aplicació podrà accedir a les dades de Salut connectada afegides abans del dia <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
-    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Si ho permets, aquesta aplicació podrà accedir a les dades anteriors de Salut connectada."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Calories actives cremades"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"calories actives cremades"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Llegir calories actives cremades"</string>
@@ -155,6 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"impulsos en cadira de rodes"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Llegir els impulsos en cadira de rodes"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Escriure els impulsos en cadira de rodes"</string>
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"Intensitat de l\'activitat"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"intensitat de l\'activitat"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"Llegir la intensitat de l\'activitat"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"Escriure la intensitat de l\'activitat"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Metabolisme basal"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"metabolisme basal"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Llegir el metabolisme basal"</string>
@@ -267,34 +312,44 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"temperatura de la pell"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Llegir la temperatura de la pell"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Escriure la temperatura de la pell"</string>
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"Això inclou tots els registres de salut que s\'han sincronitzat i afegit a Salut connectada. És possible que no sigui la teva història clínica completa i no inclou una descripció mèdica dels teus registres de salut."</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Tots els registres de salut"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"tots els registres de salut"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"Escriure tots els registres de salut"</string>
-    <string name="allergy_intolerance_uppercase_label" msgid="962905760867412783">"Al·lèrgies"</string>
-    <string name="allergy_intolerance_lowercase_label" msgid="8705895234297776508">"al·lèrgies"</string>
-    <string name="allergy_intolerance_content_description" msgid="5938549394285540206">"Llegeix les al·lèrgies"</string>
-    <string name="immunization_uppercase_label" msgid="1467176749064014020">"Immunització"</string>
-    <string name="immunization_lowercase_label" msgid="6464922369026887687">"immunització"</string>
-    <string name="immunization_content_description" msgid="2910674919337229803">"Llegir la immunització"</string>
-    <string name="laboratory_results_uppercase_label" msgid="2521886562709901654">"Resultats de laboratori"</string>
-    <string name="laboratory_results_lowercase_label" msgid="6437932041744631964">"resultats de laboratori"</string>
-    <string name="laboratory_results_content_description" msgid="5882338877203692484">"Llegeix els resultats de laboratori"</string>
+    <string name="allergies_intolerances_uppercase_label" msgid="2458552115947636884">"Al·lèrgies"</string>
+    <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"al·lèrgies"</string>
+    <string name="allergies_intolerances_content_description" msgid="7954532940667325068">"Llegir les al·lèrgies"</string>
+    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Condicions"</string>
+    <string name="conditions_lowercase_label" msgid="2678248918552246997">"condicions"</string>
+    <string name="conditions_content_description" msgid="3230552343616193829">"Llegir les condicions"</string>
+    <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Vacunes"</string>
+    <string name="vaccines_lowercase_label" msgid="4991324441768127447">"vacunes"</string>
+    <string name="vaccines_content_description" msgid="7152741514791951684">"Llegir les vacunes"</string>
+    <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Analítiques"</string>
+    <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"analítiques"</string>
+    <string name="laboratory_results_content_description" msgid="7888886103734085841">"Llegir les analítiques"</string>
     <string name="medications_uppercase_label" msgid="4783281053427990225">"Medicaments"</string>
     <string name="medications_lowercase_label" msgid="7808038774503092207">"medicaments"</string>
     <string name="medications_content_description" msgid="6165382876281780190">"Llegir els medicaments"</string>
+    <string name="personal_details_uppercase_label" msgid="7241635933310394120">"Informació personal"</string>
+    <string name="personal_details_lowercase_label" msgid="1907848447611775151">"informació personal"</string>
+    <string name="personal_details_content_description" msgid="3191211304673909831">"Llegir informació personal"</string>
+    <string name="practitioner_details_uppercase_label" msgid="2940667649808082510">"Informació del metge"</string>
+    <string name="practitioner_details_lowercase_label" msgid="8195591077717971542">"informació del metge"</string>
+    <string name="practitioner_details_content_description" msgid="8775396516928504185">"Llegir la informació del metge"</string>
     <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"Embaràs"</string>
     <string name="pregnancy_lowercase_label" msgid="810439290131044517">"embaràs"</string>
     <string name="pregnancy_content_description" msgid="3436773729243586287">"Llegeix l\'embaràs"</string>
-    <string name="problems_uppercase_label" msgid="4047882613795113715">"Problemes"</string>
-    <string name="problems_lowercase_label" msgid="6934298611508910866">"problemes"</string>
-    <string name="problems_content_description" msgid="1549418294742668962">"Llegeix els problemes"</string>
     <string name="procedures_uppercase_label" msgid="9176087520132593261">"Procediments"</string>
     <string name="procedures_lowercase_label" msgid="5320804313946273234">"procediments"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"Llegeix els procediments"</string>
-    <string name="social_history_uppercase_label" msgid="1731364502071035544">"Historial social"</string>
+    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Historial social"</string>
     <string name="social_history_lowercase_label" msgid="9027541979445736412">"historial social"</string>
     <string name="social_history_content_description" msgid="7187059309389849831">"Llegeix l\'historial social"</string>
-    <string name="vital_signs_uppercase_label" msgid="214938594708280346">"Constants vitals"</string>
+    <string name="visits_uppercase_label" msgid="8532619758336375886">"Visites"</string>
+    <string name="visits_lowercase_label" msgid="2545887061364564151">"visites"</string>
+    <string name="visits_content_description" msgid="6336796415049565697">"Llegir visites"</string>
+    <string name="vital_signs_uppercase_label" msgid="289862347143374640">"Constants vitals"</string>
     <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"constants vitals"</string>
     <string name="vital_signs_content_description" msgid="914944352640528612">"Llegeix les constants vitals"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Consciència plena"</string>
@@ -303,16 +358,25 @@
     <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Escriure consciència plena"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"Permet que <xliff:g id="APP_NAME">%1$s</xliff:g> llegeixi"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Permet que <xliff:g id="APP_NAME">%1$s</xliff:g> escrigui"</string>
-    <string name="request_permissions_cancel" msgid="1787483997235365393">"Cancel·la"</string>
     <string name="request_permissions_allow" msgid="4201324235711040631">"Permet"</string>
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Permet-ho tot"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"No permetis"</string>
-    <string name="request_permissions_header_desc" msgid="5561173070722750153">"Tria les dades que vols que aquesta aplicació pugui llegir o escriure a Salut connectada"</string>
+    <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Tria les dades que vols que aquesta aplicació pugui llegir o escriure a Salut connectada"</string>
+    <string name="request_permissions_data_access_type_read" msgid="6005792244220381045">"Tria les dades que vols que aquesta aplicació pugui llegir de Salut connectada"</string>
+    <string name="request_permissions_data_access_type_write" msgid="6369810467678676337">"Tria les dades que vols que aquesta aplicació pugui escriure a Salut connectada"</string>
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Si li dones accés de lectura, l\'aplicació podrà llegir les dades noves i les dels 30 darrers dies"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Si li dones accés de lectura, l\'aplicació podrà llegir les dades noves i les anteriors"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Vols permetre que <xliff:g id="APP_NAME">%1$s</xliff:g> accedeixi a Salut connectada?"</string>
-    <string name="request_permissions_rationale" msgid="6154280355215802538">"Pots obtenir informació sobre com <xliff:g id="APP_NAME">%1$s</xliff:g> gestiona les teves dades a la <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> del desenvolupador"</string>
+    <string name="request_permissions_with_medical_header_title" msgid="6269944931319362595">"Vols permetre que <xliff:g id="APP_NAME">%1$s</xliff:g> accedeixi a les dades de fitnes i benestar?"</string>
+    <string name="request_permissions_rationale" msgid="2642076968583316986">"Pots obtenir informació sobre com <xliff:g id="APP_NAME">%1$s</xliff:g> gestiona les teves dades a la seva <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"política de privadesa"</string>
+    <string name="medical_request_header" msgid="2300521519021510027">"Vols permetre que <xliff:g id="APP_NAME">%1$s</xliff:g> accedeixi als teus registres de salut?"</string>
+    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Si li dones accés, l\'aplicació podrà llegir i escriure dades, com ara al·lèrgies, analítiques, vacunes i més\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Si li dones accés, l\'aplicació podrà llegir dades, com ara al·lèrgies, analítiques, vacunes i més\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_about_health_records" msgid="7204918218748362687">"Sobre els registres de salut"</string>
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"Les dades per compartir inclouen"</string>
+    <string name="medical_request_summary" msgid="7281321524805015510">"Si ho permets, <xliff:g id="APP_NAME">%1$s</xliff:g> podrà compartir els teus registres de salut amb Salut connectada."</string>
+    <string name="medical_request_footer" msgid="6533749932770903089">"Sincronitza els teus registres de salut de diferents aplicacions i fonts per tenir-los en un sol lloc"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Vols suprimir tots els permisos?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Suprimeix-ho tot"</string>
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> ja no podrà llegir ni escriure dades de Salut connectada.\n\nAixò no afecta altres permisos que pot tenir aquesta aplicació, com ara els relacionats amb la càmera, el micròfon o la ubicació."</string>
@@ -320,20 +384,28 @@
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> ja no podrà llegir ni escriure dades de Salut connectada, ni tan sols les dades anteriors.\n\nAixò no afecta altres permisos que pot tenir aquesta aplicació, com ara els relacionats amb la ubicació, la càmera o el micròfon."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> ja no podrà llegir ni escriure dades de Salut connectada, ni tan sols les dades en segon pla o les dades anteriors.\n\nAixò no afecta altres permisos que pot tenir aquesta aplicació, com ara els relacionats amb la ubicació, la càmera o el micròfon."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Suprimeix també les dades de <xliff:g id="APP_NAME">%1$s</xliff:g> de Salut connectada"</string>
-    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"Vols suprimir tots els permisos?"</string>
-    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"Vols suprimir tots els permisos de registre de salut?"</string>
     <string name="disconnect_all_fitness_permissions_title" msgid="7612364222525900592">"Vols suprimir tots els permisos de fitnes i benestar?"</string>
+    <string name="disconnect_all_fitness_permissions_dialog_checkbox" msgid="8808559689899914478">"Suprimeix també de Salut connectada les dades de fitnes de <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"Vols suprimir tots els permisos de registre de salut?"</string>
+    <string name="disconnect_all_medical_permissions_dialog_checkbox" msgid="7782158941871987263">"Suprimeix també de Salut connectada els registres de salut de <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="disconnect_all_fitness_or_medical_no_additional_permissions_dialog_message" msgid="6610810945930258582">"<xliff:g id="APP_NAME">%1$s</xliff:g> ja no podrà llegir ni escriure aquestes dades de Salut connectada.\n\nAixò no afecta altres permisos que pot tenir aquesta aplicació, com ara els relacionats amb la càmera, el micròfon o la ubicació."</string>
+    <string name="disconnect_all_fitness_or_medical_and_background_permissions_dialog_message" msgid="7138878481421234556">"<xliff:g id="APP_NAME">%1$s</xliff:g> ja no podrà llegir ni escriure aquestes dades de Salut connectada, ni tan sols les dades en segon pla.\n\nAixò no afecta altres permisos que pot tenir aquesta aplicació, com ara els relacionats amb la càmera, el micròfon o la ubicació."</string>
+    <string name="disconnect_all_fitness_or_medical_and_historical_permissions_dialog_message" msgid="1519496566456028625">"<xliff:g id="APP_NAME">%1$s</xliff:g> ja no podrà llegir ni escriure aquestes dades de Salut connectada, ni tan sols les dades anteriors.\n\nAixò no afecta altres permisos que pot tenir aquesta aplicació, com ara els relacionats amb la càmera, el micròfon o la ubicació."</string>
+    <string name="disconnect_all_fitness_or_medical_and_additional_permissions_dialog_message" msgid="5147728456578218902">"<xliff:g id="APP_NAME">%1$s</xliff:g> ja no podrà llegir ni escriure aquestes dades de Salut connectada, ni tan sols les dades anteriors o en segon pla.\n\nAixò no afecta altres permisos que pot tenir aquesta aplicació, com ara els relacionats amb la càmera, el micròfon o la ubicació."</string>
+    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"Vols suprimir tots els permisos?"</string>
     <string name="disconnect_all_health_no_additional_permissions_dialog_message" msgid="211728516196974197">"<xliff:g id="APP_NAME">%1$s</xliff:g> ja no podrà llegir ni escriure dades de Salut connectada.\n\nAixò no afecta altres permisos que pot tenir aquesta aplicació, com ara els relacionats amb la càmera, el micròfon o la ubicació."</string>
     <string name="disconnect_all_health_and_background_permissions_dialog_message" msgid="654533675296670869">"<xliff:g id="APP_NAME">%1$s</xliff:g> ja no podrà llegir ni escriure dades de Salut connectada, ni tan sols les dades en segon pla.\n\nAixò no afecta altres permisos que pot tenir aquesta aplicació, com ara els relacionats amb la càmera, el micròfon o la ubicació."</string>
     <string name="disconnect_all_health_and_historical_permissions_dialog_message" msgid="6743215620789357899">"<xliff:g id="APP_NAME">%1$s</xliff:g> ja no podrà llegir ni escriure dades de Salut connectada, ni tan sols les dades anteriors.\n\nAixò no afecta altres permisos que pot tenir aquesta aplicació, com ara els relacionats amb la càmera, el micròfon o la ubicació."</string>
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"<xliff:g id="APP_NAME">%1$s</xliff:g> ja no podrà llegir ni escriure dades de Salut connectada, ni tan sols les dades anteriors o en segon pla.\n\nAixò no afecta altres permisos que pot tenir aquesta aplicació, com ara els relacionats amb la càmera, el micròfon o la ubicació."</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"Suprimeix també de Salut connectada les dades de fitnes i els registres de salut de <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"S\'han suprimit els permisos per a aquesta aplicació"</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"Suprimeix també totes les dades de Salut connectada"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Dia següent"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Dia seleccionat"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Dia anterior"</string>
     <string name="default_error" msgid="7966868260616403475">"S\'ha produït un error. Torna-ho a provar."</string>
     <string name="unkwown_resource" msgid="7932225227431922125">"Recurs desconegut"</string>
+    <string name="raw_fhir_title" msgid="1295744907036066319">"Dades d\'origen"</string>
     <string name="raw_fhir_open_bracket" msgid="7974657451368655325">"<xliff:g id="PREFIX">%1$s</xliff:g>Clau d\'obertura."</string>
     <string name="raw_fhir_closed_bracket" msgid="9084379463440675078">"<xliff:g id="PREFIX">%1$s</xliff:g>Clau de tancament."</string>
     <string name="raw_fhir_field_value" msgid="369633095565031835">"<xliff:g id="PREFIX">%1$s</xliff:g> Valor del camp <xliff:g id="FIELD">%2$s</xliff:g>"</string>
@@ -361,20 +433,21 @@
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Aquestes aplicacions ja no tenen accés, però encara tenen dades emmagatzemades a Salut connectada"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> pot llegir les dades afegides després del dia <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"Per gestionar altres permisos d\'Android a què pot accedir aquesta aplicació, ves a Configuració &gt; Aplicacions"</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"Les dades que comparteixes amb <xliff:g id="APP_NAME">%1$s</xliff:g> estan subjectes a la seva política de privadesa"</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"Pots obtenir informació sobre com gestiona les teves dades <xliff:g id="APP_NAME">%1$s</xliff:g> a la política de privadesa del desenvolupador"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Per gestionar altres permisos d\'Android a què pot accedir aquesta aplicació, ves a Configuració i, a continuació, toca Aplicacions"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Llegeix la política de privadesa"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"S\'hi ha accedit durant les 24 darreres hores"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Accés de l\'aplicació"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Actualment no tens cap aplicació compatible instal·lada"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Accés addicional"</string>
+    <string name="additional_access_summary" msgid="1076197455435130191">"Dades anteriors, dades en segon pla"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"S\'han suprimit els permisos addicionals per a aquesta aplicació"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Permisos"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"Fitnes i benestar"</string>
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"Exercici, son, nutrició i altres"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"Registres de salut"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"registres de salut"</string>
-    <string name="medical_permissions_summary" msgid="5553982055903211592">"Analítiques, medicaments, vacunes i altres"</string>
+    <string name="medical_permissions_summary" msgid="5526004634109548577">"Analítiques, medicaments, vacunes i altres"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Aplicacions amb permisos suprimits"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Salut connectada ha suprimit els permisos de <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Salut connectada ha suprimit els permisos de <xliff:g id="APP_DATA_0">%1$s</xliff:g> i <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -466,6 +539,8 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Ves a Play Store"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Comença amb Salut connectada"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Salut connectada emmagatzema les teves dades de salut i fitnes, i t\'ofereix una manera senzilla de sincronitzar les diverses aplicacions del dispositiu"</string>
+    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Salut connectada emmagatzema i sincronitza les teves dades de salut i fitnes de diverses aplicacions.\n\n"<b>"Dades de salut i benestar"</b>", com ara sessions d\'exercici, passos, nutrició, son i més\n\n"<b>"Registres de salut"</b>", com ara vacunes, analítiques i més"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Amb Salut connectada, pots"</string>
     <string name="share_data" msgid="3481932156368883946">"Comparteix dades amb les aplicacions"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Tria les dades que cada aplicació pot llegir o escriure a Salut connectada"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Gestiona la configuració i la privadesa"</string>
@@ -566,7 +641,9 @@
     <string name="flow_light" msgid="1937543318146228793">"Flux lleuger"</string>
     <string name="flow_medium" msgid="3783688724668943154">"Flux normal"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"Flux abundant"</string>
+    <string name="flow_unknown" msgid="1634411759928572900">"Flux desconegut"</string>
     <string name="period_day" msgid="3821944462093965882">"Dia <xliff:g id="DAY">%1$d</xliff:g> de <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g> del període menstrual"</string>
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{Període menstrual (1 dia)}other{Període (# dies)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"Positiva"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"Negativa"</string>
     <string name="ovulation_high" msgid="205362931427158291">"Alta"</string>
@@ -713,6 +790,8 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"Música"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"Altres"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Sense guia"</string>
+    <string name="activity_intensity_type_moderate" msgid="7974792315871109564">"Moderada"</string>
+    <string name="activity_intensity_type_vigorous" msgid="5651020560923780330">"Vigorosa"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> min"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> h <xliff:g id="MIN">%2$s</xliff:g> min"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> h"</string>
@@ -965,23 +1044,18 @@
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Integració en curs"</string>
     <string name="migration_in_progress_screen_integration_details" msgid="5916989113111973466">"Salut connectada s\'està integrant amb el sistema Android.\n\nÉs possible que les dades i els permisos tardin una estona a transferir-se."</string>
     <string name="migration_in_progress_screen_integration_dont_close" msgid="2095732208438772444">"No tanquis l\'aplicació fins que no se\'t notifiqui que s\'ha completat el procés."</string>
-    <string name="migration_in_progress_notification_title" msgid="8873411008158407737">"La integració de Salut connectada està en curs"</string>
     <string name="migration_update_needed_screen_title" msgid="3260466598312877429">"Actualització necessària"</string>
     <string name="migration_update_needed_screen_details" msgid="7984745102006782603">"Salut connectada s\'està integrant amb el sistema Android perquè hi puguis accedir directament des de la configuració."</string>
     <string name="update_button" msgid="4544529019832009496">"Actualitza"</string>
     <string name="migration_update_needed_notification_content" msgid="478899618719297517">"Inicia l\'actualització perquè Salut connectada pugui continuar integrant-se amb la configuració del sistema"</string>
-    <string name="migration_update_needed_notification_action" msgid="1219223694165492000">"Actualitza ara"</string>
     <string name="migration_module_update_needed_notification_title" msgid="5428523284357105379">"Actualització del sistema necessària"</string>
     <string name="migration_module_update_needed_action" msgid="7211167950758064289">"Abans de continuar, actualitza el sistema del telèfon."</string>
     <string name="migration_module_update_needed_restart" msgid="1246884613546321798">"Si ja has actualitzat el sistema del telèfon, prova de reiniciar-lo per continuar la integració"</string>
-    <string name="migration_app_update_needed_notification_title" msgid="8971076370900025444">"Cal actualitzar Salut connectada"</string>
     <string name="migration_app_update_needed_action" msgid="3289432528592774601">"Abans de continuar, actualitza l\'aplicació Salut connectada a la darrera versió."</string>
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"Es necessita més espai"</string>
     <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"Salut connectada necessita <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> d\'espai d\'emmagatzematge al telèfon per continuar amb la integració.\n\nAllibera espai al telèfon i torna-ho a provar."</string>
     <string name="try_again_button" msgid="8745496819992160789">"Torna-ho a provar"</string>
     <string name="free_up_space_button" msgid="4141013808635654695">"Allibera espai"</string>
-    <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"Es necessita més espai"</string>
-    <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"Salut connectada necessita <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> d\'espai d\'emmagatzematge al telèfon per continuar amb la integració."</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"La integració s\'ha posat en pausa"</string>
     <string name="migration_paused_screen_details" msgid="5898311710030340187">"L\'aplicació Salut connectada s\'ha tancat mentre s\'estava integrant amb el sistema Android.\n\nFes clic a Reprèn per tornar a obrir l\'aplicació i continuar transferint les teves dades i permisos."</string>
     <string name="migration_paused_screen_details_timeout" msgid="353768000785837394">"Per conservar les teves dades de Salut connectada, completa la integració en <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
@@ -992,11 +1066,9 @@
     <string name="resume_migration_banner_description" msgid="6236230413670826036">"Toca per continuar integrant Salut connectada amb el sistema Android. Per conservar les teves dades, completa la integració en <xliff:g id="TIME_NEEDED">%1$s</xliff:g>."</string>
     <string name="resume_migration_banner_description_fallback" msgid="6060444898839211883">"Toca per continuar integrant Salut connectada amb el sistema Android."</string>
     <string name="resume_migration_banner_button" msgid="2112318760107756469">"Continua"</string>
-    <string name="resume_migration_notification_title" msgid="8859575633668908327">"Reprèn la integració de Salut connectada"</string>
-    <string name="resume_migration_notification_content" msgid="46172108837648715">"Per conservar les teves dades, completa la integració en <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Cal actualitzar l\'aplicació"</string>
-    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"L\'aplicació <xliff:g id="APP_NAME">%1$s</xliff:g> ha d\'estar actualitzada perquè es continuï sincronitzant amb Salut connectada"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Algunes aplicacions han d\'estar actualitzades perquè es continuïn sincronitzant amb Salut connectada"</string>
+    <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"L\'aplicació <xliff:g id="APP_NAME">%1$s</xliff:g> ha d\'estar actualitzada perquè es continuï sincronitzant amb Salut connectada. És possible que no hi hagi actualitzacions disponibles per a totes les aplicacions."</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"Algunes aplicacions han d\'estar actualitzades perquè es continuïn sincronitzant amb Salut connectada. És possible que no hi hagi actualitzacions disponibles per a totes les aplicacions."</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Cerca actualitzacions"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Més informació"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Integració de Salut connectada"</string>
@@ -1011,10 +1083,6 @@
     <string name="migration_not_complete_dialog_title" msgid="3725576338159027149">"La integració de Salut connectada no s\'ha completat"</string>
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"Rebràs una notificació quan torni a estar disponible."</string>
     <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"Entesos"</string>
-    <string name="migration_not_complete_notification_title" msgid="7392885522310227293">"La integració de Salut connectada no s\'ha completat"</string>
-    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"Més informació"</string>
-    <string name="migration_complete_notification_title" msgid="4988631739109332404">"S\'ha completat la integració de Salut connectada"</string>
-    <string name="migration_complete_notification_action" msgid="5350322865206331186">"Obre"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Novetats"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Ara pots accedir a Salut connectada directament des de la configuració. Desinstal·la l\'aplicació Salut connectada en qualsevol moment per alliberar espai d\'emmagatzematge."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"Entesos"</string>
@@ -1035,7 +1103,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"Edita les fonts d\'aplicacions"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Opció predeterminada del dispositiu"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Dades de l\'aplicació"</string>
-    <string name="no_data_footer" msgid="4777297654713673100">"Les dades de les aplicacions amb accés a Salut connectada es mostraran aquí"</string>
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"Les dades de <xliff:g id="APP_NAME">%1$s</xliff:g> es mostraran aquí"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Les dades de les aplicacions amb accés a Salut connectada es mostraran aquí"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"Dia"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Setmana"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Mes"</string>
@@ -1045,11 +1114,6 @@
     <string name="last_month_header" msgid="1359164797239191253">"El mes passat"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Entrades"</string>
     <string name="tab_access" msgid="7818197975407243701">"Accedeix"</string>
-    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Vols permetre accés addicional a <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
-    <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> també vol accedir a la configuració de Salut connectada"</string>
-    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Activa almenys un permís de lectura per poder activar l\'accés en segon pla o a les dades anteriors d\'aquesta aplicació"</string>
-    <string name="additional_access_background_footer" msgid="1638739578431818525">"Activa almenys un permís de lectura per poder activar l\'accés en segon pla d\'aquesta aplicació"</string>
-    <string name="additional_access_history_footer" msgid="5326814559930548467">"Activa almenys un permís de lectura per poder activar l\'accés a les dades anteriors d\'aquesta aplicació"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Començar a utilitzar Salut connectada"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Sincronitza les teves primeres aplicacions perquè comparteixin dades de salut i fitnes entre elles"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Configura"</string>
@@ -1059,8 +1123,20 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Mostra les aplicacions compatibles"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Cerca més aplicacions per sincronitzar amb <xliff:g id="APP_NAME">%s</xliff:g> a través de Salut connectada"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Mostra a la botiga d\'aplicacions"</string>
+    <string name="lock_screen_banner_title" msgid="5384381892985739755">"Defineix un bloqueig de pantalla"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"Per a més seguretat de les teves dades de salut, configura un PIN, un patró o una contrasenya per a aquest dispositiu"</string>
+    <string name="lock_screen_banner_button" msgid="2537090011380728122">"Defineix un bloqueig de pantalla"</string>
     <string name="select_all" msgid="837499881590001166">"Selecciona-ho tot"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Les aplicacions connectades ja no podran llegir aquestes dades de Salut connectada"</string>
+    <string name="a11y_checked" msgid="3685413382346589880">"Marcat"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"Desmarcat"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"Ruta del mapa d\'exercici disponible"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"Dia següent"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"Setmana següent"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"Mes següent"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"Dia anterior"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"Setmana anterior"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"Mes anterior"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Vols suprimir permanentment totes les dades?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Vols suprimir permanentment les dades seleccionades?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Vols suprimir permanentment totes les dades de l\'aplicació <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
@@ -1079,4 +1155,38 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Vols suprimir permanentment les entrades seleccionades de l\'aplicació <xliff:g id="APP_NAME">%1$s</xliff:g> de la setmana <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Vols suprimir permanentment les entrades seleccionades de l\'aplicació <xliff:g id="APP_NAME">%1$s</xliff:g> de <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Vols suprimir permanentment aquesta entrada de l\'aplicació <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Vols suprimir permanentment les dades de <xliff:g id="DATA_TYPE">%1$s</xliff:g> de <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
+    <string name="on" msgid="8266542510798355807">"Activat"</string>
+    <string name="off" msgid="6996623844428550649">"Desactivat"</string>
+    <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"S\'hi ha accedit a les <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
+    <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"S\'hi va accedir ahir a les <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
+    <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"S\'hi ha accedit el dia <xliff:g id="TIME_DATE_0">%1$s</xliff:g> a les <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"Permet sempre"</string>
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"Permet seleccionats"</string>
+    <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Mentre s\'utilitza l\'aplicació"</string>
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"Rebutja\'ls tots"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Vols permetre que <xliff:g id="APP_NAME">%1$s</xliff:g> accedeixi a les dades de fitnes i benestar?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> sol·licita accés a <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nPermet-ho tot o controla-ho individualment."</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Vols permetre que <xliff:g id="APP_NAME">%1$s</xliff:g> accedeixi a <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"Fitnes i benestar"</string>
+    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"sempre"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"mentre s\'utilitza"</string>
+    <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Sempre"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Mentre s\'utilitza"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> pot accedir a totes les teves dades de fitnes i benestar <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allowed_to_access" msgid="4179317387300812335">"Amb permís d\'accés"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"Amb permís de lectura"</string>
+    <string name="give_permission_prompt" msgid="5788144216023065504">"Aquests permisos donen a <xliff:g id="APP_NAME">%1$s</xliff:g> accés a les dades dels sensors del teu dispositiu."</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"<xliff:g id="NUMBER_0">%1$d</xliff:g> de <xliff:g id="OTHER_NUMBER">%2$d</xliff:g> aplicacions permeses"</string>
+    <string name="no_apps_requesting" msgid="8088684445910698363">"Cap aplicació ho ha sol·licitat"</string>
+    <string name="allowed" msgid="4158456017482263737">"Es permet"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"No es permet"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Les aplicacions amb aquest permís poden accedir a les dades de <xliff:g id="DATA_TYPE">%s</xliff:g> dels sensors del teu dispositiu."</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Vols suprimir l\'accés a <xliff:g id="DATA_TYPE">%s</xliff:g> per a totes les aplicacions del rellotge?"</string>
+    <string name="icon_content_check_mark" msgid="358150681017987426">"Marca de verificació"</string>
+    <string name="icon_content_cross_mark" msgid="3007762424358780248">"Creu"</string>
+    <string name="current_allow_mode" msgid="6716206063077569218">"Actualment, <xliff:g id="APP_NAME">%1$s</xliff:g> pot accedir a les dades de fitnes i benestar <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Vols permetre que <xliff:g id="APP_NAME">%1$s</xliff:g> accedeixi a les dades de fitnes i benestar sempre?"</string>
+    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> té accés a <xliff:g id="DATA_TYPES">%2$s</xliff:g>"</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Gestiona els permisos de fitnes i benestar"</string>
 </resources>

@@ -21,7 +21,7 @@ import static android.health.connect.Constants.DEFAULT_LONG;
 import android.health.connect.Constants;
 import android.health.connect.RecordIdFilter;
 import android.health.connect.aidl.DeleteUsingFiltersRequestParcel;
-import android.health.connect.internal.datatypes.utils.RecordMapper;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 import android.util.Slog;
@@ -29,7 +29,7 @@ import android.util.Slog;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
-import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 
 import java.util.ArrayList;
@@ -58,6 +58,7 @@ public final class DeleteTransactionRequest {
             String packageName,
             DeleteUsingFiltersRequestParcel request,
             AppInfoHelper appInfoHelper) {
+        var internalHealthConnectMappings = InternalHealthConnectMappings.getInstance();
         Objects.requireNonNull(packageName);
         mPackageName = packageName;
         mDeleteTableRequests = new ArrayList<>(request.getRecordTypeFilters().size());
@@ -69,8 +70,9 @@ public final class DeleteTransactionRequest {
             Map<RecordHelper<?>, List<UUID>> recordTypeToUuids = new ArrayMap<>();
             for (RecordIdFilter recordId : recordIds) {
                 RecordHelper<?> recordHelper =
-                        RecordHelperProvider.getRecordHelper(
-                                RecordMapper.getInstance().getRecordType(recordId.getRecordType()));
+                        internalHealthConnectMappings.getRecordHelper(
+                                HealthConnectMappings.getInstance()
+                                        .getRecordType(recordId.getRecordType()));
                 UUID uuid = StorageUtils.getUUIDFor(recordId, packageName);
                 if (uuidSet.contains(uuid)) {
                     // id has been already been processed;
@@ -97,14 +99,15 @@ public final class DeleteTransactionRequest {
         if (recordTypeFilters == null || recordTypeFilters.isEmpty()) {
             recordTypeFilters =
                     new ArrayList<>(
-                            RecordMapper.getInstance()
+                            HealthConnectMappings.getInstance()
                                     .getRecordIdToExternalRecordClassMap()
                                     .keySet());
         }
 
         recordTypeFilters.forEach(
                 (recordType) -> {
-                    RecordHelper<?> recordHelper = RecordHelperProvider.getRecordHelper(recordType);
+                    RecordHelper<?> recordHelper =
+                            internalHealthConnectMappings.getRecordHelper(recordType);
                     Objects.requireNonNull(recordHelper);
 
                     mDeleteTableRequests.add(

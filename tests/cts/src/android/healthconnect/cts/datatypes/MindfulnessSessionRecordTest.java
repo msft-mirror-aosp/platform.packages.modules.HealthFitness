@@ -64,7 +64,8 @@ public class MindfulnessSessionRecordTest {
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
-                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+                    TestUtils::isHealthConnectFullySupported,
+                    "Tests should run on supported hardware only.");
 
     @After
     public void tearDown() throws InterruptedException {
@@ -323,7 +324,7 @@ public class MindfulnessSessionRecordTest {
 
         MindfulnessSessionRecord recordA =
                 new MindfulnessSessionRecord.Builder(
-                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_OTHER)
+                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_BREATHING)
                         .setTitle("titleA")
                         .setNotes("notes")
                         .setStartZoneOffset(startZoneOffset)
@@ -353,7 +354,7 @@ public class MindfulnessSessionRecordTest {
 
         MindfulnessSessionRecord recordA =
                 new MindfulnessSessionRecord.Builder(
-                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_OTHER)
+                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_BREATHING)
                         .setTitle("title")
                         .setNotes("notesA")
                         .setStartZoneOffset(startZoneOffset)
@@ -364,7 +365,7 @@ public class MindfulnessSessionRecordTest {
                 new MindfulnessSessionRecord.Builder(
                                 metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_BREATHING)
                         .setTitle("title")
-                        .setNotes("notesA")
+                        .setNotes("notesB")
                         .setStartZoneOffset(startZoneOffset)
                         .setEndZoneOffset(endZoneOffset)
                         .build();
@@ -384,7 +385,7 @@ public class MindfulnessSessionRecordTest {
 
         MindfulnessSessionRecord recordA =
                 new MindfulnessSessionRecord.Builder(
-                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_OTHER)
+                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_BREATHING)
                         .setTitle("title")
                         .setNotes("notesA")
                         .setStartZoneOffset(startZoneOffsetA)
@@ -415,7 +416,7 @@ public class MindfulnessSessionRecordTest {
 
         MindfulnessSessionRecord recordA =
                 new MindfulnessSessionRecord.Builder(
-                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_OTHER)
+                                metadata, startTime, endTime, MINDFULNESS_SESSION_TYPE_BREATHING)
                         .setTitle("title")
                         .setNotes("notesA")
                         .setStartZoneOffset(startZoneOffset)

@@ -24,6 +24,7 @@ android_test_helper_app {
     static_libs: [
         "ctstestrunner-axt",
         "cts-healthconnect-lib",
+        "cts-healthconnect-phr-lib",
     ],
     sdk_version: "test_current",
     min_sdk_version: "34",
@@ -46,6 +47,8 @@ java_test_host {
     test_suites: [
         "cts",
         "general-tests",
+        "mts-healthfitness",
+        "mcts-healthfitness",
     ],
     libs: [
         "compatibility-host-util",
@@ -56,6 +59,8 @@ java_test_host {
     static_libs: [
         "cts-statsd-atom-host-test-utils",
         "androidx.annotation_annotation",
+        "flag-junit-host",
+        "healthfitness-exported-aconfig-flags-lib-host",
     ],
     java_resource_dirs: ["host/res"],
     device_common_data: [

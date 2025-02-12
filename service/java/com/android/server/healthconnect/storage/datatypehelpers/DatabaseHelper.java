@@ -16,10 +16,10 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
-import com.android.server.healthconnect.migration.PriorityMigrationHelper;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -29,39 +29,12 @@ import java.util.Set;
  */
 public abstract class DatabaseHelper {
 
-    private static Set<DatabaseHelper> getDatabaseHelpers() {
-        return Set.of(
-                DeviceInfoHelper.getInstance(),
-                AppInfoHelper.getInstance(),
-                new ActivityDateHelper(),
-                new ChangeLogsHelper(),
-                new ChangeLogsRequestHelper(),
-                HealthDataCategoryPriorityHelper.getInstance(),
-                PreferenceHelper.getInstance(),
-                AccessLogsHelper.getInstance(),
-                new MigrationEntityHelper(),
-                PriorityMigrationHelper.getInstance());
-    }
-
-    /**
-     * Deletes all entries from the database and clears the cache for all the helper class.
-     *
-     * <p>This function is only used for testing, do not use in production.
-     */
-    public static void clearAllData(TransactionManager transactionManager) {
-        for (DatabaseHelper databaseHelper : getDatabaseHelpers()) {
-            databaseHelper.clearData(transactionManager);
-        }
-    }
-
-    public static void clearAllCache() {
-        for (DatabaseHelper databaseHelper : getDatabaseHelpers()) {
-            databaseHelper.clearCache();
-        }
+    protected DatabaseHelper(DatabaseHelpers databaseHelpers) {
+        databaseHelpers.add(this);
     }
 
     /** Deletes all entries from the database and clears the cache for the helper class. */
-    public void clearData(TransactionManager transactionManager) {
+    public synchronized void clearData(TransactionManager transactionManager) {
         transactionManager.delete(new DeleteTableRequest(getMainTableName()));
         clearCache();
     }
@@ -69,4 +42,32 @@ public abstract class DatabaseHelper {
     protected void clearCache() {}
 
     protected abstract String getMainTableName();
+
+    /** A collection of {@link DatabaseHelper}. */
+    public static final class DatabaseHelpers {
+
+        private final Set<DatabaseHelper> mDatabaseHelpers = new HashSet<>();
+
+        /**
+         * Deletes all entries from the database and clears the cache for all the helper class.
+         *
+         * <p>This function is only used for testing, do not use in production.
+         */
+        public void clearAllData(TransactionManager transactionManager) {
+            for (DatabaseHelper databaseHelper : mDatabaseHelpers) {
+                databaseHelper.clearData(transactionManager);
+            }
+        }
+
+        /** Clears cache in all the helpers. */
+        public void clearAllCache() {
+            for (DatabaseHelper databaseHelper : mDatabaseHelpers) {
+                databaseHelper.clearCache();
+            }
+        }
+
+        private void add(DatabaseHelper databaseHelper) {
+            mDatabaseHelpers.add(databaseHelper);
+        }
+    }
 }

@@ -16,11 +16,13 @@
 
 package android.health.connect.datatypes;
 
+import static com.android.healthfitness.flags.Flags.FLAG_ACTIVITY_INTENSITY;
 import static com.android.healthfitness.flags.Flags.FLAG_MINDFULNESS;
 
 import android.annotation.FlaggedApi;
 import android.annotation.IntDef;
 import android.annotation.SystemApi;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -374,11 +376,19 @@ public final class RecordTypeIdentifier {
     public static final int RECORD_TYPE_MINDFULNESS_SESSION = 41;
 
     /**
+     * @see ActivityIntensityRecord
+     */
+    @FlaggedApi(FLAG_ACTIVITY_INTENSITY)
+    public static final int RECORD_TYPE_ACTIVITY_INTENSITY = 42;
+
+    /**
      * Valid set of values for this IntDef. Update this set when add new type or deprecate existing
      * type.
      *
+     * @deprecated Use {@link HealthConnectMappings#getAllRecordTypeIdentifiers()}
      * @hide
      */
+    @Deprecated
     public static final Set<Integer> VALID_TYPES =
             Set.of(
                     RECORD_TYPE_UNKNOWN,
@@ -469,7 +479,8 @@ public final class RecordTypeIdentifier {
         RECORD_TYPE_SLEEP_SESSION,
         RECORD_TYPE_SKIN_TEMPERATURE,
         RECORD_TYPE_PLANNED_EXERCISE_SESSION,
-        RECORD_TYPE_MINDFULNESS_SESSION
+        RECORD_TYPE_MINDFULNESS_SESSION,
+        RECORD_TYPE_ACTIVITY_INTENSITY
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface RecordType {}

@@ -52,6 +52,7 @@ import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCateg
 import com.android.healthconnect.controller.exportimport.api.ExportStatusViewModel
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiState
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiStatus
+import com.android.healthconnect.controller.home.HomeViewModel
 import com.android.healthconnect.controller.migration.MigrationViewModel
 import com.android.healthconnect.controller.migration.MigrationViewModel.MigrationFragmentState.*
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState
@@ -63,13 +64,15 @@ import com.android.healthconnect.controller.permissions.app.AppPermissionViewMod
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
+import com.android.healthconnect.controller.selectabledeletion.DeletionDataViewModel
+import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
+import com.android.healthconnect.controller.shared.app.ConnectedAppStatus
 import com.android.healthconnect.controller.tests.utils.NOW
 import com.android.healthconnect.controller.tests.utils.TEST_APP
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.di.FakeDeviceInfoUtils
 import com.android.healthconnect.controller.tests.utils.showOnboarding
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
 import com.android.healthfitness.flags.Flags
@@ -84,6 +87,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.*
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 @UninstallModules(DeviceInfoUtilsModule::class)
@@ -102,6 +106,7 @@ class TrampolineActivityTest {
     @BindValue
     val appPermissionViewModel: AppPermissionViewModel = mock(AppPermissionViewModel::class.java)
     @BindValue val allDataViewModel: AllDataViewModel = Mockito.mock(AllDataViewModel::class.java)
+    @BindValue val homeViewModel: HomeViewModel = mock(HomeViewModel::class.java)
 
     private val context = InstrumentationRegistry.getInstrumentation().context
 
@@ -171,6 +176,9 @@ class TrampolineActivityTest {
         whenever(appPermissionViewModel.atLeastOneFitnessPermissionGranted).then {
             MediatorLiveData(true)
         }
+        whenever(appPermissionViewModel.atLeastOneHealthPermissionGranted).then {
+            MediatorLiveData(true)
+        }
         val accessDate = Instant.parse("2022-10-20T18:40:13.00Z")
         whenever(appPermissionViewModel.loadAccessDate(anyString())).thenReturn(accessDate)
         whenever(appPermissionViewModel.lastReadPermissionDisconnected).then {
@@ -188,9 +196,20 @@ class TrampolineActivityTest {
                 )
             )
         }
-        whenever(allDataViewModel.isAnyMedicalData).then { MutableLiveData(false) }
         whenever(allDataViewModel.setOfPermissionTypesToBeDeleted).then {
             MutableLiveData<Set<FitnessPermissionType>>(emptySet())
+        }
+        whenever(allDataViewModel.deletionScreenState).then {
+            MutableLiveData(DeletionDataViewModel.DeletionScreenState.VIEW)
+        }
+        whenever(allDataViewModel.getDeletionScreenStateValue())
+            .thenReturn(DeletionDataViewModel.DeletionScreenState.VIEW)
+        whenever(homeViewModel.connectedApps).then {
+            MutableLiveData(listOf(ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED)))
+        }
+        whenever(homeViewModel.hasAnyMedicalData).then { MutableLiveData(false) }
+        whenever(homeViewModel.showLockScreenBanner).then {
+            MediatorLiveData(HomeViewModel.LockScreenBannerState.NoBanner)
         }
     }
 

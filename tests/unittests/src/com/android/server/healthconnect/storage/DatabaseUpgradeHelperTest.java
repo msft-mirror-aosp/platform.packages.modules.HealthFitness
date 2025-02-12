@@ -16,6 +16,9 @@
 
 package com.android.server.healthconnect.storage;
 
+import static android.database.DatabaseUtils.queryNumEntries;
+
+import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_ECOSYSTEM_METRICS;
 import static com.android.healthfitness.flags.DatabaseVersions.DB_VERSION_MINDFULNESS_SESSION;
 import static com.android.healthfitness.flags.DatabaseVersions.MIN_SUPPORTED_DB_VERSION;
 import static com.android.healthfitness.flags.Flags.FLAG_INFRA_TO_GUARD_DB_CHANGES;
@@ -24,12 +27,19 @@ import static com.android.server.healthconnect.storage.DatabaseTestUtils.clearDa
 import static com.android.server.healthconnect.storage.DatabaseTestUtils.createEmptyDatabase;
 import static com.android.server.healthconnect.storage.DatabaseUpgradeHelper.onUpgrade;
 
+import static com.google.common.truth.Truth.assertThat;
+
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.FlagsParameterization;
 import android.platform.test.flag.junit.SetFlagsRule;
 
-import java.util.List;
+import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
 
 import org.junit.After;
 import org.junit.Before;
@@ -39,6 +49,8 @@ import org.junit.runner.RunWith;
 
 import platform.test.runner.parameterized.ParameterizedAndroidJunit4;
 import platform.test.runner.parameterized.Parameters;
+
+import java.util.List;
 
 @RunWith(ParameterizedAndroidJunit4.class)
 public class DatabaseUpgradeHelperTest {
@@ -55,8 +67,8 @@ public class DatabaseUpgradeHelperTest {
 
     private static final int NUM_OF_TABLES_AT_MIN_SUPPORTED_VERSION = 57;
     private static final int NUM_OF_TABLES_AT_MINDFULNESS_VERSION = 64;
-    private static final int NUM_OF_TABLES_IN_STAGING = 64;
-    private static final int LATEST_DB_VERSION_IN_STAGING = DB_VERSION_MINDFULNESS_SESSION;
+    private static final int NUM_OF_TABLES_IN_STAGING = 69;
+    private static final int LATEST_DB_VERSION_IN_STAGING = DB_VERSION_ECOSYSTEM_METRICS;
 
     private SQLiteDatabase mSQLiteDatabase;
 
@@ -114,5 +126,41 @@ public class DatabaseUpgradeHelperTest {
      */
     private void assertDbSchemaUpToDate() {
         assertNumberOfTables(mSQLiteDatabase, NUM_OF_TABLES_IN_STAGING);
+
+        // PHR
+        assertTablesExists(
+                mSQLiteDatabase,
+                List.of(
+                        MedicalDataSourceHelper.getMainTableName(),
+                        MedicalResourceHelper.getMainTableName(),
+                        MedicalResourceIndicesHelper.getTableName(),
+                        ReadAccessLogsHelper.TABLE_NAME));
+        assertColumnsExist(
+                mSQLiteDatabase,
+                AccessLogsHelper.TABLE_NAME,
+                List.of("medical_resource_type", "medical_data_source_accessed"));
+    }
+
+    /** Asserts that a list of {@code columns} exist in the specified {@code table}. */
+    private static void assertColumnsExist(SQLiteDatabase db, String table, List<String> columns) {
+        try (Cursor cursor =
+                db.rawQuery("SELECT * FROM " + table + " LIMIT 1", /* selectArgs */ null)) {
+            for (String column : columns) {
+                assertThat(cursor.getColumnIndex(column)).isNotEqualTo(-1);
+            }
+        }
+    }
+
+    /** Asserts that a list of {@code tables} exist. */
+    private static void assertTablesExists(SQLiteDatabase db, List<String> tables) {
+        for (String table : tables) {
+            long numEntries =
+                    queryNumEntries(
+                            db,
+                            "sqlite_master",
+                            /* selection= */ "type = 'table' AND name == '" + table + "'",
+                            /* selectionArgs= */ null);
+            assertThat(numEntries).isGreaterThan(0);
+        }
     }
 }

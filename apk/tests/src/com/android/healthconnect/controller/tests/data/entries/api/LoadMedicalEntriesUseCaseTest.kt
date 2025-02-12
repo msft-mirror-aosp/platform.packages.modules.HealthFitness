@@ -25,9 +25,11 @@ import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.data.entries.api.LoadEntriesHelper
 import com.android.healthconnect.controller.data.entries.api.LoadMedicalEntriesInput
 import com.android.healthconnect.controller.data.entries.api.LoadMedicalEntriesUseCase
+import com.android.healthconnect.controller.dataentries.formatters.MenstruationPeriodFormatter
 import com.android.healthconnect.controller.dataentries.formatters.medical.MedicalEntryFormatter
 import com.android.healthconnect.controller.dataentries.formatters.shared.HealthDataEntryFormatter
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
+import com.android.healthconnect.controller.shared.app.MedicalDataSourceReader
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_RESOURCE_IMMUNIZATION
 import com.android.healthconnect.controller.tests.utils.setLocale
@@ -61,6 +63,8 @@ class LoadMedicalEntriesUseCaseTest {
     private lateinit var medicalEntryFormatter: MedicalEntryFormatter
 
     @Inject lateinit var healthDataEntryFormatter: HealthDataEntryFormatter
+    @Inject lateinit var menstruationPeriodFormatter: MenstruationPeriodFormatter
+    @Inject lateinit var dataSourceReader: MedicalDataSourceReader
 
     private val healthConnectManager: HealthConnectManager =
         Mockito.mock(HealthConnectManager::class.java)
@@ -72,7 +76,13 @@ class LoadMedicalEntriesUseCaseTest {
         context.setLocale(Locale.US)
         hiltRule.inject()
         loadEntriesHelper =
-            LoadEntriesHelper(context, healthDataEntryFormatter, healthConnectManager)
+            LoadEntriesHelper(
+                context,
+                healthDataEntryFormatter,
+                menstruationPeriodFormatter,
+                healthConnectManager,
+                dataSourceReader,
+            )
         loadMedicalEntriesUseCase =
             LoadMedicalEntriesUseCase(Dispatchers.Main, medicalEntryFormatter, loadEntriesHelper)
     }
@@ -81,12 +91,12 @@ class LoadMedicalEntriesUseCaseTest {
     fun invoke_noData_returnsEmptyList() = runTest {
         val input =
             LoadMedicalEntriesInput(
-                medicalPermissionType = MedicalPermissionType.IMMUNIZATION,
+                medicalPermissionType = MedicalPermissionType.VACCINES,
                 packageName = null,
                 showDataOrigin = true,
             )
         val readMedicalResourcesResponse =
-            ReadMedicalResourcesResponse(emptyList(), "nextPageToken")
+            ReadMedicalResourcesResponse(emptyList(), "nextPageToken", 1)
         Mockito.doAnswer(prepareAnswer(readMedicalResourcesResponse))
             .`when`(healthConnectManager)
             .readMedicalResources(
@@ -105,7 +115,7 @@ class LoadMedicalEntriesUseCaseTest {
     fun invoke_returnsFormattedData() = runTest {
         val input =
             LoadMedicalEntriesInput(
-                medicalPermissionType = MedicalPermissionType.IMMUNIZATION,
+                medicalPermissionType = MedicalPermissionType.VACCINES,
                 packageName = null,
                 showDataOrigin = true,
             )
@@ -113,6 +123,7 @@ class LoadMedicalEntriesUseCaseTest {
             ReadMedicalResourcesResponse(
                 listOf(TEST_MEDICAL_RESOURCE_IMMUNIZATION),
                 "nextPageToken",
+                2,
             )
         Mockito.doAnswer(prepareAnswer(readMedicalResourcesResponse))
             .`when`(healthConnectManager)
@@ -126,7 +137,7 @@ class LoadMedicalEntriesUseCaseTest {
         assertThat(result is UseCaseResults.Success).isTrue()
         assertThat((result as UseCaseResults.Success).data)
             .containsExactlyElementsIn(
-                listOf<FormattedEntry.FormattedMedicalDataEntry>(
+                listOf(
                     FormattedEntry.FormattedMedicalDataEntry(
                         header = "02 May 2023 • Health Connect Toolbox",
                         headerA11y = "02 May 2023 • Health Connect Toolbox",

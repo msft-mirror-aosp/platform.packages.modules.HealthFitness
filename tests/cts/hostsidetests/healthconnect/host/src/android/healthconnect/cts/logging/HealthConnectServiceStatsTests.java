@@ -17,8 +17,24 @@
 package android.healthconnect.cts.logging;
 
 import static android.healthconnect.cts.HostSideTestUtil.isHardwareSupported;
+import static android.healthfitness.api.ApiMethod.CREATE_MEDICAL_DATA_SOURCE;
+import static android.healthfitness.api.ApiMethod.DELETE_MEDICAL_DATA_SOURCE_WITH_DATA;
+import static android.healthfitness.api.ApiMethod.DELETE_MEDICAL_RESOURCES_BY_IDS;
+import static android.healthfitness.api.ApiMethod.DELETE_MEDICAL_RESOURCES_BY_REQUESTS;
+import static android.healthfitness.api.ApiMethod.GET_MEDICAL_DATA_SOURCES_BY_IDS;
+import static android.healthfitness.api.ApiMethod.GET_MEDICAL_DATA_SOURCES_BY_REQUESTS;
+import static android.healthfitness.api.ApiMethod.READ_MEDICAL_RESOURCES_BY_IDS;
+import static android.healthfitness.api.ApiMethod.READ_MEDICAL_RESOURCES_BY_REQUESTS;
+import static android.healthfitness.api.ApiMethod.UPSERT_MEDICAL_RESOURCES;
+import static android.healthfitness.api.ApiStatus.ERROR;
+import static android.healthfitness.api.ApiStatus.SUCCESS;
+
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 import android.cts.statsdatom.lib.ConfigUtils;
 import android.cts.statsdatom.lib.DeviceUtils;
@@ -28,26 +44,39 @@ import android.healthfitness.api.ApiMethod;
 import android.healthfitness.api.ApiStatus;
 import android.healthfitness.api.ForegroundState;
 import android.healthfitness.api.RateLimit;
+import android.platform.test.annotations.RequiresFlagsEnabled;
+import android.platform.test.flag.junit.CheckFlagsRule;
+import android.platform.test.flag.junit.host.HostFlagsValueProvider;
 
 import com.android.os.StatsLog;
 import com.android.os.healthfitness.api.ApiExtensionAtoms;
 import com.android.os.healthfitness.api.HealthConnectApiCalled;
 import com.android.tradefed.build.IBuildInfo;
-import com.android.tradefed.testtype.DeviceTestCase;
+import com.android.tradefed.testtype.DeviceJUnit4ClassRunner;
 import com.android.tradefed.testtype.IBuildReceiver;
+import com.android.tradefed.testtype.junit4.BaseHostJUnit4Test;
 
 import com.google.protobuf.ExtensionRegistry;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.util.List;
 
-public class HealthConnectServiceStatsTests extends DeviceTestCase implements IBuildReceiver {
+@RunWith(DeviceJUnit4ClassRunner.class)
+public class HealthConnectServiceStatsTests extends BaseHostJUnit4Test implements IBuildReceiver {
+    @Rule
+    public final CheckFlagsRule mCheckFlagsRule =
+            HostFlagsValueProvider.createCheckFlagsRule(this::getDevice);
 
-    public static final String TEST_APP_PKG_NAME = "android.healthconnect.cts.testhelper";
+    private static final String TEST_APP_PKG_NAME = "android.healthconnect.cts.testhelper";
     private IBuildInfo mCtsBuild;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         if (!isHardwareSupported(getDevice())) {
             return;
         }
@@ -58,13 +87,12 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         ReportUtils.clearReports(getDevice());
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         // TODO(b/313055175): Do not disable rate limiting once b/300238889 is resolved.
         HostSideTestUtil.restoreRateLimitingFeatureFlag(getDevice());
         ConfigUtils.removeConfig(getDevice());
         ReportUtils.clearReports(getDevice());
-        super.tearDown();
     }
 
     @Override
@@ -72,6 +100,103 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         mCtsBuild = buildInfo;
     }
 
+    @Test
+    @RequiresFlagsEnabled({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY
+    })
+    public void testPhrApiAndStatusLogs() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
+
+        List<AssertApiCallParams> testCases =
+                List.of(
+                        createAssertApiCallParams(
+                                "testCreateMedicalDataSourceSuccess",
+                                CREATE_MEDICAL_DATA_SOURCE,
+                                SUCCESS),
+                        createAssertApiCallParams(
+                                "testCreateMedicalDataSourceError",
+                                CREATE_MEDICAL_DATA_SOURCE,
+                                ERROR),
+                        createAssertApiCallParams(
+                                "testGetMedicalDataSourcesByIdsSuccess",
+                                GET_MEDICAL_DATA_SOURCES_BY_IDS,
+                                SUCCESS),
+                        createAssertApiCallParams(
+                                "testGetMedicalDataSourcesByIdsError",
+                                GET_MEDICAL_DATA_SOURCES_BY_IDS,
+                                ERROR),
+                        createAssertApiCallParams(
+                                "testGetMedicalDataSourcesByRequestSuccess",
+                                GET_MEDICAL_DATA_SOURCES_BY_REQUESTS,
+                                SUCCESS),
+                        createAssertApiCallParams(
+                                "testGetMedicalDataSourcesByRequestError",
+                                GET_MEDICAL_DATA_SOURCES_BY_REQUESTS,
+                                ERROR),
+                        createAssertApiCallParams(
+                                "testDeleteMedicalDataSourceWithDataSuccess",
+                                DELETE_MEDICAL_DATA_SOURCE_WITH_DATA,
+                                SUCCESS),
+                        createAssertApiCallParams(
+                                "testDeleteMedicalDataSourceWithDataError",
+                                DELETE_MEDICAL_DATA_SOURCE_WITH_DATA,
+                                ERROR),
+                        createAssertApiCallParams(
+                                "testUpsertMedicalResourcesSuccess",
+                                UPSERT_MEDICAL_RESOURCES,
+                                SUCCESS),
+                        createAssertApiCallParams(
+                                "testUpsertMedicalResourcesError", UPSERT_MEDICAL_RESOURCES, ERROR),
+                        createAssertApiCallParams(
+                                "testReadMedicalResourcesByIdsSuccess",
+                                READ_MEDICAL_RESOURCES_BY_IDS,
+                                SUCCESS),
+                        createAssertApiCallParams(
+                                "testReadMedicalResourcesByIdsError",
+                                READ_MEDICAL_RESOURCES_BY_IDS,
+                                ERROR),
+                        createAssertApiCallParams(
+                                "testReadMedicalResourcesByRequestsSuccess",
+                                READ_MEDICAL_RESOURCES_BY_REQUESTS,
+                                SUCCESS),
+                        createAssertApiCallParams(
+                                "testReadMedicalResourcesByRequestsError",
+                                READ_MEDICAL_RESOURCES_BY_REQUESTS,
+                                ERROR),
+                        createAssertApiCallParams(
+                                "testDeleteMedicalResourcesByIdsSuccess",
+                                DELETE_MEDICAL_RESOURCES_BY_IDS,
+                                SUCCESS),
+                        createAssertApiCallParams(
+                                "testDeleteMedicalResourcesByIdsError",
+                                DELETE_MEDICAL_RESOURCES_BY_IDS,
+                                ERROR),
+                        createAssertApiCallParams(
+                                "testDeleteMedicalResourcesByRequestSuccess",
+                                DELETE_MEDICAL_RESOURCES_BY_REQUESTS,
+                                SUCCESS),
+                        createAssertApiCallParams(
+                                "testDeleteMedicalResourcesByRequestError",
+                                DELETE_MEDICAL_RESOURCES_BY_REQUESTS,
+                                ERROR));
+
+        for (AssertApiCallParams params : testCases) {
+            setUp();
+
+            List<StatsLog.EventMetricData> data =
+                    uploadAtomConfigAndTriggerTest(params.methodNameToTriggerApi);
+
+            assertApiStatus(data, params.apiMethod, params.apiStatus);
+
+            tearDown();
+        }
+    }
+
+    @Test
     public void testInsertRecords() throws Exception {
         if (!isHardwareSupported(getDevice())) {
             return;
@@ -83,13 +208,15 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         assertThat(event).isNotNull();
         HealthConnectApiCalled atom =
                 event.getAtom().getExtension(ApiExtensionAtoms.healthConnectApiCalled);
-        assertThat(atom.getApiStatus()).isEqualTo(ApiStatus.SUCCESS);
+        assertThat(atom.getApiStatus()).isEqualTo(SUCCESS);
         assertThat(atom.getErrorCode()).isEqualTo(0);
         assertThat(atom.getDurationMillis()).isAtLeast(0);
         assertThat(atom.getNumberOfRecords()).isEqualTo(2);
         assertThat(atom.getRateLimit()).isEqualTo(RateLimit.NOT_USED);
+        assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
     }
 
+    @Test
     public void testInsertRecordsError() throws Exception {
         if (!isHardwareSupported(getDevice())) {
             return;
@@ -101,13 +228,15 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         assertThat(event).isNotNull();
         HealthConnectApiCalled atom =
                 event.getAtom().getExtension(ApiExtensionAtoms.healthConnectApiCalled);
-        assertThat(atom.getApiStatus()).isEqualTo(ApiStatus.ERROR);
+        assertThat(atom.getApiStatus()).isEqualTo(ERROR);
         assertThat(atom.getErrorCode()).isNotEqualTo(0);
         assertThat(atom.getDurationMillis()).isAtLeast(0);
         assertThat(atom.getNumberOfRecords()).isEqualTo(2);
         assertThat(atom.getRateLimit()).isEqualTo(RateLimit.NOT_USED);
+        assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
     }
 
+    @Test
     public void testUpdateRecords() throws Exception {
         if (!isHardwareSupported(getDevice())) {
             return;
@@ -120,13 +249,15 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         assertThat(event).isNotNull();
         HealthConnectApiCalled atom =
                 event.getAtom().getExtension(ApiExtensionAtoms.healthConnectApiCalled);
-        assertThat(atom.getApiStatus()).isEqualTo(ApiStatus.SUCCESS);
+        assertThat(atom.getApiStatus()).isEqualTo(SUCCESS);
         assertThat(atom.getErrorCode()).isEqualTo(0);
         assertThat(atom.getDurationMillis()).isAtLeast(0);
         assertThat(atom.getNumberOfRecords()).isEqualTo(3);
         assertThat(atom.getRateLimit()).isEqualTo(RateLimit.NOT_USED);
+        assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
     }
 
+    @Test
     public void testUpdateRecordsError() throws Exception {
         if (!isHardwareSupported(getDevice())) {
             return;
@@ -139,13 +270,15 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         assertThat(event).isNotNull();
         HealthConnectApiCalled atom =
                 event.getAtom().getExtension(ApiExtensionAtoms.healthConnectApiCalled);
-        assertThat(atom.getApiStatus()).isEqualTo(ApiStatus.ERROR);
+        assertThat(atom.getApiStatus()).isEqualTo(ERROR);
         assertThat(atom.getErrorCode()).isNotEqualTo(0);
         assertThat(atom.getDurationMillis()).isAtLeast(0);
         assertThat(atom.getNumberOfRecords()).isEqualTo(1);
         assertThat(atom.getRateLimit()).isEqualTo(RateLimit.NOT_USED);
+        assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
     }
 
+    @Test
     public void testDeleteRecords() throws Exception {
         if (!isHardwareSupported(getDevice())) {
             return;
@@ -161,15 +294,17 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
             if (atom.getApiMethod().equals(ApiMethod.DELETE_DATA)
                     && atom.getNumberOfRecords() == 1) {
                 deletedRecords++;
-                assertThat(atom.getApiStatus()).isEqualTo(ApiStatus.SUCCESS);
+                assertThat(atom.getApiStatus()).isEqualTo(SUCCESS);
                 assertThat(atom.getErrorCode()).isEqualTo(0);
                 assertThat(atom.getDurationMillis()).isAtLeast(0);
                 assertThat(atom.getRateLimit()).isEqualTo(RateLimit.NOT_USED);
+                assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
             }
         }
         assertThat(deletedRecords).isAtLeast(2);
     }
 
+    @Test
     public void testDeleteRecordsError() throws Exception {
         if (!isHardwareSupported(getDevice())) {
             return;
@@ -177,17 +312,18 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         List<StatsLog.EventMetricData> data =
                 uploadAtomConfigAndTriggerTest("testHealthConnectDeleteRecordsError");
         assertThat(data.size()).isAtLeast(3);
-        StatsLog.EventMetricData event =
-                getEventForApiMethod(data, ApiMethod.DELETE_DATA, ApiStatus.ERROR);
+        StatsLog.EventMetricData event = getEventForApiMethod(data, ApiMethod.DELETE_DATA, ERROR);
         assertThat(event).isNotNull();
         HealthConnectApiCalled atom =
                 event.getAtom().getExtension(ApiExtensionAtoms.healthConnectApiCalled);
-        assertThat(atom.getApiStatus()).isEqualTo(ApiStatus.ERROR);
+        assertThat(atom.getApiStatus()).isEqualTo(ERROR);
         assertThat(atom.getErrorCode()).isNotEqualTo(0);
         assertThat(atom.getDurationMillis()).isAtLeast(0);
         assertThat(atom.getRateLimit()).isEqualTo(RateLimit.NOT_USED);
+        assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
     }
 
+    @Test
     public void testReadRecords() throws Exception {
         if (!isHardwareSupported(getDevice())) {
             return;
@@ -199,14 +335,16 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         assertThat(event).isNotNull();
         HealthConnectApiCalled atom =
                 event.getAtom().getExtension(ApiExtensionAtoms.healthConnectApiCalled);
-        assertThat(atom.getApiStatus()).isEqualTo(ApiStatus.SUCCESS);
+        assertThat(atom.getApiStatus()).isEqualTo(SUCCESS);
         assertThat(atom.getErrorCode()).isEqualTo(0);
         assertThat(atom.getDurationMillis()).isAtLeast(0);
         assertThat(atom.getNumberOfRecords()).isEqualTo(1);
         assertThat(atom.getRateLimit()).isEqualTo(RateLimit.NOT_USED);
         assertThat(atom.getCallerForegroundState()).isEqualTo(ForegroundState.FOREGROUND);
+        assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
     }
 
+    @Test
     public void testReadRecordsError() throws Exception {
         if (!isHardwareSupported(getDevice())) {
             return;
@@ -218,13 +356,15 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         assertThat(event).isNotNull();
         HealthConnectApiCalled atom =
                 event.getAtom().getExtension(ApiExtensionAtoms.healthConnectApiCalled);
-        assertThat(atom.getApiStatus()).isEqualTo(ApiStatus.ERROR);
+        assertThat(atom.getApiStatus()).isEqualTo(ERROR);
         assertThat(atom.getErrorCode()).isNotEqualTo(0);
         assertThat(atom.getDurationMillis()).isAtLeast(0);
         assertThat(atom.getRateLimit()).isEqualTo(RateLimit.NOT_USED);
         assertThat(atom.getCallerForegroundState()).isEqualTo(ForegroundState.FOREGROUND);
+        assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
     }
 
+    @Test
     public void testChangeLogTokenRequest() throws Exception {
         if (!isHardwareSupported(getDevice())) {
             return;
@@ -236,13 +376,15 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         assertThat(event).isNotNull();
         HealthConnectApiCalled atom =
                 event.getAtom().getExtension(ApiExtensionAtoms.healthConnectApiCalled);
-        assertThat(atom.getApiStatus()).isEqualTo(ApiStatus.SUCCESS);
+        assertThat(atom.getApiStatus()).isEqualTo(SUCCESS);
         assertThat(atom.getErrorCode()).isEqualTo(0);
         assertThat(atom.getDurationMillis()).isAtLeast(0);
         assertThat(atom.getNumberOfRecords()).isEqualTo(0);
         assertThat(atom.getRateLimit()).isEqualTo(RateLimit.NOT_USED);
+        assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
     }
 
+    @Test
     public void testChangeLogTokenRequestError() throws Exception {
         if (!isHardwareSupported(getDevice())) {
             return;
@@ -254,13 +396,15 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         assertThat(event).isNotNull();
         HealthConnectApiCalled atom =
                 event.getAtom().getExtension(ApiExtensionAtoms.healthConnectApiCalled);
-        assertThat(atom.getApiStatus()).isEqualTo(ApiStatus.ERROR);
+        assertThat(atom.getApiStatus()).isEqualTo(ERROR);
         assertThat(atom.getErrorCode()).isNotEqualTo(0);
         assertThat(atom.getDurationMillis()).isAtLeast(0);
         assertThat(atom.getNumberOfRecords()).isEqualTo(0);
         assertThat(atom.getRateLimit()).isEqualTo(RateLimit.NOT_USED);
+        assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
     }
 
+    @Test
     public void testChangeLogsRequest() throws Exception {
         if (!isHardwareSupported(getDevice())) {
             return;
@@ -272,14 +416,16 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         assertThat(event).isNotNull();
         HealthConnectApiCalled atom =
                 event.getAtom().getExtension(ApiExtensionAtoms.healthConnectApiCalled);
-        assertThat(atom.getApiStatus()).isEqualTo(ApiStatus.SUCCESS);
+        assertThat(atom.getApiStatus()).isEqualTo(SUCCESS);
         assertThat(atom.getErrorCode()).isEqualTo(0);
         assertThat(atom.getDurationMillis()).isAtLeast(0);
         assertThat(atom.getNumberOfRecords()).isEqualTo(2);
         assertThat(atom.getRateLimit()).isEqualTo(RateLimit.NOT_USED);
         assertThat(atom.getCallerForegroundState()).isEqualTo(ForegroundState.FOREGROUND);
+        assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
     }
 
+    @Test
     public void testChangeLogsRequestError() throws Exception {
         if (!isHardwareSupported(getDevice())) {
             return;
@@ -291,13 +437,15 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         assertThat(event).isNotNull();
         HealthConnectApiCalled atom =
                 event.getAtom().getExtension(ApiExtensionAtoms.healthConnectApiCalled);
-        assertThat(atom.getApiStatus()).isEqualTo(ApiStatus.ERROR);
+        assertThat(atom.getApiStatus()).isEqualTo(ERROR);
         assertThat(atom.getErrorCode()).isNotEqualTo(0);
         assertThat(atom.getDurationMillis()).isAtLeast(0);
         assertThat(atom.getRateLimit()).isEqualTo(RateLimit.NOT_USED);
         assertThat(atom.getCallerForegroundState()).isEqualTo(ForegroundState.FOREGROUND);
+        assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
     }
 
+    @Test
     public void testAggregatedDataRequest() throws Exception {
         if (!isHardwareSupported(getDevice())) {
             return;
@@ -309,14 +457,16 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         assertThat(event).isNotNull();
         HealthConnectApiCalled atom =
                 event.getAtom().getExtension(ApiExtensionAtoms.healthConnectApiCalled);
-        assertThat(atom.getApiStatus()).isEqualTo(ApiStatus.SUCCESS);
+        assertThat(atom.getApiStatus()).isEqualTo(SUCCESS);
         assertThat(atom.getErrorCode()).isEqualTo(0);
         assertThat(atom.getDurationMillis()).isAtLeast(0);
         assertThat(atom.getNumberOfRecords()).isEqualTo(1);
         assertThat(atom.getRateLimit()).isEqualTo(RateLimit.NOT_USED);
         assertThat(atom.getCallerForegroundState()).isEqualTo(ForegroundState.FOREGROUND);
+        assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
     }
 
+    @Test
     public void testAggregatedDataRequestError() throws Exception {
         if (!isHardwareSupported(getDevice())) {
             return;
@@ -328,12 +478,13 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         assertThat(event).isNotNull();
         HealthConnectApiCalled atom =
                 event.getAtom().getExtension(ApiExtensionAtoms.healthConnectApiCalled);
-        assertThat(atom.getApiStatus()).isEqualTo(ApiStatus.ERROR);
+        assertThat(atom.getApiStatus()).isEqualTo(ERROR);
         assertThat(atom.getErrorCode()).isNotEqualTo(0);
         assertThat(atom.getDurationMillis()).isAtLeast(0);
         assertThat(atom.getNumberOfRecords()).isEqualTo(1);
         assertThat(atom.getRateLimit()).isEqualTo(RateLimit.NOT_USED);
         assertThat(atom.getCallerForegroundState()).isEqualTo(ForegroundState.FOREGROUND);
+        assertThat(atom.getPackageName()).isEqualTo(TEST_APP_PKG_NAME);
     }
 
     private List<StatsLog.EventMetricData> uploadAtomConfigAndTriggerTest(String testName)
@@ -351,7 +502,7 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         return ReportUtils.getEventMetricDataList(getDevice(), registry);
     }
 
-    private StatsLog.EventMetricData getEventForApiMethod(
+    private static StatsLog.EventMetricData getEventForApiMethod(
             List<StatsLog.EventMetricData> data, ApiMethod apiMethod, ApiStatus status) {
         for (StatsLog.EventMetricData datum : data) {
             HealthConnectApiCalled atom =
@@ -364,7 +515,7 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         return null;
     }
 
-    private StatsLog.EventMetricData getEventForApiMethod(
+    private static StatsLog.EventMetricData getEventForApiMethod(
             List<StatsLog.EventMetricData> data, ApiMethod apiMethod) {
         boolean isFirstCall = true;
         for (StatsLog.EventMetricData datum : data) {
@@ -381,5 +532,39 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
             }
         }
         return null;
+    }
+
+    private static void assertApiStatus(
+            List<StatsLog.EventMetricData> data, ApiMethod apiMethod, ApiStatus apiStatus) {
+        StatsLog.EventMetricData event = getEventForApiMethod(data, apiMethod);
+        assertWithMessage("Asserting API %s with status %s", apiMethod.name(), apiStatus.name())
+                .that(event)
+                .isNotNull();
+        assertThat(event).isNotNull();
+        HealthConnectApiCalled atom =
+                event.getAtom().getExtension(ApiExtensionAtoms.healthConnectApiCalled);
+        assertWithMessage("Asserting API %s with status %s", apiMethod.name(), apiStatus.name())
+                .that(atom.getApiStatus())
+                .isEqualTo(apiStatus);
+        assertWithMessage("Asserting API %s with status %s", apiMethod.name(), apiStatus.name())
+                .that(atom.getPackageName())
+                .isEqualTo(TEST_APP_PKG_NAME);
+    }
+
+    private static AssertApiCallParams createAssertApiCallParams(
+            String methodToTriggerApi, ApiMethod apiMethod, ApiStatus apiStatus) {
+        return new AssertApiCallParams(methodToTriggerApi, apiMethod, apiStatus);
+    }
+
+    private static class AssertApiCallParams {
+        public final String methodNameToTriggerApi;
+        public final ApiMethod apiMethod;
+        public final ApiStatus apiStatus;
+
+        AssertApiCallParams(String methodToTriggerApi, ApiMethod apiMethod, ApiStatus apiStatus) {
+            this.methodNameToTriggerApi = methodToTriggerApi;
+            this.apiMethod = apiMethod;
+            this.apiStatus = apiStatus;
+        }
     }
 }

@@ -22,8 +22,10 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.shared.Constants.ONBOARDING_SHOWN_PREF_KEY
@@ -31,6 +33,7 @@ import com.android.healthconnect.controller.shared.Constants.USER_ACTIVITY_TRACK
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.OnboardingElement
 import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -71,17 +74,28 @@ class OnboardingActivity : Hilt_OnboardingActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // This flag ensures a non system app cannot show an overlay on Health Connect. b/313425281
-        window.addSystemFlags(WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
+        window.addSystemFlags(
+            WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS
+        )
         setContentView(R.layout.onboarding_screen)
 
         if (intent.hasExtra(TARGET_ACTIVITY_INTENT)) {
-            targetIntent =
-                intent.getParcelableExtra(
-                    TARGET_ACTIVITY_INTENT,
-                )
+            targetIntent = intent.getParcelableExtra(TARGET_ACTIVITY_INTENT)
         }
 
         logger.setPageId(PageName.ONBOARDING_PAGE)
+
+        val onboardingDescription = findViewById<TextView>(R.id.onboarding_description)
+        val withHealthConnectTitle =
+            findViewById<TextView>(R.id.onboarding_description_with_health_connect)
+        if (isPersonalHealthRecordEnabled()) {
+            onboardingDescription.setText(R.string.onboarding_description_health_records)
+            withHealthConnectTitle.setVisibility(View.VISIBLE)
+            logger.logImpression(OnboardingElement.ONBOARDING_MESSAGE_WITH_PHR)
+        } else {
+            onboardingDescription.setText(R.string.onboarding_description)
+            withHealthConnectTitle.setVisibility(View.GONE)
+        }
 
         val sharedPreference = getSharedPreferences(USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
         val goBackButton = findViewById<Button>(R.id.go_back_button)

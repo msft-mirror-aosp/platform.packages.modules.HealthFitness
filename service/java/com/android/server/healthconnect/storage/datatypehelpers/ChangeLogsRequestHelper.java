@@ -56,13 +56,21 @@ import java.util.List;
  * @hide
  */
 public final class ChangeLogsRequestHelper extends DatabaseHelper {
+    public static final String TABLE_NAME = "change_log_request_table";
     static final int DEFAULT_CHANGE_LOG_TIME_PERIOD_IN_DAYS = 32;
-    private static final String TABLE_NAME = "change_log_request_table";
     private static final String PACKAGES_TO_FILTERS_COLUMN_NAME = "packages_to_filter";
     private static final String RECORD_TYPES_COLUMN_NAME = "record_types";
     private static final String PACKAGE_NAME_COLUMN_NAME = "package_name";
     private static final String ROW_ID_CHANGE_LOGS_TABLE_COLUMN_NAME = "row_id_change_logs_table";
     private static final String TIME_COLUMN_NAME = "time";
+
+    private final TransactionManager mTransactionManager;
+
+    public ChangeLogsRequestHelper(
+            TransactionManager transactionManager, DatabaseHelpers databaseHelpers) {
+        super(databaseHelpers);
+        mTransactionManager = transactionManager;
+    }
 
     @Override
     protected String getMainTableName() {
@@ -73,7 +81,8 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo());
     }
 
-    public static String getToken(String packageName, ChangeLogTokenRequest request) {
+    public String getToken(
+            long latestChangeLogRowId, String packageName, ChangeLogTokenRequest request) {
         ContentValues contentValues = new ContentValues();
 
         /**
@@ -88,12 +97,48 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
                 RECORD_TYPES_COLUMN_NAME,
                 StorageUtils.flattenIntArray(request.getRecordTypesArray()));
         contentValues.put(PACKAGE_NAME_COLUMN_NAME, packageName);
-        contentValues.put(ROW_ID_CHANGE_LOGS_TABLE_COLUMN_NAME, ChangeLogsHelper.getLatestRowId());
+        contentValues.put(ROW_ID_CHANGE_LOGS_TABLE_COLUMN_NAME, latestChangeLogRowId);
         contentValues.put(TIME_COLUMN_NAME, Instant.now().toEpochMilli());
 
         return String.valueOf(
-                TransactionManager.getInitialisedInstance()
-                        .insert(new UpsertTableRequest(TABLE_NAME, contentValues)));
+                mTransactionManager.insert(new UpsertTableRequest(TABLE_NAME, contentValues)));
+    }
+
+    public TokenRequest getRequest(String packageName, String token) {
+        ReadTableRequest readTableRequest =
+                new ReadTableRequest(TABLE_NAME)
+                        .setWhereClause(
+                                new WhereClauses(AND)
+                                        .addWhereEqualsClause(PRIMARY_COLUMN_NAME, token)
+                                        .addWhereEqualsClause(
+                                                PACKAGE_NAME_COLUMN_NAME, packageName));
+        try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
+            if (!cursor.moveToFirst()) {
+                throw new IllegalArgumentException("Invalid token");
+            }
+
+            return new TokenRequest(
+                    getCursorStringList(cursor, PACKAGES_TO_FILTERS_COLUMN_NAME, DELIMITER),
+                    getCursorIntegerList(cursor, RECORD_TYPES_COLUMN_NAME, DELIMITER),
+                    getCursorString(cursor, PACKAGE_NAME_COLUMN_NAME),
+                    getCursorInt(cursor, ROW_ID_CHANGE_LOGS_TABLE_COLUMN_NAME));
+        }
+    }
+
+    public String getNextPageToken(TokenRequest changeLogTokenRequest, long nextRowId) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(
+                PACKAGES_TO_FILTERS_COLUMN_NAME,
+                String.join(DELIMITER, changeLogTokenRequest.getPackageNamesToFilter()));
+        contentValues.put(
+                RECORD_TYPES_COLUMN_NAME,
+                StorageUtils.flattenIntList(changeLogTokenRequest.getRecordTypes()));
+        contentValues.put(
+                PACKAGE_NAME_COLUMN_NAME, changeLogTokenRequest.getRequestingPackageName());
+        contentValues.put(ROW_ID_CHANGE_LOGS_TABLE_COLUMN_NAME, nextRowId);
+
+        return String.valueOf(
+                mTransactionManager.insert(new UpsertTableRequest(TABLE_NAME, contentValues)));
     }
 
     public static DeleteTableRequest getDeleteRequestForAutoDelete() {
@@ -116,45 +161,6 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
         columnInfo.add(new Pair<>(TIME_COLUMN_NAME, INTEGER));
 
         return columnInfo;
-    }
-
-    public static TokenRequest getRequest(String packageName, String token) {
-        ReadTableRequest readTableRequest =
-                new ReadTableRequest(TABLE_NAME)
-                        .setWhereClause(
-                                new WhereClauses(AND)
-                                        .addWhereEqualsClause(PRIMARY_COLUMN_NAME, token)
-                                        .addWhereEqualsClause(
-                                                PACKAGE_NAME_COLUMN_NAME, packageName));
-        TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
-        try (Cursor cursor = transactionManager.read(readTableRequest)) {
-            if (!cursor.moveToFirst()) {
-                throw new IllegalArgumentException("Invalid token");
-            }
-
-            return new TokenRequest(
-                    getCursorStringList(cursor, PACKAGES_TO_FILTERS_COLUMN_NAME, DELIMITER),
-                    getCursorIntegerList(cursor, RECORD_TYPES_COLUMN_NAME, DELIMITER),
-                    getCursorString(cursor, PACKAGE_NAME_COLUMN_NAME),
-                    getCursorInt(cursor, ROW_ID_CHANGE_LOGS_TABLE_COLUMN_NAME));
-        }
-    }
-
-    public static String getNextPageToken(TokenRequest changeLogTokenRequest, long nextRowId) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(
-                PACKAGES_TO_FILTERS_COLUMN_NAME,
-                String.join(DELIMITER, changeLogTokenRequest.getPackageNamesToFilter()));
-        contentValues.put(
-                RECORD_TYPES_COLUMN_NAME,
-                StorageUtils.flattenIntList(changeLogTokenRequest.getRecordTypes()));
-        contentValues.put(
-                PACKAGE_NAME_COLUMN_NAME, changeLogTokenRequest.getRequestingPackageName());
-        contentValues.put(ROW_ID_CHANGE_LOGS_TABLE_COLUMN_NAME, nextRowId);
-
-        return String.valueOf(
-                TransactionManager.getInitialisedInstance()
-                        .insert(new UpsertTableRequest(TABLE_NAME, contentValues)));
     }
 
     /** A class to represent the request corresponding to a token */

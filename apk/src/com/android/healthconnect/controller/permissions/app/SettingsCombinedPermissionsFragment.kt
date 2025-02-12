@@ -28,13 +28,13 @@ import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.migration.MigrationActivity.Companion.maybeShowMigrationDialog
 import com.android.healthconnect.controller.migration.MigrationViewModel
-import com.android.healthconnect.controller.migration.MigrationViewModel.MigrationFragmentState.*
+import com.android.healthconnect.controller.migration.MigrationViewModel.MigrationFragmentState.WithData
 import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel.RevokeAllState
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.MedicalPermission
-import com.android.healthconnect.controller.permissions.shared.DisconnectAllAppPermissionsDialogFragment
-import com.android.healthconnect.controller.permissions.shared.DisconnectAllAppPermissionsDialogFragment.Companion.DISCONNECT_EVENT
+import com.android.healthconnect.controller.permissions.shared.DisconnectHealthPermissionsDialogFragment
+import com.android.healthconnect.controller.permissions.shared.DisconnectHealthPermissionsDialogFragment.Companion.DISCONNECT_ALL_EVENT
 import com.android.healthconnect.controller.shared.Constants
 import com.android.healthconnect.controller.shared.Constants.SHOW_MANAGE_APP_SECTION
 import com.android.healthconnect.controller.shared.HealthPermissionReader
@@ -64,7 +64,7 @@ import javax.inject.Inject
 class SettingsCombinedPermissionsFragment : Hilt_SettingsCombinedPermissionsFragment() {
 
     init {
-        this.setPageName(PageName.MANAGE_PERMISSIONS_PAGE)
+        setPageName(PageName.SETTINGS_MANAGE_COMBINED_APP_PERMISSIONS_PAGE)
     }
 
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
@@ -111,7 +111,7 @@ class SettingsCombinedPermissionsFragment : Hilt_SettingsCombinedPermissionsFrag
             setupManageAppPreferenceCategory(granted)
         }
 
-        childFragmentManager.setFragmentResultListener(DISCONNECT_EVENT, this) { _, bundle ->
+        childFragmentManager.setFragmentResultListener(DISCONNECT_ALL_EVENT, this) { _, bundle ->
             val permissionsUpdated = revokeAllPermissions()
             val toastString =
                 if (!permissionsUpdated) {
@@ -193,12 +193,13 @@ class SettingsCombinedPermissionsFragment : Hilt_SettingsCombinedPermissionsFrag
 
         additionalAccessViewModel.loadAdditionalAccessPreferences(packageName)
         additionalAccessViewModel.additionalAccessState.observe(viewLifecycleOwner) { state ->
-            if (state.isValid() && shouldAddAdditionalAccessPref()) {
+            if (state.isAvailable() && shouldAddAdditionalAccessPref()) {
                 val additionalAccessPref =
                     HealthPreference(requireContext()).also {
                         it.key = KEY_ADDITIONAL_ACCESS
                         it.logName = AppAccessElement.ADDITIONAL_ACCESS_BUTTON
-                        it.setTitle(R.string.additional_access_label)
+                        it.title = getString(R.string.additional_access_label)
+                        it.summary = getString(R.string.additional_access_summary)
                         it.setOnPreferenceClickListener { _ ->
                             val extras = bundleOf(EXTRA_PACKAGE_NAME to packageName)
                             navigationUtils.navigate(
@@ -212,7 +213,7 @@ class SettingsCombinedPermissionsFragment : Hilt_SettingsCombinedPermissionsFrag
                 managePermissionsCategory.addPreference(additionalAccessPref)
             }
             managePermissionsCategory.children.find { it.key == KEY_ADDITIONAL_ACCESS }?.isVisible =
-                state.isValid()
+                state.isAvailable()
         }
     }
 
@@ -241,11 +242,12 @@ class SettingsCombinedPermissionsFragment : Hilt_SettingsCombinedPermissionsFrag
     }
 
     private fun showRevokeAllPermissions() {
-        DisconnectAllAppPermissionsDialogFragment(
+        DisconnectHealthPermissionsDialogFragment(
                 viewModel.appInfo.value?.appName!!,
-                showCheckbox = false,
+                enableDeleteData = false,
+                disconnectType = DisconnectHealthPermissionsDialogFragment.DisconnectType.ALL,
             )
-            .show(childFragmentManager, DisconnectAllAppPermissionsDialogFragment.TAG)
+            .show(childFragmentManager, DisconnectHealthPermissionsDialogFragment.TAG)
     }
 
     private fun revokeAllPermissions(): Boolean {

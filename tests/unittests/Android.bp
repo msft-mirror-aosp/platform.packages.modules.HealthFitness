@@ -34,6 +34,12 @@ android_test {
         "mts-target-sdk-version-current",
         "modules-utils-testable-device-config-defaults",
     ],
+    // This needs to be added to the unit tests as this build change is guarded by a build system
+    // flag (soong_config_bool_variable "phr_fhir_validation"), which is part of the PHR FHIR
+    // structural validation feature.
+    java_resources: [
+        ":generate-fhir-spec-r4-binarypb",
+    ],
     static_libs: [
         "TestParameterInjector",
         "service-healthfitness.impl",
@@ -47,8 +53,8 @@ android_test {
         "services.core",
         "androidx.test.ext.truth",
         "cts-healthconnect-utils",
+        "cts-healthconnect-phr-lib",
         "flag-junit",
-        "truth-java8-extension",
         "platform-parametric-runner-lib",
         "framework-annotations-lib",
     ],

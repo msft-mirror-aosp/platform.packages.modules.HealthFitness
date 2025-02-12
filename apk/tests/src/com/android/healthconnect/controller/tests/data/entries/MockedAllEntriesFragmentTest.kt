@@ -30,12 +30,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
-import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.isNotChecked
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withTagValue
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.appdata.AppDataFragment.Companion.PERMISSION_TYPE_NAME_KEY
@@ -49,7 +44,9 @@ import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.service.MainDispatcher
 import com.android.healthconnect.controller.tests.utils.CoroutineTestRule
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
-import com.android.healthconnect.controller.tests.utils.atPosition
+import com.android.healthconnect.controller.tests.utils.assertCheckboxChecked
+import com.android.healthconnect.controller.tests.utils.assertCheckboxNotChecked
+import com.android.healthconnect.controller.tests.utils.assertCheckboxNotShown
 import com.android.healthconnect.controller.tests.utils.forDataType
 import com.android.healthconnect.controller.tests.utils.getMetaDataWithUniqueIds
 import com.android.healthconnect.controller.tests.utils.getStepsRecordWithUniqueIds
@@ -70,8 +67,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Rule
@@ -93,6 +88,7 @@ class MockedAllEntriesFragmentTest {
             .atStartOfDay()
             .atZone(ZoneId.systemDefault())
             .toInstant()
+    private val recyclerViewId = R.id.data_entries_list
 
     @Before
     fun setup() {
@@ -113,10 +109,10 @@ class MockedAllEntriesFragmentTest {
         onView(withText("60 steps")).check(matches(isDisplayed()))
         onView(withText("Select all")).check(doesNotExist())
 
-        assertCheckboxNotShown("10 steps", 1)
-        assertCheckboxNotShown("20 steps", 2)
-        assertCheckboxNotShown("30 steps", 3)
-        assertCheckboxNotShown("15.2 steps/min", 4)
+        assertCheckboxNotShown(recyclerViewId, "10 steps", 1)
+        assertCheckboxNotShown(recyclerViewId, "20 steps", 2)
+        assertCheckboxNotShown(recyclerViewId, "30 steps", 3)
+        assertCheckboxNotShown(recyclerViewId, "15.2 steps/min", 4)
     }
 
     @Test
@@ -136,10 +132,10 @@ class MockedAllEntriesFragmentTest {
         onView(withText("Select all")).check(matches(isDisplayed()))
         onView(withText("60 steps")).check(doesNotExist())
 
-        assertCheckboxNotChecked("10 steps", 1)
-        assertCheckboxNotChecked("20 steps", 2)
-        assertCheckboxNotChecked("30 steps", 3)
-        assertCheckboxNotChecked("15.2 steps/min", 4)
+        assertCheckboxNotChecked(recyclerViewId, "10 steps", 1)
+        assertCheckboxNotChecked(recyclerViewId, "20 steps", 2)
+        assertCheckboxNotChecked(recyclerViewId, "30 steps", 3)
+        assertCheckboxNotChecked(recyclerViewId, "15.2 steps/min", 4)
     }
 
     @Test
@@ -159,24 +155,24 @@ class MockedAllEntriesFragmentTest {
         onView(withText("Select all")).check(matches(isDisplayed()))
         onView(withText("60 steps")).check(doesNotExist())
 
-        assertCheckboxNotChecked("10 steps", 1)
-        assertCheckboxNotChecked("20 steps", 2)
-        assertCheckboxNotChecked("30 steps", 3)
-        assertCheckboxNotChecked("15.2 steps/min", 4)
+        assertCheckboxNotChecked(recyclerViewId, "10 steps", 1)
+        assertCheckboxNotChecked(recyclerViewId, "20 steps", 2)
+        assertCheckboxNotChecked(recyclerViewId, "30 steps", 3)
+        assertCheckboxNotChecked(recyclerViewId, "15.2 steps/min", 4)
 
         onView(withText("10 steps")).perform(click())
 
-        assertCheckboxChecked("10 steps", 1)
+        assertCheckboxChecked(recyclerViewId, "10 steps", 1)
 
         scenario.recreate()
         advanceUntilIdle()
         onView(withText("Select all")).check(matches(isDisplayed()))
         onView(withText("60 steps")).check(doesNotExist())
 
-        assertCheckboxChecked("10 steps", 1)
-        assertCheckboxNotChecked("20 steps", 2)
-        assertCheckboxNotChecked("30 steps", 3)
-        assertCheckboxNotChecked("15.2 steps/min", 4)
+        assertCheckboxChecked(recyclerViewId, "10 steps", 1)
+        assertCheckboxNotChecked(recyclerViewId, "20 steps", 2)
+        assertCheckboxNotChecked(recyclerViewId, "30 steps", 3)
+        assertCheckboxNotChecked(recyclerViewId, "15.2 steps/min", 4)
     }
 
     @Test
@@ -196,10 +192,10 @@ class MockedAllEntriesFragmentTest {
         onView(withText("Select all")).check(matches(isDisplayed()))
         onView(withText("60 steps")).check(doesNotExist())
 
-        assertCheckboxNotChecked("10 steps", 1)
-        assertCheckboxNotChecked("20 steps", 2)
-        assertCheckboxNotChecked("30 steps", 3)
-        assertCheckboxNotChecked("15.2 steps/min", 4)
+        assertCheckboxNotChecked(recyclerViewId, "10 steps", 1)
+        assertCheckboxNotChecked(recyclerViewId, "20 steps", 2)
+        assertCheckboxNotChecked(recyclerViewId, "30 steps", 3)
+        assertCheckboxNotChecked(recyclerViewId, "15.2 steps/min", 4)
 
         onView(withText("10 steps")).perform(click())
         onView(withText("20 steps")).perform(click())
@@ -207,7 +203,7 @@ class MockedAllEntriesFragmentTest {
         onView(withText("15.2 steps/min")).perform(click())
 
         // assert select all checked
-        assertCheckboxChecked("Select all", 0)
+        assertCheckboxChecked(recyclerViewId, "Select all", 0)
     }
 
     @Test
@@ -227,23 +223,23 @@ class MockedAllEntriesFragmentTest {
         onView(withText("Select all")).check(matches(isDisplayed()))
         onView(withText("60 steps")).check(doesNotExist())
 
-        assertCheckboxNotChecked("10 steps", 1)
-        assertCheckboxNotChecked("20 steps", 2)
-        assertCheckboxNotChecked("30 steps", 3)
-        assertCheckboxNotChecked("15.2 steps/min", 4)
+        assertCheckboxNotChecked(recyclerViewId, "10 steps", 1)
+        assertCheckboxNotChecked(recyclerViewId, "20 steps", 2)
+        assertCheckboxNotChecked(recyclerViewId, "30 steps", 3)
+        assertCheckboxNotChecked(recyclerViewId, "15.2 steps/min", 4)
 
         onView(withText("Select all")).perform(click())
 
-        assertCheckboxChecked("10 steps", 1)
-        assertCheckboxChecked("20 steps", 2)
-        assertCheckboxChecked("30 steps", 3)
-        assertCheckboxChecked("15.2 steps/min", 4)
+        assertCheckboxChecked(recyclerViewId, "10 steps", 1)
+        assertCheckboxChecked(recyclerViewId, "20 steps", 2)
+        assertCheckboxChecked(recyclerViewId, "30 steps", 3)
+        assertCheckboxChecked(recyclerViewId, "15.2 steps/min", 4)
 
-        assertCheckboxChecked("Select all", 0)
+        assertCheckboxChecked(recyclerViewId, "Select all", 0)
 
         onView(withText("10 steps")).perform(click())
 
-        assertCheckboxNotChecked("Select all", 0)
+        assertCheckboxNotChecked(recyclerViewId, "Select all", 0)
     }
 
     @Test
@@ -263,17 +259,17 @@ class MockedAllEntriesFragmentTest {
         onView(withText("Select all")).check(matches(isDisplayed()))
         onView(withText("60 steps")).check(doesNotExist())
 
-        assertCheckboxNotChecked("10 steps", 1)
-        assertCheckboxNotChecked("20 steps", 2)
-        assertCheckboxNotChecked("30 steps", 3)
-        assertCheckboxNotChecked("15.2 steps/min", 4)
+        assertCheckboxNotChecked(recyclerViewId, "10 steps", 1)
+        assertCheckboxNotChecked(recyclerViewId, "20 steps", 2)
+        assertCheckboxNotChecked(recyclerViewId, "30 steps", 3)
+        assertCheckboxNotChecked(recyclerViewId, "15.2 steps/min", 4)
 
         onView(withText("Select all")).perform(click())
 
-        assertCheckboxChecked("10 steps", 1)
-        assertCheckboxChecked("20 steps", 2)
-        assertCheckboxChecked("30 steps", 3)
-        assertCheckboxChecked("15.2 steps/min", 4)
+        assertCheckboxChecked(recyclerViewId, "10 steps", 1)
+        assertCheckboxChecked(recyclerViewId, "20 steps", 2)
+        assertCheckboxChecked(recyclerViewId, "30 steps", 3)
+        assertCheckboxChecked(recyclerViewId, "15.2 steps/min", 4)
     }
 
     @Test
@@ -293,24 +289,24 @@ class MockedAllEntriesFragmentTest {
         onView(withText("Select all")).check(matches(isDisplayed()))
         onView(withText("60 steps")).check(doesNotExist())
 
-        assertCheckboxNotChecked("10 steps", 1)
-        assertCheckboxNotChecked("20 steps", 2)
-        assertCheckboxNotChecked("30 steps", 3)
-        assertCheckboxNotChecked("15.2 steps/min", 4)
+        assertCheckboxNotChecked(recyclerViewId, "10 steps", 1)
+        assertCheckboxNotChecked(recyclerViewId, "20 steps", 2)
+        assertCheckboxNotChecked(recyclerViewId, "30 steps", 3)
+        assertCheckboxNotChecked(recyclerViewId, "15.2 steps/min", 4)
 
         onView(withText("Select all")).perform(click())
 
-        assertCheckboxChecked("10 steps", 1)
-        assertCheckboxChecked("20 steps", 2)
-        assertCheckboxChecked("30 steps", 3)
-        assertCheckboxChecked("15.2 steps/min", 4)
+        assertCheckboxChecked(recyclerViewId, "10 steps", 1)
+        assertCheckboxChecked(recyclerViewId, "20 steps", 2)
+        assertCheckboxChecked(recyclerViewId, "30 steps", 3)
+        assertCheckboxChecked(recyclerViewId, "15.2 steps/min", 4)
 
         onView(withText("Select all")).perform(click())
 
-        assertCheckboxNotChecked("10 steps", 1)
-        assertCheckboxNotChecked("20 steps", 2)
-        assertCheckboxNotChecked("30 steps", 3)
-        assertCheckboxNotChecked("15.2 steps/min", 4)
+        assertCheckboxNotChecked(recyclerViewId, "10 steps", 1)
+        assertCheckboxNotChecked(recyclerViewId, "20 steps", 2)
+        assertCheckboxNotChecked(recyclerViewId, "30 steps", 3)
+        assertCheckboxNotChecked(recyclerViewId, "15.2 steps/min", 4)
     }
 
     private fun mockData() {
@@ -385,68 +381,6 @@ class MockedAllEntriesFragmentTest {
                 },
             )
             .build()
-    }
-
-    private fun assertCheckboxShown(title: String, position: Int, tag: String = "checkbox") {
-        onView(withId(R.id.data_entries_list))
-            .check(
-                matches(
-                    atPosition(
-                        position,
-                        allOf(
-                            hasDescendant(withText(title)),
-                            hasDescendant(withTagValue(`is`(tag))),
-                        ),
-                    )
-                )
-            )
-    }
-
-    private fun assertCheckboxChecked(title: String, position: Int, tag: String = "checkbox") {
-        onView(withId(R.id.data_entries_list))
-            .check(
-                matches(
-                    atPosition(
-                        position,
-                        allOf(
-                            hasDescendant(withText(title)),
-                            hasDescendant(withTagValue(`is`(tag))),
-                            hasDescendant(isChecked()),
-                        ),
-                    )
-                )
-            )
-    }
-
-    private fun assertCheckboxNotShown(title: String, position: Int, tag: String = "checkbox") {
-        onView(withId(R.id.data_entries_list))
-            .check(
-                matches(
-                    atPosition(
-                        position,
-                        allOf(
-                            hasDescendant(withText(title)),
-                            not(hasDescendant(withTagValue(`is`(tag)))),
-                        ),
-                    )
-                )
-            )
-    }
-
-    private fun assertCheckboxNotChecked(title: String, position: Int, tag: String = "checkbox") {
-        onView(withId(R.id.data_entries_list))
-            .check(
-                matches(
-                    atPosition(
-                        position,
-                        allOf(
-                            hasDescendant(withText(title)),
-                            hasDescendant(withTagValue(`is`(tag))),
-                            hasDescendant(isNotChecked()),
-                        ),
-                    )
-                )
-            )
     }
 
     @Module
