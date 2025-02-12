@@ -38,6 +38,9 @@
     <string name="browse_data_title" description="Label for button that allows the user to browse data [CHAR_LIMIT=NONE]">Browse data</string>
     <string name="browse_data_subtitle" description="Description for button that allows the user to browse data [CHAR_LIMIT=NONE]">See data and which apps can access it</string>
     <string name="manage_data_summary" description="Summary for the manage data preference. [CHAR_LIMIT=NONE]">Auto-delete, data sources, backup and restore</string>
+
+    <string name="banner_group_more_items" description="Title for button to expand a banner preference group when one or more banners are hidden [CHAR_LIMIT]=50">More items</string>
+    <string name="banner_group_fewer_items" description="Title for button to collapse banner preference group and only show the first banner [CHAR_LIMIT]=50">Fewer items</string>
     <!--  endregion -->
 
     <!-- region Manage data -->
