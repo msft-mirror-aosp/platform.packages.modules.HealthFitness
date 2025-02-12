@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.utils;
 
-import android.os.Environment;
 
 import java.io.File;
 
@@ -32,7 +31,7 @@ public final class FilesUtil {
      * dir.
      *
      * @param environmentDataDirectory The environment data directory to use, allowing this to be
-     *     overridden for tests,
+     *     overridden for tests. Should normally be {@link android.os.Environment#getDataDirectory}.
      */
     public static File getDataSystemCeHCDirectoryForUser(
             File environmentDataDirectory, int userId) {
@@ -41,14 +40,6 @@ public final class FilesUtil {
         File systemCeDir = new File(environmentDataDirectory, "system_ce");
         File systemCeUserDir = new File(systemCeDir, String.valueOf(userId));
         return new File(systemCeUserDir, "healthconnect");
-    }
-
-    /**
-     * Get the health connect dir for the user to store sensitive data in a credential encrypted
-     * dir.
-     */
-    public static File getDataSystemCeHCDirectoryForUser(int userId) {
-        return getDataSystemCeHCDirectoryForUser(Environment.getDataDirectory(), userId);
     }
 
     /** Delete the dir recursively. */
