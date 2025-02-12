@@ -129,7 +129,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         : builder.mMigrationEntityHelper;
         mTransactionManager =
                 builder.mTransactionManager == null
-                        ? new TransactionManager(hcContext, mInternalHealthConnectMappings)
+                        ? TransactionManager.create(hcContext, mInternalHealthConnectMappings)
                         : builder.mTransactionManager;
         mAppInfoHelper =
                 builder.mAppInfoHelper == null

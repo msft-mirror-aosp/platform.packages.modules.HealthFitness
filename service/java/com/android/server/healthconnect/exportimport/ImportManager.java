@@ -143,6 +143,7 @@ public class ImportManager {
 
         try {
             try {
+                Slog.d(TAG, "Starting to unzip file: " + importDbFile.getAbsolutePath());
                 Compressor.decompress(
                         uri, LOCAL_EXPORT_DATABASE_FILE_NAME, importDbFile, userContext);
                 Slog.i(TAG, "Import file unzipped: " + importDbFile.getAbsolutePath());
@@ -183,7 +184,9 @@ public class ImportManager {
                 notifyAndLogUnknownError(
                         userHandle, startTimeMillis, intSizeInKb(importDbFile), zipFileSize);
             }
+
             try {
+                Slog.d(TAG, "Starting to merge database");
                 if (canMerge(importDbFile)) {
                     HealthConnectDatabase stagedDatabase =
                             new HealthConnectDatabase(dbContext, IMPORT_DATABASE_FILE_NAME);
@@ -193,8 +196,8 @@ public class ImportManager {
                 Slog.d(
                         TAG,
                         "Import failed during database merge. Selected import file is not"
-                                + "a database. Details: "
-                                + e);
+                                + "a database. Details: ",
+                        e);
                 notifyAndLogInvalidFileError(
                         userHandle, startTimeMillis, intSizeInKb(importDbFile), zipFileSize);
                 return;
@@ -215,8 +218,9 @@ public class ImportManager {
             } catch (Exception e) {
                 Slog.d(
                         TAG,
-                        "Import failed during database merge due to an unknown error. Details: "
-                                + e);
+                        "Import failed during database merge due to an unknown error. "
+                                + "Details: ",
+                        e);
                 notifyAndLogUnknownError(
                         userHandle, startTimeMillis, intSizeInKb(importDbFile), zipFileSize);
                 return;
