@@ -321,7 +321,13 @@ public final class ExerciseSessionRecordHelper
                         enforceSelfRead,
                         startDateAccessMillis,
                         appInfoHelper);
-        return List.of(getRouteReadRequest(sessionsWithAccessibleRouteClause));
+
+        ReadTableRequest sessionIdsRequest =
+                getSessionIdsRequest(sessionsWithAccessibleRouteClause)
+                        .setOrderBy(getOrderByClause(request))
+                        .setLimit(getLimitSize(request));
+
+        return List.of(getRouteReadRequest(sessionIdsRequest));
     }
 
     /** Returns extra permissions required to write given record. */
@@ -376,7 +382,8 @@ public final class ExerciseSessionRecordHelper
                     APP_INFO_ID_COLUMN_NAME, List.of(appId));
         }
 
-        return List.of(getRouteReadRequest(sessionsWithAccessibleRouteClause));
+        return List.of(
+                getRouteReadRequest(getSessionIdsRequest(sessionsWithAccessibleRouteClause)));
     }
 
     @Override
@@ -531,15 +538,18 @@ public final class ExerciseSessionRecordHelper
         return numberOfRecordsWithExerciseRoutes;
     }
 
-    private ReadTableRequest getRouteReadRequest(WhereClauses clauseToFilterSessionIds) {
+    /** Same as the original request but for session IDs only */
+    private ReadTableRequest getSessionIdsRequest(WhereClauses whereClauses) {
+        return new ReadTableRequest(getMainTableName())
+                .setColumnNames(List.of(PRIMARY_COLUMN_NAME))
+                .setWhereClause(whereClauses);
+    }
+
+    private ReadTableRequest getRouteReadRequest(ReadTableRequest sessionIdsRequest) {
         ReadTableRequest routeReadRequest = new ReadTableRequest(EXERCISE_ROUTE_RECORD_TABLE_NAME);
 
-        ReadTableRequest sessionsIdsRequest = new ReadTableRequest(getMainTableName());
-        sessionsIdsRequest.setColumnNames(List.of(PRIMARY_COLUMN_NAME));
-        sessionsIdsRequest.setWhereClause(clauseToFilterSessionIds);
-
         WhereClauses inClause = new WhereClauses(AND);
-        inClause.addWhereInSQLRequestClause(PARENT_KEY_COLUMN_NAME, sessionsIdsRequest);
+        inClause.addWhereInSQLRequestClause(PARENT_KEY_COLUMN_NAME, sessionIdsRequest);
         routeReadRequest.setWhereClause(inClause);
         return routeReadRequest;
     }

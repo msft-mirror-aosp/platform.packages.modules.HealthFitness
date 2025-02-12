@@ -769,7 +769,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
         return null;
     }
 
-    private static int getLimitSize(ReadRecordsRequestParcel request) {
+    static int getLimitSize(ReadRecordsRequestParcel request) {
         // Querying extra records on top of page size
         // + pageOffset: <pageOffset> records has already been returned in previous page(s). See
         //               go/hc-page-token for details.
@@ -892,7 +892,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
 
     abstract String getZoneOffsetColumnName();
 
-    private OrderByClause getOrderByClause(ReadRecordsRequestParcel request) {
+    OrderByClause getOrderByClause(ReadRecordsRequestParcel request) {
         if (request.getRecordIdFiltersParcel() != null) {
             return new OrderByClause();
         }
