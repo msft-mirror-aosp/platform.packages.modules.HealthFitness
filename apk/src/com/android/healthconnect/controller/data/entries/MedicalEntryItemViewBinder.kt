@@ -16,7 +16,7 @@ package com.android.healthconnect.controller.data.entries
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
+import android.widget.CheckBox
 import android.widget.TextView
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.shared.recyclerview.SimpleViewBinder
@@ -40,13 +40,17 @@ class MedicalEntryItemViewBinder(
                 HealthConnectLoggerEntryPoint::class.java,
             )
         logger = hiltEntryPoint.logger()
-        return LayoutInflater.from(parent.context).inflate(R.layout.item_data_entry, parent, false)
+        return LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_data_entry_new_ia, parent, false)
     }
 
     override fun bind(view: View, data: FormattedEntry.FormattedMedicalDataEntry, index: Int) {
         val header = view.findViewById<TextView>(R.id.item_data_entry_header)
         val title = view.findViewById<TextView>(R.id.item_data_entry_title)
-        val deleteButton = view.findViewById<ImageButton>(R.id.item_data_entry_delete)
+        view.findViewById<CheckBox>(R.id.item_checkbox_button).apply {
+            // deletion is not supported on medical items.
+            visibility = View.GONE
+        }
         logger.logImpression(EntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
 
         title.text = data.title
@@ -54,8 +58,6 @@ class MedicalEntryItemViewBinder(
 
         header.text = data.header
         header.contentDescription = data.headerA11y
-
-        deleteButton.visibility = View.GONE
 
         view.setOnClickListener {
             logger.logInteraction(EntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
