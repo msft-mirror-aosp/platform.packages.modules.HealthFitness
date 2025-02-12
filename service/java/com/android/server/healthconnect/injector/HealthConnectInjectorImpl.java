@@ -18,6 +18,7 @@ package com.android.server.healthconnect.injector;
 
 import android.content.Context;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
+import android.os.Environment;
 import android.os.UserHandle;
 
 import androidx.annotation.Nullable;
@@ -220,7 +221,8 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                                 context,
                                 mPermissionIntentAppsTracker,
                                 builder.mFirstGrantTimeDatastore == null
-                                        ? FirstGrantTimeDatastore.createInstance()
+                                        ? FirstGrantTimeDatastore.createInstance(
+                                                Environment.getDataDirectory())
                                         : builder.mFirstGrantTimeDatastore,
                                 mPackageInfoUtils,
                                 mHealthDataCategoryPriorityHelper,

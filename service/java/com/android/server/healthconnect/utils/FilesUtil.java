@@ -26,16 +26,29 @@ import java.io.File;
  * @hide
  */
 public final class FilesUtil {
+
+    /**
+     * Get the health connect dir for the user to store sensitive data in a credential encrypted
+     * dir.
+     *
+     * @param environmentDataDirectory The environment data directory to use, allowing this to be
+     *     overridden for tests,
+     */
+    public static File getDataSystemCeHCDirectoryForUser(
+            File environmentDataDirectory, int userId) {
+        // Duplicates the implementation of Environment#getDataSystemCeDirectory
+        // TODO(b/191059409): Unhide Environment#getDataSystemCeDirectory and switch to it.
+        File systemCeDir = new File(environmentDataDirectory, "system_ce");
+        File systemCeUserDir = new File(systemCeDir, String.valueOf(userId));
+        return new File(systemCeUserDir, "healthconnect");
+    }
+
     /**
      * Get the health connect dir for the user to store sensitive data in a credential encrypted
      * dir.
      */
     public static File getDataSystemCeHCDirectoryForUser(int userId) {
-        // Duplicates the implementation of Environment#getDataSystemCeDirectory
-        // TODO(b/191059409): Unhide Environment#getDataSystemCeDirectory and switch to it.
-        File systemCeDir = new File(Environment.getDataDirectory(), "system_ce");
-        File systemCeUserDir = new File(systemCeDir, String.valueOf(userId));
-        return new File(systemCeUserDir, "healthconnect");
+        return getDataSystemCeHCDirectoryForUser(Environment.getDataDirectory(), userId);
     }
 
     /** Delete the dir recursively. */

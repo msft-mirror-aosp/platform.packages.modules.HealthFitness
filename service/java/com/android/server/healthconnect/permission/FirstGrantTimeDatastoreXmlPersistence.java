@@ -31,8 +31,11 @@ class FirstGrantTimeDatastoreXmlPersistence implements FirstGrantTimeDatastore {
 
     private static final String STAGED_GRANT_TIME_FILE_NAME =
             "staged-health-permissions-first-grant-times.xml";
+    private final File mEnvironmentDataDirectory;
 
-    FirstGrantTimeDatastoreXmlPersistence() {}
+    FirstGrantTimeDatastoreXmlPersistence(File environmentDataDirectory) {
+        mEnvironmentDataDirectory = environmentDataDirectory;
+    }
 
     /**
      * Read {@link UserGrantTimeState for given user}.
@@ -72,6 +75,8 @@ class FirstGrantTimeDatastoreXmlPersistence implements FirstGrantTimeDatastore {
                         ? GRANT_TIME_FILE_NAME
                         : STAGED_GRANT_TIME_FILE_NAME;
         return new File(
-                FilesUtil.getDataSystemCeHCDirectoryForUser(user.getIdentifier()), fileName);
+                FilesUtil.getDataSystemCeHCDirectoryForUser(
+                        mEnvironmentDataDirectory, user.getIdentifier()),
+                fileName);
     }
 }
