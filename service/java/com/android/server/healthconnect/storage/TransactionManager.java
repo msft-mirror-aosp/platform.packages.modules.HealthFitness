@@ -900,8 +900,7 @@ public final class TransactionManager {
                 throw new IllegalArgumentException(
                         "Extra read request with no attached record helper.");
             }
-            recordHelper.updateInternalRecordsWithExtraFields(
-                    records, cursorExtraData, extraDataRequest.getTableName());
+            recordHelper.updateInternalRecordsWithExtraFields(records, cursorExtraData);
         }
     }
 
