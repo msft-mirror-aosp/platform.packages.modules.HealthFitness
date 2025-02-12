@@ -35,6 +35,8 @@ import android.health.connect.backuprestore.GetChangesForBackupResponse;
 import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.datatypes.Record;
+import android.health.connect.datatypes.RecordTypeIdentifier;
+import android.health.connect.internal.datatypes.PlannedExerciseSessionRecordInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.util.Pair;
@@ -275,7 +277,7 @@ public class CloudBackupDatabaseHelper {
                         .flatMap(recordHelper -> recordHelper.getExtraReadPermissions().stream())
                         .collect(Collectors.toSet());
 
-        List<RecordInternal<?>> recordInternals =
+        List<RecordInternal<?>> internalRecords =
                 mTransactionManager.readRecordsByIds(
                         new ReadTransactionRequest(
                                 mAppInfoHelper,
@@ -291,8 +293,39 @@ public class CloudBackupDatabaseHelper {
                         mReadAccessLogsHelper,
                         /* shouldRecordAccessLog= */ false);
 
+        // Read the exercise sessions that refer to any training plans included in the changes and
+        // append them to the list of changes. This is to always have exercise sessions restore
+        // after planned sessions that they refer to.
+        var sessionIds = new ArrayList<UUID>();
+        for (var record : internalRecords) {
+            if (record instanceof PlannedExerciseSessionRecordInternal plannedSession) {
+                var completedSessionId = plannedSession.getCompletedExerciseSessionId();
+                if (completedSessionId != null) {
+                    sessionIds.add(completedSessionId);
+                }
+            }
+        }
+        List<RecordInternal<?>> exerciseSessions =
+                mTransactionManager.readRecordsByIds(
+                        new ReadTransactionRequest(
+                                mAppInfoHelper,
+                                /* packageName= */ "",
+                                Map.of(
+                                        RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION,
+                                        sessionIds),
+                                DEFAULT_LONG,
+                                grantedExtraReadPermissions,
+                                /* isInForeground= */ true,
+                                /* isReadingSelfData= */ false),
+                        mAppInfoHelper,
+                        mAccessLogsHelper,
+                        mDeviceInfoHelper,
+                        mReadAccessLogsHelper,
+                        /* shouldRecordAccessLog= */ false);
+        internalRecords.addAll(exerciseSessions);
+
         List<BackupChange> backupChanges =
-                new ArrayList<>(convertRecordsToBackupChange(recordInternals));
+                new ArrayList<>(convertRecordsToBackupChange(internalRecords));
 
         // Include UUIDs for all deleted records.
         List<ChangeLogsResponse.DeletedLog> deletedLogs =

@@ -548,6 +548,51 @@ public class CloudBackupDatabaseHelperTest {
         assertThat(deletedBloodPressureBackupChange.getData()).isNull();
     }
 
+    @Test
+    public void getIncrementalChanges_returnsExerciseSession_afterPlannedExerciseSessionChange()
+            throws Exception {
+        mTransactionTestUtils.insertRecords(
+                TEST_PACKAGE_NAME, createStepsRecord(123456, 654321, 1234));
+        Metadata metadata =
+                new Metadata.Builder()
+                        .setDataOrigin(DataFactory.getDataOrigin(TEST_PACKAGE_NAME))
+                        .build();
+        PlannedExerciseSessionRecordInternal plannedExerciseSession =
+                DataFactory.plannedExerciseSession(metadata).build().toRecordInternal();
+        var plannedExerciseSessionUid =
+                mTransactionTestUtils
+                        .insertRecords(TEST_PACKAGE_NAME, plannedExerciseSession)
+                        .get(0);
+        ExerciseSessionRecordInternal exerciseSessionRecord =
+                new ExerciseSessionRecord.Builder(
+                                metadata,
+                                Instant.now().minus(3, HOURS),
+                                Instant.now().minus(1, HOURS),
+                                ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING)
+                        .setPlannedExerciseSessionId(plannedExerciseSessionUid)
+                        .build()
+                        .toRecordInternal();
+        mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, exerciseSessionRecord);
+        BackupChangeToken backupChangeToken =
+                BackupChangeTokenHelper.getBackupChangeToken(
+                        mTransactionManager,
+                        mCloudBackupDatabaseHelper
+                                .getChangesAndTokenFromDataTables()
+                                .getNextChangeToken());
+        mTransactionTestUtils.updateRecords(TEST_PACKAGE_NAME, plannedExerciseSession);
+
+        List<BackupChange> changes =
+                mCloudBackupDatabaseHelper
+                        .getIncrementalChanges(backupChangeToken.getChangeLogsRequestToken())
+                        .getChanges();
+
+        assertThat(changes.size()).isEqualTo(2);
+        assertThat(parseRecordInternal(changes.get(0)))
+                .isInstanceOf(PlannedExerciseSessionRecordInternal.class);
+        assertThat(parseRecordInternal(changes.get(1)))
+                .isInstanceOf(ExerciseSessionRecordInternal.class);
+    }
+
     private RecordInternal<?> parseRecordInternal(BackupChange change) throws Exception {
         return mRecordProtoConverter.toRecordInternal(
                 BackupData.parseFrom(change.getData()).getRecord());
