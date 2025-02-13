@@ -27,7 +27,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.time.Instant;
 
 /**
- * Status for a scheduled export.
+ * Status for a scheduled export. Parcelable used to communicate the status of a scheduled export
+ * between the system server and the UI components via HealthConnectService.
  *
  * @hide
  */
