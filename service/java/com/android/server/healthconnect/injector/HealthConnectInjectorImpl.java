@@ -61,6 +61,7 @@ import com.android.server.healthconnect.storage.utils.PreferencesManager;
 import com.android.server.healthconnect.utils.TimeSource;
 import com.android.server.healthconnect.utils.TimeSourceImpl;
 
+import java.io.File;
 import java.time.Clock;
 import java.util.Objects;
 
@@ -118,7 +119,20 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         // Any class that is using this user below are responsible for making sure that they
         // update any reference to user when it changes.
         UserHandle userHandle = builder.mUserHandle;
-        HealthConnectContext hcContext = HealthConnectContext.create(context, userHandle);
+
+        HealthConnectContext hcContext =
+                builder.mEnvironmentDataDirectory == null
+                        ? HealthConnectContext.create(context, userHandle)
+                        : HealthConnectContext.create(
+                                context,
+                                userHandle,
+                                /* databaseDirName= */ null,
+                                builder.mEnvironmentDataDirectory);
+
+        File environmentDataDirectory =
+                builder.mEnvironmentDataDirectory == null
+                        ? Environment.getDataDirectory()
+                        : builder.mEnvironmentDataDirectory;
 
         mDatabaseHelpers = new DatabaseHelpers();
         mInternalHealthConnectMappings = InternalHealthConnectMappings.getInstance();
@@ -222,7 +236,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                                 mPermissionIntentAppsTracker,
                                 builder.mFirstGrantTimeDatastore == null
                                         ? FirstGrantTimeDatastore.createInstance(
-                                                Environment.getDataDirectory())
+                                                environmentDataDirectory)
                                         : builder.mFirstGrantTimeDatastore,
                                 mPackageInfoUtils,
                                 mHealthDataCategoryPriorityHelper,
@@ -539,6 +553,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         @Nullable private DatabaseStatsCollector mDatabaseStatsCollector;
         @Nullable private UsageStatsCollector mUsageStatsCollector;
         @Nullable private ReadAccessLogsHelper mReadAccessLogsHelper;
+        @Nullable private File mEnvironmentDataDirectory;
 
         private Builder(Context context) {
             mContext = context;
@@ -758,6 +773,12 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         public Builder setReadAccessLogsHelper(ReadAccessLogsHelper readAccessLogsHelper) {
             Objects.requireNonNull(readAccessLogsHelper);
             mReadAccessLogsHelper = readAccessLogsHelper;
+            return this;
+        }
+
+        /** Set a custom directory to use instead of {@link Environment#getDataDirectory()}. */
+        public Builder setEnvironmentDataDirectory(File environmentDataDirectory) {
+            mEnvironmentDataDirectory = Objects.requireNonNull(environmentDataDirectory);
             return this;
         }
 
