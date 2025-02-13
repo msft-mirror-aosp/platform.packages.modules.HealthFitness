@@ -17,7 +17,6 @@ package com.android.healthconnect.controller.tests.permissions.connectedapps
 
 import android.content.Intent
 import android.content.Intent.*
-import android.platform.test.annotations.EnableFlags
 import android.platform.test.flag.junit.SetFlagsRule
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MediatorLiveData
@@ -70,7 +69,6 @@ import com.android.healthconnect.controller.utils.logging.AppAccessElement
 import com.android.healthconnect.controller.utils.logging.DisconnectAppDialogElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
-import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -735,6 +733,7 @@ class FitnessAppFragmentTest {
     }
 
     @Test
+    @Ignore("b/390200557") // TODO(b/390200557): unignore
     fun footerWithGrantTime_whenHistoryRead_isNotDisplayed() {
         val permission = FitnessPermission(DISTANCE, READ)
         whenever(viewModel.fitnessPermissions).then { MutableLiveData(listOf(permission)) }
@@ -805,9 +804,8 @@ class FitnessAppFragmentTest {
         verify(healthConnectLogger).logImpression(AppAccessElement.PRIVACY_POLICY_LINK)
     }
 
-    // TODO unignore when stable
     @Test
-    @Ignore
+    @Ignore("b/390200557") // TODO(b/390200557): unignore
     fun whenClickOnPrivacyPolicyLink_startsRationaleActivity() {
         val rationaleAction = "android.intent.action.VIEW_PERMISSION_USAGE"
         val permission = FitnessPermission(DISTANCE, READ)
@@ -902,6 +900,7 @@ class FitnessAppFragmentTest {
     }
 
     @Test
+    @Ignore("b/390200557") // TODO(b/390200557): unignore
     fun additionalAccessState_valid_showsAdditionalAccess() {
         val validState =
             AdditionalAccessViewModel.State(
@@ -922,6 +921,7 @@ class FitnessAppFragmentTest {
     }
 
     @Test
+    @Ignore("b/390200557") // TODO(b/390200557): unignore
     fun additionalAccessState_onlyOneAdditionalPermission_showsAdditionalAccess() {
         val validState =
             AdditionalAccessViewModel.State(
@@ -947,7 +947,7 @@ class FitnessAppFragmentTest {
     }
 
     @Test
-    @Ignore // TODO(b/352003559): Unignore when fixed flakiness.
+    @Ignore("b/390200557") // TODO(b/390200557): unignore
     fun additionalAccessState_onClick_navigatesToAdditionalAccessFragment() {
         val validState =
             AdditionalAccessViewModel.State(

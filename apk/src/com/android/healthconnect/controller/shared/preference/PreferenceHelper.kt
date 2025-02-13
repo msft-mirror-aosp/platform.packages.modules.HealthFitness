@@ -21,9 +21,16 @@ import android.os.Build
 import android.view.View.OnClickListener
 import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceClickListener
+import androidx.preference.PreferenceScreen
+import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.utils.logging.ElementName
+import com.android.settingslib.widget.AppHeaderPreference
+import com.android.settingslib.widget.IntroPreference
 import com.android.settingslib.widget.SettingsThemeHelper
 import com.android.settingslib.widget.TopIntroPreference
+
+private const val APP_HEADER_PREFERENCE_KEY = "app_header_preference"
+private const val INTRO_PREFERENCE_KEY = "intro_preference"
 
 fun topIntroPreference(
     context: Context,
@@ -35,10 +42,7 @@ fun topIntroPreference(
 ): Preference {
     // TODO(b/378469065): Remove isExpressive check once TopIntroPreference is fixed. At the moment
     // it does not display the learn more link when expressive theming is off.
-    return if (
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM &&
-            SettingsThemeHelper.isExpressiveTheme(context)
-    ) {
+    return if (isExpressiveAndBuildVersion(context)) {
         TopIntroPreference(context).apply {
             preferenceKey?.let { key = it }
             preferenceTitle?.let { title = it }
@@ -54,6 +58,72 @@ fun topIntroPreference(
             learnMoreAction?.let { setLearnMoreAction(it) }
             order = preferenceOrder
         }
+    }
+}
+
+/**
+ * Ensures an IntroPreference (expressive) or AppHeaderPreference (non expressive) is added to the
+ * top of the preference screen. If the preference already exists, it updates its properties.
+ *
+ * @param preferenceScreen The screen where the preference should be added.
+ * @param context The context used to create the preference.
+ * @param appMetadata AppMetadata containing the app icon and name.
+ */
+fun addIntroOrAppHeaderPreference(
+    preferenceScreen: PreferenceScreen,
+    context: Context,
+    appMetadata: AppMetadata,
+) {
+    val isExpressiveTheme = isExpressiveAndBuildVersion(context)
+
+    val (keyToUpsert, keyToRemove) =
+        if (isExpressiveTheme) {
+            Pair(INTRO_PREFERENCE_KEY, APP_HEADER_PREFERENCE_KEY)
+        } else {
+            Pair(APP_HEADER_PREFERENCE_KEY, INTRO_PREFERENCE_KEY)
+        }
+
+    updateOrCreatePreference(preferenceScreen, context, appMetadata, keyToUpsert)
+    safelyRemovePreference(preferenceScreen, keyToRemove)
+}
+
+private fun updateOrCreatePreference(
+    preferenceScreen: PreferenceScreen,
+    context: Context,
+    appMetadata: AppMetadata,
+    key: String,
+) {
+    val existingPreference = preferenceScreen.findPreference<Preference>(key)
+    if (existingPreference != null) {
+        existingPreference.apply {
+            icon = appMetadata.icon
+            title = appMetadata.appName
+        }
+    } else {
+        val newPreference =
+            createPreference(context, key).apply {
+                icon = appMetadata.icon
+                title = appMetadata.appName
+                this.key = key
+                order = 0
+            }
+
+        preferenceScreen.addPreference(newPreference)
+    }
+}
+
+private fun createPreference(context: Context, key: String): Preference {
+    return when (key) {
+        INTRO_PREFERENCE_KEY -> IntroPreference(context)
+        APP_HEADER_PREFERENCE_KEY -> AppHeaderPreference(context)
+        else -> Preference(context)
+    }
+}
+
+private fun safelyRemovePreference(preferenceScreen: PreferenceScreen, preferenceKey: String) {
+    val preference = preferenceScreen.findPreference<Preference>(preferenceKey)
+    if (preference != null) {
+        preferenceScreen.removePreferenceRecursively(preferenceKey)
     }
 }
 
@@ -91,3 +161,7 @@ fun buttonPreference(
         }
     }
 }
+
+private fun isExpressiveAndBuildVersion(context: Context) =
+    Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM &&
+        SettingsThemeHelper.isExpressiveTheme(context)

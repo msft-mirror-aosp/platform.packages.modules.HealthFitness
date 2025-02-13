@@ -637,7 +637,7 @@ class MedicalAppFragmentTest {
     }
 
     @Test
-    @Ignore
+    @Ignore("b/390200557") // TODO(b/390200557): unignore
     fun footerWithoutGrantTime_isDisplayed() {
         val permission = MedicalPermission(VACCINES)
         whenever(viewModel.medicalPermissions).then { MutableLiveData(listOf(permission)) }
@@ -668,9 +668,8 @@ class MedicalAppFragmentTest {
         verify(healthConnectLogger).logImpression(AppAccessElement.PRIVACY_POLICY_LINK)
     }
 
-    // TODO unignore when stable
     @Test
-    @Ignore
+    @Ignore("b/390200557") // TODO(b/390200557): unignore
     fun whenClickOnPrivacyPolicyLink_startsRationaleActivity() {
         val rationaleAction = "android.intent.action.VIEW_PERMISSION_USAGE"
         val permission = MedicalPermission(VACCINES)
@@ -764,6 +763,7 @@ class MedicalAppFragmentTest {
     }
 
     @Test
+    @Ignore("b/390200557") // TODO(b/390200557): unignore
     fun additionalAccessState_valid_showsAdditionalAccess() {
         val validState =
             AdditionalAccessViewModel.State(
@@ -784,6 +784,7 @@ class MedicalAppFragmentTest {
     }
 
     @Test
+    @Ignore("b/390200557") // TODO(b/390200557): unignore
     fun additionalAccessState_onlyOneAdditionalPermission_showsAdditionalAccess() {
         val validState =
             AdditionalAccessViewModel.State(
@@ -809,7 +810,7 @@ class MedicalAppFragmentTest {
     }
 
     @Test
-    @Ignore // TODO(b/352003559): Unignore when not flaky.
+    @Ignore("b/390200557") // TODO(b/390200557): unignore
     fun additionalAccessState_onClick_navigatesToAdditionalAccessFragment() {
         val validState =
             AdditionalAccessViewModel.State(

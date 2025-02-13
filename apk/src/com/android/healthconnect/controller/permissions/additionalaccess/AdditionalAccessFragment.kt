@@ -40,6 +40,7 @@ import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
 import com.android.healthconnect.controller.shared.preference.WarningPreference
+import com.android.healthconnect.controller.shared.preference.addIntroOrAppHeaderPreference
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.logging.AdditionalAccessElement.BACKGROUND_READ_BUTTON
 import com.android.healthconnect.controller.utils.logging.AdditionalAccessElement.EXERCISE_ROUTES_BUTTON
@@ -47,7 +48,6 @@ import com.android.healthconnect.controller.utils.logging.AdditionalAccessElemen
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.pref
-import com.android.settingslib.widget.AppHeaderPreference
 import com.android.settingslib.widget.FooterPreference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -60,7 +60,6 @@ class AdditionalAccessFragment : Hilt_AdditionalAccessFragment() {
     private val permissionsViewModel: AppPermissionViewModel by activityViewModels()
     private val viewModel: AdditionalAccessViewModel by activityViewModels()
 
-    private val header: AppHeaderPreference by pref(PREF_APP_HEADER)
     private val exerciseRoutePref: HealthPreference by pref(KEY_EXERCISE_ROUTES_PERMISSION)
     private val historicReadPref: HealthSwitchPreference by pref(KEY_HISTORY_READ_PERMISSION)
     private val backgroundReadPref: HealthSwitchPreference by pref(KEY_BACKGROUND_READ_PERMISSION)
@@ -103,11 +102,8 @@ class AdditionalAccessFragment : Hilt_AdditionalAccessFragment() {
             maybeShowFooter(screenState.state, screenState.showMedicalPastDataFooter)
         }
 
-        permissionsViewModel.appInfo.observe(viewLifecycleOwner) { appMetaData ->
-            header.apply {
-                icon = appMetaData.icon
-                title = appMetaData.appName
-            }
+        permissionsViewModel.appInfo.observe(viewLifecycleOwner) { appMetadata ->
+            addIntroOrAppHeaderPreference(preferenceScreen, requireContext(), appMetadata)
         }
     }
 
@@ -287,7 +283,6 @@ class AdditionalAccessFragment : Hilt_AdditionalAccessFragment() {
 
     companion object {
         private const val TAG = "AdditionalAccessFragmen"
-        private const val PREF_APP_HEADER = "manage_app_permission_header"
         private const val KEY_EXERCISE_ROUTES_PERMISSION = "key_exercise_routes_permission"
         private const val EXERCISE_ROUTES_DIALOG_TAG = "ExerciseRoutesPermissionDialogFragment"
         private const val ENABLE_EXERCISE_DIALOG_TAG = "EnableExercisePermissionDialog"

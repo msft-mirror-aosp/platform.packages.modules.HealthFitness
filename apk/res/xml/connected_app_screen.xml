@@ -14,24 +14,27 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <com.android.settingslib.widget.AppHeaderPreference
-        android:key="manage_app_permission_header" />
+        android:key="app_header_preference" />
     <com.android.healthconnect.controller.shared.preference.HealthMainSwitchPreference
         android:key="allow_all_preference"
-        android:title="@string/request_permissions_allow_all" />
+        android:title="@string/request_permissions_allow_all"
+        app:isPreferenceVisible="false" />
     <PreferenceCategory
         android:key="read_permission_category"
-        android:title="@string/manage_permissions_read_header" />
+        android:title="@string/manage_permissions_read_header"
+        app:isPreferenceVisible="false" />
     <PreferenceCategory
         android:key="write_permission_category"
-        android:title="@string/manage_permissions_write_header">
-    </PreferenceCategory>
+        android:title="@string/manage_permissions_write_header"
+        app:isPreferenceVisible="false" />
     <PreferenceCategory
         android:key="manage_app"
-        android:title="@string/manage_permissions_manage_app_header">
-    </PreferenceCategory>
+        android:title="@string/manage_permissions_manage_app_header"
+        app:isPreferenceVisible="false" />
     <com.android.settingslib.widget.FooterPreference
         android:key="connected_app_footer"
-        />
+        app:isPreferenceVisible="false" />
 </PreferenceScreen>

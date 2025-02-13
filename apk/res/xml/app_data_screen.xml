@@ -17,7 +17,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <com.android.settingslib.widget.AppHeaderPreference
-        android:key="key_header"/>
+        android:key="app_header_preference" />
     <com.android.healthconnect.controller.selectabledeletion.SelectAllCheckboxPreference
         android:order="1"
         android:key="key_select_all"
