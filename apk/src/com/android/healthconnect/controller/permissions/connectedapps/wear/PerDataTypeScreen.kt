@@ -33,8 +33,11 @@ import androidx.wear.compose.material3.Text
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission.Companion.fromPermissionString
-import com.android.healthconnect.controller.permissions.request.wear.elements.Chip
 import com.android.healthconnect.controller.permissions.request.wear.elements.ScrollableScreen
+import com.android.permissioncontroller.wear.permission.components.ScrollableScreen
+import com.android.permissioncontroller.wear.permission.components.material3.WearPermissionButton
+import com.android.permissioncontroller.wear.permission.components.material3.WearPermissionIconBuilder
+import com.android.permissioncontroller.wear.permission.components.theme.ResourceHelper
 import java.time.Instant
 import java.time.LocalTime
 import java.time.ZoneId
@@ -50,8 +53,14 @@ fun PerDataTypeScreen(
     onAppChipClick: (String, String, String) -> Unit,
     onRemoveAllAppAccessButtonClick: (String, String) -> Unit,
 ) {
+    val materialUIVersion = ResourceHelper.materialUIVersionInApp
     val healthPermission = fromPermissionString(permissionStr)
-    ScrollableScreen(showTimeText = false, title = dataTypeStr) {
+    ScrollableScreen(
+        materialUIVersion = materialUIVersion,
+        asScalingList = true,
+        showTimeText = false,
+        title = dataTypeStr,
+    ) {
         // Allowed apps.
         item {
             AllowedAppsList(
@@ -106,7 +115,7 @@ fun AllowedAppsList(
 
             // A chip for each allowed app for this data type.
             allowedApps.forEach { app ->
-                Chip(
+                WearPermissionButton(
                     label = app.appName,
                     labelMaxLines = 3,
                     secondaryLabel =
@@ -121,19 +130,20 @@ fun AllowedAppsList(
                     onClick = {
                         onAppChipClick(healthPermission.toString(), dataTypeStr, app.packageName)
                     },
-                    icon = app.icon,
+                    iconBuilder = app.icon?.let { WearPermissionIconBuilder.builder(it) },
                     modifier = Modifier.padding(4.dp),
                 )
             }
 
             // Remove access for all apps button.
-            Chip(
+            WearPermissionButton(
                 label = stringResource(R.string.disconnect_all_apps),
                 labelMaxLines = 3,
                 onClick = {
                     onRemoveAllAppAccessButtonClick(healthPermission.toString(), dataTypeStr)
                 },
-                icon = R.drawable.ic_remove_access_for_all_apps,
+                iconBuilder =
+                    WearPermissionIconBuilder.builder(R.drawable.ic_remove_access_for_all_apps),
             )
         }
     }
@@ -165,7 +175,7 @@ fun DeniedAppsList(
 
             // A chip for each denied app for this data type.
             deniedApps.forEach { app ->
-                Chip(
+                WearPermissionButton(
                     label = app.appName,
                     labelMaxLines = 3,
                     secondaryLabel =
@@ -180,7 +190,7 @@ fun DeniedAppsList(
                     onClick = {
                         onAppChipClick(healthPermission.toString(), dataTypeStr, app.packageName)
                     },
-                    icon = app.icon,
+                    iconBuilder = app.icon?.let { WearPermissionIconBuilder.builder(it) },
                     modifier = Modifier.padding(4.dp),
                 )
             }

@@ -26,8 +26,9 @@ import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.AdditionalPermission.Companion.READ_HEALTH_DATA_IN_BACKGROUND
-import com.android.healthconnect.controller.permissions.request.wear.elements.Chip
-import com.android.healthconnect.controller.permissions.request.wear.elements.ScrollableScreen
+import com.android.permissioncontroller.wear.permission.components.ScrollableScreen
+import com.android.permissioncontroller.wear.permission.components.material3.WearPermissionButton
+import com.android.permissioncontroller.wear.permission.components.theme.ResourceHelper
 
 /** Wear Settings Permissions Screen to allow/disallow background permission for an app. */
 @Composable
@@ -37,6 +38,7 @@ fun ControlBackgroundReadForSingleAppScreen(
     onBackClick: () -> Unit,
     onAppInfoPermissionClick: () -> Unit,
 ) {
+    val materialUIVersion = ResourceHelper.materialUIVersionInApp
     // Get app metadata. PackageName is passed from allowed/denied apps page and must be in the
     // connectedApps list, thus it's safe to have nonnull!! assert.
     val appMetadata by viewModel.getAppMetadataByPackageName(packageName).collectAsState()
@@ -56,13 +58,15 @@ fun ControlBackgroundReadForSingleAppScreen(
             ?.joinToString(", ") ?: ""
 
     ScrollableScreen(
+        materialUIVersion = materialUIVersion,
+        asScalingList = true,
         showTimeText = false,
         title = stringResource(R.string.allow_all_the_time_prompt, appName),
         subtitle = stringResource(R.string.current_access, appName, allowedDataTypesStr),
     ) {
         // Allow all the time button.
         item {
-            Chip(
+            WearPermissionButton(
                 label = stringResource(R.string.request_permissions_allow_all_the_time),
                 labelMaxLines = 3,
                 onClick = {
@@ -78,7 +82,7 @@ fun ControlBackgroundReadForSingleAppScreen(
 
         // Only while in use button.
         item {
-            Chip(
+            WearPermissionButton(
                 label = stringResource(R.string.request_permissions_while_using_the_app),
                 labelMaxLines = 3,
                 onClick = {
@@ -94,7 +98,7 @@ fun ControlBackgroundReadForSingleAppScreen(
 
         // Manage fitness&wellness button, clicking this launches AppInfoPermission page.
         item {
-            Chip(
+            WearPermissionButton(
                 label = stringResource(R.string.manage_fitness_and_wellness_permissions),
                 labelMaxLines = 3,
                 onClick = { onAppInfoPermissionClick() },

@@ -1171,11 +1171,12 @@
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"Приложение \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" запрашивает доступ к следующим типам данных: <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nВы можете предоставить сразу все разрешения или настроить их по отдельности."</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Разрешить приложению \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" доступ к данным этой категории: <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
     <string name="fitness_and_wellness" msgid="2002316898861559748">"Физическая активность и самочувствие"</string>
-    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"всегда"</string>
-    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"при использовании приложения"</string>
     <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Всегда"</string>
     <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"При использовании приложения"</string>
-    <string name="view_permissions_mode" msgid="5954826327563393399">"Приложение \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" имеет доступ ко всем вашим данным о физической активности и самочувствии <xliff:g id="ALLOW_MODE">%2$s</xliff:g>."</string>
+    <!-- no translation found for view_permissions_description_all_the_time (3434945199164069475) -->
+    <skip />
+    <!-- no translation found for view_permissions_description_while_in_use (507698943902581557) -->
+    <skip />
     <string name="allowed_to_access" msgid="4179317387300812335">"Разрешен доступ"</string>
     <string name="allowed_to_read" msgid="2775365229411407406">"Разрешено чтение данных"</string>
     <string name="give_permission_prompt" msgid="5788144216023065504">"Эти разрешения дают приложению \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" доступ к данным датчиков устройства."</string>
@@ -1187,8 +1188,14 @@
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Закрыть для всех приложений на часах доступ к следующим данным: <xliff:g id="DATA_TYPE">%s</xliff:g>?"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"Флажок"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"Крестик"</string>
-    <string name="current_allow_mode" msgid="6716206063077569218">"Приложение \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" имеет доступ к вашим данным о физической активности и самочувствии <xliff:g id="ALLOW_MODE">%2$s</xliff:g>."</string>
+    <!-- no translation found for current_allow_mode_all_the_time (3329625277933258855) -->
+    <skip />
+    <!-- no translation found for current_allow_mode_while_in_use (6358053330935305061) -->
+    <skip />
     <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Разрешить приложению \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" постоянный доступ к данным о самочувствии и физической активности?"</string>
     <string name="current_access" msgid="1457167070428176139">"Приложение \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" имеет доступ к следующим типам данных: <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
     <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Доступ к данным об активности и самочувствии"</string>
+    <string name="used_by_apps_count" msgid="1384912521974773617">"{count,plural, =1{Использовало 1 приложение}one{Использовало # приложение}few{Использовало # приложения}many{Использовало # приложений}other{Использовало # приложения}}"</string>
+    <string name="not_used_in_past_24_hours" msgid="7918784815693928054">"Не использовалось последние 24 часа"</string>
+    <string name="accessed" msgid="4424701457530587176">"Последний раз использовалось в <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
 </resources>

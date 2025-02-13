@@ -15,12 +15,19 @@
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.android.settingslib.widget.BannerMessagePreferenceGroup
+        android:key="banner_group"
+        app:expandTitle="@string/banner_group_more_items"
+        app:collapseTitle="@string/banner_group_fewer_items"
+        app:collapseIcon="?attr/collapseIcon"
+        android:order="0"/>
     <com.android.settingslib.widget.ZeroStatePreference
         android:key="no_recent_access"
         android:title="@string/recent_access_empty_state_title"
         android:icon="?attr/accessHistoryIcon"
         android:summary="@string/recent_access_empty_state_description"
-        app:isPreferenceVisible="false"/>
+        app:isPreferenceVisible="false"
+        android:order="1"/>
     <PreferenceCategory
         android:key="recent_access"
         android:title="@string/recent_access_header"

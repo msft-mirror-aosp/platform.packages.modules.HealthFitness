@@ -21,23 +21,17 @@ import static com.android.server.healthconnect.permission.FirstGrantTimeDatastor
 
 import static com.google.common.truth.Truth.assertThat;
 
-import static org.mockito.Mockito.when;
-
 import android.os.UserHandle;
 import android.util.ArrayMap;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.LocalManagerRegistry;
-import com.android.server.appop.AppOpsManagerLocal;
 import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.quality.Strictness;
 
 import java.io.File;
@@ -80,19 +74,11 @@ public class GrantTimePersistenceUnitTest {
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(LocalManagerRegistry.class)
                     .setStrictness(Strictness.LENIENT)
                     .addStaticMockFixtures(() -> mEnvironmentFixture)
                     .build();
 
     private final UserHandle mUser = UserHandle.of(UserHandle.myUserId());
-    @Mock private AppOpsManagerLocal mAppOpsManagerLocal;
-
-    @Before
-    public void mockApexEnvironment() {
-        when(LocalManagerRegistry.getManager(AppOpsManagerLocal.class))
-                .thenReturn(mAppOpsManagerLocal);
-    }
 
     @Test
     public void testWriteReadData_packageAndSharedUserState_restoredCorrectly() {

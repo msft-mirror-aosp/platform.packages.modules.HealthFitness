@@ -47,7 +47,7 @@
     <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"ייצוא וייבוא של נתונים"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"אפליקציות שניגשו לנתונים לאחרונה"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"אף אפליקציה לא ניגשה לאחרונה ל-Health Connect"</string>
-    <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"לצפייה בכל האפליקציות שניגשו לנתונים לאחרונה"</string>
+    <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"כל האפליקציות מהזמן האחרון"</string>
     <string name="recent_access_screen_description" msgid="331101209889185402">"כאן אפשר לראות אילו אפליקציות ניגשו לנתונים שלך ב-24 השעות האחרונות"</string>
     <string name="today_header" msgid="1006837293203834373">"היום"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"אתמול"</string>
@@ -116,12 +116,12 @@
     <string name="background_read_medical_combined_request_description_medical_granted" msgid="5140647084504657934">"האפליקציה הזו יכולה לגשת לנתונים האלה גם כשהיא לא בשימוש"</string>
     <string name="background_read_medical_combined_request_description_fitness_granted" msgid="919785628751851996">"האפליקציה הזו יכולה לגשת לנתונים האלה גם כשהיא לא בשימוש"</string>
     <string name="background_read_combined_request_title" msgid="4184649296697480520">"גישה לנתונים ברקע"</string>
-    <string name="background_read_combined_request_description" msgid="2423480522986545286">"האפליקציה הזו יכולה לגשת לנתונים של Health Connect גם כשהיא לא בשימוש"</string>
+    <string name="background_read_combined_request_description" msgid="2423480522986545286">"האפליקציה הזו תוכל לגשת לנתונים של Health Connect גם כשהיא לא תהיה בשימוש"</string>
     <string name="history_read_medical_combined_request_title" msgid="1262267962861942478">"גישה לנתוני הכושר והבריאות הקודמים"</string>
     <string name="history_read_medical_combined_request_description" msgid="7550922315652791771">"האפליקציה הזו יכולה לגשת לנתונים שנוספו לפני <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="history_read_medical_combined_request_description_fallback" msgid="3567968660826834911">"האפליקציה הזו יכולה לגשת לכל הנתונים הקודמים"</string>
     <string name="history_read_combined_request_title" msgid="9023811767370482028">"גישה לנתונים קודמים"</string>
-    <string name="history_read_combined_request_description" msgid="1437787086896636484">"האפליקציה הזו יכולה לגשת לנתונים של Health Connect שנוספו לפני <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_combined_request_description" msgid="1437787086896636484">"האפליקציה הזו תוכל לגשת לנתונים של Health Connect שנוספו לפני <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="history_read_combined_request_description_fallback" msgid="4974756796396067521">"האפליקציה הזו יכולה לגשת לכל הנתונים הקודמים של Health Connect"</string>
     <string name="history_read_medical_combined_request_footer" msgid="5301940225768076844">"לאפליקציה <xliff:g id="APP_NAME">%1$s</xliff:g> כבר יש גישה לנתונים קודמים של סיכומי המצב הבריאותי שלך"</string>
     <string name="history_read_medical_combined_request_footer_link" msgid="355676489585738987">"מידע נוסף על הרשאות"</string>
@@ -132,12 +132,12 @@
     <string name="background_read_medical_access_description_medical_granted" msgid="8570683510275055450">"האפליקציה הזו יכולה לגשת לנתונים האלה גם כשהיא לא בשימוש"</string>
     <string name="background_read_medical_access_description_fitness_granted" msgid="2584567718805499407">"האפליקציה הזו יכולה לגשת לנתונים האלה גם כשהיא לא בשימוש"</string>
     <string name="background_read_access_title" msgid="4184498185599147117">"גישה לנתונים ברקע"</string>
-    <string name="background_read_access_description" msgid="2360433029368320323">"האפליקציה הזו יכולה לגשת לנתונים של Health Connect גם כשהיא לא בשימוש"</string>
+    <string name="background_read_access_description" msgid="2360433029368320323">"האפליקציה הזו תוכל לגשת לנתונים של Health Connect גם כשהיא לא תהיה בשימוש"</string>
     <string name="history_read_medical_access_title" msgid="1375462150672418692">"גישה לנתוני הכושר והבריאות הקודמים"</string>
     <string name="history_read_medical_access_description" msgid="5615959269427106141">"האפליקציה הזו יכולה לגשת לנתונים שנוספו לפני <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="history_read_medical_access_description_fallback" msgid="3888547064992673535">"האפליקציה הזו יכולה לגשת לכל הנתונים הקודמים"</string>
     <string name="history_read_access_title" msgid="870048398702887144">"גישה לנתונים קודמים"</string>
-    <string name="history_read_access_description" msgid="800722432229526128">"האפליקציה הזו יכולה לגשת לנתונים של Health Connect שנוספו לפני <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_access_description" msgid="800722432229526128">"האפליקציה הזו תוכל לגשת לנתונים של Health Connect שנוספו לפני <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="history_read_access_description_fallback" msgid="4151538305657852010">"האפליקציה הזו יכולה לגשת לכל הנתונים הקודמים של Health Connect"</string>
     <string name="history_read_medical_access_read_warning" msgid="8878271647163400440">"האפליקציה <xliff:g id="APP_NAME">%1$s</xliff:g> לא קוראת בשלב זה נתונים של אימוני כושר כי הרשאת הקריאה לא מופעלת"</string>
     <string name="additional_access_medical_read_footer" msgid="4640796038121080343">"לאפליקציה <xliff:g id="APP_NAME">%1$s</xliff:g> כבר יש גישה לנתונים קודמים של סיכום המצב הבריאותי שלך. כדי לשנות את ההגדרה, צריך להשבית את ההרשאות של סיכום המצב הבריאותי מהאפליקציה הזו"</string>
@@ -146,7 +146,7 @@
     <string name="additional_access_background_footer" msgid="1638739578431818525">"צריך לתת הרשאת קריאה אחת לפחות כדי לאפשר לאפליקציה הזו לגשת לנתונים ברקע"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"צריך לתת הרשאת קריאה אחת לפחות כדי לאפשר לאפליקציה הזו גישה לנתונים קודמים"</string>
     <string name="historic_access_description" msgid="3309195636349468633">"האפליקציה הזו יכולה לגשת לכל הנתונים הקודמים של Health Connect"</string>
-    <string name="background_read_description" msgid="3203594555849969283">"האפליקציה הזו יכולה לגשת לנתונים של Health Connect גם כשהיא לא בשימוש"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"האפליקציה הזו תוכל לגשת לנתונים של Health Connect גם כשהיא לא תהיה בשימוש"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"קלוריות שנשרפו בזמן פעילות"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"קלוריות שנשרפו בזמן פעילות"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"קריאה של נתוני הקלוריות שנשרפו בזמן פעילות"</string>
@@ -329,8 +329,8 @@
     <string name="vaccines_uppercase_label" msgid="1101176371071123187">"חיסונים"</string>
     <string name="vaccines_lowercase_label" msgid="4991324441768127447">"חיסונים"</string>
     <string name="vaccines_content_description" msgid="7152741514791951684">"קריאה של נתוני החיסונים"</string>
-    <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"תוצאות בדיקות מעבדה"</string>
-    <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"תוצאות בדיקות מעבדה"</string>
+    <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"בדיקות מעבדה"</string>
+    <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"בדיקות מעבדה"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"קריאה של תוצאות בדיקות מעבדה"</string>
     <string name="medications_uppercase_label" msgid="4783281053427990225">"תרופות"</string>
     <string name="medications_lowercase_label" msgid="7808038774503092207">"תרופות"</string>
@@ -347,8 +347,8 @@
     <string name="procedures_uppercase_label" msgid="9176087520132593261">"הליכים רפואיים"</string>
     <string name="procedures_lowercase_label" msgid="5320804313946273234">"הליכים רפואיים"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"קריאה של נתוני ההליכים הרפואיים"</string>
-    <string name="social_history_uppercase_label" msgid="4119611299449533999">"רקע אישי"</string>
-    <string name="social_history_lowercase_label" msgid="9027541979445736412">"רקע אישי"</string>
+    <string name="social_history_uppercase_label" msgid="4119611299449533999">"רקע סוציאלי"</string>
+    <string name="social_history_lowercase_label" msgid="9027541979445736412">"רקע סוציאלי"</string>
     <string name="social_history_content_description" msgid="7187059309389849831">"קריאה של הרקע האישי"</string>
     <string name="visits_uppercase_label" msgid="8532619758336375886">"ביקורים אצל מומחה רפואי"</string>
     <string name="visits_lowercase_label" msgid="2545887061364564151">"ביקורים אצל מומחה רפואי"</string>
@@ -449,7 +449,7 @@
     <string name="permissions_header" msgid="6519976063360071569">"הרשאות"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"כושר ובריאות"</string>
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"פעילות גופנית, שינה, תזונה ועוד"</string>
-    <string name="medical_permissions" msgid="1224097151249321566">"סיכום מצב בריאותי"</string>
+    <string name="medical_permissions" msgid="1224097151249321566">"סיכום המצב הבריאותי"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"סיכום מצב בריאותי"</string>
     <string name="medical_permissions_summary" msgid="5526004634109548577">"תוצאות מעבדה, תרופות, חיסונים ועוד"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"ההרשאות שניתנו לאפליקציה הוסרו"</string>
@@ -1171,11 +1171,12 @@
     <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"האפליקציה <xliff:g id="APP_NAME">%1$s</xliff:g> מבקשת גישה אל <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nאפשר לבחור אם לאשר הכול או לשלוט בהרשאות בנפרד."</string>
     <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"לתת לאפליקציה <xliff:g id="APP_NAME">%1$s</xliff:g> גישה אל <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
     <string name="fitness_and_wellness" msgid="2002316898861559748">"כושר ובריאות"</string>
-    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"כל הזמן"</string>
-    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"בזמן השימוש"</string>
     <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"כל הזמן"</string>
     <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"בזמן השימוש"</string>
-    <string name="view_permissions_mode" msgid="5954826327563393399">"לאפליקציה <xliff:g id="APP_NAME">%1$s</xliff:g> יש גישה לכל נתוני הכושר והבריאות שלך <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <!-- no translation found for view_permissions_description_all_the_time (3434945199164069475) -->
+    <skip />
+    <!-- no translation found for view_permissions_description_while_in_use (507698943902581557) -->
+    <skip />
     <string name="allowed_to_access" msgid="4179317387300812335">"יש הרשאת גישה"</string>
     <string name="allowed_to_read" msgid="2775365229411407406">"יש הרשאת קריאה"</string>
     <string name="give_permission_prompt" msgid="5788144216023065504">"ההרשאות האלה נותנות לאפליקציה <xliff:g id="APP_NAME">%1$s</xliff:g> גישה לנתונים מהחיישנים במכשיר."</string>
@@ -1187,8 +1188,17 @@
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"להסיר את הרשאות הגישה לנתוני <xliff:g id="DATA_TYPE">%s</xliff:g> מכל האפליקציות בשעון?"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"סימן וי"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"סימן איקס"</string>
-    <string name="current_allow_mode" msgid="6716206063077569218">"כרגע, לאפליקציה <xliff:g id="APP_NAME">%1$s</xliff:g> יש גישה לנתוני הכושר והבריאות <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
-    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"לתת לאפליקציה <xliff:g id="APP_NAME">%1$s</xliff:g> הרשאת גישה לנתוני הכושר והבריאות כל הזמן?"</string>
+    <!-- no translation found for current_allow_mode_all_the_time (3329625277933258855) -->
+    <skip />
+    <!-- no translation found for current_allow_mode_while_in_use (6358053330935305061) -->
+    <skip />
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"להרשות לאפליקציה <xliff:g id="APP_NAME">%1$s</xliff:g> לגשת לנתוני הכושר והבריאות בלי הגבלת זמן?"</string>
     <string name="current_access" msgid="1457167070428176139">"לאפליקציה <xliff:g id="APP_NAME">%1$s</xliff:g> יש גישה אל <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
     <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"עריכת ההרשאות של נתוני הכושר והבריאות"</string>
+    <!-- no translation found for used_by_apps_count (1384912521974773617) -->
+    <skip />
+    <!-- no translation found for not_used_in_past_24_hours (7918784815693928054) -->
+    <skip />
+    <!-- no translation found for accessed (4424701457530587176) -->
+    <skip />
 </resources>

@@ -49,9 +49,10 @@ import com.android.healthconnect.controller.permissions.data.FitnessPermissionSt
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.request.RequestPermissionViewModel
-import com.android.healthconnect.controller.permissions.request.wear.elements.Chip
-import com.android.healthconnect.controller.permissions.request.wear.elements.ScrollableScreen
 import com.android.healthconnect.controller.shared.app.AppMetadata
+import com.android.permissioncontroller.wear.permission.components.ScrollableScreen
+import com.android.permissioncontroller.wear.permission.components.material3.WearPermissionButton
+import com.android.permissioncontroller.wear.permission.components.theme.ResourceHelper
 
 /**
  * Wear Grant Permissions Screen. This screen includes: grant single health permission, grant
@@ -99,6 +100,7 @@ fun GrantMultipleFitnessPermissions(
     viewModel: RequestPermissionViewModel,
 ) {
     val res = LocalContext.current.resources
+    val materialUIVersion = ResourceHelper.materialUIVersionInApp
     // Represents whether user has toggled-on a granular data type permission, by default toggled.
     val checkedStates =
         remember(fitnessPermissions.value) { // Recalculate when fitness permissions change.
@@ -107,6 +109,8 @@ fun GrantMultipleFitnessPermissions(
     val expandableState = rememberExpandableState()
 
     ScrollableScreen(
+        materialUIVersion = materialUIVersion,
+        asScalingList = true,
         showTimeText = false,
         title = res.getString(R.string.wear_allow_app_access_fitness_and_wellness_data, appName),
         subtitle =
@@ -116,6 +120,7 @@ fun GrantMultipleFitnessPermissions(
                 dataTypes.joinToString(", "),
             ),
     ) {
+
         // Granular health data types. By default hidden, will show up once user clicks expand
         // button.
         expandableItems(expandableState, dataTypes.size) { index ->
@@ -139,7 +144,7 @@ fun GrantMultipleFitnessPermissions(
         // Buttons.
         // Allow all / Allow selected button.
         item {
-            Chip(
+            WearPermissionButton(
                 label =
                     if (expandableState.expanded) {
                         res.getString(R.string.request_permissions_allow_selected)
@@ -159,7 +164,7 @@ fun GrantMultipleFitnessPermissions(
         }
         // Deny all button.
         item {
-            Chip(
+            WearPermissionButton(
                 label = res.getString(R.string.request_permissions_deny_all),
                 onClick = {
                     checkedStates.fill(false)
@@ -170,7 +175,8 @@ fun GrantMultipleFitnessPermissions(
                 labelMaxLines = Integer.MAX_VALUE,
             )
         }
-        // Expand granular control button. User clicks this to control each data type individually.
+        // Expand granular control button. User clicks this to control each data type
+        // individually.
         expandableButton(expandableState) {
             CompactChip(
                 label = {
@@ -183,7 +189,8 @@ fun GrantMultipleFitnessPermissions(
                 },
                 onClick = {
                     expandableState.expanded = !expandableState.expanded
-                    // By default, all the data types are selected when user clicks expand button.
+                    // By default, all the data types are selected when user clicks expand
+                    // button.
                     viewModel.updateFitnessPermissions(true)
                 },
                 border = ChipDefaults.chipBorder(),
@@ -206,13 +213,15 @@ fun GrantSingleFitnessPermission(
     viewModel: RequestPermissionViewModel,
 ) {
     val res = LocalContext.current.resources
+    val materialUIVersion = ResourceHelper.materialUIVersionInApp
     ScrollableScreen(
+        materialUIVersion = materialUIVersion,
         showTimeText = false,
         title = res.getString(R.string.wear_request_single_data_type_permission, appName, dataType),
     ) {
         // Allow button.
         item {
-            Chip(
+            WearPermissionButton(
                 label = res.getString(R.string.request_permissions_allow),
                 onClick = {
                     viewModel.updateFitnessPermissions(true)
@@ -224,7 +233,7 @@ fun GrantSingleFitnessPermission(
         }
         // Deny button.
         item {
-            Chip(
+            WearPermissionButton(
                 label = res.getString(R.string.request_permissions_dont_allow),
                 onClick = {
                     viewModel.updateFitnessPermissions(false)
@@ -243,6 +252,7 @@ fun GrantReadBackgroundHealthPermission(
     onButtonClicked: () -> Unit,
     viewModel: RequestPermissionViewModel,
 ) {
+    val materialUIVersion = ResourceHelper.materialUIVersionInApp
     val res = LocalContext.current.resources
     val grantedAdditionalPermissions =
         viewModel.grantedAdditionalPermissions.observeAsState(emptySet())
@@ -258,12 +268,13 @@ fun GrantReadBackgroundHealthPermission(
     }
 
     ScrollableScreen(
+        materialUIVersion = materialUIVersion,
         showTimeText = false,
         title = res.getString(R.string.wear_allow_app_access_fitness_and_wellness_data, appName),
     ) {
         // Allow all the time button.
         item {
-            Chip(
+            WearPermissionButton(
                 label = res.getString(R.string.request_permissions_allow_all_the_time),
                 onClick = {
                     viewModel.updateHealthPermission(
@@ -277,7 +288,7 @@ fun GrantReadBackgroundHealthPermission(
         }
         // Allow while in use button. (Deny background read permission.)
         item {
-            Chip(
+            WearPermissionButton(
                 label = res.getString(R.string.request_permissions_while_using_the_app),
                 onClick = {
                     viewModel.updateHealthPermission(

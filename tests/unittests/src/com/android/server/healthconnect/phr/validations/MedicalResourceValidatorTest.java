@@ -423,22 +423,6 @@ public class MedicalResourceValidatorTest {
     }
 
     @Test
-    public void testValidateAndCreateInternalRequest_emptyContainedArray_succeeds()
-            throws JSONException {
-        String resourceId = "id1";
-        String medicationStatementWithEmptyContained =
-                new MedicationsBuilder.MedicationStatementR4Builder()
-                        .setId(resourceId)
-                        .set("contained", new JSONArray("[]"))
-                        .toJson();
-
-        MedicalResourceValidator validator = makeValidator(medicationStatementWithEmptyContained);
-
-        assertThat(validator.validateAndCreateInternalRequest().getData())
-                .isEqualTo(medicationStatementWithEmptyContained);
-    }
-
-    @Test
     public void testCalculateMedicalResourceType_allergy() {
         MedicalResourceValidator validator = makeValidator(FHIR_DATA_ALLERGY);
 

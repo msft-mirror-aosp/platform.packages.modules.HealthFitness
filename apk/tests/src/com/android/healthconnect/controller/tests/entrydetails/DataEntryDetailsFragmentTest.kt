@@ -78,7 +78,6 @@ import com.android.healthconnect.controller.tests.utils.getPlannedExerciseBlock
 import com.android.healthconnect.controller.tests.utils.getPlannedExerciseStep
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
-import com.android.healthconnect.controller.utils.logging.DataEntriesElement
 import com.android.healthconnect.controller.utils.logging.EntryDetailsElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
@@ -204,7 +203,6 @@ class DataEntryDetailsFragmentTest {
 
         verify(healthConnectLogger, atLeast(1)).setPageId(PageName.ENTRY_DETAILS_PAGE)
         verify(healthConnectLogger).logPageImpression()
-        verify(healthConnectLogger).logImpression(DataEntriesElement.SLEEP_SESSION_ENTRY_BUTTON)
     }
 
     @Test
@@ -244,7 +242,6 @@ class DataEntryDetailsFragmentTest {
 
         onView(withText("07:06 - 8:06 • TEST_APP_NAME")).check(matches(isDisplayed()))
         onView(withText("100 bpm")).check(matches(isDisplayed()))
-        verify(healthConnectLogger).logImpression(DataEntriesElement.DATA_ENTRY_VIEW)
     }
 
     @Test
@@ -345,8 +342,6 @@ class DataEntryDetailsFragmentTest {
 
         onView(withText("12 hour running")).check(matches(isDisplayed()))
         onView(withId(R.id.map_view)).check(matches(isDisplayed()))
-        verify(healthConnectLogger).logImpression(DataEntriesElement.EXERCISE_SESSION_ENTRY_BUTTON)
-        verify(healthConnectLogger).logImpression(DataEntriesElement.EXERCISE_SESSION_MAP_VIEW)
     }
 
     @Test
