@@ -66,7 +66,7 @@ public interface FirstGrantTimeDatastore {
      *
      * @hide
      */
-    static FirstGrantTimeDatastore createInstance() {
-        return new FirstGrantTimeDatastoreXmlPersistence();
+    static FirstGrantTimeDatastore createInstance(File environmentDataDirectory) {
+        return new FirstGrantTimeDatastoreXmlPersistence(environmentDataDirectory);
     }
 }

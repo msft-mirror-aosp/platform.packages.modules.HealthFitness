@@ -71,6 +71,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.restore.BackupFileNamesSet;
 import android.health.connect.restore.StageRemoteDataRequest;
+import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.os.PersistableBundle;
 import android.os.UserHandle;
@@ -845,7 +846,9 @@ public class BackupRestoreTest {
         when(mockDb.getVersion()).thenReturn(2);
         when(SQLiteDatabase.openDatabase(any(), any())).thenReturn(mockDb);
 
-        File hcDirectory = FilesUtil.getDataSystemCeHCDirectoryForUser(mUserHandle.getIdentifier());
+        File hcDirectory =
+                FilesUtil.getDataSystemCeHCDirectoryForUser(
+                        Environment.getDataDirectory(), mUserHandle.getIdentifier());
         File databaseDir = new File(hcDirectory, STAGED_DATABASE_DIR);
         createAndGetEmptyFile(databaseDir, STAGED_DATABASE_NAME);
 
