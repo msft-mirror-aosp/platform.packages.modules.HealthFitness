@@ -177,6 +177,7 @@ import com.android.server.appop.AppOpsManagerLocal;
 import com.android.server.healthconnect.backuprestore.BackupRestore;
 import com.android.server.healthconnect.backuprestore.CloudBackupManager;
 import com.android.server.healthconnect.backuprestore.CloudRestoreManager;
+import com.android.server.healthconnect.common.RequestContext;
 import com.android.server.healthconnect.exportimport.DocumentProvidersManager;
 import com.android.server.healthconnect.exportimport.ExportImportJobs;
 import com.android.server.healthconnect.exportimport.ExportManager;
@@ -1204,15 +1205,16 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
-        final UserHandle userHandle = Binder.getCallingUserHandle();
         final boolean holdsDataManagementPermission = hasDataManagementPermission(uid, pid);
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(holdsDataManagementPermission, DELETE_DATA)
                         .setPackageName(attributionSource.getPackageName());
 
+        final RequestContext requestContext = RequestContext.create();
+
         scheduleLoggingHealthDataApiErrors(
                 () -> {
-                    enforceIsForegroundUser(userHandle);
+                    enforceIsForegroundUser(requestContext.getCallingUser());
                     verifyPackageNameFromUid(uid, attributionSource);
                     throwExceptionIfDataSyncInProgress();
                     mContext.enforcePermission(MANAGE_HEALTH_DATA_PERMISSION, pid, uid, null);
