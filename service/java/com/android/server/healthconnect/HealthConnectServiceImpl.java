@@ -812,10 +812,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                     mTransactionManager.readRecordsAndPageToken(
                                             readTransactionRequest,
                                             mAppInfoHelper,
-                                            mAccessLogsHelper,
                                             mDeviceInfoHelper,
+                                            shouldRecordAccessLog,
+                                            mAccessLogsHelper,
                                             mReadAccessLogsHelper,
-                                            shouldRecordAccessLog);
+                                            /* packageNamesByAppIds= */ null);
                             records = readRecordsResponse.first;
                             pageToken = readRecordsResponse.second.encode();
                         }
