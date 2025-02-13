@@ -77,13 +77,15 @@ public class FirstGrantTimeUnitTest {
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(HealthConnectManager.class)
                     .mockStatic(HealthConnectThreadScheduler.class)
-                    .spyStatic(UserHandle.class)
                     .setStrictness(Strictness.LENIENT)
                     .build();
 
     private static final String SELF_PACKAGE_NAME = "com.android.healthconnect.unittests";
-    private static final int SELF_PACKAGE_UID = 123;
     private static final UserHandle CURRENT_USER = Process.myUserHandle();
+    private static final int SELF_APP_ID = 123;
+    // Under the hood package uid is a combination of app id and user id.
+    // Create a fake packageId for use in this test that reverses properly.
+    private static final int SELF_PACKAGE_UID = CURRENT_USER.getUid(SELF_APP_ID);
 
     private static final int DEFAULT_VERSION = 1;
 
@@ -116,8 +118,6 @@ public class FirstGrantTimeUnitTest {
         when(mContext.getUser()).thenReturn(CURRENT_USER);
 
         when(mUserManager.isUserUnlocked(any())).thenReturn(true);
-        ExtendedMockito.when(UserHandle.getUserHandleForUid(SELF_PACKAGE_UID))
-                .thenReturn(CURRENT_USER);
 
         when(mPackageManager.getPackageUid(eq(SELF_PACKAGE_NAME), any()))
                 .thenReturn(SELF_PACKAGE_UID);
@@ -163,12 +163,13 @@ public class FirstGrantTimeUnitTest {
         String anotherPackage = "another.package";
 
         // mock packageManager
-        List<Pair<String, Integer>> packageNameAndUidPairs =
+        List<Pair<String, Integer>> packageNameAndAppIdPairs =
                 Arrays.asList(new Pair<>(SELF_PACKAGE_NAME, 123), new Pair<>(anotherPackage, 456));
         List<PackageInfo> packageInfos = new ArrayList<>();
-        for (Pair<String, Integer> pair : packageNameAndUidPairs) {
+        for (Pair<String, Integer> pair : packageNameAndAppIdPairs) {
             String packageName = pair.first;
-            int uid = pair.second;
+            int appId = pair.second;
+            int uid = CURRENT_USER.getUid(appId);
             PackageInfo packageInfo = new PackageInfo();
             packageInfo.packageName = packageName;
             packageInfo.requestedPermissions = new String[] {HealthPermissions.WRITE_STEPS};
@@ -178,8 +179,6 @@ public class FirstGrantTimeUnitTest {
             when(mPackageManager.getPackageUid(eq(packageName), any())).thenReturn(uid);
             when(mPackageManager.getPackagesForUid(uid)).thenReturn(new String[] {packageName});
             when(mPackageManager.getPackageInfo(eq(packageName), any())).thenReturn(packageInfo);
-
-            ExtendedMockito.when(UserHandle.getUserHandleForUid(uid)).thenReturn(CURRENT_USER);
         }
         when(mPackageManager.getInstalledPackages(any())).thenReturn(packageInfos);
 
