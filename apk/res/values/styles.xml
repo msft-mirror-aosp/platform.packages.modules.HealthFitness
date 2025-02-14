@@ -16,10 +16,6 @@
 <resources>
 
     <!-- REGION TYPOGRAPHY -->
-    <!-- Onboarding -->
-    <style name="TextAppearance.HealthConnect.Onboarding.Description" parent="SudGlifDescriptionMaterialYou">
-        <item name="android:layout_marginTop">0dp</item>
-    </style>
 
     <!-- Preference summary large 400/16/24-->
     <style name="TextAppearance.HealthConnect.SummaryLarge" parent="@style/TextAppearance.PreferenceSummary.SettingsLib">
@@ -122,6 +118,17 @@
     <!-- END REGION -->
 
     <!-- REGION BUTTONS -->
+<!--    TODO move to styles expressive -->
+    <style name="Widget.HealthConnect.SetupButton.Expressive.Outline" parent="@style/SettingsLibButtonStyle.Expressive.Outline">
+        <item name="android:paddingVertical">@dimen/spacing_normal</item>
+        <item name="android:paddingHorizontal">@dimen/spacing_large</item>
+    </style>
+
+    <style name="Widget.HealthConnect.SetupButton.Expressive.Full" parent="@style/SettingsLibButtonStyle.Expressive.Filled">
+        <item name="android:paddingVertical">@dimen/spacing_normal</item>
+        <item name="android:paddingHorizontal">@dimen/spacing_large</item>
+    </style>
+
     <style name="Widget.HealthConnect.DialogButton.Full" parent="@style/Widget.AppCompat.Button">
         <item name="android:background">@drawable/button_background_filled</item>
         <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>

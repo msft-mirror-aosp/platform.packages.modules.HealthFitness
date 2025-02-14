@@ -204,7 +204,6 @@ android_library {
         "androidx.navigation_navigation-compose",
         "androidx.navigation_navigation-runtime-ktx",
         "androidx.lifecycle_lifecycle-runtime-compose",
-        "setupdesign",
         "wear-permission-components",
     ],
     kotlincflags: ["-Xjvm-default=all"],

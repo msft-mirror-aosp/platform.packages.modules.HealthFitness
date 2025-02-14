@@ -14,7 +14,12 @@
   limitations under the License.
 -->
 <resources>
-    <style name="Theme.HealthConnect" parent="Base.Theme.HealthConnect">
-        <!-- TODO (b/376085798) Expressive styles -->
+    <style name="Theme.HealthConnect" parent="Base.Theme.HealthConnect"/>
+
+    <style name="Theme.HealthConnect.Expressive" parent="Theme.SubSettingsBase.Expressive">
+        <!-- REGION CLIPPING -->
+        <item name="android:clipToPadding">true</item>
+        <item name="android:clipChildren">true</item>
+        <!-- END REGION -->
     </style>
 </resources>
