@@ -24,6 +24,7 @@ import android.os.UserHandle;
 import androidx.annotation.Nullable;
 
 import com.android.server.healthconnect.backuprestore.BackupRestore;
+import com.android.server.healthconnect.exportimport.ExportImportNotificationSender;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.logging.UsageStatsCollector;
 import com.android.server.healthconnect.migration.MigrationBroadcastScheduler;
@@ -32,6 +33,7 @@ import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.migration.MigrationUiStateManager;
 import com.android.server.healthconnect.migration.PriorityMigrationHelper;
 import com.android.server.healthconnect.migration.notification.MigrationNotificationSender;
+import com.android.server.healthconnect.notifications.HealthConnectNotificationSender;
 import com.android.server.healthconnect.permission.FirstGrantTimeDatastore;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
@@ -106,6 +108,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     private final BackupRestore mBackupRestore;
     private final PreferencesManager mPreferencesManager;
     private final ReadAccessLogsHelper mReadAccessLogsHelper;
+    private final HealthConnectNotificationSender mExportImportNotificationSender;
 
     public HealthConnectInjectorImpl(Context context) {
         this(new Builder(context));
@@ -142,6 +145,11 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                 builder.mMigrationEntityHelper == null
                         ? new MigrationEntityHelper(mDatabaseHelpers)
                         : builder.mMigrationEntityHelper;
+        mExportImportNotificationSender =
+                builder.mExportImportNotificationSender == null
+                        ? ExportImportNotificationSender.createSender(context)
+                        : builder.mExportImportNotificationSender;
+
         mTransactionManager =
                 builder.mTransactionManager == null
                         ? TransactionManager.create(hcContext, mInternalHealthConnectMappings)
@@ -190,7 +198,8 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                                 context,
                                 Clock.systemUTC(),
                                 mExportImportSettingsStorage,
-                                mTransactionManager)
+                                mTransactionManager,
+                                mExportImportNotificationSender)
                         : builder.mExportManager;
         mMigrationBroadcastScheduler =
                 builder.mMigrationBroadcastScheduler == null
@@ -345,6 +354,11 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     @Override
     public ExportManager getExportManager() {
         return mExportManager;
+    }
+
+    @Override
+    public HealthConnectNotificationSender getExportImportNotificationSender() {
+        return mExportImportNotificationSender;
     }
 
     @Override
@@ -542,6 +556,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         private PermissionPackageChangesOrchestrator mPermissionPackageChangesOrchestrator;
 
         @Nullable private HealthConnectPermissionHelper mHealthConnectPermissionHelper;
+        @Nullable private HealthConnectNotificationSender mExportImportNotificationSender;
         @Nullable private MigrationCleaner mMigrationCleaner;
         @Nullable private TimeSource mTimeSource;
         @Nullable private MedicalDataSourceHelper mMedicalDataSourceHelper;
@@ -695,6 +710,13 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                 HealthConnectPermissionHelper healthConnectPermissionHelper) {
             Objects.requireNonNull(healthConnectPermissionHelper);
             mHealthConnectPermissionHelper = healthConnectPermissionHelper;
+            return this;
+        }
+
+        /** Set fake or custom {@link HealthConnectNotificationSender} for export/import. */
+        public Builder setExportImportNotificationSender(
+                HealthConnectNotificationSender notificationSender) {
+            mExportImportNotificationSender = Objects.requireNonNull(notificationSender);
             return this;
         }
 

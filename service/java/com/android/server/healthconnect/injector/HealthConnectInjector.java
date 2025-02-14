@@ -29,6 +29,7 @@ import com.android.server.healthconnect.migration.MigrationCleaner;
 import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.migration.MigrationUiStateManager;
 import com.android.server.healthconnect.migration.PriorityMigrationHelper;
+import com.android.server.healthconnect.notifications.HealthConnectNotificationSender;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
@@ -223,6 +224,12 @@ public abstract class HealthConnectInjector {
      * Getter for {@link ReadAccessLogsHelper} instance initialised by the Health Connect Injector.
      */
     public abstract ReadAccessLogsHelper getReadAccessLogsHelper();
+
+    /**
+     * Getter for {@link HealthConnectNotificationSender} instance for export or import initialised
+     * by the Health Connect Injector.
+     */
+    public abstract HealthConnectNotificationSender getExportImportNotificationSender();
 
     /** Used to initialize the Injector. */
     public static void setInstance(HealthConnectInjector healthConnectInjector) {

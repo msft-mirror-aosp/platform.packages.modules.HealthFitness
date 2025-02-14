@@ -188,6 +188,7 @@ import com.android.server.healthconnect.migration.MigrationCleaner;
 import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.migration.MigrationUiStateManager;
 import com.android.server.healthconnect.migration.PriorityMigrationHelper;
+import com.android.server.healthconnect.notifications.HealthConnectNotificationSender;
 import com.android.server.healthconnect.permission.DataPermissionEnforcer;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
@@ -318,6 +319,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             MedicalDataSourceHelper medicalDataSourceHelper,
             ExportManager exportManager,
             ExportImportSettingsStorage exportImportSettingsStorage,
+            HealthConnectNotificationSender exportImportNotificationSender,
             BackupRestore backupRestore,
             AccessLogsHelper accessLogsHelper,
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
@@ -384,7 +386,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         mTransactionManager,
                         mDeviceInfoHelper,
                         mHealthDataCategoryPriorityHelper,
-                        clockForLogging);
+                        clockForLogging,
+                        exportImportNotificationSender);
 
         mCloudBackupManager =
                 Flags.cloudBackupAndRestore()
