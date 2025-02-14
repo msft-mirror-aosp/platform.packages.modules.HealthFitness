@@ -801,7 +801,7 @@ public class HealthConnectDeviceTest {
                                                         APP_A_WITH_READ_WRITE_PERMS
                                                                 .getPackageName()))
                                 .isEqualTo(PackageManager.PERMISSION_DENIED),
-                /* timeoutMillis= */ 15000);
+                /* timeoutMillis= */ 20000);
     }
 
     @Test

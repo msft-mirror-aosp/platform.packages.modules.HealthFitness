@@ -128,6 +128,10 @@ public final class DatabaseMerger {
     /** Merge data */
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public synchronized void merge(HealthConnectDatabase stagedDatabase) {
+        TransactionManager stagedTransactionManager =
+                TransactionManager.forStagedDatabase(
+                        stagedDatabase, mInternalHealthConnectMappings);
+
         Slog.i(TAG, "Merging app info");
 
         Map<Long, String> stagedPackageNamesByAppIds = new ArrayMap<>();
@@ -174,7 +178,11 @@ public final class DatabaseMerger {
         // Migrate special case records in their defined order.
         for (List<Integer> recordTypeMigrationGroup : RECORD_TYPE_MIGRATION_ORDERING_OVERRIDES) {
             for (int recordTypeToMigrate : recordTypeMigrationGroup) {
-                mergeRecordsOfType(stagedDatabase, stagedPackageNamesByAppIds, recordTypeToMigrate);
+                mergeRecordsOfType(
+                        stagedTransactionManager,
+                        stagedDatabase,
+                        stagedPackageNamesByAppIds,
+                        recordTypeToMigrate);
             }
             // Delete records within a group together, once all records within that group
             // have been migrated. This ensures referential integrity is preserved during
@@ -185,7 +193,11 @@ public final class DatabaseMerger {
         }
         // Migrate remaining record types in no particular order.
         for (Integer recordTypeToMigrate : recordTypesWithoutOrderingOverrides) {
-            mergeRecordsOfType(stagedDatabase, stagedPackageNamesByAppIds, recordTypeToMigrate);
+            mergeRecordsOfType(
+                    stagedTransactionManager,
+                    stagedDatabase,
+                    stagedPackageNamesByAppIds,
+                    recordTypeToMigrate);
             deleteRecordsOfType(stagedDatabase, recordTypeToMigrate);
         }
 
@@ -385,6 +397,7 @@ public final class DatabaseMerger {
     }
 
     private void mergeRecordsOfType(
+            TransactionManager stagedTransactionManager,
             HealthConnectDatabase stagedDatabase,
             Map<Long, String> stagedPackageNamesByAppIds,
             int recordType) {
@@ -402,7 +415,7 @@ public final class DatabaseMerger {
         do {
             var recordsToMergeAndToken =
                     getRecordsToMerge(
-                            stagedDatabase,
+                            stagedTransactionManager,
                             stagedPackageNamesByAppIds,
                             requireNonNull(recordTypeClass),
                             currentToken,
@@ -478,7 +491,7 @@ public final class DatabaseMerger {
     }
 
     private Pair<List<RecordInternal<?>>, PageTokenWrapper> getRecordsToMerge(
-            HealthConnectDatabase stagedDatabase,
+            TransactionManager stagedTransactionManager,
             Map<Long, String> stagedPackageNamesByAppIds,
             Class<? extends Record> recordTypeClass,
             PageTokenWrapper requestToken,
@@ -507,40 +520,16 @@ public final class DatabaseMerger {
                         // Make sure foreground only types get included in the response.
                         /* isInForeground= */ true);
 
-        List<RecordInternal<?>> recordInternalList;
-        PageTokenWrapper token;
-        ReadTableRequest readTableRequest = readTransactionRequest.getReadRequests().get(0);
-        try (Cursor cursor = read(stagedDatabase, readTableRequest)) {
-            Pair<List<RecordInternal<?>>, PageTokenWrapper> readResult =
-                    recordHelper.getNextInternalRecordsPageAndToken(
-                            mDeviceInfoHelper,
-                            cursor,
-                            readTransactionRequest.getPageSize().orElse(DEFAULT_PAGE_SIZE),
-                            requireNonNull(readTransactionRequest.getPageToken()),
-                            stagedPackageNamesByAppIds,
-                            mAppInfoHelper);
-            recordInternalList = readResult.first;
-            token = readResult.second;
-            if (readTableRequest.getExtraReadRequests() != null) {
-                RecordHelper<?> mainRecordHelper =
-                        requireNonNull(readTableRequest.getRecordHelper());
-                for (ReadTableRequest extraDataRequest : readTableRequest.getExtraReadRequests()) {
-                    Cursor cursorExtraData = read(stagedDatabase, extraDataRequest);
-                    mainRecordHelper.updateInternalRecordsWithExtraFields(
-                            recordInternalList, cursorExtraData, extraDataRequest.getTableName());
-                }
-            }
-        }
-        return Pair.create(recordInternalList, token);
+        return stagedTransactionManager.readRecordsAndPageTokenWithoutAccessLogs(
+                readTransactionRequest,
+                mAppInfoHelper,
+                mDeviceInfoHelper,
+                stagedPackageNamesByAppIds);
     }
 
     private synchronized Cursor read(
             HealthConnectDatabase stagedDatabase, ReadTableRequest request) {
         return read(stagedDatabase.getReadableDatabase(), request.getReadCommand());
-    }
-
-    private synchronized Cursor read(SQLiteDatabase stagedDatabase, ReadTableRequest request) {
-        return read(stagedDatabase, request.getReadCommand());
     }
 
     private synchronized Cursor read(SQLiteDatabase stagedDatabase, String query) {

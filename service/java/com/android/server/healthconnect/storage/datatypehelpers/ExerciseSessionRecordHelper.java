@@ -75,7 +75,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -322,7 +321,13 @@ public final class ExerciseSessionRecordHelper
                         enforceSelfRead,
                         startDateAccessMillis,
                         appInfoHelper);
-        return List.of(getRouteReadRequest(sessionsWithAccessibleRouteClause));
+
+        ReadTableRequest sessionIdsRequest =
+                getSessionIdsRequest(sessionsWithAccessibleRouteClause)
+                        .setOrderBy(getOrderByClause(request))
+                        .setLimit(getLimitSize(request));
+
+        return List.of(getRouteReadRequest(sessionIdsRequest));
     }
 
     /** Returns extra permissions required to write given record. */
@@ -377,25 +382,27 @@ public final class ExerciseSessionRecordHelper
                     APP_INFO_ID_COLUMN_NAME, List.of(appId));
         }
 
-        return List.of(getRouteReadRequest(sessionsWithAccessibleRouteClause));
+        return List.of(
+                getRouteReadRequest(getSessionIdsRequest(sessionsWithAccessibleRouteClause)));
     }
 
     @Override
     public void readExtraData(
-            List<ExerciseSessionRecordInternal> internalRecords,
-            Cursor cursorExtraData,
-            String tableName) {
-        // Collect rowId to Record mapping to understand which record update with route location.
-        Map<Integer, Integer> mapping = new HashMap<>(internalRecords.size());
-        for (int i = 0; i < internalRecords.size(); i++) {
-            mapping.put(internalRecords.get(i).getRowId(), i);
+            List<ExerciseSessionRecordInternal> internalRecords, Cursor cursorExtraData) {
+        // For quick access to sessions by rowId
+        var rowIdToSessionMap =
+                new HashMap<Integer, ExerciseSessionRecordInternal>(internalRecords.size());
+        for (ExerciseSessionRecordInternal session : internalRecords) {
+            rowIdToSessionMap.put(session.getRowId(), session);
         }
 
         while (cursorExtraData.moveToNext()) {
-            ExerciseSessionRecordInternal record =
-                    internalRecords.get(
-                            mapping.get(getCursorInt(cursorExtraData, PARENT_KEY_COLUMN_NAME)));
-            record.addRouteLocation(ExerciseRouteRecordHelper.populateLocation(cursorExtraData));
+            int rowId = getCursorInt(cursorExtraData, PARENT_KEY_COLUMN_NAME);
+            var session = rowIdToSessionMap.get(rowId);
+            if (session != null) {
+                session.addRouteLocation(
+                        ExerciseRouteRecordHelper.populateLocation(cursorExtraData));
+            }
         }
     }
 
@@ -531,15 +538,18 @@ public final class ExerciseSessionRecordHelper
         return numberOfRecordsWithExerciseRoutes;
     }
 
-    private ReadTableRequest getRouteReadRequest(WhereClauses clauseToFilterSessionIds) {
+    /** Same as the original request but for session IDs only */
+    private ReadTableRequest getSessionIdsRequest(WhereClauses whereClauses) {
+        return new ReadTableRequest(getMainTableName())
+                .setColumnNames(List.of(PRIMARY_COLUMN_NAME))
+                .setWhereClause(whereClauses);
+    }
+
+    private ReadTableRequest getRouteReadRequest(ReadTableRequest sessionIdsRequest) {
         ReadTableRequest routeReadRequest = new ReadTableRequest(EXERCISE_ROUTE_RECORD_TABLE_NAME);
 
-        ReadTableRequest sessionsIdsRequest = new ReadTableRequest(getMainTableName());
-        sessionsIdsRequest.setColumnNames(List.of(PRIMARY_COLUMN_NAME));
-        sessionsIdsRequest.setWhereClause(clauseToFilterSessionIds);
-
         WhereClauses inClause = new WhereClauses(AND);
-        inClause.addWhereInSQLRequestClause(PARENT_KEY_COLUMN_NAME, sessionsIdsRequest);
+        inClause.addWhereInSQLRequestClause(PARENT_KEY_COLUMN_NAME, sessionIdsRequest);
         routeReadRequest.setWhereClause(inClause);
         return routeReadRequest;
     }

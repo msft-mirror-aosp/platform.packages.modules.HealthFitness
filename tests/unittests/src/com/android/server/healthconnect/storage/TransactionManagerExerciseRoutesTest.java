@@ -289,13 +289,11 @@ public class TransactionManagerExerciseRoutesTest {
                         /* isInForeground= */ true);
 
         List<RecordInternal<?>> returnedRecords =
-                mTransactionManager.readRecordsAndPageToken(
+                mTransactionManager.readRecordsAndPageTokenWithoutAccessLogs(
                                 request,
                                 mAppInfoHelper,
-                                mAccessLogsHelper,
                                 mDeviceInfoHelper,
-                                mReadAccessLogsHelper,
-                                /* shouldRecordAccessLog= */ false)
+                                /* packageNamesByAppIds= */ null)
                         .first;
 
         Map<String, ExerciseSessionRecordInternal> idToSessionMap =
@@ -336,13 +334,11 @@ public class TransactionManagerExerciseRoutesTest {
                         /* isInForeground= */ true);
 
         List<RecordInternal<?>> returnedRecords =
-                mTransactionManager.readRecordsAndPageToken(
+                mTransactionManager.readRecordsAndPageTokenWithoutAccessLogs(
                                 request,
                                 mAppInfoHelper,
-                                mAccessLogsHelper,
                                 mDeviceInfoHelper,
-                                mReadAccessLogsHelper,
-                                /* shouldRecordAccessLog= */ false)
+                                /* packageNamesByAppIds= */ null)
                         .first;
 
         assertThat(returnedRecords).hasSize(1);
@@ -375,13 +371,11 @@ public class TransactionManagerExerciseRoutesTest {
                         /* isInForeground= */ true);
 
         List<RecordInternal<?>> returnedRecords =
-                mTransactionManager.readRecordsAndPageToken(
+                mTransactionManager.readRecordsAndPageTokenWithoutAccessLogs(
                                 request,
                                 mAppInfoHelper,
-                                mAccessLogsHelper,
                                 mDeviceInfoHelper,
-                                mReadAccessLogsHelper,
-                                /* shouldRecordAccessLog= */ false)
+                                /* packageNamesByAppIds= */ null)
                         .first;
 
         assertThat(returnedRecords).hasSize(1);
@@ -414,13 +408,11 @@ public class TransactionManagerExerciseRoutesTest {
                         /* isInForeground= */ true);
 
         List<RecordInternal<?>> returnedRecords =
-                mTransactionManager.readRecordsAndPageToken(
+                mTransactionManager.readRecordsAndPageTokenWithoutAccessLogs(
                                 request,
                                 mAppInfoHelper,
-                                mAccessLogsHelper,
                                 mDeviceInfoHelper,
-                                mReadAccessLogsHelper,
-                                /* shouldRecordAccessLog= */ false)
+                                /* packageNamesByAppIds= */ null)
                         .first;
 
         assertThat(returnedRecords).hasSize(1);

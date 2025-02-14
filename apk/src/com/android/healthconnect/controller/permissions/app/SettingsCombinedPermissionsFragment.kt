@@ -41,13 +41,13 @@ import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.children
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
+import com.android.healthconnect.controller.shared.preference.addIntroOrAppHeaderPreference
 import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.dismissLoadingDialog
 import com.android.healthconnect.controller.utils.logging.AppAccessElement
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.pref
 import com.android.healthconnect.controller.utils.showLoadingDialog
-import com.android.settingslib.widget.AppHeaderPreference
 import com.android.settingslib.widget.FooterPreference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -78,7 +78,6 @@ class SettingsCombinedPermissionsFragment : Hilt_SettingsCombinedPermissionsFrag
     private val migrationViewModel: MigrationViewModel by viewModels()
     private val managePermissionsCategory: PreferenceGroup by pref(MANAGE_PERMISSIONS_CATEGORY)
     private val manageAppCategory: PreferenceGroup by pref(MANAGE_APP_CATEGORY)
-    private val header: AppHeaderPreference by pref(PERMISSION_HEADER)
     private val footer: FooterPreference by pref(FOOTER)
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -142,12 +141,17 @@ class SettingsCombinedPermissionsFragment : Hilt_SettingsCombinedPermissionsFrag
 
     private fun setupHeader() {
         viewModel.appInfo.observe(viewLifecycleOwner) { appMetadata ->
+            addIntroOrAppHeaderPreference(preferenceScreen, requireContext(), appMetadata)
             setupFooter(appMetadata.appName)
-            header.apply {
-                icon = appMetadata.icon
-                title = appMetadata.appName
-            }
+            // To prevent flickering, only show the other preferences once the header is added.
+            // TODO(b/394567790): Add loading screen instead.
+            showHiddenPreferences()
         }
+    }
+
+    private fun showHiddenPreferences() {
+        managePermissionsCategory.isVisible = true
+        manageAppCategory.isVisible = true
     }
 
     private fun setupManagePermissionsPreferenceCategory() {
@@ -230,6 +234,7 @@ class SettingsCombinedPermissionsFragment : Hilt_SettingsCombinedPermissionsFrag
     }
 
     private fun updateFooter(appName: String) {
+        footer.isVisible = true
         footer.title = getString(R.string.manage_permissions_rationale, appName)
         if (healthPermissionReader.isRationaleIntentDeclared(packageName)) {
             footer.setLearnMoreText(getString(R.string.manage_permissions_learn_more))
@@ -269,7 +274,6 @@ class SettingsCombinedPermissionsFragment : Hilt_SettingsCombinedPermissionsFrag
     }
 
     companion object {
-        private const val PERMISSION_HEADER = "manage_app_permission_header"
         private const val MANAGE_PERMISSIONS_CATEGORY = "manage_permissions"
         private const val MANAGE_APP_CATEGORY = "manage_app"
         private const val FOOTER = "manage_app_permission_footer"

@@ -26,13 +26,10 @@ import android.util.ArrayMap;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
-
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
-import org.mockito.quality.Strictness;
 
 import java.io.File;
 import java.time.Instant;
@@ -69,20 +66,14 @@ public class GrantTimePersistenceUnitTest {
     private static final UserGrantTimeState EMPTY_STATE =
             new UserGrantTimeState(new ArrayMap<>(), new ArrayMap<>(), 3);
 
-    private final EnvironmentFixture mEnvironmentFixture = new EnvironmentFixture();
-
-    @Rule
-    public final ExtendedMockitoRule mExtendedMockitoRule =
-            new ExtendedMockitoRule.Builder(this)
-                    .setStrictness(Strictness.LENIENT)
-                    .addStaticMockFixtures(() -> mEnvironmentFixture)
-                    .build();
+    @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     private final UserHandle mUser = UserHandle.of(UserHandle.myUserId());
 
     @Test
     public void testWriteReadData_packageAndSharedUserState_restoredCorrectly() {
-        FirstGrantTimeDatastore datastore = FirstGrantTimeDatastore.createInstance();
+        FirstGrantTimeDatastore datastore =
+                FirstGrantTimeDatastore.createInstance(temporaryFolder.getRoot());
         datastore.writeForUser(DEFAULT_STATE, mUser, DATA_TYPE_CURRENT);
         UserGrantTimeState restoredState = datastore.readForUser(mUser, DATA_TYPE_CURRENT);
         assertRestoredStateIsCorrect(restoredState, DEFAULT_STATE);
@@ -90,7 +81,8 @@ public class GrantTimePersistenceUnitTest {
 
     @Test
     public void testWriteReadData_multipleSharedUserState_restoredCorrectly() {
-        FirstGrantTimeDatastore datastore = FirstGrantTimeDatastore.createInstance();
+        FirstGrantTimeDatastore datastore =
+                FirstGrantTimeDatastore.createInstance(temporaryFolder.getRoot());
         datastore.writeForUser(SHARED_USERS_STATE, mUser, DATA_TYPE_CURRENT);
         UserGrantTimeState restoredState = datastore.readForUser(mUser, DATA_TYPE_CURRENT);
         assertRestoredStateIsCorrect(restoredState, SHARED_USERS_STATE);
@@ -98,7 +90,8 @@ public class GrantTimePersistenceUnitTest {
 
     @Test
     public void testWriteReadData_multiplePackagesState_restoredCorrectly() {
-        FirstGrantTimeDatastore datastore = FirstGrantTimeDatastore.createInstance();
+        FirstGrantTimeDatastore datastore =
+                FirstGrantTimeDatastore.createInstance(temporaryFolder.getRoot());
         datastore.writeForUser(PACKAGES_STATE, mUser, DATA_TYPE_CURRENT);
         UserGrantTimeState restoredState = datastore.readForUser(mUser, DATA_TYPE_CURRENT);
         assertRestoredStateIsCorrect(restoredState, PACKAGES_STATE);
@@ -106,7 +99,8 @@ public class GrantTimePersistenceUnitTest {
 
     @Test
     public void testWriteReadData_emptyState_restoredCorrectly() {
-        FirstGrantTimeDatastore datastore = FirstGrantTimeDatastore.createInstance();
+        FirstGrantTimeDatastore datastore =
+                FirstGrantTimeDatastore.createInstance(temporaryFolder.getRoot());
         datastore.writeForUser(EMPTY_STATE, mUser, DATA_TYPE_CURRENT);
         UserGrantTimeState restoredState = datastore.readForUser(mUser, DATA_TYPE_CURRENT);
         assertRestoredStateIsCorrect(restoredState, EMPTY_STATE);
@@ -114,7 +108,8 @@ public class GrantTimePersistenceUnitTest {
 
     @Test
     public void testWriteReadData_overwroteState_restoredCorrectly() {
-        FirstGrantTimeDatastore datastore = FirstGrantTimeDatastore.createInstance();
+        FirstGrantTimeDatastore datastore =
+                FirstGrantTimeDatastore.createInstance(temporaryFolder.getRoot());
         datastore.writeForUser(PACKAGES_STATE, mUser, DATA_TYPE_CURRENT);
         datastore.writeForUser(DEFAULT_STATE, mUser, DATA_TYPE_CURRENT);
         UserGrantTimeState restoredState = datastore.readForUser(mUser, DATA_TYPE_CURRENT);
@@ -123,7 +118,8 @@ public class GrantTimePersistenceUnitTest {
 
     @Test
     public void testWriteReadData_writeAllStateTypes_restoredCorrectly() {
-        FirstGrantTimeDatastore datastore = FirstGrantTimeDatastore.createInstance();
+        FirstGrantTimeDatastore datastore =
+                FirstGrantTimeDatastore.createInstance(temporaryFolder.getRoot());
         datastore.writeForUser(PACKAGES_STATE, mUser, DATA_TYPE_CURRENT);
         datastore.writeForUser(EMPTY_STATE, mUser, DATA_TYPE_STAGED);
         assertRestoredStateIsCorrect(
@@ -133,7 +129,8 @@ public class GrantTimePersistenceUnitTest {
 
     @Test
     public void testWriteReadData_statesForTwoUsersWritten_restoredCorrectly() {
-        FirstGrantTimeDatastore datastore = FirstGrantTimeDatastore.createInstance();
+        FirstGrantTimeDatastore datastore =
+                FirstGrantTimeDatastore.createInstance(temporaryFolder.getRoot());
         UserHandle secondUser = UserHandle.of(mUser.getIdentifier() + 10);
         datastore.writeForUser(PACKAGES_STATE, mUser, DATA_TYPE_CURRENT);
         datastore.writeForUser(SHARED_USERS_STATE, secondUser, DATA_TYPE_CURRENT);
@@ -145,7 +142,8 @@ public class GrantTimePersistenceUnitTest {
 
     @Test
     public void testReadData_stateIsNotWritten_nullIsReturned() {
-        FirstGrantTimeDatastore datastore = FirstGrantTimeDatastore.createInstance();
+        FirstGrantTimeDatastore datastore =
+                FirstGrantTimeDatastore.createInstance(temporaryFolder.getRoot());
         UserGrantTimeState state = datastore.readForUser(mUser, DATA_TYPE_CURRENT);
         assertThat(state).isNull();
     }
@@ -154,13 +152,13 @@ public class GrantTimePersistenceUnitTest {
     public void testParseData_stateIsNotWritten_nullIsReturned() {
         UserGrantTimeState state =
                 GrantTimeXmlHelper.parseGrantTime(
-                        new File(mEnvironmentFixture.getDataDirectory(), "test_file.xml"));
+                        new File(temporaryFolder.getRoot(), "test_file.xml"));
         assertThat(state).isNull();
     }
 
     @Test
     public void testWriteData_writeAndReadState_restoredEqualToWritten() {
-        File testFile = new File(mEnvironmentFixture.getDataDirectory(), "test_file.xml");
+        File testFile = new File(temporaryFolder.getRoot(), "test_file.xml");
         GrantTimeXmlHelper.serializeGrantTimes(testFile, DEFAULT_STATE);
         UserGrantTimeState state = GrantTimeXmlHelper.parseGrantTime(testFile);
         assertRestoredStateIsCorrect(state, DEFAULT_STATE);
@@ -168,7 +166,8 @@ public class GrantTimePersistenceUnitTest {
 
     @Test
     public void testGetFile_getAllTypes_allFilesNonNullAndDifferent() {
-        FirstGrantTimeDatastore datastore = FirstGrantTimeDatastore.createInstance();
+        FirstGrantTimeDatastore datastore =
+                FirstGrantTimeDatastore.createInstance(temporaryFolder.getRoot());
         File current = datastore.getFile(mUser, DATA_TYPE_CURRENT);
         File staged = datastore.getFile(mUser, DATA_TYPE_STAGED);
         assertThat(current).isNotNull();

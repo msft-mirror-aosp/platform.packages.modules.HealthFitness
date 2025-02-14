@@ -190,13 +190,11 @@ public class CloudBackupDatabaseHelper {
                                 // restore APIs enforce no quota limits so this value is irrelevant.
                                 /* isInForeground= */ true);
                 Pair<List<RecordInternal<?>>, PageTokenWrapper> readResult =
-                        mTransactionManager.readRecordsAndPageToken(
+                        mTransactionManager.readRecordsAndPageTokenWithoutAccessLogs(
                                 readTransactionRequest,
                                 mAppInfoHelper,
-                                mAccessLogsHelper,
                                 mDeviceInfoHelper,
-                                mReadAccessLogsHelper,
-                                /* shouldRecordAccessLog= */ false);
+                                /* packageNamesByAppIds= */ null);
                 backupChanges.addAll(convertRecordsToBackupChange(readResult.first));
                 nextDataTablePageToken = readResult.second.encode();
                 pageSize = DEFAULT_PAGE_SIZE - backupChanges.size();

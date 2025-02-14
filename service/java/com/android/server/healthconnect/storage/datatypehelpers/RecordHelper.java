@@ -661,8 +661,8 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     /** Populate internalRecords fields using extraDataCursor */
     @SuppressWarnings("unchecked")
     public void updateInternalRecordsWithExtraFields(
-            List<RecordInternal<?>> internalRecords, Cursor cursorExtraData, String tableName) {
-        readExtraData((List<T>) internalRecords, cursorExtraData, tableName);
+            List<RecordInternal<?>> internalRecords, Cursor cursorExtraData) {
+        readExtraData((List<T>) internalRecords, cursorExtraData);
     }
 
     public DeleteTableRequest getDeleteTableRequest(
@@ -706,7 +706,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     }
 
     /** Populate internalRecords with extra data. */
-    void readExtraData(List<T> internalRecords, Cursor cursorExtraData, String tableName) {}
+    void readExtraData(List<T> internalRecords, Cursor cursorExtraData) {}
 
     /**
      * Child classes should implement this if it wants to create additional tables, apart from the
@@ -769,7 +769,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
         return null;
     }
 
-    private static int getLimitSize(ReadRecordsRequestParcel request) {
+    static int getLimitSize(ReadRecordsRequestParcel request) {
         // Querying extra records on top of page size
         // + pageOffset: <pageOffset> records has already been returned in previous page(s). See
         //               go/hc-page-token for details.
@@ -892,7 +892,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
 
     abstract String getZoneOffsetColumnName();
 
-    private OrderByClause getOrderByClause(ReadRecordsRequestParcel request) {
+    OrderByClause getOrderByClause(ReadRecordsRequestParcel request) {
         if (request.getRecordIdFiltersParcel() != null) {
             return new OrderByClause();
         }

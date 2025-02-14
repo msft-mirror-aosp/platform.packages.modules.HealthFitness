@@ -72,6 +72,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -342,7 +343,7 @@ public class ExerciseSessionRecordTest {
     }
 
     @Test
-    public void testReadById_insertAndReadById_recordsAreEqual() throws InterruptedException {
+    public void testRead_insertAndReadById_recordsAreEqual() throws InterruptedException {
         List<Record> records =
                 TestUtils.insertRecords(List.of(buildExerciseSession(), buildSessionMinimal()));
 
@@ -355,7 +356,7 @@ public class ExerciseSessionRecordTest {
     }
 
     @Test
-    public void testReadById_insertAndReadByIdOne_recordsAreEqual() throws InterruptedException {
+    public void testRead_insertAndReadByIdOne_recordsAreEqual() throws InterruptedException {
         List<Record> records = TestUtils.insertRecords(List.of(buildExerciseSession()));
 
         ReadRecordsRequestUsingIds.Builder<ExerciseSessionRecord> request =
@@ -372,8 +373,7 @@ public class ExerciseSessionRecordTest {
     }
 
     @Test
-    public void testReadByClientId_insertAndReadByClientId_recordsAreEqual()
-            throws InterruptedException {
+    public void testRead_insertAndReadByClientId_recordsAreEqual() throws InterruptedException {
         List<Record> records =
                 TestUtils.insertRecords(List.of(buildExerciseSession(), buildSessionMinimal()));
 
@@ -386,8 +386,7 @@ public class ExerciseSessionRecordTest {
     }
 
     @Test
-    public void testReadByClientId_insertAndReadByDefaultFilter_filteredAll()
-            throws InterruptedException {
+    public void testRead_insertAndReadByDefaultFilter_filteredAll() throws InterruptedException {
         List<Record> records =
                 TestUtils.insertRecords(List.of(buildExerciseSession(), buildSessionMinimal()));
         assertThat(records).hasSize(2);
@@ -400,8 +399,7 @@ public class ExerciseSessionRecordTest {
     }
 
     @Test
-    public void testReadByClientId_insertAndReadByTimeFilter_filteredCorrectly()
-            throws InterruptedException {
+    public void testRead_insertAndReadByTimeFilter_filteredCorrectly() throws InterruptedException {
         List<Record> records =
                 TestUtils.insertRecords(List.of(buildExerciseSession(), buildSessionMinimal()));
 
@@ -421,6 +419,33 @@ public class ExerciseSessionRecordTest {
                                 .setTimeRangeFilter(filter)
                                 .build());
         assertRecordsAreEqual(records, readRecords);
+    }
+
+    @Test
+    public void testRead_pagination_filteredCorrectly() throws InterruptedException {
+        var startTime = Instant.ofEpochSecond(123456789);
+        List<Record> records = new ArrayList<>();
+        for (int i = 0; i < 1000; i++) {
+            records.add(
+                    buildSession(
+                            startTime.plus(Duration.ofHours(i)),
+                            startTime.plus(Duration.ofHours(i + 1))));
+        }
+        List<Record> insertedRecords = TestUtils.insertRecords(records);
+
+        var nextPageToken = -1L;
+        for (int i = 0; i < 10; i++) {
+            var response =
+                    TestUtils.getReadRecordsResponse(
+                            new ReadRecordsRequestUsingFilters.Builder<>(
+                                            ExerciseSessionRecord.class)
+                                    .setPageSize(100)
+                                    .setPageToken(nextPageToken)
+                                    .build());
+            nextPageToken = response.getNextPageToken();
+            assertRecordsAreEqual(
+                    insertedRecords.subList(i * 100, (i + 1) * 100), response.getRecords());
+        }
     }
 
     @Test
