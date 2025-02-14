@@ -20,15 +20,64 @@
     android:paddingHorizontal="@dimen/spacing_large"
     android:paddingVertical="@dimen/spacing_normal">
 
-    <FrameLayout
-        android:id="@+id/header_area"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+    <ImageView
+        android:layout_width="@dimen/app_header_icon_size"
+        android:layout_height="@dimen/app_header_icon_size"
+        android:layout_gravity="center_horizontal"
+        android:contentDescription="@string/app_label"
+        android:src="@drawable/health_connect_logo" />
 
-    <include
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:layout_marginHorizontal="@dimen/spacing_large"
+        android:paddingVertical="@dimen/spacing_large"
+        style="?attr/textAppearanceHeadline4" />
+
+    <TextView
+        android:id="@+id/summary"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceSummaryLarge"
+        android:paddingBottom="@dimen/spacing_normal"
+        android:visibility="gone"/>
+
+    <LinearLayout
         android:id="@+id/detailed_permissions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        layout="@layout/widget_request_permissions_details"/>
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/data_access_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/spacing_normal"
+            android:drawableStart="?attr/chooseDataIcon"
+            android:paddingBottom="@dimen/spacing_small"
+            style="?attr/textAppearanceSummaryLarge"/>
+
+        <TextView
+            android:id="@+id/access_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/spacing_normal"
+            android:drawableStart="?attr/accessHistoryIcon"
+            android:paddingBottom="@dimen/spacing_small"
+            style="?attr/textAppearanceSummaryLarge" />
+
+        <TextView
+            android:id="@+id/privacy_policy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/spacing_normal"
+            android:drawableStart="?attr/privacyPolicyIcon"
+            android:paddingBottom="@dimen/spacing_small"
+            style="?attr/textAppearanceSummaryLarge"/>
+    </LinearLayout>
 
 </LinearLayout>
