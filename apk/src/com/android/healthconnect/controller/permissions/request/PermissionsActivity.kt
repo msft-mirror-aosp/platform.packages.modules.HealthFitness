@@ -53,7 +53,6 @@ import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled
 import com.android.healthfitness.flags.Flags
 import com.android.settingslib.collapsingtoolbar.EdgeToEdgeUtils
-import com.android.settingslib.widget.SettingsThemeHelper
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -84,10 +83,6 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        EdgeToEdgeUtils.enable(this)
-        if (SettingsThemeHelper.isExpressiveTheme(this)) {
-            setTheme(R.style.Theme_HealthConnect_Expressive)
-        }
         super.onCreate(savedInstanceState)
 
         // If device is enabled on watch, redirect to WearGrantPermissionsActivity.
@@ -209,6 +204,8 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
                 }
             }
         }
+
+        EdgeToEdgeUtils.enable(this)
     }
 
     private fun maybeShowMigrationDialog(migrationRestoreState: MigrationRestoreState) {
