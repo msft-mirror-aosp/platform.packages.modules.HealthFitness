@@ -38,6 +38,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:text="@string/phr_options_read_immunization"
+            android:layout_marginTop="50dp"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/phr_read_by_id_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:minWidth="250dp"
+            android:text="@string/phr_options_read_by_id" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
             android:layout_marginTop="38dp"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -61,13 +78,6 @@
             android:visibility="gone"
             android:textSize="12sp" />
 
-        <Spinner
-            android:id="@+id/phr_spinner"
-            android:layout_marginTop="18dp"
-            android:minWidth="250dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
         <Button
             android:id="@+id/phr_seed_fhir_jsons_button"
             android:layout_width="wrap_content"
@@ -76,38 +86,32 @@
             android:minWidth="250dp"
             android:text="@string/phr_options_seed_fhir_jsons" />
 
+        <Spinner
+            android:id="@+id/phr_spinner"
+            android:layout_marginTop="18dp"
+            android:minWidth="250dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
         <Button
-            android:id="@+id/phr_insert_immunization_button"
+            android:id="@+id/phr_insert_resource_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
             android:minWidth="250dp"
-            android:text="@string/phr_options_insert_immunization" />
+            android:text="@string/phr_options_insert_resource" />
 
-        <Button
-            android:id="@+id/phr_insert_allergy_button"
+        <EditText
+            android:id="@+id/phr_pasted_resource_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
-            android:minWidth="250dp"
-            android:text="@string/phr_options_insert_allergy" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/phr_options_read_immunization"
-            android:layout_marginTop="50dp"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/phr_read_by_id_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:minWidth="250dp"
-            android:text="@string/phr_options_read_by_id" />
+            android:layout_marginLeft="18dp"
+            android:layout_marginRight="18dp"
+            android:minWidth="300dp"
+            android:gravity="left"
+            android:text="@string/phr_options_pasted_resource_placeholder"
+            android:textSize="12sp" />
 
     </LinearLayout>
 </ScrollView>
