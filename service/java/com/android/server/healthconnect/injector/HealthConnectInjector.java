@@ -21,6 +21,7 @@ import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
+import com.android.server.appop.AppOpsManagerLocal;
 import com.android.server.healthconnect.backuprestore.BackupRestore;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.logging.UsageStatsCollector;
@@ -230,6 +231,11 @@ public abstract class HealthConnectInjector {
      * by the Health Connect Injector.
      */
     public abstract HealthConnectNotificationSender getExportImportNotificationSender();
+
+    /**
+     * Getter for {@link AppOpsManagerLocal} instance initialised by the Health Connect Injector.
+     */
+    public abstract AppOpsManagerLocal getAppOpsManagerLocal();
 
     /** Used to initialize the Injector. */
     public static void setInstance(HealthConnectInjector healthConnectInjector) {

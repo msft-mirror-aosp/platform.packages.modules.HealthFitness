@@ -23,6 +23,8 @@ import android.os.UserHandle;
 
 import androidx.annotation.Nullable;
 
+import com.android.server.LocalManagerRegistry;
+import com.android.server.appop.AppOpsManagerLocal;
 import com.android.server.healthconnect.backuprestore.BackupRestore;
 import com.android.server.healthconnect.exportimport.ExportImportNotificationSender;
 import com.android.server.healthconnect.exportimport.ExportManager;
@@ -109,6 +111,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     private final PreferencesManager mPreferencesManager;
     private final ReadAccessLogsHelper mReadAccessLogsHelper;
     private final HealthConnectNotificationSender mExportImportNotificationSender;
+    private final AppOpsManagerLocal mAppOpsManagerLocal;
 
     public HealthConnectInjectorImpl(Context context) {
         this(new Builder(context));
@@ -319,6 +322,10 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         ? new ReadAccessLogsHelper(
                                 mAppInfoHelper, mTransactionManager, mDatabaseHelpers)
                         : builder.mReadAccessLogsHelper;
+        mAppOpsManagerLocal =
+                builder.mAppOpsManagerLocal == null
+                        ? LocalManagerRegistry.getManager(AppOpsManagerLocal.class)
+                        : builder.mAppOpsManagerLocal;
     }
 
     @Override
@@ -514,6 +521,11 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         return mReadAccessLogsHelper;
     }
 
+    @Override
+    public AppOpsManagerLocal getAppOpsManagerLocal() {
+        return mAppOpsManagerLocal;
+    }
+
     /**
      * Returns a new Builder of Health Connect Injector
      *
@@ -569,6 +581,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         @Nullable private UsageStatsCollector mUsageStatsCollector;
         @Nullable private ReadAccessLogsHelper mReadAccessLogsHelper;
         @Nullable private File mEnvironmentDataDirectory;
+        @Nullable private AppOpsManagerLocal mAppOpsManagerLocal;
 
         private Builder(Context context) {
             mContext = context;
@@ -801,6 +814,12 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         /** Set a custom directory to use instead of {@link Environment#getDataDirectory()}. */
         public Builder setEnvironmentDataDirectory(File environmentDataDirectory) {
             mEnvironmentDataDirectory = Objects.requireNonNull(environmentDataDirectory);
+            return this;
+        }
+
+        /** Set fake or custom {@link AppOpsManagerLocal}. */
+        public Builder setAppOpsManagerLocal(AppOpsManagerLocal appOpsManagerLocal) {
+            mAppOpsManagerLocal = Objects.requireNonNull(appOpsManagerLocal);
             return this;
         }
 

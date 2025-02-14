@@ -149,7 +149,6 @@ import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.LocalManagerRegistry;
 import com.android.server.appop.AppOpsManagerLocal;
 import com.android.server.healthconnect.backuprestore.BackupRestore;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
@@ -292,7 +291,6 @@ public class HealthConnectServiceImplTest {
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(LocalManagerRegistry.class)
                     .mockStatic(HealthFitnessStatsLog.class)
                     .spyStatic(RateLimiter.class)
                     .setStrictness(Strictness.LENIENT)
@@ -358,8 +356,6 @@ public class HealthConnectServiceImplTest {
         mFakeTimeSource = new FakeTimeSource(NOW);
         mAttributionSource = mContext.getAttributionSource();
         mTestPackageName = mAttributionSource.getPackageName();
-        when(LocalManagerRegistry.getManager(AppOpsManagerLocal.class))
-                .thenReturn(mAppOpsManagerLocal);
         setUpAllMedicalPermissionChecksHardDenied();
 
         HealthConnectInjector healthConnectInjector =
@@ -378,6 +374,7 @@ public class HealthConnectServiceImplTest {
                         .setMigrationUiStateManager(mMigrationUiStateManager)
                         .setAppInfoHelper(mAppInfoHelper)
                         .setTimeSource(mFakeTimeSource)
+                        .setAppOpsManagerLocal(mAppOpsManagerLocal)
                         .build();
 
         mHealthConnectService =
@@ -409,7 +406,8 @@ public class HealthConnectServiceImplTest {
                         healthConnectInjector.getPreferenceHelper(),
                         healthConnectInjector.getDatabaseHelpers(),
                         healthConnectInjector.getPreferencesManager(),
-                        healthConnectInjector.getReadAccessLogsHelper());
+                        healthConnectInjector.getReadAccessLogsHelper(),
+                        healthConnectInjector.getAppOpsManagerLocal());
         mBackupRestore = healthConnectInjector.getBackupRestore();
     }
 

@@ -172,7 +172,6 @@ import android.util.Pair;
 import android.util.Slog;
 
 import com.android.healthfitness.flags.Flags;
-import com.android.server.LocalManagerRegistry;
 import com.android.server.appop.AppOpsManagerLocal;
 import com.android.server.healthconnect.backuprestore.BackupRestore;
 import com.android.server.healthconnect.backuprestore.CloudBackupManager;
@@ -332,7 +331,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             PreferenceHelper preferenceHelper,
             DatabaseHelpers databaseHelpers,
             PreferencesManager preferencesManager,
-            ReadAccessLogsHelper readAccessLogsHelper) {
+            ReadAccessLogsHelper readAccessLogsHelper,
+            AppOpsManagerLocal appOpsManagerLocal) {
         mContext = context;
         mCurrentForegroundUser = context.getUser();
         mTimeSource = timeSource;
@@ -372,7 +372,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mReadAccessLogsHelper = readAccessLogsHelper;
 
         mPermissionManager = mContext.getSystemService(PermissionManager.class);
-        mAppOpsManagerLocal = LocalManagerRegistry.getManager(AppOpsManagerLocal.class);
+        mAppOpsManagerLocal = appOpsManagerLocal;
         mMedicalDataPermissionEnforcer = new MedicalDataPermissionEnforcer(mPermissionManager);
         mDataPermissionEnforcer =
                 new DataPermissionEnforcer(
