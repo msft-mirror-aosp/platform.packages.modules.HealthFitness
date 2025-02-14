@@ -39,6 +39,10 @@
     <string name="browse_data_title" msgid="5232691805953326097">"Explorar datos"</string>
     <string name="browse_data_subtitle" msgid="7025164374898103993">"Consulta los datos y las apps que pueden acceder a ellos"</string>
     <string name="manage_data_summary" msgid="8537870912521944449">"Eliminación automática, fuentes de datos, copia de seguridad y restablecimiento"</string>
+    <!-- no translation found for banner_group_more_items (1071243933488973950) -->
+    <skip />
+    <!-- no translation found for banner_group_fewer_items (3792478123282046349) -->
+    <skip />
     <string name="backup_title" msgid="211503191266235085">"Copia de seguridad"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Prioridad y fuentes de datos"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Establecer unidades"</string>

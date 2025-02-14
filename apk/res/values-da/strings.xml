@@ -39,6 +39,10 @@
     <string name="browse_data_title" msgid="5232691805953326097">"Gennemse data"</string>
     <string name="browse_data_subtitle" msgid="7025164374898103993">"Se data og de apps, der kan tilgå dem"</string>
     <string name="manage_data_summary" msgid="8537870912521944449">"Automatisk sletning, datakilder, sikkerhedskopiering og gendannelse"</string>
+    <!-- no translation found for banner_group_more_items (1071243933488973950) -->
+    <skip />
+    <!-- no translation found for banner_group_fewer_items (3792478123282046349) -->
+    <skip />
     <string name="backup_title" msgid="211503191266235085">"Sikkerhedskopiering"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Datakilder og prioritet"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Angiv enheder"</string>
@@ -1144,7 +1148,7 @@
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Skal alle <xliff:g id="APP_NAME">%s</xliff:g>-data slettes permanent?"</string>
     <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"Skal <xliff:g id="APP_NAME">%s</xliff:g>-data slettes permanent?"</string>
     <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"Skal alle data fra <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> slettes permanent?"</string>
-    <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"Skal alle data slettes fra ugen <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> slettes permanent?"</string>
+    <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"Skal alle data fra ugen <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> slettes permanent?"</string>
     <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Skal alle data fra <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> slettes permanent?"</string>
     <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Skal de valgte data fra <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> slettes permanent?"</string>
     <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"Skal de valgte data fra ugen <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> slettes permanent?"</string>
@@ -1195,10 +1199,7 @@
     <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Vil du give <xliff:g id="APP_NAME">%1$s</xliff:g> adgang til trænings- og sundhedsdata hele tiden?"</string>
     <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> har adgang til <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
     <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Administrer tilladelser for træning og sundhed"</string>
-    <!-- no translation found for used_by_apps_count (1384912521974773617) -->
-    <skip />
-    <!-- no translation found for not_used_in_past_24_hours (7918784815693928054) -->
-    <skip />
-    <!-- no translation found for accessed (4424701457530587176) -->
-    <skip />
+    <string name="used_by_apps_count" msgid="1384912521974773617">"{count,plural, =1{Anvendes af 1 app}one{Anvendes af # app}other{Anvendes af # apps}}"</string>
+    <string name="not_used_in_past_24_hours" msgid="7918784815693928054">"Ikke brugt i de seneste 24 timer"</string>
+    <string name="accessed" msgid="4424701457530587176">"Tilgået <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
 </resources>
