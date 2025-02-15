@@ -60,7 +60,6 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         // Starting API Level 30 If permission is denied more than once, user doesn't see the dialog
         // asking permissions again unless they grant the permission from settings.
         mRequestPermissionLauncher =
@@ -120,12 +119,8 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
             executeAndShowMessage { insertAllFhirResources(view) }
         }
 
-        view.requireViewById<Button>(R.id.phr_insert_immunization_button).setOnClickListener {
-            executeAndShowMessage { insertImmunization(view) }
-        }
-
-        view.requireViewById<Button>(R.id.phr_insert_allergy_button).setOnClickListener {
-            executeAndShowMessage { insertAllergy(view) }
+        view.requireViewById<Button>(R.id.phr_insert_resource_button).setOnClickListener {
+            executeAndShowMessage { insertPastedResource(view) }
         }
 
         view
@@ -148,20 +143,11 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         }
     }
 
-    private suspend fun insertImmunization(view: View): String {
-        val immunizationResource =
-            loadJSONFromAsset(requireContext(), "immunization_1.json")
-                ?: return "No Immunization resource to insert"
-        Log.d("INSERT_IMMUNIZATION", "Writing immunization $immunizationResource")
-        return insertResource(view, immunizationResource)
-    }
-
-    private suspend fun insertAllergy(view: View): String {
-        val allergyResource =
-            loadJSONFromAsset(requireContext(), "allergyintolerance_1.json")
-                ?: return "No Allergy resource to insert"
-        Log.d("INSERT_ALLERGY", "Writing allergy $allergyResource")
-        return insertResource(view, allergyResource)
+    private suspend fun insertPastedResource(view: View): String {
+        val pastedResource =
+            view.findViewById<EditText>(R.id.phr_pasted_resource_text).getText().toString()
+        Log.d("INSERT_RESOURCE", "Writing resource $pastedResource")
+        return insertResource(view, pastedResource)
     }
 
     private fun setUpFhirResourceFromSpinner(rootView: View) {
@@ -189,8 +175,9 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
                     val selectedFile = spinnerOptions[position]
                     val selectedResource =
                         loadJSONFromAsset(requireContext(), selectedFile) ?: return
-                    Log.d("INSERT_RESOURCE_FROM_SPINNER", "Writing resource $selectedResource")
-                    executeAndShowMessage { insertResource(rootView, selectedResource) }
+
+                    rootView.findViewById<EditText>(R.id.phr_pasted_resource_text).setText(
+                        selectedResource)
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>) {
