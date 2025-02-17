@@ -393,7 +393,7 @@ class AppDataFragmentTest {
             (fragment as AppDataFragment).triggerDeletionState(DELETE)
         }
 
-        onView(withText("Vaccines")).perform(click())
+        onView(withText("Vaccines")).perform(scrollTo()).perform(click())
         onIdle()
         assertThat(appDataViewModel.setOfPermissionTypesToBeDeleted.value)
             .containsExactlyElementsIn(setOf(MedicalPermissionType.VACCINES))
