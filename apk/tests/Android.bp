@@ -67,6 +67,7 @@ java_defaults {
         "mockito-kotlin2",
         "platform-parametric-runner-lib",
         "android.permission.flags-aconfig-java-export",
+        "collector-device-lib",
     ],
     libs: [
         "kotlin-annotations",
