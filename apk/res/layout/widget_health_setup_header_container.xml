@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  Copyright (C) 2022 The Android Open Source Project
+  Copyright (C) 2025 The Android Open Source Project
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -17,18 +17,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:gravity="start"
+    android:id="@+id/setup_header_container"
     android:paddingHorizontal="@dimen/spacing_large"
     android:paddingVertical="@dimen/spacing_normal">
 
     <FrameLayout
-        android:id="@+id/header_area"
+        android:id="@+id/header_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-
-    <include
-        android:id="@+id/detailed_permissions"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        layout="@layout/widget_request_permissions_details"/>
 
 </LinearLayout>
