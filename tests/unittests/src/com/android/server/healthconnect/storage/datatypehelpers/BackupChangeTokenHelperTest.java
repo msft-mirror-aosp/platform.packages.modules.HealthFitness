@@ -16,6 +16,8 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_UNKNOWN;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.Mockito.mock;
@@ -46,7 +48,7 @@ import org.junit.runner.RunWith;
 @EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
 public class BackupChangeTokenHelperTest {
 
-    private static final String TEST_DATA_TABLE_NAME = "step_records_table";
+    private static final int TEST_DATA_RECORD_TYPE = 1;
     private static final long TEST_DATA_TABLE_PAGE_TOKEN = 1;
     private static final String TEST_CHANGE_LOGS_REQUEST_TOKEN = "1";
 
@@ -83,7 +85,7 @@ public class BackupChangeTokenHelperTest {
         String backupChangeTokenRowId =
                 BackupChangeTokenHelper.getBackupChangeTokenRowId(
                         mTransactionManager,
-                        TEST_DATA_TABLE_NAME,
+                        TEST_DATA_RECORD_TYPE,
                         TEST_DATA_TABLE_PAGE_TOKEN,
                         TEST_CHANGE_LOGS_REQUEST_TOKEN);
 
@@ -91,7 +93,7 @@ public class BackupChangeTokenHelperTest {
 
         String anotherBackupChangeTokenRowId =
                 BackupChangeTokenHelper.getBackupChangeTokenRowId(
-                        mTransactionManager, null, -1, null);
+                        mTransactionManager, RECORD_TYPE_UNKNOWN, -1, null);
         assertThat(anotherBackupChangeTokenRowId).isEqualTo("2");
     }
 
@@ -99,14 +101,14 @@ public class BackupChangeTokenHelperTest {
     public void getBackupChangeToken_withNullValues() {
         String backupChangeTokenRowId =
                 BackupChangeTokenHelper.getBackupChangeTokenRowId(
-                        mTransactionManager, null, -1, null);
+                        mTransactionManager, RECORD_TYPE_UNKNOWN, -1, null);
 
         BackupChangeTokenHelper.BackupChangeToken backupChangeToken =
                 BackupChangeTokenHelper.getBackupChangeToken(
                         mTransactionManager, backupChangeTokenRowId);
         assertThat(backupChangeToken.getChangeLogsRequestToken()).isNull();
         assertThat(backupChangeToken.getDataTablePageToken()).isEqualTo(-1);
-        assertThat(backupChangeToken.getDataTableName()).isNull();
+        assertThat(backupChangeToken.getRecordType()).isEqualTo(RECORD_TYPE_UNKNOWN);
     }
 
     @Test
@@ -114,7 +116,7 @@ public class BackupChangeTokenHelperTest {
         String backupChangeTokenRowId =
                 BackupChangeTokenHelper.getBackupChangeTokenRowId(
                         mTransactionManager,
-                        TEST_DATA_TABLE_NAME,
+                        TEST_DATA_RECORD_TYPE,
                         TEST_DATA_TABLE_PAGE_TOKEN,
                         TEST_CHANGE_LOGS_REQUEST_TOKEN);
 
@@ -124,6 +126,6 @@ public class BackupChangeTokenHelperTest {
         assertThat(backupChangeToken.getChangeLogsRequestToken())
                 .isEqualTo(TEST_CHANGE_LOGS_REQUEST_TOKEN);
         assertThat(backupChangeToken.getDataTablePageToken()).isEqualTo(TEST_DATA_TABLE_PAGE_TOKEN);
-        assertThat(backupChangeToken.getDataTableName()).isEqualTo(TEST_DATA_TABLE_NAME);
+        assertThat(backupChangeToken.getRecordType()).isEqualTo(TEST_DATA_RECORD_TYPE);
     }
 }
