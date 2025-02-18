@@ -17,6 +17,7 @@
 package com.android.server.healthconnect.storage;
 
 import static android.health.connect.Constants.DEFAULT_INT;
+import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXPORT_ERROR_UNSPECIFIED;
 
 import static com.android.healthfitness.flags.Flags.exportImportFastFollow;
 import static com.android.healthfitness.flags.Flags.extendExportImportTelemetry;
@@ -28,6 +29,7 @@ import android.database.Cursor;
 import android.health.connect.exportimport.ImportStatus;
 import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.exportimport.ScheduledExportStatus;
+import android.health.connect.exportimport.ScheduledExportStatus.DataExportError;
 import android.net.Uri;
 import android.os.RemoteException;
 import android.provider.DocumentsContract;
@@ -159,6 +161,15 @@ public final class ExportImportSettingsStorage {
         mPreferenceHelper.removeKey(LAST_EXPORT_ERROR_PREFERENCE_KEY);
         mPreferenceHelper.insertOrReplacePreference(
                 LAST_SUCCESSFUL_EXPORT_URI_PREFERENCE_KEY, uri.toString());
+    }
+
+    /** Convenience method for getting the last recorded Export error. */
+    public @DataExportError int getLastExportError() {
+        String lastError = mPreferenceHelper.getPreference(LAST_EXPORT_ERROR_PREFERENCE_KEY);
+        if (lastError != null) {
+            return Integer.parseInt(lastError);
+        }
+        return DATA_EXPORT_ERROR_UNSPECIFIED;
     }
 
     /** Set errors and time during the last failed export attempt. */
