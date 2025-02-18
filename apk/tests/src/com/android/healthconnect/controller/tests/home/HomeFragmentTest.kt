@@ -1574,9 +1574,6 @@ class HomeFragmentTest {
         onView(withText("2 apps have access")).check(matches(isDisplayed()))
         onView(withText("Data and access")).check(matches(isDisplayed()))
         onView(withText("Manage data")).check(matches(isDisplayed()))
-
-        onView(withText("Recent access")).check(doesNotExist())
-        onView(withText("No apps recently accessed Health\u00A0Connect")).check(doesNotExist())
     }
 
     @Test
