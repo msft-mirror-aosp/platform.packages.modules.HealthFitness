@@ -85,6 +85,7 @@
     <attr name="addIcon" format="reference"/>
     <attr name="editIcon" format="reference"/>
     <attr name="closeIcon" format="reference"/>
+    <attr name="appsIcon" format="reference"/>
 
     <!-- Backup and restore -->
     <attr name="uploadIcon" format="reference"/>
