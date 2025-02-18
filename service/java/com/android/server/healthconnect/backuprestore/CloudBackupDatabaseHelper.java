@@ -18,6 +18,7 @@ package com.android.server.healthconnect.backuprestore;
 import static android.health.connect.Constants.DEFAULT_LONG;
 import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
 import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_UNKNOWN;
 
 import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTORE;
 import static com.android.server.healthconnect.backuprestore.RecordProtoConverter.PROTO_VERSION;
@@ -146,7 +147,8 @@ public class CloudBackupDatabaseHelper {
      * backup.
      */
     GetChangesForBackupResponse getChangesAndTokenFromDataTables() {
-        return getChangesAndTokenFromDataTables(null, EMPTY_PAGE_TOKEN.encode(), null);
+        return getChangesAndTokenFromDataTables(
+                RECORD_TYPE_UNKNOWN, EMPTY_PAGE_TOKEN.encode(), null);
     }
 
     /**
@@ -154,7 +156,7 @@ public class CloudBackupDatabaseHelper {
      * backup.
      */
     GetChangesForBackupResponse getChangesAndTokenFromDataTables(
-            @Nullable String dataTableName,
+            @RecordTypeIdentifier.RecordType int dataRecordType,
             long dataTablePageToken,
             @Nullable String changeLogsPageToken) {
         // For the first call of a full data backup, page token of the chane logs is passed as null
@@ -166,13 +168,12 @@ public class CloudBackupDatabaseHelper {
         List<BackupChange> backupChanges = new ArrayList<>();
         long nextDataTablePageToken = dataTablePageToken;
         int pageSize = DEFAULT_PAGE_SIZE;
-        String nextDataTableName = dataTableName;
+        int nextRecordType = dataRecordType;
 
         for (var recordType : mRecordTypes) {
             RecordHelper<?> recordHelper =
                     mInternalHealthConnectMappings.getRecordHelper(recordType);
-            if (nextDataTableName != null
-                    && !recordHelper.getMainTableName().equals(nextDataTableName)) {
+            if (nextRecordType != RECORD_TYPE_UNKNOWN && recordType != nextRecordType) {
                 // Skip the current record type as it has already been backed up.
                 continue;
             }
@@ -210,18 +211,18 @@ public class CloudBackupDatabaseHelper {
                 backupChanges.addAll(convertRecordsToBackupChange(readResult.first));
                 nextDataTablePageToken = readResult.second.encode();
                 pageSize = DEFAULT_PAGE_SIZE - backupChanges.size();
-                nextDataTableName = recordHelper.getMainTableName();
+                nextRecordType = recordHelper.getRecordIdentifier();
                 if (nextDataTablePageToken == EMPTY_PAGE_TOKEN.encode()) {
                     int recordIndex = mRecordTypes.indexOf(recordType);
                     // An empty page token indicates no more data in one data table, update the
-                    // table name to the next data type.
+                    // data type to the next data type.
                     if (recordIndex + 1 >= mRecordTypes.size()) {
-                        nextDataTableName = null;
+                        nextRecordType = RECORD_TYPE_UNKNOWN;
                     } else {
                         RecordHelper<?> nextRecordHelper =
                                 mInternalHealthConnectMappings.getRecordHelper(
                                         mRecordTypes.get(recordIndex + 1));
-                        nextDataTableName = nextRecordHelper.getMainTableName();
+                        nextRecordType = nextRecordHelper.getRecordIdentifier();
                     }
                     break;
                 }
@@ -234,7 +235,7 @@ public class CloudBackupDatabaseHelper {
         String backupChangeTokenRowId =
                 BackupChangeTokenHelper.getBackupChangeTokenRowId(
                         mTransactionManager,
-                        nextDataTableName,
+                        nextRecordType,
                         nextDataTablePageToken,
                         changeLogsTablePageToken);
         return new GetChangesForBackupResponse(
@@ -335,7 +336,7 @@ public class CloudBackupDatabaseHelper {
         String backupChangeTokenRowId =
                 BackupChangeTokenHelper.getBackupChangeTokenRowId(
                         mTransactionManager,
-                        null,
+                        RECORD_TYPE_UNKNOWN,
                         EMPTY_PAGE_TOKEN.encode(),
                         changeLogsResponse.getNextPageToken());
         return new GetChangesForBackupResponse(

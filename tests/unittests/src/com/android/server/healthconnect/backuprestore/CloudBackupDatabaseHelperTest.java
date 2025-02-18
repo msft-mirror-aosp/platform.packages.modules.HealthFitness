@@ -16,6 +16,10 @@
 package com.android.server.healthconnect.backuprestore;
 
 import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_ACTIVE_CALORIES_BURNED;
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE;
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS;
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_UNKNOWN;
 
 import static com.android.server.healthconnect.backuprestore.RecordProtoConverter.PROTO_VERSION;
 import static com.android.server.healthconnect.testing.storage.TransactionTestUtils.createBloodPressureRecord;
@@ -96,9 +100,6 @@ public class CloudBackupDatabaseHelperTest {
     private static final int TEST_TIME_IN_MILLIS = 1234;
     private static final double TEST_SYSTOLIC = 60.2;
     private static final double TEST_DIASTOLIC = 92.6;
-    private static final String ACTIVE_CALORIES_BURNED_RECORD_TABLE =
-            "active_calories_burned_record_table";
-    private static final String BLOOD_PRESSURE_RECORD_TABLE = "blood_pressure_record_table";
 
     @Rule(order = 1)
     public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
@@ -224,7 +225,7 @@ public class CloudBackupDatabaseHelperTest {
                         mTransactionManager, nextChangeTokenRowId);
         // See {@link android.health.connect.PageTokenWrapper}.
         assertThat(backupChangeToken.getDataTablePageToken()).isEqualTo(6000);
-        assertThat(backupChangeToken.getDataTableName()).isEqualTo("steps_record_table");
+        assertThat(backupChangeToken.getRecordType()).isEqualTo(RECORD_TYPE_STEPS);
         assertThat(backupChangeToken.getChangeLogsRequestToken()).isEqualTo("1");
     }
 
@@ -249,7 +250,7 @@ public class CloudBackupDatabaseHelperTest {
                         mTransactionManager, firstResponse.getNextChangeToken());
         GetChangesForBackupResponse secondResponse =
                 mCloudBackupDatabaseHelper.getChangesAndTokenFromDataTables(
-                        backupChangeToken.getDataTableName(),
+                        backupChangeToken.getRecordType(),
                         backupChangeToken.getDataTablePageToken(),
                         backupChangeToken.getChangeLogsRequestToken());
 
@@ -260,8 +261,8 @@ public class CloudBackupDatabaseHelperTest {
                 BackupChangeTokenHelper.getBackupChangeToken(
                         mTransactionManager, secondChangeTokenRowId);
         assertThat(secondBackupChangeToken.getDataTablePageToken()).isEqualTo(-1);
-        assertThat(secondBackupChangeToken.getDataTableName())
-                .isEqualTo(ACTIVE_CALORIES_BURNED_RECORD_TABLE);
+        assertThat(secondBackupChangeToken.getRecordType())
+                .isEqualTo(RECORD_TYPE_ACTIVE_CALORIES_BURNED);
         // Change logs token is still the same.
         assertThat(secondBackupChangeToken.getChangeLogsRequestToken())
                 .isEqualTo(backupChangeToken.getChangeLogsRequestToken());
@@ -293,8 +294,7 @@ public class CloudBackupDatabaseHelperTest {
                         mTransactionManager, nextChangeTokenRowId);
         // All data in step_record_table has been returned, page token reset as -1.
         assertThat(backupChangeToken.getDataTablePageToken()).isEqualTo(-1);
-        assertThat(backupChangeToken.getDataTableName())
-                .isEqualTo(ACTIVE_CALORIES_BURNED_RECORD_TABLE);
+        assertThat(backupChangeToken.getRecordType()).isEqualTo(RECORD_TYPE_ACTIVE_CALORIES_BURNED);
         assertThat(backupChangeToken.getChangeLogsRequestToken()).isEqualTo("1");
     }
 
@@ -320,7 +320,7 @@ public class CloudBackupDatabaseHelperTest {
                         mTransactionManager, firstResponse.getNextChangeToken());
         GetChangesForBackupResponse secondResponse =
                 mCloudBackupDatabaseHelper.getChangesAndTokenFromDataTables(
-                        backupChangeToken.getDataTableName(),
+                        backupChangeToken.getRecordType(),
                         backupChangeToken.getDataTablePageToken(),
                         backupChangeToken.getChangeLogsRequestToken());
 
@@ -331,7 +331,7 @@ public class CloudBackupDatabaseHelperTest {
                 BackupChangeTokenHelper.getBackupChangeToken(
                         mTransactionManager, secondChangeTokenRowId);
         assertThat(secondBackupChangeToken.getDataTablePageToken()).isEqualTo(-1);
-        assertThat(secondBackupChangeToken.getDataTableName()).isEqualTo(null);
+        assertThat(secondBackupChangeToken.getRecordType()).isEqualTo(RECORD_TYPE_UNKNOWN);
         // Change logs token is still the same.
         assertThat(secondBackupChangeToken.getChangeLogsRequestToken())
                 .isEqualTo(backupChangeToken.getChangeLogsRequestToken());
@@ -367,7 +367,7 @@ public class CloudBackupDatabaseHelperTest {
                 BackupChangeTokenHelper.getBackupChangeToken(
                         mTransactionManager, nextChangeTokenRowId);
         assertThat(backupChangeToken.getDataTablePageToken()).isEqualTo(3468);
-        assertThat(backupChangeToken.getDataTableName()).isEqualTo(BLOOD_PRESSURE_RECORD_TABLE);
+        assertThat(backupChangeToken.getRecordType()).isEqualTo(RECORD_TYPE_BLOOD_PRESSURE);
         assertThat(backupChangeToken.getChangeLogsRequestToken()).isEqualTo("1");
     }
 
