@@ -96,10 +96,10 @@ public final class DatabaseMerger {
     /*
      * Record types in this list will always be migrated such that the ordering here is respected.
      * When adding a new priority override, group the types that need to migrated together within
-     * their own list. This makes the logical separate clear and also reduces storage usage during
-     * migration, as we delete the original records
+     * their own list. This makes the logical separation clear and also reduces storage usage during
+     * migration, as we delete the original records.
      */
-    private static final List<List<Integer>> RECORD_TYPE_MIGRATION_ORDERING_OVERRIDES =
+    public static final List<List<Integer>> RECORD_TYPE_MIGRATION_ORDERING_OVERRIDES =
             List.of(
                     // Training plans must be migrated before exercise sessions. Exercise sessions
                     // may contain a reference to a training plan, so the training plan needs to

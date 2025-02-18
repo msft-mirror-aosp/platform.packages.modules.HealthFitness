@@ -301,7 +301,6 @@ message PlannedExerciseSession {
   optional string title = 3;
   bool has_explicit_time = 4;
   repeated PlannedExerciseBlock exercise_block = 5;
-  optional string completed_exercise_session_id = 6;
 
   message PlannedExerciseBlock {
     int32 repetitions = 1;
