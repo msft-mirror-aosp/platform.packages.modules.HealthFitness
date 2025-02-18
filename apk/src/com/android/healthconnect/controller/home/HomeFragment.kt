@@ -53,7 +53,6 @@ import com.android.healthconnect.controller.shared.app.AppPermissionsType
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
-import com.android.healthconnect.controller.shared.preference.BannerPreference
 import com.android.healthconnect.controller.shared.preference.HealthBannerPreference
 import com.android.healthconnect.controller.shared.preference.HealthButtonPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreference
@@ -261,7 +260,7 @@ class HomeFragment : Hilt_HomeFragment() {
     }
 
     private fun isLockScreenBannerAlreadyAdded(): Boolean {
-        return bannerGroup.findPreference<BannerPreference>(LOCK_SCREEN_BANNER_KEY) != null
+        return bannerGroup.findPreference<HealthBannerPreference>(LOCK_SCREEN_BANNER_KEY) != null
     }
 
     private fun addLockScreenBanner(bannerState: LockScreenBannerState.ShowBanner) {
