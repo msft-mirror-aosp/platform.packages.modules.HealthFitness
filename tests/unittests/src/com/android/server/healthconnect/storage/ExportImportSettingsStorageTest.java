@@ -227,6 +227,26 @@ public final class ExportImportSettingsStorageTest {
     }
 
     @Test
+    @EnableFlags({Flags.FLAG_EXTEND_EXPORT_IMPORT_TELEMETRY})
+    public void getExportRepeatErrorOnRetryCount() {
+        assertThat(mExportImportSettingsStorage.getExportRepeatErrorOnRetryCount()).isEqualTo(0);
+        mExportImportSettingsStorage.increaseExportRepeatErrorOnRetryCount();
+        mExportImportSettingsStorage.increaseExportRepeatErrorOnRetryCount();
+        assertThat(mExportImportSettingsStorage.getExportRepeatErrorOnRetryCount()).isEqualTo(2);
+        mExportImportSettingsStorage.resetExportRepeatErrorOnRetryCount();
+        assertThat(mExportImportSettingsStorage.getExportRepeatErrorOnRetryCount()).isEqualTo(0);
+    }
+
+    @Test
+    @DisableFlags({Flags.FLAG_EXTEND_EXPORT_IMPORT_TELEMETRY})
+    public void getExportRepeatErrorOnRetryCountDisabled() {
+        assertThat(mExportImportSettingsStorage.getExportRepeatErrorOnRetryCount()).isEqualTo(0);
+        mExportImportSettingsStorage.increaseExportRepeatErrorOnRetryCount();
+        mExportImportSettingsStorage.increaseExportRepeatErrorOnRetryCount();
+        assertThat(mExportImportSettingsStorage.getExportRepeatErrorOnRetryCount()).isEqualTo(0);
+    }
+
+    @Test
     public void testConfigure_importStatus() {
         mExportImportSettingsStorage.setImportState(DATA_IMPORT_ERROR_NONE);
 

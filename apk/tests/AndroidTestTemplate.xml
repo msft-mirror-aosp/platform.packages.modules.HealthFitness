@@ -48,13 +48,22 @@
   <test class="com.android.tradefed.testtype.AndroidJUnitTest">
     <option name="runner" value="com.android.healthconnect.controller.tests.HiltTestRunner"/>
     <option name="package" value="{PACKAGE}"/>
+    <option name="device-listeners" value="android.device.collectors.ScreenshotOnFailureCollector"/>
   </test>
+  <metrics_collector class="com.android.tradefed.device.metric.FilePullerLogCollector">
+    <!-- Collect the files generated on error -->
+    <option name="pull-pattern-keys" value="android.device.collectors.ScreenshotOnFailureCollector.*\.png"/>
+    <option name="collect-on-run-ended-only" value="false" />
+  </metrics_collector>
   <object
       class="com.android.tradefed.testtype.suite.module.MainlineTestModuleController"
       type="module_controller">
     <option
         name="mainline-module-package-name"
         value="com.google.android.healthfitness"/>
+  </object>
+  <object type="module_controller" class="com.android.tradefed.testtype.suite.module.TestFailureModuleController">
+    <option name="screenshot-on-failure" value="true" />
   </object>
 
 </configuration>
