@@ -36,6 +36,10 @@
         <option name="run-command" value="settings put system font_scale 0.85" />
         <option name="run-command" value="wm density reset" />
         <option name="run-command" value="wm size reset" />
+
+        <!-- Skip health connect onboarding! -->
+        <option name="run-command" value="am start -a android.health.connect.action.SKIP_HEALTH_CONNECT_ONBOARDING" />
+       
         <!-- Dimiss keyguard -->
         <option name="run-command" value="input keyevent KEYCODE_WAKEUP" />
         <option name="run-command" value="wm dismiss-keyguard" />

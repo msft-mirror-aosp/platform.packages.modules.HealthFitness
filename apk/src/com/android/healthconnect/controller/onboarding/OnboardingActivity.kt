@@ -56,6 +56,14 @@ class OnboardingActivity : Hilt_OnboardingActivity() {
     companion object {
         private const val TARGET_ACTIVITY_INTENT = "ONBOARDING_TARGET_ACTIVITY_INTENT"
 
+        /** A utility function designed solely for testing purposes. */
+        fun disableOnboarding(context: Context) {
+            val editor =
+                context.getSharedPreferences(USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE).edit()
+            editor.putBoolean(ONBOARDING_SHOWN_PREF_KEY, true)
+            editor.commit()
+        }
+
         fun shouldRedirectToOnboardingActivity(activity: Activity): Boolean {
             val sharedPreference =
                 activity.getSharedPreferences(USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
