@@ -34,7 +34,6 @@ import com.android.healthconnect.controller.navigation.CATEGORY_KEY
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.lowercaseTitle
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.uppercaseTitle
 import com.android.healthconnect.controller.shared.HealthDataCategoryInt
-import com.android.healthconnect.controller.shared.IExpressiveThemingHelper
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.app.AppUtils
 import com.android.healthconnect.controller.shared.preference.CardContainerPreference
@@ -53,6 +52,7 @@ import com.android.healthconnect.controller.utils.setupSharedMenu
 import com.android.settingslib.widget.FooterPreference
 import com.android.settingslib.widget.SettingsSpinnerAdapter
 import com.android.settingslib.widget.SettingsSpinnerPreference
+import com.android.settingslib.widget.SettingsThemeHelper
 import com.android.settingslib.widget.ZeroStatePreference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -84,7 +84,6 @@ class DataSourcesFragment :
 
     @Inject lateinit var logger: HealthConnectLogger
     @Inject lateinit var appUtils: AppUtils
-    @Inject lateinit var expressiveThemingHelper: IExpressiveThemingHelper
     private var isEditMode = false
 
     private val dataSourcesViewModel: DataSourcesViewModel by activityViewModels()
@@ -339,7 +338,7 @@ class DataSourcesFragment :
     }
 
     private fun addEmptyHeader() {
-        if (expressiveThemingHelper.isExpressiveTheme(requireContext())) {
+        if (SettingsThemeHelper.isExpressiveTheme(requireContext())) {
             zeroStatePreference.isVisible = true
         } else {
             preferenceScreen.addPreference(getEmptyStateHeaderPreference())
