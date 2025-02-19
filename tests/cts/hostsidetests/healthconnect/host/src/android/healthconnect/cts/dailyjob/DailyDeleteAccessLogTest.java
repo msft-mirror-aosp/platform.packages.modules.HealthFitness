@@ -27,11 +27,17 @@ import static android.healthconnect.cts.HostSideTestUtil.triggerTestInTestApp;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.android.tradefed.build.IBuildInfo;
+import com.android.tradefed.testtype.DeviceJUnit4ClassRunner;
 import com.android.tradefed.testtype.DeviceTestCase;
 import com.android.tradefed.testtype.IBuildReceiver;
 
+import org.junit.Ignore;
+import org.junit.runner.RunWith;
+
 import java.time.Instant;
 
+@RunWith(DeviceJUnit4ClassRunner.class)
+@SuppressWarnings("JUnitAmbiguousTestClass")
 public class DailyDeleteAccessLogTest extends DeviceTestCase implements IBuildReceiver {
     private IBuildInfo mCtsBuild;
     private Instant mTestStartTime;
@@ -64,6 +70,7 @@ public class DailyDeleteAccessLogTest extends DeviceTestCase implements IBuildRe
         mCtsBuild = buildInfo;
     }
 
+    @Ignore("b/381409777 - flaky test")
     public void testAccessLogsAreDeleted() throws Exception {
         if (!isHardwareSupported(getDevice())) {
             return;
