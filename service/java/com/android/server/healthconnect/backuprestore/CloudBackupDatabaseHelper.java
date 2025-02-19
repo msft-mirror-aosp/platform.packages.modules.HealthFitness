@@ -44,13 +44,11 @@ import android.util.Pair;
 
 import com.android.server.healthconnect.proto.backuprestore.BackupData;
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.BackupChangeTokenHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
@@ -74,13 +72,11 @@ import java.util.stream.Stream;
 public class CloudBackupDatabaseHelper {
     private final AppInfoHelper mAppInfoHelper;
     private final TransactionManager mTransactionManager;
-    private final AccessLogsHelper mAccessLogsHelper;
     private final DeviceInfoHelper mDeviceInfoHelper;
     private final HealthConnectMappings mHealthConnectMappings;
     private final InternalHealthConnectMappings mInternalHealthConnectMappings;
     private final ChangeLogsHelper mChangeLogsHelper;
     private final ChangeLogsRequestHelper mChangeLogsRequestHelper;
-    private final ReadAccessLogsHelper mReadAccessLogsHelper;
     private final RecordProtoConverter mRecordProtoConverter = new RecordProtoConverter();
     private final List<Integer> mRecordTypes;
 
@@ -89,22 +85,18 @@ public class CloudBackupDatabaseHelper {
     public CloudBackupDatabaseHelper(
             TransactionManager transactionManager,
             AppInfoHelper appInfoHelper,
-            AccessLogsHelper accessLogsHelper,
             DeviceInfoHelper deviceInfoHelper,
             HealthConnectMappings healthConnectMappings,
             InternalHealthConnectMappings internalHealthConnectMappings,
             ChangeLogsHelper changeLogsHelper,
-            ChangeLogsRequestHelper changeLogsRequestHelper,
-            ReadAccessLogsHelper readAccessLogsHelper) {
+            ChangeLogsRequestHelper changeLogsRequestHelper) {
         mTransactionManager = transactionManager;
         mAppInfoHelper = appInfoHelper;
-        mAccessLogsHelper = accessLogsHelper;
         mDeviceInfoHelper = deviceInfoHelper;
         mHealthConnectMappings = healthConnectMappings;
         mInternalHealthConnectMappings = internalHealthConnectMappings;
         mChangeLogsHelper = changeLogsHelper;
         mChangeLogsRequestHelper = changeLogsRequestHelper;
-        mReadAccessLogsHelper = readAccessLogsHelper;
         mRecordTypes =
                 Stream.concat(
                                 RECORD_TYPE_MIGRATION_ORDERING_OVERRIDES.stream()
@@ -279,7 +271,7 @@ public class CloudBackupDatabaseHelper {
                         .collect(Collectors.toSet());
 
         List<RecordInternal<?>> internalRecords =
-                mTransactionManager.readRecordsByIds(
+                mTransactionManager.readRecordsByIdsWithoutAccessLogs(
                         new ReadTransactionRequest(
                                 mAppInfoHelper,
                                 /* packageName= */ "",
@@ -289,10 +281,7 @@ public class CloudBackupDatabaseHelper {
                                 /* isInForeground= */ true,
                                 /* isReadingSelfData= */ false),
                         mAppInfoHelper,
-                        mAccessLogsHelper,
-                        mDeviceInfoHelper,
-                        mReadAccessLogsHelper,
-                        /* shouldRecordAccessLog= */ false);
+                        mDeviceInfoHelper);
 
         // Read the exercise sessions that refer to any training plans included in the changes and
         // append them to the list of changes. This is to always have exercise sessions restore
@@ -307,7 +296,7 @@ public class CloudBackupDatabaseHelper {
             }
         }
         List<RecordInternal<?>> exerciseSessions =
-                mTransactionManager.readRecordsByIds(
+                mTransactionManager.readRecordsByIdsWithoutAccessLogs(
                         new ReadTransactionRequest(
                                 mAppInfoHelper,
                                 /* packageName= */ "",
@@ -319,10 +308,7 @@ public class CloudBackupDatabaseHelper {
                                 /* isInForeground= */ true,
                                 /* isReadingSelfData= */ false),
                         mAppInfoHelper,
-                        mAccessLogsHelper,
-                        mDeviceInfoHelper,
-                        mReadAccessLogsHelper,
-                        /* shouldRecordAccessLog= */ false);
+                        mDeviceInfoHelper);
         internalRecords.addAll(exerciseSessions);
 
         List<BackupChange> backupChanges =

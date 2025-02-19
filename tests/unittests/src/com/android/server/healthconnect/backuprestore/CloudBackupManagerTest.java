@@ -46,7 +46,6 @@ import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTra
 import com.android.server.healthconnect.storage.HealthConnectContext;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.BackupChangeTokenHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
@@ -110,7 +109,6 @@ public class CloudBackupManagerTest {
         mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         AppInfoHelper appInfoHelper = healthConnectInjector.getAppInfoHelper();
-        AccessLogsHelper accessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         DeviceInfoHelper deviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
         HealthDataCategoryPriorityHelper priorityHelper =
                 healthConnectInjector.getHealthDataCategoryPriorityHelper();
@@ -127,15 +125,13 @@ public class CloudBackupManagerTest {
                 new CloudBackupManager(
                         mTransactionManager,
                         appInfoHelper,
-                        accessLogsHelper,
                         deviceInfoHelper,
                         healthConnectMappings,
                         internalHealthConnectMappings,
                         changeLogsHelper,
                         changeLogsRequestHelper,
                         priorityHelper,
-                        preferenceHelper,
-                        healthConnectInjector.getReadAccessLogsHelper());
+                        preferenceHelper);
     }
 
     @Test

@@ -165,8 +165,8 @@ public class HealthConnectDatabaseTest {
                                 TEST_PACKAGE_NAME,
                                 Map.of(RECORD_TYPE_STEPS, originalStepsRecordUuids)),
                         injector.getAppInfoHelper(),
-                        injector.getAccessLogsHelper(),
                         injector.getDeviceInfoHelper(),
+                        injector.getAccessLogsHelper(),
                         injector.getReadAccessLogsHelper(),
                         false);
         assertThat(recordInternals).hasSize(1);

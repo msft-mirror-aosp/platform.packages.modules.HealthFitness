@@ -391,15 +391,13 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         ? new CloudBackupManager(
                                 mTransactionManager,
                                 mAppInfoHelper,
-                                mAccessLogsHelper,
                                 mDeviceInfoHelper,
                                 mHealthConnectMappings,
                                 mInternalHealthConnectMappings,
                                 mChangeLogsHelper,
                                 mChangeLogsRequestHelper,
                                 mHealthDataCategoryPriorityHelper,
-                                mPreferenceHelper,
-                                mReadAccessLogsHelper)
+                                mPreferenceHelper)
                         : null;
         mCloudRestoreManager =
                 Flags.cloudBackupAndRestore()
@@ -802,8 +800,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                     mTransactionManager.readRecordsByIds(
                                             readTransactionRequest,
                                             mAppInfoHelper,
-                                            mAccessLogsHelper,
                                             mDeviceInfoHelper,
+                                            mAccessLogsHelper,
                                             mReadAccessLogsHelper,
                                             shouldRecordAccessLog);
                             pageToken = DEFAULT_LONG;
@@ -1097,8 +1095,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                             isInForeground,
                                             isReadingSelfData),
                                     mAppInfoHelper,
-                                    mAccessLogsHelper,
                                     mDeviceInfoHelper,
+                                    mAccessLogsHelper,
                                     mReadAccessLogsHelper,
                                     /* shouldRecordAccessLog= */ true);
 

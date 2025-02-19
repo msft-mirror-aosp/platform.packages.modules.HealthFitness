@@ -240,8 +240,8 @@ public class ImportManagerTest {
                 mTransactionManager.readRecordsByIds(
                         request,
                         mAppInfoHelper,
-                        mAccessLogsHelper,
                         mDeviceInfoHelper,
+                        mAccessLogsHelper,
                         mReadAccessLogsHelper,
                         /* shouldRecordAccessLog= */ false);
         assertThat(records).hasSize(2);
@@ -375,8 +375,8 @@ public class ImportManagerTest {
                 mTransactionManager.readRecordsByIds(
                         request,
                         mAppInfoHelper,
-                        mAccessLogsHelper,
                         mDeviceInfoHelper,
+                        mAccessLogsHelper,
                         mReadAccessLogsHelper,
                         /* shouldRecordAccessLog= */ false);
         assertThat(records).hasSize(1);
@@ -634,8 +634,8 @@ public class ImportManagerTest {
                 mTransactionManager.readRecordsByIds(
                         request,
                         mAppInfoHelper,
-                        mAccessLogsHelper,
                         mDeviceInfoHelper,
+                        mAccessLogsHelper,
                         mReadAccessLogsHelper,
                         /* shouldRecordAccessLog= */ false);
         assertThat(records).hasSize(2);

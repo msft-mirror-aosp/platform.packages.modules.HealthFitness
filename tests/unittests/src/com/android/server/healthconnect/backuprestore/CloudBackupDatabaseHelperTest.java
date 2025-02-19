@@ -150,13 +150,11 @@ public class CloudBackupDatabaseHelperTest {
                 new CloudBackupDatabaseHelper(
                         mTransactionManager,
                         mAppInfoHelper,
-                        mAccessLogsHelper,
                         deviceInfoHelper,
                         healthConnectMappings,
                         internalHealthConnectMappings,
                         changeLogsHelper,
-                        changeLogsRequestHelper,
-                        healthConnectInjector.getReadAccessLogsHelper());
+                        changeLogsRequestHelper);
     }
 
     @Test
