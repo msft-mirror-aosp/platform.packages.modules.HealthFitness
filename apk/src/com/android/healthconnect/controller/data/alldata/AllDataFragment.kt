@@ -44,7 +44,6 @@ import com.android.healthconnect.controller.selectabledeletion.DeletionViewModel
 import com.android.healthconnect.controller.selectabledeletion.SelectAllCheckboxPreference
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.uppercaseTitle
 import com.android.healthconnect.controller.shared.HealthDataCategoryInt
-import com.android.healthconnect.controller.shared.IExpressiveThemingHelper
 import com.android.healthconnect.controller.shared.children
 import com.android.healthconnect.controller.shared.preference.EmptyPreferenceCategory
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
@@ -60,6 +59,7 @@ import com.android.healthconnect.controller.utils.pref
 import com.android.healthconnect.controller.utils.setupMenu
 import com.android.healthconnect.controller.utils.setupSharedMenu
 import com.android.settingslib.widget.FooterPreference
+import com.android.settingslib.widget.SettingsThemeHelper
 import com.android.settingslib.widget.ZeroStatePreference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -82,7 +82,6 @@ open class AllDataFragment : Hilt_AllDataFragment() {
 
     @Inject lateinit var logger: HealthConnectLogger
     @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
-    @Inject lateinit var expressiveThemingHelper: IExpressiveThemingHelper
 
     /** Decides whether this screen is supposed to display Fitness data or Medical data. */
     private var showMedicalData = false
@@ -370,7 +369,7 @@ open class AllDataFragment : Hilt_AllDataFragment() {
     }
 
     private fun setupEmptyState() {
-        if (expressiveThemingHelper.isExpressiveTheme(requireContext())) {
+        if (SettingsThemeHelper.isExpressiveTheme(requireContext())) {
             zeroStatePreference.isVisible = true
             noDataPreference.isVisible = false
             footerPreference.isVisible = false
