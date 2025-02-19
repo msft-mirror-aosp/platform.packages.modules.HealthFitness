@@ -16,8 +16,10 @@
 
 package com.android.server.healthconnect.exportimport;
 
+import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXPORT_ERROR_CLEARING_LOG_TABLES;
 import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXPORT_ERROR_NONE;
 import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXPORT_ERROR_UNKNOWN;
+import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXPORT_ERROR_UNSPECIFIED;
 import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXPORT_STARTED;
 
 import static com.android.server.healthconnect.exportimport.ExportManager.LOCAL_EXPORT_DATABASE_FILE_NAME;
@@ -537,6 +539,47 @@ public class ExportManagerTest {
                                 .getScheduledExportStatus(context)
                                 .getLastExportFileName())
                 .isEqualTo(REMOTE_EXPORT_ZIP_FILE_NAME);
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_EXTEND_EXPORT_IMPORT_TELEMETRY})
+    public void repeatErrorCount_updatedCorrectly() {
+        assertThat(mExportImportSettingsStorage.getLastExportError())
+                .isEqualTo(DATA_EXPORT_ERROR_UNSPECIFIED);
+        assertThat(mExportImportSettingsStorage.getExportRepeatErrorOnRetryCount()).isEqualTo(0);
+
+        // The first error isn't counted as a repeat error
+        mExportManager.recordError(DATA_EXPORT_ERROR_UNKNOWN, mTimeStamp.toEpochMilli(), 100, 50);
+        assertThat(mExportImportSettingsStorage.getLastExportError())
+                .isEqualTo(DATA_EXPORT_ERROR_UNKNOWN);
+        assertThat(mExportImportSettingsStorage.getExportRepeatErrorOnRetryCount()).isEqualTo(0);
+
+        // If there is more than one of the same error, count the repeat errors
+        mExportManager.recordError(
+                DATA_EXPORT_ERROR_UNKNOWN, Instant.now().toEpochMilli(), 100, 50);
+        mExportManager.recordError(
+                DATA_EXPORT_ERROR_UNKNOWN, Instant.now().toEpochMilli(), 100, 50);
+        assertThat(mExportImportSettingsStorage.getLastExportError())
+                .isEqualTo(DATA_EXPORT_ERROR_UNKNOWN);
+        assertThat(mExportImportSettingsStorage.getExportRepeatErrorOnRetryCount()).isEqualTo(2);
+
+        // If it is not a repetition of the same error, reset the repeat error count
+        mExportManager.recordError(
+                DATA_EXPORT_ERROR_CLEARING_LOG_TABLES, mTimeStamp.toEpochMilli(), 100, 50);
+        assertThat(mExportImportSettingsStorage.getLastExportError())
+                .isEqualTo(DATA_EXPORT_ERROR_CLEARING_LOG_TABLES);
+        mExportManager.recordError(DATA_EXPORT_ERROR_UNKNOWN, mTimeStamp.toEpochMilli(), 100, 50);
+        assertThat(mExportImportSettingsStorage.getLastExportError())
+                .isEqualTo(DATA_EXPORT_ERROR_UNKNOWN);
+        assertThat(mExportImportSettingsStorage.getExportRepeatErrorOnRetryCount()).isEqualTo(0);
+
+        // If an export was successful, the next error is not considered a repeat error
+        mExportManager.recordError(DATA_EXPORT_ERROR_UNKNOWN, mTimeStamp.toEpochMilli(), 100, 50);
+        assertThat(mExportImportSettingsStorage.getExportRepeatErrorOnRetryCount()).isEqualTo(1);
+        mExportManager.recordSuccess(mTimeStamp.toEpochMilli(), 100, 50, Uri.parse("uri"));
+        assertThat(mExportImportSettingsStorage.getLastExportError())
+                .isEqualTo(DATA_EXPORT_ERROR_UNSPECIFIED);
+        assertThat(mExportImportSettingsStorage.getExportRepeatErrorOnRetryCount()).isEqualTo(0);
     }
 
     private void configureExportUri() {

@@ -24,11 +24,13 @@ import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXP
 import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXPORT_STARTED;
 
 import static com.android.healthfitness.flags.Flags.exportImportFastFollow;
+import static com.android.healthfitness.flags.Flags.extendExportImportTelemetry;
 import static com.android.server.healthconnect.exportimport.ExportImportNotificationSender.NOTIFICATION_TYPE_EXPORT_UNSUCCESSFUL_GENERIC_ERROR;
 import static com.android.server.healthconnect.logging.ExportImportLogger.NO_VALUE_RECORDED;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.health.connect.exportimport.ScheduledExportStatus.DataExportError;
 import android.net.Uri;
 import android.os.UserHandle;
 import android.util.Slog;
@@ -242,6 +244,10 @@ public class ExportManager {
             Uri destinationUri) {
         mExportImportSettingsStorage.setLastSuccessfulExport(mClock.instant(), destinationUri);
 
+        if (extendExportImportTelemetry()) {
+            mExportImportSettingsStorage.resetExportRepeatErrorOnRetryCount();
+        }
+
         // The logging proto holds an int32 not an in64 to save on logs storage. The cast makes this
         // explicit. The int can hold 24.855 days worth of milli seconds, which
         // is sufficient because the system would kill the process earlier.
@@ -258,6 +264,17 @@ public class ExportManager {
             long startTimeMillis,
             int originalDataSizeKb,
             int compressedDataSizeKb) {
+        @DataExportError int previousError = mExportImportSettingsStorage.getLastExportError();
+
+        if (extendExportImportTelemetry()) {
+            // Only start counting duplicate errors the second time the same error happens.
+            if (exportStatus != previousError) {
+                mExportImportSettingsStorage.resetExportRepeatErrorOnRetryCount();
+            } else {
+                mExportImportSettingsStorage.increaseExportRepeatErrorOnRetryCount();
+            }
+        }
+
         mExportImportSettingsStorage.setLastExportError(exportStatus, mClock.instant());
 
         // Convert to int to save on logs storage, int can hold about 68 years

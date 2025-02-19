@@ -145,6 +145,10 @@ public class HealthConnectDailyService extends JobService {
                                             exportImportSettingsStorage);
                             // If the export is not successful, reschedule the job.
                             jobFinished(params, !isExportSuccessful);
+                            // TODO(b/374702524) distinguish between a new job and a retry.
+                            // Call exportImportSettingsStorage.resetExportRepeatErrorOnRetryCount()
+                            // for new jobs. Like that we can filter out repeat errors for each of
+                            // the regular (weekly, daily etc) exports.
                         });
                 return true;
             default:
