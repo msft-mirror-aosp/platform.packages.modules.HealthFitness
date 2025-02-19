@@ -63,7 +63,7 @@ import org.mockito.Mock;
 import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
-@EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+@EnableFlags({Flags.FLAG_CLOUD_BACKUP_AND_RESTORE, Flags.FLAG_CLOUD_BACKUP_AND_RESTORE_DB})
 public final class CloudBackupRestoreTest {
 
     @Rule(order = 1)
