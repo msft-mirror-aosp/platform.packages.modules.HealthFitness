@@ -87,7 +87,7 @@ public class CloudRestoreManager {
     }
 
     /** Takes the serialized user settings and overwrites existing settings. */
-    public void pushSettingsForRestore(BackupSettings newSettings) {
+    public void restoreSettings(BackupSettings newSettings) {
         Slog.i(TAG, "Restoring user settings.");
         CloudBackupSettingsHelper cloudBackupSettingsHelper =
                 new CloudBackupSettingsHelper(mPriorityHelper, mPreferenceHelper, mAppInfoHelper);
@@ -111,7 +111,7 @@ public class CloudRestoreManager {
     }
 
     /** Restores backup data changes. */
-    public void pushChangesForRestore(List<RestoreChange> changes, byte[] appInfoMap) {
+    public void restoreChanges(List<RestoreChange> changes, byte[] appInfoMap) {
         Slog.i(TAG, "Restoring app info");
         AppInfoMap appInfoMapProto;
         try {

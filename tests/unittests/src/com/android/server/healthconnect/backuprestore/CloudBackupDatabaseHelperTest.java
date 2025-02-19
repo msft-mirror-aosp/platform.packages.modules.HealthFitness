@@ -187,7 +187,7 @@ public class CloudBackupDatabaseHelperTest {
         StepsRecordInternal stepsRecord =
                 (StepsRecordInternal) parseRecordInternal(stepsRecordBackupChange);
         String uuid = stepsRecord.getUuid() != null ? stepsRecord.getUuid().toString() : null;
-        assertThat(stepsRecordBackupChange.getUid()).isEqualTo(uuid);
+        assertThat(stepsRecordBackupChange.getRecordId()).isEqualTo(uuid);
         assertThat(stepsRecord.getCount()).isEqualTo(TEST_STEP_COUNT);
         assertThat(stepsRecord.getStartTimeInMillis()).isEqualTo(TEST_START_TIME_IN_MILLIS);
         assertThat(stepsRecord.getEndTimeInMillis()).isEqualTo(TEST_END_TIME_IN_MILLIS);
@@ -543,7 +543,7 @@ public class CloudBackupDatabaseHelperTest {
         UUID bloodPressureRecordUuid = bloodPressureRecordInternal.getUuid();
         assertThat(bloodPressureRecordUuid).isNotNull();
         assertThat(deletedBloodPressureBackupChange.isDeletion()).isTrue();
-        assertThat(deletedBloodPressureBackupChange.getUid())
+        assertThat(deletedBloodPressureBackupChange.getRecordId())
                 .isEqualTo(bloodPressureRecordUuid.toString());
         assertThat(deletedBloodPressureBackupChange.getData()).isNull();
     }

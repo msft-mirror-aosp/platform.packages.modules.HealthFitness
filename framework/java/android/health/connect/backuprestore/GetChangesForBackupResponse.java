@@ -20,14 +20,21 @@ import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTOR
 
 import android.annotation.FlaggedApi;
 import android.annotation.NonNull;
+import android.annotation.SystemApi;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.List;
 import java.util.Objects;
 
-/** @hide */
+/**
+ * Response of the data to be backed up from the Health Connect service to the Health Connect backup
+ * agent.
+ *
+ * @hide
+ */
 @FlaggedApi(FLAG_CLOUD_BACKUP_AND_RESTORE)
+@SystemApi
 public final class GetChangesForBackupResponse implements Parcelable {
 
     // Proto version
@@ -40,6 +47,13 @@ public final class GetChangesForBackupResponse implements Parcelable {
 
     @NonNull private final byte[] mAppInfoMap;
 
+    /**
+     * @param version The version of the data contained in the response, with which the data is
+     *     serialized.
+     * @param changes The changes to be backed up.
+     * @param nextChangeToken The changeToken to be used for the next call to resume the backup.
+     * @param appInfoMap The appInfoMap to be used to include app specific data in the backup.
+     */
     public GetChangesForBackupResponse(
             int version,
             @NonNull List<BackupChange> changes,
@@ -86,20 +100,24 @@ public final class GetChangesForBackupResponse implements Parcelable {
                 }
             };
 
+    /** Returns the version of the data, with which the data is serialized. */
     public int getVersion() {
         return mVersion;
     }
 
+    /** Returns the changes to be backed up. */
     @NonNull
     public List<BackupChange> getChanges() {
         return mChanges;
     }
 
+    /** Returns the changeToken to be used for the next call to resume the backup. */
     @NonNull
     public String getNextChangeToken() {
         return mNextChangeToken;
     }
 
+    /** Returns the appInfoMap to be used to include app specific data in the backup. */
     @NonNull
     public byte[] getAppInfoMap() {
         return mAppInfoMap;

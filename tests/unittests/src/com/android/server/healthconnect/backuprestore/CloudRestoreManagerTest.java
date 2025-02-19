@@ -172,7 +172,7 @@ public class CloudRestoreManagerTest {
     }
 
     @Test
-    public void pushChangesForRestore_restoresChanges() {
+    public void restoreChanges_restoresChanges() {
         Record stepsRecord = generateRecord(RecordTypeIdentifier.RECORD_TYPE_STEPS);
         RestoreChange stepsChange =
                 new RestoreChange(
@@ -186,7 +186,7 @@ public class CloudRestoreManagerTest {
                                 .build()
                                 .toByteArray());
 
-        mCloudRestoreManager.pushChangesForRestore(
+        mCloudRestoreManager.restoreChanges(
                 List.of(stepsChange, bloodPressureChange), APP_INFO_MAP.toByteArray());
 
         ReadTransactionRequest request =
@@ -212,13 +212,13 @@ public class CloudRestoreManagerTest {
     }
 
     @Test
-    public void whenPushSettingsForRestoreCalled_settingsSuccessfullyRestored() {
+    public void
+            whenRestoreSettingsForRestoreCalled_noExportSettings_settingsSuccessfullyRestored() {
         CloudBackupSettingsHelper cloudBackupSettingsHelper =
                 new CloudBackupSettingsHelper(mPriorityHelper, mPreferenceHelper, mAppInfoHelper);
         setupInitialSettings();
         Settings settingsToRestore = createSettingsToRestore(false);
-        mCloudRestoreManager.pushSettingsForRestore(
-                new BackupSettings(settingsToRestore.toByteArray()));
+        mCloudRestoreManager.restoreSettings(new BackupSettings(settingsToRestore.toByteArray()));
 
         Settings currentSettings = cloudBackupSettingsHelper.collectUserSettings();
         mDatabaseHelpers.clearAllData(mTransactionManager);
@@ -235,16 +235,14 @@ public class CloudRestoreManagerTest {
     }
 
     @Test
-    public void
-            whenPushSettingsForRestoreCalled_withUnspecifiedEnums_settingsSuccessfullyRestored() {
+    public void whenRestoreSettingsCalled_withUnspecifiedEnums_settingsSuccessfullyRestored() {
         CloudBackupSettingsHelper cloudBackupSettingsHelper =
                 new CloudBackupSettingsHelper(mPriorityHelper, mPreferenceHelper, mAppInfoHelper);
         mPreferenceHelper.insertOrReplacePreference(
                 ENERGY_UNIT_PREF_KEY, Settings.EnergyUnitProto.CALORIE.toString());
         setupInitialSettings();
         Settings settingsToRestore = createSettingsToRestore(true);
-        mCloudRestoreManager.pushSettingsForRestore(
-                new BackupSettings(settingsToRestore.toByteArray()));
+        mCloudRestoreManager.restoreSettings(new BackupSettings(settingsToRestore.toByteArray()));
 
         Settings currentSettings = cloudBackupSettingsHelper.collectUserSettings();
         mDatabaseHelpers.clearAllData(mTransactionManager);
@@ -261,7 +259,7 @@ public class CloudRestoreManagerTest {
     }
 
     @Test
-    public void pushChangesForRestore_exerciseSession_withMissingTrainingPlan_removesReference() {
+    public void restoreChanges_exerciseSession_withMissingTrainingPlan_removesReference() {
         Record exerciseSessionRecord =
                 generateRecord(RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION);
         Record sessionWithPlanReference =
@@ -277,7 +275,7 @@ public class CloudRestoreManagerTest {
                                                                 UUID.randomUUID().toString())))
                         .build();
 
-        mCloudRestoreManager.pushChangesForRestore(
+        mCloudRestoreManager.restoreChanges(
                 List.of(
                         new RestoreChange(
                                 BackupData.newBuilder()
@@ -292,7 +290,7 @@ public class CloudRestoreManagerTest {
     }
 
     @Test
-    public void pushChangesForRestore_exerciseSession_withTrainingPlanInChanges_keepsReference() {
+    public void restoreChanges_exerciseSession_withTrainingPlanInChanges_keepsReference() {
         Record plannedExerciseSessionRecord =
                 generateRecord(RecordTypeIdentifier.RECORD_TYPE_PLANNED_EXERCISE_SESSION);
         Record exerciseSessionRecord =
@@ -306,7 +304,7 @@ public class CloudRestoreManagerTest {
                                                                         .getUuid())))
                         .build();
 
-        mCloudRestoreManager.pushChangesForRestore(
+        mCloudRestoreManager.restoreChanges(
                 List.of(
                         new RestoreChange(
                                 BackupData.newBuilder()
@@ -326,11 +324,10 @@ public class CloudRestoreManagerTest {
     }
 
     @Test
-    public void
-            pushChangesForRestore_exerciseSession_withTrainingPlanRestoredEarlier_keepsReference() {
+    public void restoreChanges_exerciseSession_withTrainingPlanRestoredEarlier_keepsReference() {
         Record plannedExerciseSessionRecord =
                 generateRecord(RecordTypeIdentifier.RECORD_TYPE_PLANNED_EXERCISE_SESSION);
-        mCloudRestoreManager.pushChangesForRestore(
+        mCloudRestoreManager.restoreChanges(
                 List.of(
                         new RestoreChange(
                                 BackupData.newBuilder()
@@ -348,7 +345,7 @@ public class CloudRestoreManagerTest {
                                                                 plannedExerciseSessionRecord
                                                                         .getUuid())))
                         .build();
-        mCloudRestoreManager.pushChangesForRestore(
+        mCloudRestoreManager.restoreChanges(
                 List.of(
                         new RestoreChange(
                                 BackupData.newBuilder()
@@ -367,15 +364,14 @@ public class CloudRestoreManagerTest {
         BackupSettings backupSettings = new BackupSettings(new byte[] {45, 36});
         assertThrows(
                 IllegalArgumentException.class,
-                () -> mCloudRestoreManager.pushSettingsForRestore(backupSettings));
+                () -> mCloudRestoreManager.restoreSettings(backupSettings));
     }
 
     @Test
     public void restoreInvalidChanges_skipsInvalidChange() {
         RestoreChange restoreChange = new RestoreChange(new byte[] {45, 36});
         // test that no exceptions are thrown
-        mCloudRestoreManager.pushChangesForRestore(
-                List.of(restoreChange), APP_INFO_MAP.toByteArray());
+        mCloudRestoreManager.restoreChanges(List.of(restoreChange), APP_INFO_MAP.toByteArray());
     }
 
     private void setupInitialSettings() {
