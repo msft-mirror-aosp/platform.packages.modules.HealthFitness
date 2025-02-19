@@ -117,6 +117,25 @@ public final class TransactionTestUtils {
                         /* extraPermsStateMap= */ new ArrayMap<>()));
     }
 
+    /** Inserts records attributed to the given package. */
+    public void updateRecords(String packageName, RecordInternal<?>... records) {
+        updateRecords(packageName, List.of(records));
+    }
+
+    /** Inserts records attributed to the given package. */
+    public void updateRecords(String packageName, List<RecordInternal<?>> records) {
+        AppInfoHelper appInfoHelper = mHealthConnectInjector.getAppInfoHelper();
+        mTransactionManager.updateAllRecords(
+                appInfoHelper,
+                mHealthConnectInjector.getAccessLogsHelper(),
+                UpsertTransactionRequest.createForUpdate(
+                        packageName,
+                        records,
+                        mHealthConnectInjector.getDeviceInfoHelper(),
+                        mHealthConnectInjector.getAppInfoHelper(),
+                        /* extraPermsStateMap= */ new ArrayMap<>()));
+    }
+
     /** Creates a {@link ReadTransactionRequest} from the given record to id map. */
     public ReadTransactionRequest getReadTransactionRequest(
             Map<Integer, List<UUID>> recordTypeToUuids) {

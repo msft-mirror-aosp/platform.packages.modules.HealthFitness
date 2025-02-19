@@ -39,6 +39,10 @@
     <string name="browse_data_title" msgid="5232691805953326097">"לעיון בנתונים"</string>
     <string name="browse_data_subtitle" msgid="7025164374898103993">"עיון בנתונים ובאפליקציות שיכולות לגשת אליהם"</string>
     <string name="manage_data_summary" msgid="8537870912521944449">"מחיקה אוטומטית, מקורות נתונים, גיבוי ושחזור"</string>
+    <!-- no translation found for banner_group_more_items (1071243933488973950) -->
+    <skip />
+    <!-- no translation found for banner_group_fewer_items (3792478123282046349) -->
+    <skip />
     <string name="backup_title" msgid="211503191266235085">"גיבוי"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"מקורות הנתונים ועדיפות"</string>
     <string name="set_units_title" msgid="2657822539603758029">"יחידות מידה"</string>
@@ -1195,10 +1199,7 @@
     <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"להרשות לאפליקציה <xliff:g id="APP_NAME">%1$s</xliff:g> לגשת לנתוני הכושר והבריאות בלי הגבלת זמן?"</string>
     <string name="current_access" msgid="1457167070428176139">"לאפליקציה <xliff:g id="APP_NAME">%1$s</xliff:g> יש גישה אל <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
     <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"עריכת ההרשאות של נתוני הכושר והבריאות"</string>
-    <!-- no translation found for used_by_apps_count (1384912521974773617) -->
-    <skip />
-    <!-- no translation found for not_used_in_past_24_hours (7918784815693928054) -->
-    <skip />
-    <!-- no translation found for accessed (4424701457530587176) -->
-    <skip />
+    <string name="used_by_apps_count" msgid="1384912521974773617">"{count,plural, =1{אפליקציה אחת השתמשה בהרשאה}one{‫# אפליקציות השתמשו בהרשאה}two{‫# אפליקציות השתמשו בהרשאה}other{‫# אפליקציות השתמשו בהרשאה}}"</string>
+    <string name="not_used_in_past_24_hours" msgid="7918784815693928054">"לא נעשה שימוש ב-24 השעות האחרונות"</string>
+    <string name="accessed" msgid="4424701457530587176">"הגישה האחרונה: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
 </resources>

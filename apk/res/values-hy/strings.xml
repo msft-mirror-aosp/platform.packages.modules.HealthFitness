@@ -39,6 +39,10 @@
     <string name="browse_data_title" msgid="5232691805953326097">"Դիտել տվյալները"</string>
     <string name="browse_data_subtitle" msgid="7025164374898103993">"Տեսեք տվյալները, և թե որ հավելվածներին կարող են դրանք հասանելի լինել"</string>
     <string name="manage_data_summary" msgid="8537870912521944449">"Ավտոմատ ջնջում, տվյալների աղբյուրներ, պահուստավորում և վերականգնում"</string>
+    <!-- no translation found for banner_group_more_items (1071243933488973950) -->
+    <skip />
+    <!-- no translation found for banner_group_fewer_items (3792478123282046349) -->
+    <skip />
     <string name="backup_title" msgid="211503191266235085">"Պահուստավորում"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Տվյալների աղբյուրներ և առաջնահերթություն"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Կարգավորել չափման միավորները"</string>
@@ -1195,10 +1199,7 @@
     <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Թույլ տա՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին միշտ օգտագործել ֆիթնեսի և առողջության վերաբերյալ տվյալները"</string>
     <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին հասանելի են հետևյալ տվյալները՝ <xliff:g id="DATA_TYPES">%2$s</xliff:g>"</string>
     <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Ֆիթնեսի և առողջության մասին տվյալներ"</string>
-    <!-- no translation found for used_by_apps_count (1384912521974773617) -->
-    <skip />
-    <!-- no translation found for not_used_in_past_24_hours (7918784815693928054) -->
-    <skip />
-    <!-- no translation found for accessed (4424701457530587176) -->
-    <skip />
+    <string name="used_by_apps_count" msgid="1384912521974773617">"{count,plural, =1{Օգտագործվել է 1 հավելվածի կողմից}one{Օգտագործվել է # հավելվածի կողմից}other{Օգտագործվել է # հավելվածի կողմից}}"</string>
+    <string name="not_used_in_past_24_hours" msgid="7918784815693928054">"Չի օգտագործվել վերջին 24 ժամվա ընթացքում"</string>
+    <string name="accessed" msgid="4424701457530587176">"Բացվել է <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
 </resources>

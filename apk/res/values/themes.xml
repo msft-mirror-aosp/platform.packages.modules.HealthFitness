@@ -47,6 +47,7 @@
         <item name="sleepCategoryIcon">@drawable/ic_category_sleep</item>
         <item name="vitalsCategoryIcon">@drawable/ic_category_vitals</item>
         <item name="wellnessCategoryIcon">@drawable/ic_category_wellness</item>
+        <item name="databaseIcon">@drawable/ic_database</item>
 
         <!-- Permission types page -->
         <item name="appPriorityIcon">@drawable/ic_view_list</item>
@@ -84,6 +85,8 @@
         <item name="addIcon">@drawable/ic_add</item>
         <item name="editIcon">@drawable/ic_edit</item>
         <item name="closeIcon">@drawable/ic_close</item>
+        <item name="appsIcon">@drawable/ic_apps</item>
+
 
         <!-- Backup and restore -->
 

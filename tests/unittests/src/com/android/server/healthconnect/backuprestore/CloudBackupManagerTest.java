@@ -17,6 +17,7 @@ package com.android.server.healthconnect.backuprestore;
 
 import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
 import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_UNKNOWN;
 
 import static com.android.server.healthconnect.backuprestore.RecordProtoConverter.PROTO_VERSION;
 import static com.android.server.healthconnect.testing.storage.TransactionTestUtils.createStepsRecord;
@@ -155,7 +156,7 @@ public class CloudBackupManagerTest {
         BackupChangeTokenHelper.BackupChangeToken secondBackupChangeToken =
                 BackupChangeTokenHelper.getBackupChangeToken(
                         mTransactionManager, secondResponse.getNextChangeToken());
-        assertThat(secondBackupChangeToken.getDataTableName()).isNull();
+        assertThat(secondBackupChangeToken.getRecordType()).isEqualTo(RECORD_TYPE_UNKNOWN);
         assertThat(secondBackupChangeToken.getDataTablePageToken())
                 .isEqualTo(EMPTY_PAGE_TOKEN.encode());
         // Same change logs token so the next incremental call will start from the same point.
@@ -211,7 +212,7 @@ public class CloudBackupManagerTest {
                         mTransactionManager, secondResponse.getNextChangeToken());
         assertThat(backupChangeToken.getChangeLogsRequestToken()).isEqualTo(null);
         assertThat(backupChangeToken.getDataTablePageToken()).isEqualTo(EMPTY_PAGE_TOKEN.encode());
-        assertThat(backupChangeToken.getDataTableName()).isEqualTo(null);
+        assertThat(backupChangeToken.getRecordType()).isEqualTo(RECORD_TYPE_UNKNOWN);
     }
 
     @Test

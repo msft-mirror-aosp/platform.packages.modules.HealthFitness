@@ -16,7 +16,6 @@
 package com.android.healthconnect.controller.data.alldata
 
 import android.graphics.drawable.Drawable
-import android.health.connect.HealthDataCategory
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -45,6 +44,7 @@ import com.android.healthconnect.controller.selectabledeletion.DeletionViewModel
 import com.android.healthconnect.controller.selectabledeletion.SelectAllCheckboxPreference
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.uppercaseTitle
 import com.android.healthconnect.controller.shared.HealthDataCategoryInt
+import com.android.healthconnect.controller.shared.IExpressiveThemingHelper
 import com.android.healthconnect.controller.shared.children
 import com.android.healthconnect.controller.shared.preference.EmptyPreferenceCategory
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
@@ -60,6 +60,7 @@ import com.android.healthconnect.controller.utils.pref
 import com.android.healthconnect.controller.utils.setupMenu
 import com.android.healthconnect.controller.utils.setupSharedMenu
 import com.android.settingslib.widget.FooterPreference
+import com.android.settingslib.widget.ZeroStatePreference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -73,6 +74,7 @@ open class AllDataFragment : Hilt_AllDataFragment() {
         private const val KEY_SELECT_ALL = "key_select_all"
         private const val KEY_PERMISSION_TYPE = "key_permission_type"
         private const val KEY_NO_DATA = "no_data_preference"
+        private const val KEY_ZERO_STATE = "zero_state_preference"
         private const val KEY_TOP_INTRO = "key_top_intro"
         private const val KEY_FOOTER = "key_footer"
         const val IS_BROWSE_MEDICAL_DATA_SCREEN = "key_is_browse_medical_data_screen"
@@ -80,6 +82,7 @@ open class AllDataFragment : Hilt_AllDataFragment() {
 
     @Inject lateinit var logger: HealthConnectLogger
     @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
+    @Inject lateinit var expressiveThemingHelper: IExpressiveThemingHelper
 
     /** Decides whether this screen is supposed to display Fitness data or Medical data. */
     private var showMedicalData = false
@@ -95,6 +98,8 @@ open class AllDataFragment : Hilt_AllDataFragment() {
     private val permissionTypesListGroup: PreferenceCategory by pref(KEY_PERMISSION_TYPE)
 
     private val noDataPreference: NoDataPreference by pref(KEY_NO_DATA)
+
+    private val zeroStatePreference: ZeroStatePreference by pref(KEY_ZERO_STATE)
 
     private val footerPreference: FooterPreference by pref(KEY_FOOTER)
 
@@ -274,6 +279,7 @@ open class AllDataFragment : Hilt_AllDataFragment() {
         updateMenu(screenState = viewModel.getDeletionScreenStateValue())
         noDataPreference.isVisible = false
         footerPreference.isVisible = false
+        zeroStatePreference.isVisible = false
 
         populatedCategories.forEach { permissionTypesPerCategory ->
             val category = permissionTypesPerCategory.category
@@ -364,8 +370,15 @@ open class AllDataFragment : Hilt_AllDataFragment() {
     }
 
     private fun setupEmptyState() {
-        noDataPreference.isVisible = true
-        footerPreference.isVisible = true
+        if (expressiveThemingHelper.isExpressiveTheme(requireContext())) {
+            zeroStatePreference.isVisible = true
+            noDataPreference.isVisible = false
+            footerPreference.isVisible = false
+        } else {
+            zeroStatePreference.isVisible = false
+            noDataPreference.isVisible = true
+            footerPreference.isVisible = true
+        }
         setTopIntroVisibility(false)
         updateMenu(screenState = VIEW, hasData = false)
     }
