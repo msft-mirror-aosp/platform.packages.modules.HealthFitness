@@ -33,7 +33,7 @@
         android:gravity="center_horizontal"
         android:layout_marginHorizontal="@dimen/spacing_large"
         android:paddingVertical="@dimen/spacing_large"
-        style="?attr/textAppearanceHeadline4" />
+        style="?attr/headerTitle" />
 
     <TextView
         android:id="@+id/summary"

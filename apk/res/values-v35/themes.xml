@@ -21,5 +21,9 @@
         <item name="android:clipToPadding">true</item>
         <item name="android:clipChildren">true</item>
         <!-- END REGION -->
+
+        <item name="headerTitle">@style/TextAppearance.HealthConnect.Expressive.Heading</item>
+        <item name="headerDetails">@style/TextAppearance.HealthConnect.Expressive.DetailedHeading</item>
+
     </style>
 </resources>
