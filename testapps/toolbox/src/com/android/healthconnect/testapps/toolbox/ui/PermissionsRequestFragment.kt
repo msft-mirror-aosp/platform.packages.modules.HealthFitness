@@ -16,6 +16,11 @@
 package com.android.healthconnect.testapps.toolbox.ui
 
 import android.content.pm.PackageManager
+import android.health.connect.HealthConnectManager
+import android.health.connect.HealthPermissions.READ_EXERCISE_ROUTES
+import android.health.connect.HealthPermissions.READ_HEALTH_DATA_HISTORY
+import android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND
+import android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -30,18 +35,16 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.IdRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.android.healthconnect.testapps.toolbox.Constants.FITNESS_READ_PERMISSIONS
-import com.android.healthconnect.testapps.toolbox.Constants.FITNESS_WRITE_PERMISSIONS
-import com.android.healthconnect.testapps.toolbox.Constants.MEDICAL_READ_PERMISSIONS
-import com.android.healthconnect.testapps.toolbox.Constants.MEDICAL_WRITE_PERMISSIONS
-import com.android.healthconnect.testapps.toolbox.Constants.READ_HEALTH_DATA_HISTORY
-import com.android.healthconnect.testapps.toolbox.Constants.READ_HEALTH_DATA_IN_BACKGROUND
 import com.android.healthconnect.testapps.toolbox.R
 
 class PermissionsRequestFragment : Fragment(R.layout.fragment_permissions_request) {
+    private val readPermissionsPrefix = "android.permission.health.READ_"
+    private val writePermissionsPrefix = "android.permission.health.WRITE_"
+    private val medicalReadPermissionsPrefix = "android.permission.health.READ_MEDICAL_DATA_"
+
     private val tag = PermissionsRequestFragment::class.java.simpleName
     private lateinit var mRequestPermissionLauncher: ActivityResultLauncher<Array<String>>
-    private val tree: TreeNode =
+    private val tree: TreeNode by lazy {
         TreeNode(
             checkBoxId = R.id.all_permissions_checkbox,
             buttonId = null,
@@ -55,12 +58,18 @@ class PermissionsRequestFragment : Fragment(R.layout.fragment_permissions_reques
                                 TreeNode(
                                     checkBoxId = R.id.fitness_read_permissions_checkbox,
                                     buttonId = R.id.fitness_read_permissions_button,
-                                    FITNESS_READ_PERMISSIONS,
+                                    permissions =
+                                        getDeclaredHealthPermissions {
+                                            isReadPermission(it) && isFitnessPermission(it)
+                                        },
                                 ),
                                 TreeNode(
                                     checkBoxId = R.id.fitness_write_permissions_checkbox,
                                     buttonId = R.id.fitness_write_permissions_button,
-                                    FITNESS_WRITE_PERMISSIONS,
+                                    permissions =
+                                        getDeclaredHealthPermissions {
+                                            isWritePermission(it) && isFitnessPermission(it)
+                                        },
                                 ),
                             ),
                     ),
@@ -73,13 +82,14 @@ class PermissionsRequestFragment : Fragment(R.layout.fragment_permissions_reques
                                     checkBoxId =
                                         R.id.personal_health_record_read_permissions_checkbox,
                                     buttonId = R.id.personal_health_record_read_permissions_button,
-                                    MEDICAL_READ_PERMISSIONS,
+                                    permissions =
+                                        getDeclaredHealthPermissions { isMedicalReadPermission(it) },
                                 ),
                                 TreeNode(
                                     checkBoxId =
                                         R.id.personal_health_record_write_permissions_checkbox,
                                     buttonId = R.id.personal_health_record_write_permissions_button,
-                                    MEDICAL_WRITE_PERMISSIONS,
+                                    permissions = listOf(WRITE_MEDICAL_DATA),
                                 ),
                             ),
                     ),
@@ -91,17 +101,18 @@ class PermissionsRequestFragment : Fragment(R.layout.fragment_permissions_reques
                                 TreeNode(
                                     checkBoxId = R.id.history_read_permission_checkbox,
                                     buttonId = R.id.history_read_permission_button,
-                                    arrayOf(READ_HEALTH_DATA_HISTORY),
+                                    permissions = listOf(READ_HEALTH_DATA_IN_BACKGROUND),
                                 ),
                                 TreeNode(
                                     checkBoxId = R.id.background_read_permission_checkbox,
                                     buttonId = R.id.background_read_permission_button,
-                                    arrayOf(READ_HEALTH_DATA_IN_BACKGROUND),
+                                    permissions = listOf(READ_HEALTH_DATA_HISTORY),
                                 ),
                             ),
                     ),
                 ),
         )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -139,8 +150,7 @@ class PermissionsRequestFragment : Fragment(R.layout.fragment_permissions_reques
                     permissionsToGrant.addAll(it.permissions)
                 }
             }
-            Log.i(tag, "Requesting ${ permissionsToGrant.size } permissions")
-
+            Log.i(tag, "Requesting ${permissionsToGrant.size} permissions")
             if (areAllPermissionsGranted(permissionsToGrant)) {
                 Toast.makeText(
                         this.requireContext(),
@@ -156,9 +166,24 @@ class PermissionsRequestFragment : Fragment(R.layout.fragment_permissions_reques
         }
     }
 
+    private fun isMedicalPermission(permission: String) =
+        isMedicalReadPermission(permission) || permission == WRITE_MEDICAL_DATA
+
+    private fun isAdditionalPermission(permission: String) = "HEALTH" in permission
+
+    private fun isWritePermission(permission: String) =
+        permission.startsWith(writePermissionsPrefix)
+
+    private fun isReadPermission(permission: String) = permission.startsWith(readPermissionsPrefix)
+
+    private fun isMedicalReadPermission(permission: String) =
+        permission.startsWith(medicalReadPermissionsPrefix)
+
+    private fun isFitnessPermission(permission: String) = !(isMedicalPermission(permission) ||
+            isAdditionalPermission(permission) || READ_EXERCISE_ROUTES == permission)
+
     private fun handlePermissionsResult(permissionMap: Map<String, Boolean>) {
         val numberOfPermissionsMissing = permissionMap.values.count { !it }
-        Log.i("issue",permissionMap.toString())
         Toast.makeText(
                 this.requireContext(),
                 if (numberOfPermissionsMissing == 0) getString(R.string.all_permissions_success)
@@ -181,7 +206,7 @@ class PermissionsRequestFragment : Fragment(R.layout.fragment_permissions_reques
     private class TreeNode(
         @IdRes val checkBoxId: Int,
         @IdRes val buttonId: Int?,
-        val permissions: Array<String> = arrayOf<String>(),
+        val permissions: List<String> = listOf<String>(),
         val children: List<TreeNode> = listOf<TreeNode>(),
     ) {
         init {
@@ -221,4 +246,20 @@ class PermissionsRequestFragment : Fragment(R.layout.fragment_permissions_reques
         CompoundButton.OnCheckedChangeListener { _, isChecked ->
             checkBoxPressed(treeNode, isChecked)
         }
+
+    private fun getDeclaredHealthPermissions(
+        permissionsFilter: (String) -> Boolean = { true }
+    ): List<String> {
+        val context = requireContext()
+
+        val packageInfo =
+            context.packageManager.getPackageInfo(
+                context.packageName,
+                PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS.toLong()),
+            )
+        val requestedPermissions = packageInfo.requestedPermissions
+        return requestedPermissions
+            ?.filter { HealthConnectManager.isHealthPermission(context, it) }
+            ?.filter(permissionsFilter) ?: listOf()
+    }
 }
