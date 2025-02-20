@@ -40,6 +40,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
+import android.widget.SpinnerAdapter
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -71,6 +72,8 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         requireContext().requireSystemService()
     }
     private var mSelectedCustomDirFilesToUri: Map<String, Uri>? = null
+
+    private var mExistingDataSourceNamesToId: MutableMap<String, String> = mutableMapOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -166,6 +169,8 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
             .requireViewById<Button>(R.id.phr_request_read_and_write_medical_data_button)
             .setOnClickListener { requestMedicalPermissions() }
 
+        setUpDataSourceSpinner(view)
+
         setUpPatientContextSpinner(view)
     }
 
@@ -189,6 +194,32 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         return insertResource(view, pastedResource)
     }
 
+    private fun setUpDataSourceSpinner(
+        rootView: View,
+        dataSources: List<String> = listOf(),
+        selectPosition: Int = 0
+    ) {
+        val spinnerOptions =
+            listOf(getString(R.string.data_source_spinner_default_message)) + dataSources
+
+        val spinner = rootView.findViewById<Spinner>(R.id.phr_data_source_spinner)
+        spinner.adapter = createSpinnerAdapter(spinnerOptions)
+        spinner.setSelection(selectPosition)
+    }
+
+    private fun updateDataSourceSpinnerOptions(
+        view: View,
+        existingDataSources: List<String>,
+        newDataSource: String
+    ) {
+        setUpDataSourceSpinner(view, listOf(newDataSource) + existingDataSources, 1)
+    }
+
+    private fun getDataSourceIdFromSpinner(view: View): String? {
+        val dataSourceSpinner = view.findViewById<Spinner>(R.id.phr_data_source_spinner)
+        return mExistingDataSourceNamesToId[dataSourceSpinner.selectedItem.toString()]
+    }
+
     private fun setUpPatientContextSpinner(rootView: View) {
         val spinnerOptions =
             listOf(
@@ -197,12 +228,9 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
                 PATIENT_C_ASSET_PATH,
                 CUSTOM_DATA_PATH_PLACE_HOLDER
             )
-        val spinnerAdapter =
-            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, spinnerOptions)
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
         val spinner = rootView.findViewById<Spinner>(R.id.phr_patient_spinner)
-        spinner.adapter = spinnerAdapter
+        spinner.adapter = createSpinnerAdapter(spinnerOptions)
 
         spinner.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
@@ -279,12 +307,8 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         customPatientContext: Boolean,
         assetSubDir: String = ""
     ) {
-        val spinnerAdapter =
-            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, spinnerOptions)
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
         val spinner = rootView.findViewById<Spinner>(R.id.phr_spinner)
-        spinner.adapter = spinnerAdapter
+        spinner.adapter = createSpinnerAdapter(spinnerOptions)
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
@@ -320,14 +344,20 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         }
     }
 
+    private fun createSpinnerAdapter(spinnerOptions: List<String>): ArrayAdapter<String?> {
+        val spinnerAdapter =
+            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, spinnerOptions)
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        return spinnerAdapter
+    }
+
     private suspend fun insertResource(view: View, resource: String): String {
-        val insertedDataSourceId =
-            view.findViewById<EditText>(R.id.phr_data_source_id_text).getText().toString()
+        val dataSourceId = getDataSourceIdFromSpinner(view) ?: return "No data source selected"
         val insertedResources =
             upsertMedicalResources(
                 listOf(
                     UpsertMedicalResourceRequest.Builder(
-                        insertedDataSourceId,
+                        dataSourceId,
                         FhirVersion.parseFhirVersion("4.0.1"),
                         resource,
                     )
@@ -347,8 +377,8 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
             loadAllFhirJSONsFromContentUris(mSelectedCustomDirFilesToUri?.values.orEmpty().toList())
             else loadAllFhirJSONsFromAssets(patientContext)
         Log.d("INSERT_ALL", "Writing ${allResources.size} FHIR resources")
-        val insertedDataSourceId =
-            view.findViewById<EditText>(R.id.phr_data_source_id_text).getText().toString()
+        val insertedDataSourceId = getDataSourceIdFromSpinner(view)
+            ?: return "No data source selected"
         val insertedResources =
             upsertMedicalResources(
                 allResources.map {
@@ -398,8 +428,10 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
                     continuation.asOutcomeReceiver(),
                 )
             }
-        view.findViewById<EditText>(R.id.phr_data_source_id_text).setText(dataSource.id)
         Log.d("CREATE_DATA_SOURCE", "Created source: $dataSource")
+        updateDataSourceSpinnerOptions(
+            view, mExistingDataSourceNamesToId.keys.toList(), dataSource.displayName)
+        mExistingDataSourceNamesToId.put(dataSource.displayName, dataSource.id)
         return "Created data source: $displayName"
     }
 
