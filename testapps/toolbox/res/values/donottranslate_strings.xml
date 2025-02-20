@@ -148,6 +148,7 @@
 
   <!-- region Phr Options screen -->
   <string name="phr_options_read_immunization">Read PHR data</string>
+  <string name="phr_options_select_patient_title">Select patient context</string>
   <string name="phr_options_ingest_title">Insert PHR data</string>
   <string name="phr_options_create_data_source">Create data source</string>
   <string name="phr_options_data_source_id_placeholder">Create data source to see the id</string>
