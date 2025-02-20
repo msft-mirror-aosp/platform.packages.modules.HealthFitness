@@ -3251,6 +3251,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 uid,
                                 "Caller does not have permission to call getChangesForBackup.");
                         callback.onResult(mCloudBackupManager.getChangesForBackup(changeToken));
+                    } catch (IllegalArgumentException e) {
+                        tryAndThrowException(errorCallback, e, ERROR_INVALID_ARGUMENT);
                     } catch (Exception e) {
                         tryAndThrowException(errorCallback, e, ERROR_INTERNAL);
                     }
