@@ -186,7 +186,7 @@ public class CloudBackupManagerTest {
     }
 
     @Test
-    public void getChangesForBackup_changeLogsTokenInvalid_invalidateToken() {
+    public void getChangesForBackup_changeLogsTokenInvalid_throwsException() {
         List<RecordInternal<?>> records = new ArrayList<>();
         // Use DEFAULT_PAGE_SIZE + 1 to make sure the returned change token, which to be used for
         // the second call of getChangesForBackup, is not empty.
@@ -204,15 +204,9 @@ public class CloudBackupManagerTest {
         // Delete change logs.
         mTransactionManager.delete(new DeleteTableRequest(ChangeLogsHelper.TABLE_NAME));
 
-        GetChangesForBackupResponse secondResponse =
-                mCloudBackupManager.getChangesForBackup(response.getNextChangeToken());
-        assertThat(secondResponse.getChanges()).isEmpty();
-        BackupChangeTokenHelper.BackupChangeToken backupChangeToken =
-                BackupChangeTokenHelper.getBackupChangeToken(
-                        mTransactionManager, secondResponse.getNextChangeToken());
-        assertThat(backupChangeToken.getChangeLogsRequestToken()).isEqualTo(null);
-        assertThat(backupChangeToken.getDataTablePageToken()).isEqualTo(EMPTY_PAGE_TOKEN.encode());
-        assertThat(backupChangeToken.getRecordType()).isEqualTo(RECORD_TYPE_UNKNOWN);
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> mCloudBackupManager.getChangesForBackup(response.getNextChangeToken()));
     }
 
     @Test

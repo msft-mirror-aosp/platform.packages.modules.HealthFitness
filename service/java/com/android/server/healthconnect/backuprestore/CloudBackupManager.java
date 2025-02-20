@@ -15,7 +15,6 @@
  */
 package com.android.server.healthconnect.backuprestore;
 
-import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_UNKNOWN;
 
 import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTORE;
@@ -42,8 +41,6 @@ import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCatego
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
-
-import java.util.List;
 
 /**
  * Manages Cloud Backup operations.
@@ -95,9 +92,9 @@ public final class CloudBackupManager {
      * null or empty changeToken means we are doing a fresh backup, and should start from the
      * beginning.
      *
-     * <p>If the changeToken is not found, it means that HealthConnect can no longer resume the
-     * backup from this point, and will respond with an Exception. The caller should restart the
-     * backup in this case.
+     * <p>If the changeToken is not valid, it means that HealthConnect can no longer resume the
+     * backup from this point, and will respond with an IllegalArgumentException. The caller should
+     * restart the backup in this case.
      *
      * <p>If no changes are returned by the API, this means that the client has synced all changes
      * as of now.
@@ -110,17 +107,9 @@ public final class CloudBackupManager {
             }
             BackupChangeTokenHelper.BackupChangeToken backupChangeToken =
                     BackupChangeTokenHelper.getBackupChangeToken(mTransactionManager, changeToken);
-            boolean isChangeLogsTokenValid =
-                    mDatabaseHelper.isChangeLogsTokenValid(
-                            backupChangeToken.getChangeLogsRequestToken());
-            if (!isChangeLogsTokenValid) {
-                String emptyChangeToken =
-                        BackupChangeTokenHelper.getBackupChangeTokenRowId(
-                                mTransactionManager,
-                                RECORD_TYPE_UNKNOWN,
-                                EMPTY_PAGE_TOKEN.encode(),
-                                /* changeLogsRequestToken= */ null);
-                return new GetChangesForBackupResponse(PROTO_VERSION, List.of(), emptyChangeToken);
+            if (!mDatabaseHelper.isChangeLogsTokenValid(
+                    backupChangeToken.getChangeLogsRequestToken())) {
+                throw new IllegalArgumentException("Change token invalid");
             }
             var recordType = backupChangeToken.getRecordType();
             if (recordType != RECORD_TYPE_UNKNOWN) {
