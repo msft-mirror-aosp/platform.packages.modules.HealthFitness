@@ -412,7 +412,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         : null;
     }
 
-    public void onUserSwitching(UserHandle currentForegroundUser) {
+    public void setupForUser(UserHandle currentForegroundUser) {
         mCurrentForegroundUser = currentForegroundUser;
     }
 

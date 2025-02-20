@@ -101,13 +101,13 @@ public final class TransactionManager {
         mInternalHealthConnectMappings = internalHealthConnectMappings;
     }
 
-    /** Called when we are switching users. */
-    public void onUserSwitching() {
+    /** Called when we are switching from the current user. */
+    public void shutDownCurrentUser() {
         mHealthConnectDatabase.close();
     }
 
     /** Setup the transaction manager for the new user. */
-    public void onUserUnlocked(HealthConnectContext hcContext) {
+    public void setupForUser(HealthConnectContext hcContext) {
         mHealthConnectDatabase = new HealthConnectDatabase(hcContext);
     }
 
