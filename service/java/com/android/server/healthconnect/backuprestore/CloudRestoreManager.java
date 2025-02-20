@@ -31,6 +31,7 @@ import android.health.connect.internal.datatypes.PlannedExerciseSessionRecordInt
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.util.Slog;
 
+import com.android.server.healthconnect.proto.backuprestore.AppInfoMap;
 import com.android.server.healthconnect.proto.backuprestore.BackupData;
 import com.android.server.healthconnect.proto.backuprestore.Record;
 import com.android.server.healthconnect.proto.backuprestore.Settings;
@@ -65,9 +66,10 @@ public class CloudRestoreManager {
     private final TransactionManager mTransactionManager;
     private final DeviceInfoHelper mDeviceInfoHelper;
     private final AppInfoHelper mAppInfoHelper;
-    private final RecordProtoConverter mRecordProtoConverter;
+    private final RecordProtoConverter mRecordProtoConverter = new RecordProtoConverter();
     private final HealthDataCategoryPriorityHelper mPriorityHelper;
     private final PreferenceHelper mPreferenceHelper;
+    private final CloudBackupSettingsHelper mSettingsHelper;
 
     public CloudRestoreManager(
             TransactionManager transactionManager,
@@ -78,9 +80,10 @@ public class CloudRestoreManager {
         mTransactionManager = transactionManager;
         mDeviceInfoHelper = deviceInfoHelper;
         mAppInfoHelper = appInfoHelper;
-        mRecordProtoConverter = new RecordProtoConverter();
         mPriorityHelper = priorityHelper;
         mPreferenceHelper = preferenceHelper;
+        mSettingsHelper =
+                new CloudBackupSettingsHelper(priorityHelper, preferenceHelper, appInfoHelper);
     }
 
     /** Takes the serialized user settings and overwrites existing settings. */
@@ -108,7 +111,17 @@ public class CloudRestoreManager {
     }
 
     /** Restores backup data changes. */
-    public void pushChangesForRestore(List<RestoreChange> changes) {
+    public void pushChangesForRestore(List<RestoreChange> changes, byte[] appInfoMap) {
+        Slog.i(TAG, "Restoring app info");
+        AppInfoMap appInfoMapProto;
+        try {
+            appInfoMapProto = AppInfoMap.parseFrom(appInfoMap);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Could not parse app info map", e);
+        }
+        mSettingsHelper.restoreAppInfo(appInfoMapProto.getAppInfoMap());
+        Slog.i(TAG, "Restored app info");
+
         Slog.i(TAG, "Restoring " + changes.size() + " changes");
         var protoRecords = changes.stream().map(this::toRecord).filter(Objects::nonNull).toList();
         var internalRecords =

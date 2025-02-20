@@ -126,18 +126,12 @@ public final class CloudBackupSettingsHelper {
 
     /**
      * Restores a user's AppInfo settings from the passed in {@code Map<String, AppInfo>} object.
-     *
-     * @param appInfoMap the AppInfo being restored
      */
-    @VisibleForTesting
-    public void restoreAppInfo(Map<String, AppInfo> appInfoMap) {
+    void restoreAppInfo(Map<String, AppInfo> appInfoMap) {
         for (var appInfoEntry : appInfoMap.entrySet()) {
             String packageName = appInfoEntry.getKey();
             AppInfo appInfo = appInfoEntry.getValue();
-            String appName = null;
-            if (appInfo.hasAppName()) {
-                appName = appInfo.getAppName();
-            }
+            String appName = appInfo.hasAppName() ? appInfo.getAppName() : null;
             mAppInfoHelper.addOrUpdateAppInfoIfNoAppInfoEntryExists(packageName, appName);
         }
     }
@@ -201,7 +195,7 @@ public final class CloudBackupSettingsHelper {
         return protoFormattedPriorityList;
     }
 
-    private Map<String, AppInfo> getAppInfo() {
+    Map<String, AppInfo> getAppInfo() {
         Map<String, AppInfo> appInfoMap = new HashMap<>();
         for (var appInfoEntry : mAppInfoHelper.getAppInfoMap().entrySet()) {
             String appName = appInfoEntry.getValue().getName();

@@ -38,17 +38,24 @@ public final class GetChangesForBackupResponse implements Parcelable {
     // The changeToken to be used for the next call to resume the backup.
     @NonNull private final String mNextChangeToken;
 
+    @NonNull private final byte[] mAppInfoMap;
+
     public GetChangesForBackupResponse(
-            int version, @NonNull List<BackupChange> changes, @NonNull String nextChangeToken) {
+            int version,
+            @NonNull List<BackupChange> changes,
+            @NonNull String nextChangeToken,
+            @NonNull byte[] appInfoMap) {
         mVersion = version;
         mChanges = changes;
         mNextChangeToken = nextChangeToken;
+        mAppInfoMap = appInfoMap;
     }
 
     private GetChangesForBackupResponse(Parcel in) {
         mVersion = in.readInt();
         mChanges = in.createTypedArrayList(BackupChange.CREATOR);
         mNextChangeToken = in.readString();
+        mAppInfoMap = in.readBlob();
     }
 
     @Override
@@ -93,6 +100,11 @@ public final class GetChangesForBackupResponse implements Parcelable {
         return mNextChangeToken;
     }
 
+    @NonNull
+    public byte[] getAppInfoMap() {
+        return mAppInfoMap;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -103,5 +115,6 @@ public final class GetChangesForBackupResponse implements Parcelable {
         dest.writeInt(mVersion);
         dest.writeTypedList(mChanges);
         dest.writeString(mNextChangeToken);
+        dest.writeBlob(mAppInfoMap);
     }
 }

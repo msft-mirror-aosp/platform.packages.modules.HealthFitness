@@ -154,7 +154,9 @@ public class CloudBackupDatabaseHelperTest {
                         healthConnectMappings,
                         internalHealthConnectMappings,
                         changeLogsHelper,
-                        changeLogsRequestHelper);
+                        changeLogsRequestHelper,
+                        healthConnectInjector.getHealthDataCategoryPriorityHelper(),
+                        healthConnectInjector.getPreferenceHelper());
     }
 
     @Test
