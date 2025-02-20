@@ -46,7 +46,7 @@
     "reference": "Patient/patient-1",
     "display": "Example, Anne"
   },
-  "authoredOn": "2024-04-08",
+  "authoredOn": "2024-12-06",
   "requester": {
     "reference": "Practitioner/practitioner-1",
     "type": "Practitioner",
@@ -59,13 +59,13 @@
   },
   "reasonCode": [
     {
-      "coding": [
-        {
-          "system": "http://snomed.info/sct",
-          "code": "313436004",
-          "display": "Type II diabetes mellitus without complication"
-        }
-      ]
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "313436004",
+        "display": "Type II diabetes mellitus without complication"
+      }
+    ]
     }
   ],
   "courseOfTherapyType": {
@@ -125,8 +125,8 @@
   ],
   "dispenseRequest": {
     "validityPeriod": {
-      "start": "2024-04-08",
-      "end": "2024-04-26"
+      "start": "2024-12-06",
+      "end": "2024-12-30"
     },
     "numberOfRepeatsAllowed": 1,
     "quantity": {

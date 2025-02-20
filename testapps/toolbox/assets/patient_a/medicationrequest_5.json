@@ -59,13 +59,13 @@
   },
   "reasonCode": [
     {
-      "coding": [
-        {
-          "system": "http://snomed.info/sct",
-          "code": "313436004",
-          "display": "Type II diabetes mellitus without complication"
-        }
-      ]
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "313436004",
+        "display": "Type II diabetes mellitus without complication"
+      }
+    ]
     }
   ],
   "courseOfTherapyType": {

@@ -23,7 +23,12 @@
     "reference": "Encounter/encounter-unk",
     "display": "GP Visit"
   },
+  "location": {
+    "reference": "Location/location-unk",
+    "display": "Nurse Room 1"
+  },
   "occurrenceDateTime": "2018-05-21",
+  "recorded": "2018-05-21T14:05:00Z",
   "primarySource": true,
   "manufacturer": {
     "display": "Sanofi Pasteur"
@@ -70,6 +75,16 @@
         "type": "Practitioner",
         "display": "Dr Maria Hernandez"
       }
+    }
+  ],
+  "note": [
+    {
+      "text": "Patient given information leaflet and advised on signs of adverse reaction.",
+      "authorString": "Dr Maria Hernandez"
+    },
+    {
+      "text": "Patients informed that vaccine protects against tetanus, diphtheria, and pertussis for up to 10 years, after which a booster is required.",
+      "authorString": "Dr Maria Hernandez"
     }
   ]
 }

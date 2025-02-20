@@ -62,13 +62,13 @@
   },
   "reasonCode": [
     {
-      "coding": [
-        {
-          "system": "http://snomed.info/sct",
-          "code": "233604007",
-          "display": "Pneumonia"
-        }
-      ]
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "233604007",
+        "display": "Pneumonia"
+      }
+    ]
     }
   ],
   "courseOfTherapyType": {
@@ -160,5 +160,10 @@
       "system": "http://unitsofmeasure.org",
       "code": "d"
     }
-  }
+  },
+  "note": [
+    {
+      "text": "Patient to collect from hospital pharmacy."
+    }
+  ]
 }

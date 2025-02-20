@@ -45,6 +45,18 @@
       }
     ]
   },
+  "reasonCode": [
+    {
+      "coding": [
+        {
+          "system": "http://snomed.info/sct",
+          "code": "267036007",
+          "display": "Dyspnea (finding)"
+        }
+      ],
+      "text": "Shortness of breath"
+    }
+  ],
   "diagnosis": [
     {
       "condition": {

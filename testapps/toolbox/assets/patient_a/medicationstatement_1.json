@@ -100,5 +100,10 @@
         }
       ]
     }
+  ],
+  "note": [
+    {
+      "text": "Medication asserted by patient. Yet to be reconcilled with GP records."
+    }
   ]
 }

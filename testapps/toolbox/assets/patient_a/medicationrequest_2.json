@@ -47,13 +47,13 @@
   },
   "reasonCode": [
     {
-      "coding": [
-        {
-          "system": "http://snomed.info/sct",
-          "code": "233604007",
-          "display": "Pneumonia"
-        }
-      ]
+    "coding": [
+      {
+      "system": "http://snomed.info/sct",
+      "code": "233604007",
+      "display": "Pneumonia"
+      }
+    ]
     }
   ],
   "courseOfTherapyType": {

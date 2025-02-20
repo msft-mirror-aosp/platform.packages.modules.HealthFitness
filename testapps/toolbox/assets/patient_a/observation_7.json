@@ -39,5 +39,10 @@
     {
       "display": "Dr Jose Rodriguez"
     }
+  ],
+  "note": [
+    {
+      "text": "Patient given advice on local smoking cessation services."
+    }
   ]
 }

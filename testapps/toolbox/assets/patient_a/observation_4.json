@@ -40,5 +40,10 @@
       "reference": "Practitioner/practitioner-1",
       "display": "Dr Maria Hernandez"
     }
+  ],
+  "note": [
+    {
+      "text": "Status confirmed by patient."
+    }
   ]
 }

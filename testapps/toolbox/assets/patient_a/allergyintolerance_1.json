@@ -50,6 +50,7 @@
   ],
   "reaction": [
     {
+      "onset": "1982",
       "substance": {
         "coding": [
           {
@@ -79,7 +80,13 @@
             "display": "Oral use"
           }
         ]
-      }
+      },
+      "description": "Patient had anaphylactic symptoms within minutes of taking the medication and required adrenaline injection.",
+      "note": [
+        {
+          "text": "Date of reaction estimated by patient."
+        }
+      ]
     }
   ],
   "patient": {

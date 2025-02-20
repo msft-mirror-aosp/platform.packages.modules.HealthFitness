@@ -59,13 +59,13 @@
   },
   "reasonCode": [
     {
-      "coding": [
-        {
-          "system": "http://snomed.info/sct",
-          "code": "13644009",
-          "display": "Hypercholesterolemia (disorder)"
-        }
-      ]
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "13644009",
+        "display": "Hypercholesterolemia (disorder)"
+      }
+    ]
     }
   ],
   "courseOfTherapyType": {

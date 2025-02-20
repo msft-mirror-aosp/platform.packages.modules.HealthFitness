@@ -5,11 +5,11 @@
     "coding": [
       {
         "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
-        "code": "active",
-        "display": "Active"
+        "code": "resolved",
+        "display": "Resolved"
       }
     ],
-    "text": "Active"
+    "text": "Resolved"
   },
   "verificationStatus": {
     "coding": [
@@ -56,6 +56,11 @@
   "asserter": {
     "reference": "Practitioner/practitioner-1",
     "type": "Practitioner",
+     "display": "Dr Maria Hernandez"
+  },
+  "recorder": {
+    "reference": "Practitioner/practitioner-1",
+    "type": "Practitioner",
     "display": "Dr Maria Hernandez"
   },
   "encounter": {
@@ -64,5 +69,11 @@
   "onsetPeriod": {
     "start": "2023-05-01"
   },
-  "recordedDate": "2023-06-14"
+  "abatementDateTime": "2023-06-10",
+  "recordedDate": "2023-06-14",
+  "note": [
+    {
+      "text": "Patient reports headaches improved in the last few days but remains concerned."
+    }
+  ]
 }
