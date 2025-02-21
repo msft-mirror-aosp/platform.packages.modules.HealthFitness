@@ -39,10 +39,8 @@
     <string name="browse_data_title" msgid="5232691805953326097">"डेटा ब्राउज़ करें"</string>
     <string name="browse_data_subtitle" msgid="7025164374898103993">"डेटा देखें और जानें कि कौनसे ऐप्लिकेशन इसे ऐक्सेस कर सकते हैं"</string>
     <string name="manage_data_summary" msgid="8537870912521944449">"अपने-आप मिटने की सुविधा, डेटा सोर्स, बैकअप, और डेटा वापस पाने की सुविधा"</string>
-    <!-- no translation found for banner_group_more_items (1071243933488973950) -->
-    <skip />
-    <!-- no translation found for banner_group_fewer_items (3792478123282046349) -->
-    <skip />
+    <string name="banner_group_more_items" msgid="1071243933488973950">"ज़्यादा आइटम"</string>
+    <string name="banner_group_fewer_items" msgid="3792478123282046349">"कम आइटम"</string>
     <string name="backup_title" msgid="211503191266235085">"बैकअप लें"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"डेटा सोर्स और प्राथमिकता"</string>
     <string name="set_units_title" msgid="2657822539603758029">"इकाइयां सेट करें"</string>
@@ -547,7 +545,7 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Play Store पर जाएं"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect का इस्तेमाल शुरू करें"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect में, आपकी सेहत और फ़िटनेस से जुड़ा डेटा सेव किया जाता है. इससे अपने डिवाइस में अलग-अलग ऐप्लिकेशन को आसानी से सिंक करने में मदद मिलती है"</string>
-    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect, अलग-अलग ऐप्लिकेशन से सेहत और फ़िटनेस से जुड़ा आपका डेटा सेव और सिंक करता है.\n\n"<b>"फ़िटनेस और तंदुरुस्ती का डेटा"</b>"  कसरत के सेशन, कदमों की संख्या, पोषण, नींद वगैरह का डेटा शामिल है\n\n"<b>"सेहत का डेटा"</b>" जिसमें टीकाकरण की जानकारी, लैब के नतीजे वगैरह शामिल हैं"</string>
+    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect, अलग-अलग ऐप्लिकेशन से सेहत और फ़िटनेस से जुड़ा आपका डेटा सेव और सिंक करता है.\n\n"<b>"फ़िटनेस और तंदुरुस्ती का डेटा"</b>"  कसरत के सेशन, कदमों की संख्या, पोषण, नींद वगैरह का डेटा शामिल है\n\n"<b>"सेहत का डेटा"</b>" जिसमें टीकाकरण की जानकारी, लैब टेस्ट की रिपोर्ट वगैरह शामिल हैं"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect की मदद से ये काम करें"</string>
     <string name="share_data_text" msgid="6898398345784931678"><b>"ऐप्लिकेशन के साथ डेटा शेयर करें"</b>\n"ऐप्लिकेशन के लिए, यह चुनें कि Health Connect में मौजूद कौनसा डेटा पढ़ने या सेव करने की अनुमति देनी है"</string>
     <string name="manage_your_settings_text" msgid="8425779735541136878"><b>"सेटिंग और निजता को मैनेज करें"</b>\n" किसी भी समय, ऐप्लिकेशन को दी गई अनुमतियों में बदलाव करें और अपना डेटा मैनेज करें"</string>

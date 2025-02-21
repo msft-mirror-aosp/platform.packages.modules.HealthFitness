@@ -39,10 +39,8 @@
     <string name="browse_data_title" msgid="5232691805953326097">"ഡാറ്റ ബ്രൗസ് ചെയ്യുക"</string>
     <string name="browse_data_subtitle" msgid="7025164374898103993">"ഡാറ്റയും ഏതെല്ലാം ആപ്പുകൾക്ക് അത് ആക്‌സസ് ചെയ്യാനാകുമെന്നും കാണുക"</string>
     <string name="manage_data_summary" msgid="8537870912521944449">"സ്വയമേവ ഇല്ലാതാക്കൽ, ഡാറ്റാ ഉറവിടങ്ങൾ, ബാക്കപ്പ്, പുനഃസ്ഥാപിക്കൽ"</string>
-    <!-- no translation found for banner_group_more_items (1071243933488973950) -->
-    <skip />
-    <!-- no translation found for banner_group_fewer_items (3792478123282046349) -->
-    <skip />
+    <string name="banner_group_more_items" msgid="1071243933488973950">"കൂടുതൽ ഇനങ്ങൾ"</string>
+    <string name="banner_group_fewer_items" msgid="3792478123282046349">"കുറച്ച് മാത്രം ഇനങ്ങൾ"</string>
     <string name="backup_title" msgid="211503191266235085">"ബാക്കപ്പ് ചെയ്യുക"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"ഡാറ്റ ഉറവിടങ്ങളും മുൻഗണനയും"</string>
     <string name="set_units_title" msgid="2657822539603758029">"യൂണിറ്റുകൾ സജ്ജീകരിക്കുക"</string>
