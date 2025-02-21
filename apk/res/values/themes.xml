@@ -35,6 +35,7 @@
         <item name="seeAllCompatibleAppsIcon">@drawable/ic_see_all_compatible_apps</item>
         <item name="sendFeedbackIcon">@drawable/ic_send_feedback</item>
         <item name="searchIcon">@drawable/ic_find_in_page</item>
+        <item name="emptySearchIcon">@drawable/ic_search</item>
 
         <!-- Categories page -->
         <item name="autoDeleteIcon">@drawable/ic_auto_delete</item>
