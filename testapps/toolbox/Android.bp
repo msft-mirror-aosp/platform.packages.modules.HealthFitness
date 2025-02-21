@@ -36,6 +36,7 @@ android_library {
     static_libs: [
         "kotlin-stdlib",
         "kotlinx-coroutines-android",
+        "androidx.documentfile_documentfile",
         "androidx.navigation_navigation-common-ktx",
         "androidx.navigation_navigation-fragment-ktx",
         "androidx.navigation_navigation-runtime-ktx",

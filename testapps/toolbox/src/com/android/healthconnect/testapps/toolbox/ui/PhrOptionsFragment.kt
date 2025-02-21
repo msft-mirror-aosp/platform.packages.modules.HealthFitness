@@ -16,7 +16,9 @@
 
 package com.android.healthconnect.testapps.toolbox.ui
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.health.connect.CreateMedicalDataSourceRequest
 import android.health.connect.HealthConnectException
 import android.health.connect.HealthConnectManager
@@ -37,10 +39,13 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.os.asOutcomeReceiver
+import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.android.healthconnect.testapps.toolbox.Constants.MEDICAL_PERMISSIONS
@@ -48,6 +53,7 @@ import com.android.healthconnect.testapps.toolbox.R
 import com.android.healthconnect.testapps.toolbox.utils.GeneralUtils.Companion.requireSystemService
 import com.android.healthconnect.testapps.toolbox.utils.GeneralUtils.Companion.showMessageDialog
 import java.io.IOException
+import java.io.InputStream
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 
@@ -56,12 +62,15 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         private const val PATIENT_A_ASSET_PATH = "patient_a"
         private const val PATIENT_B_ASSET_PATH = "patient_b"
         private const val PATIENT_C_ASSET_PATH = "patient_c"
+        private const val CUSTOM_DATA_PATH_PLACE_HOLDER = "custom folder"
     }
 
     private lateinit var mRequestPermissionLauncher: ActivityResultLauncher<Array<String>>
+    private lateinit var mSelectJSONDirectoryLauncher: ActivityResultLauncher<Intent>
     private val healthConnectManager: HealthConnectManager by lazy {
         requireContext().requireSystemService()
     }
+    private var mSelectedCustomDirFilesToUri: Map<String, Uri>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,8 +78,12 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         // asking permissions again unless they grant the permission from settings.
         mRequestPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-                permissionMap: Map<String, Boolean> ->
-                requestPermissionResultHandler(permissionMap)
+                permissionMap: Map<String, Boolean> -> requestPermissionResultHandler(permissionMap)
+            }
+
+        mSelectJSONDirectoryLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                result: ActivityResult -> selectJsonDirResultHandler(result)
             }
     }
 
@@ -100,6 +113,27 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
             )
                 .show()
         }
+    }
+
+    private fun selectJsonDirResultHandler(result: ActivityResult) {
+        val view = requireView()
+        val uri = result.data?.data
+        if (result.resultCode != Activity.RESULT_OK || uri == null) {
+            Toast.makeText(
+                this.requireContext(),
+                "Failed to get directory access.",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            val spinner = view.findViewById<Spinner>(R.id.phr_patient_spinner)
+            spinner.setSelection(0)
+            return
+        }
+
+        val customPathText = view.findViewById<TextView>(R.id.phr_options_custom_path)
+        customPathText.text = "Selected dir: ${uri.path}"
+        customPathText.visibility = View.VISIBLE
+        setUpFhirResourceFromSpinner(view, uri)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -157,7 +191,12 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
 
     private fun setUpPatientContextSpinner(rootView: View) {
         val spinnerOptions =
-            listOf(PATIENT_A_ASSET_PATH, PATIENT_B_ASSET_PATH, PATIENT_C_ASSET_PATH)
+            listOf(
+                PATIENT_A_ASSET_PATH,
+                PATIENT_B_ASSET_PATH,
+                PATIENT_C_ASSET_PATH,
+                CUSTOM_DATA_PATH_PLACE_HOLDER
+            )
         val spinnerAdapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, spinnerOptions)
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -173,7 +212,23 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
                     position: Int,
                     id: Long,
                 ) {
-                    // Update resource spinner based on the selected patient
+                    // Clear pasted resource text
+                    rootView.findViewById<EditText>(R.id.phr_pasted_resource_text).text = null
+                    // Clear selected custom path in case it was present
+                    val customPathText =
+                        rootView.findViewById<TextView>(R.id.phr_options_custom_path)
+                    customPathText.text = null
+                    customPathText.visibility = View.GONE
+
+                    if (position == 3) {
+                        // let user select directory to read from. The callback of this will then
+                        // also set up the fhirResourceSpinner
+                        mSelectJSONDirectoryLauncher.launch(
+                            Intent(Intent.ACTION_OPEN_DOCUMENT_TREE))
+                        return
+                    }
+
+                    // Otherwise update resource spinner based on the selected patient
                     val selectedPatientContext = spinnerOptions[position]
                     setUpFhirResourceFromSpinner(rootView, selectedPatientContext)
                 }
@@ -185,9 +240,45 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
 
     }
 
+    private fun setUpFhirResourceFromSpinner(rootView: View, selectedCustomDirUri: Uri) {
+        val selectedDirectory =
+            DocumentFile.fromTreeUri(this.requireContext(), selectedCustomDirUri)
+        if (selectedDirectory == null) {
+            Toast.makeText(
+                this.requireContext(),
+                "Failed to access selected dir: $selectedCustomDirUri.",
+                Toast.LENGTH_LONG
+            )
+                .show()
+            return
+        }
+
+        mSelectedCustomDirFilesToUri = selectedDirectory.listFiles()
+            .filter { file: DocumentFile -> file.isFile && file.name != null }
+            .associate { file: DocumentFile -> Pair(file.name ?: "unknown", file.uri) }
+            .filter { (filename, uri) -> uri.toString().endsWith(".json") }
+        Log.d("SET_UP_SPINNER", "Found json files $mSelectedCustomDirFilesToUri")
+
+        val spinnerOptions =
+            listOf(getString(R.string.spinner_default_message)) +
+                    (mSelectedCustomDirFilesToUri?.keys ?: emptyList())
+
+        setUpFhirResourceSpinner(rootView, spinnerOptions, true)
+    }
+
     private fun setUpFhirResourceFromSpinner(rootView: View, assetSubDir: String) {
-        val jsonFiles = listFhirJSONFiles(requireContext(), assetSubDir) ?: emptyList()
+        val jsonFiles = listFhirJSONAssetFiles(requireContext(), assetSubDir) ?: emptyList()
         val spinnerOptions = listOf(getString(R.string.spinner_default_message)) + jsonFiles
+
+        setUpFhirResourceSpinner(rootView, spinnerOptions, false, assetSubDir)
+    }
+
+    private fun setUpFhirResourceSpinner(
+        rootView: View,
+        spinnerOptions: List<String>,
+        customPatientContext: Boolean,
+        assetSubDir: String = ""
+    ) {
         val spinnerAdapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, spinnerOptions)
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -195,31 +286,38 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         val spinner = rootView.findViewById<Spinner>(R.id.phr_spinner)
         spinner.adapter = spinnerAdapter
 
-        spinner.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>,
-                    view: View?,
-                    position: Int,
-                    id: Long,
-                ) {
-                    if (position == 0) { // Ignore "Select resource" default message
-                        return
-                    }
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long,
+            ) {
+                if (position == 0) { // Ignore "Select resource" default message
+                    return
+                }
 
-                    val selectedFile = spinnerOptions[position]
-                    val selectedResource =
+                var selectedResource = ""
+                val selectedFile = spinnerOptions[position]
+
+                if (customPatientContext) {
+                    val resourceUri = mSelectedCustomDirFilesToUri?.get(selectedFile) ?: return
+                    selectedResource =
+                        loadJSONFromContentUri(requireContext(), resourceUri) ?: return
+                } else {
+                    selectedResource =
                         loadJSONFromAsset(requireContext(), assetSubDir, selectedFile) ?: return
-
-                    rootView.findViewById<EditText>(R.id.phr_pasted_resource_text).setText(
-                        selectedResource
-                    )
                 }
 
-                override fun onNothingSelected(parent: AdapterView<*>) {
-                    // No-op.
-                }
+                rootView.findViewById<EditText>(R.id.phr_pasted_resource_text).setText(
+                    selectedResource
+                )
             }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // No-op.
+            }
+        }
     }
 
     private suspend fun insertResource(view: View, resource: String): String {
@@ -245,8 +343,10 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
     private suspend fun insertAllFhirResources(view: View): String {
         val patientContext =
             view.findViewById<Spinner>(R.id.phr_patient_spinner).selectedItem.toString()
-        val allResources = loadAllFhirJSONsFromAssets(patientContext)
-        Log.d("INSERT_ALL", "Writing all FHIR resources")
+        val allResources = if (patientContext == CUSTOM_DATA_PATH_PLACE_HOLDER)
+            loadAllFhirJSONsFromContentUris(mSelectedCustomDirFilesToUri?.values.orEmpty().toList())
+            else loadAllFhirJSONsFromAssets(patientContext)
+        Log.d("INSERT_ALL", "Writing ${allResources.size} FHIR resources")
         val insertedDataSourceId =
             view.findViewById<EditText>(R.id.phr_data_source_id_text).getText().toString()
         val insertedResources =
@@ -323,12 +423,12 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         return resources
     }
 
-    private fun listFhirJSONFiles(context: Context, path: String): List<String>? {
+    private fun listFhirJSONAssetFiles(context: Context, path: String): List<String>? {
         val assetManager = context.assets
         return try {
             assetManager.list(path)?.filter { it.endsWith(".json") } ?: emptyList()
         } catch (e: IOException) {
-            Log.e("listFhirJSONFiles", "Error listing assets in path $path: $e")
+            Log.e("listFhirJSONAssetFiles", "Error listing assets in path $path", e)
             Toast.makeText(
                 context,
                 "Error listing JSON files: ${e.localizedMessage}",
@@ -340,7 +440,7 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
     }
 
     private fun loadAllFhirJSONsFromAssets(path: String): List<String> {
-        val jsonFiles = listFhirJSONFiles(requireContext(), path)
+        val jsonFiles = listFhirJSONAssetFiles(requireContext(), path)
         if (jsonFiles == null) {
             Log.e("loadAllFhirJSONsAssets", "No JSON files were found.")
             Toast.makeText(context, "No JSON files were found.", Toast.LENGTH_SHORT).show()
@@ -358,20 +458,52 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
     fun loadJSONFromAsset(context: Context, path: String, fileName: String): String? {
         return try {
             val inputStream = context.assets.open("$path/$fileName")
-            val buffer = ByteArray(inputStream.available())
-            inputStream.read(buffer)
-            inputStream.close()
-            buffer.toString(Charsets.UTF_8)
+            readJSONFromInputStream(inputStream)
         } catch (e: IOException) {
-            Log.e("loadJSONFromAsset", "Error reading JSON file: $e")
+            Log.e("loadJSONFromAsset", "Error reading JSON file", e)
             Toast.makeText(
                 context,
-                "Error reading JSON file: ${e.localizedMessage}",
+                "Error reading JSON file from Asset: ${e.localizedMessage}",
                 Toast.LENGTH_SHORT,
             )
                 .show()
             null
         }
+    }
+
+    private fun loadAllFhirJSONsFromContentUris(uris: List<Uri>): List<String> {
+        return uris
+            .mapNotNull {
+                val jsonString = loadJSONFromContentUri(requireContext(), it)
+                Log.i("loadAllFhirJSONsUris", "$it: $jsonString")
+                jsonString
+            }
+    }
+
+    fun loadJSONFromContentUri(context: Context, uri: Uri): String? {
+        return try {
+            val inputStream = context.contentResolver.openInputStream(uri)
+            readJSONFromInputStream(inputStream!!)
+        } catch (e: IOException) {
+            Log.e("loadJSONFromContentUri", "Error reading JSON file", e)
+            Toast.makeText(
+                context,
+                "Error reading JSON file from content Uri: ${e.localizedMessage}",
+                Toast.LENGTH_SHORT,
+            )
+                .show()
+            null
+        }
+
+        val inputStream = context.contentResolver.openInputStream(uri)
+        return readJSONFromInputStream(inputStream!!)
+    }
+
+    fun readJSONFromInputStream(inputStream: InputStream): String {
+        val buffer = ByteArray(inputStream.available())
+        inputStream.read(buffer)
+        inputStream.close()
+        return buffer.toString(Charsets.UTF_8)
     }
 
     private fun requestMedicalPermissions() {
