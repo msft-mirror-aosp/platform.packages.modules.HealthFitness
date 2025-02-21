@@ -411,7 +411,7 @@ public class CloudBackupDatabaseHelperTest {
     }
 
     @Test
-    public void isChangeLogsTokenValid_nextChangeLogNoLongerExists_invalid() {
+    public void isChangeLogsTokenValid_changeLogNoLongerExists_invalid() {
         RecordInternal<StepsRecord> stepRecord =
                 createStepsRecord(
                         TEST_START_TIME_IN_MILLIS, TEST_END_TIME_IN_MILLIS, TEST_STEP_COUNT);
@@ -424,7 +424,7 @@ public class CloudBackupDatabaseHelperTest {
                 TEST_PACKAGE_NAME,
                 createBloodPressureRecord(TEST_TIME_IN_MILLIS, TEST_SYSTOLIC, TEST_DIASTOLIC));
 
-        // Delete some change logs.
+        // Delete the original change logs.
         mTransactionManager.delete(
                 new DeleteTableRequest(ChangeLogsHelper.TABLE_NAME, stepRecord.getRecordType()));
 

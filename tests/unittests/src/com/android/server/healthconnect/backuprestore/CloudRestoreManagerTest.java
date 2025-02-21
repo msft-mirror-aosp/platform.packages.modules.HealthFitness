@@ -38,6 +38,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThrows;
 
 import android.content.Context;
 import android.health.connect.HealthDataCategory;
@@ -345,6 +346,21 @@ public class CloudRestoreManagerTest {
         var restoredSession = readExerciseSession(exerciseSessionRecord.getUuid());
         assertThat(mRecordProtoConverter.toRecordProto(restoredSession))
                 .isEqualTo(exerciseSessionRecord);
+    }
+
+    @Test
+    public void restoreInvalidSettings_throwsException() {
+        BackupSettings backupSettings = new BackupSettings(new byte[] {45, 36});
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> mCloudRestoreManager.pushSettingsForRestore(backupSettings));
+    }
+
+    @Test
+    public void restoreInvalidChanges_skipsInvalidChange() {
+        RestoreChange restoreChange = new RestoreChange(new byte[] {45, 36});
+        // test that no exceptions are thrown
+        mCloudRestoreManager.pushChangesForRestore(List.of(restoreChange));
     }
 
     private void setupInitialSettings() {
