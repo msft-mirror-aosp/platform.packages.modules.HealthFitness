@@ -18,6 +18,7 @@ package com.android.healthfitness.flags;
 
 import static com.android.healthfitness.flags.AconfigFlagHelper.DB_VERSION_TO_DB_FLAG_MAP;
 import static com.android.healthfitness.flags.AconfigFlagHelper.getDbVersion;
+import static com.android.healthfitness.flags.AconfigFlagHelper.isCloudBackupRestoreEnabled;
 import static com.android.healthfitness.flags.AconfigFlagHelper.isEcosystemMetricsEnabled;
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
 import static com.android.healthfitness.flags.DatabaseVersions.LAST_ROLLED_OUT_DB_VERSION;
@@ -202,5 +203,31 @@ public class AconfigFlagHelperTest {
     })
     public void isEcosystemMetricsEnabled_bothFlagsOn_expectTrue() {
         assertThat(isEcosystemMetricsEnabled()).isTrue();
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_CLOUD_BACKUP_AND_RESTORE, Flags.FLAG_CLOUD_BACKUP_AND_RESTORE_DB})
+    public void cloudBackupAndRestore_featureFlagTrueAndDbFlagTrue_expectTrue() {
+        assertThat(isCloudBackupRestoreEnabled()).isTrue();
+    }
+
+    @Test
+    @DisableFlags({Flags.FLAG_CLOUD_BACKUP_AND_RESTORE, Flags.FLAG_CLOUD_BACKUP_AND_RESTORE_DB})
+    public void cloudBackupAndRestore_featureFlagFalseAndDbFlagFalse_expectFalse() {
+        assertThat(isCloudBackupRestoreEnabled()).isFalse();
+    }
+
+    @Test
+    @DisableFlags(Flags.FLAG_CLOUD_BACKUP_AND_RESTORE)
+    @EnableFlags(Flags.FLAG_CLOUD_BACKUP_AND_RESTORE_DB)
+    public void cloudBackupAndRestore_featureFlagFalseAndDbTrue_expectFalse() {
+        assertThat(isCloudBackupRestoreEnabled()).isFalse();
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_CLOUD_BACKUP_AND_RESTORE)
+    @DisableFlags(Flags.FLAG_CLOUD_BACKUP_AND_RESTORE_DB)
+    public void cloudBackupAndRestore_featureFlagTrueAndDbFalse_expectFalse() {
+        assertThat(isCloudBackupRestoreEnabled()).isFalse();
     }
 }

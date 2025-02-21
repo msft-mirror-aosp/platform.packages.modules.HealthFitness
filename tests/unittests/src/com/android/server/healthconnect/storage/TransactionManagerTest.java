@@ -23,6 +23,7 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 import static android.healthconnect.cts.utils.DataFactory.getDataOrigin;
 
 import static com.android.healthfitness.flags.Flags.FLAG_ACTIVITY_INTENSITY_DB;
+import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTORE_DB;
 import static com.android.healthfitness.flags.Flags.FLAG_ECOSYSTEM_METRICS;
 import static com.android.healthfitness.flags.Flags.FLAG_ECOSYSTEM_METRICS_DB_CHANGES;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
@@ -619,7 +620,8 @@ public class TransactionManagerTest {
         FLAG_ECOSYSTEM_METRICS,
         FLAG_ECOSYSTEM_METRICS_DB_CHANGES,
         FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
-        FLAG_ACTIVITY_INTENSITY_DB
+        FLAG_ACTIVITY_INTENSITY_DB,
+        FLAG_CLOUD_BACKUP_AND_RESTORE_DB
     })
     public void flagsEnabled_readSelfData_readRecordsById_doNotAddReadAccessLog() {
         String readerPackage = "reader.package";

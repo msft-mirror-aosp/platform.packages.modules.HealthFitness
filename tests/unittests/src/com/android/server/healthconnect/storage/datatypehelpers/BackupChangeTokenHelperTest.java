@@ -45,7 +45,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
-@EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+@EnableFlags({Flags.FLAG_CLOUD_BACKUP_AND_RESTORE, Flags.FLAG_CLOUD_BACKUP_AND_RESTORE_DB})
 public class BackupChangeTokenHelperTest {
 
     private static final int TEST_DATA_RECORD_TYPE = 1;

@@ -90,7 +90,7 @@ import java.util.UUID;
 
 /** Unit test for class {@link CloudBackupDatabaseHelper}. */
 @RunWith(AndroidJUnit4.class)
-@EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+@EnableFlags({Flags.FLAG_CLOUD_BACKUP_AND_RESTORE, Flags.FLAG_CLOUD_BACKUP_AND_RESTORE_DB})
 public class CloudBackupDatabaseHelperTest {
 
     private static final String TEST_PACKAGE_NAME = "test.package.name";
