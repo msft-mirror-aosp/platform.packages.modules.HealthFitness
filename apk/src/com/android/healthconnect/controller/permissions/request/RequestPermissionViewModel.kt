@@ -171,7 +171,7 @@ constructor(
                     areAllPermissionsGranted(_medicalPermissionsList, grantedMedicalPermissions)
                 )
             }
-            addSource(_grantedFitnessPermissions) {
+            addSource(_grantedMedicalPermissions) {
                 postValue(
                     areAllPermissionsGranted(_medicalPermissionsList, grantedMedicalPermissions)
                 )

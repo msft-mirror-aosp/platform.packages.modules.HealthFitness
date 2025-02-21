@@ -21,7 +21,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.health.connect.Constants;
 import android.net.Uri;
 import android.os.UserHandle;
@@ -125,7 +124,7 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
                                         .maybeRemoveAppWithoutWritePermissionsFromPriorityList(
                                                 packageName));
             }
-          return;
+            return;
         }
 
         // If we don't need to remove or enforce the rationale intent, we are done.
@@ -159,7 +158,7 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
     }
 
     /** Sets the current foreground user handle. */
-    public void setUserHandle(UserHandle userHandle) {
+    public void setupForUser(UserHandle userHandle) {
         mCurrentForegroundUser = userHandle;
     }
 
