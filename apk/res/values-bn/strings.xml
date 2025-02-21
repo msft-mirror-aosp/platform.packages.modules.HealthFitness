@@ -39,10 +39,8 @@
     <string name="browse_data_title" msgid="5232691805953326097">"ডেটা ব্রাউজ করুন"</string>
     <string name="browse_data_subtitle" msgid="7025164374898103993">"ডেটা এবং কোন অ্যাপ এটি অ্যাক্সেস করতে পারবে তা দেখুন"</string>
     <string name="manage_data_summary" msgid="8537870912521944449">"অটোমেটিক মুছে দেওয়া, ডেটা সোর্স, ব্যাক-আপ নেওয়া ও ফিরিয়ে আনা"</string>
-    <!-- no translation found for banner_group_more_items (1071243933488973950) -->
-    <skip />
-    <!-- no translation found for banner_group_fewer_items (3792478123282046349) -->
-    <skip />
+    <string name="banner_group_more_items" msgid="1071243933488973950">"আরও বেশি আইটেম"</string>
+    <string name="banner_group_fewer_items" msgid="3792478123282046349">"কম আইটেম"</string>
     <string name="backup_title" msgid="211503191266235085">"ব্যাক-আপ নিন"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"ডেটা সোর্স ও প্রায়োরিটি"</string>
     <string name="set_units_title" msgid="2657822539603758029">"ইউনিট সেট করুন"</string>
@@ -1196,6 +1194,6 @@
     <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> অ্যাপের <xliff:g id="DATA_TYPES">%2$s</xliff:g>-এ অ্যাক্সেস আছে"</string>
     <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"ফিটনেস ও সুস্থতা সম্পর্কিত অনুমতি ম্যানেজ করুন"</string>
     <string name="used_by_apps_count" msgid="1384912521974773617">"{count,plural, =1{১টি অ্যাপ ব্যবহার করেছে}one{#টি অ্যাপ ব্যবহার করেছে}other{#টি অ্যাপ ব্যবহার করেছে}}"</string>
-    <string name="not_used_in_past_24_hours" msgid="7918784815693928054">"গত ২৪ ঘন্টায় ব্যবহার করা হয়নি"</string>
+    <string name="not_used_in_past_24_hours" msgid="7918784815693928054">"গত ২৪ ঘণ্টায় ব্যবহার করা হয়নি"</string>
     <string name="accessed" msgid="4424701457530587176">"<xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>-এ অ্যাক্সেস করা হয়েছে"</string>
 </resources>
