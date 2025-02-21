@@ -41,6 +41,7 @@ import android.health.connect.internal.datatypes.PlannedExerciseSessionRecordInt
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.util.Pair;
+import android.util.Slog;
 
 import com.android.server.healthconnect.proto.backuprestore.BackupData;
 import com.android.server.healthconnect.storage.TransactionManager;
@@ -111,26 +112,26 @@ public class CloudBackupDatabaseHelper {
 
     /**
      * Verifies whether the provided change logs token is still valid. The token is valid if the
-     * next change log still exists or the token points to the end of the change logs table.
+     * change log which is pointed by the token still exists.
      */
     boolean isChangeLogsTokenValid(@Nullable String changeLogsPageToken) {
         if (changeLogsPageToken == null) {
+            Slog.i(TAG, "No change logs token found.");
             return false;
         }
         ChangeLogsRequestHelper.TokenRequest tokenRequest =
                 mChangeLogsRequestHelper.getRequest(/* packageName= */ "", changeLogsPageToken);
-        if (tokenRequest.getRowIdChangeLogs() == mChangeLogsHelper.getLatestRowId()) {
-            return true;
-        }
         WhereClauses whereClauses =
                 new WhereClauses(AND)
                         .addWhereEqualsClause(
                                 PRIMARY_COLUMN_NAME,
-                                String.valueOf(tokenRequest.getRowIdChangeLogs() + 1));
+                                String.valueOf(tokenRequest.getRowIdChangeLogs()));
         ReadTableRequest readTableRequest =
                 new ReadTableRequest(ChangeLogsHelper.TABLE_NAME).setWhereClause(whereClauses);
         try (Cursor cursor = mTransactionManager.read(readTableRequest)) {
-            return cursor.getCount() == 1;
+            int count = cursor.getCount();
+            Slog.i(TAG, "The number of matched change logs is: " + count);
+            return count == 1;
         }
     }
 
