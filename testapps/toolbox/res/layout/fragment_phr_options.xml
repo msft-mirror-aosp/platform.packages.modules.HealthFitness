@@ -93,15 +93,12 @@
             android:minWidth="250dp"
             android:text="@string/phr_options_create_data_source" />
 
-        <EditText
-            android:id="@+id/phr_data_source_id_text"
+        <Spinner
+            android:id="@+id/phr_data_source_spinner"
+            android:layout_marginTop="18dp"
+            android:minWidth="250dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:gravity="center"
-            android:text="@string/phr_options_data_source_id_placeholder"
-            android:visibility="gone"
-            android:textSize="12sp" />
+            android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/phr_seed_fhir_jsons_button"

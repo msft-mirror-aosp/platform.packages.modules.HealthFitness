@@ -39,10 +39,8 @@
     <string name="browse_data_title" msgid="5232691805953326097">"தரவை உலாவுக"</string>
     <string name="browse_data_subtitle" msgid="7025164374898103993">"தரவையும் அதை எந்தெந்த ஆப்ஸ் அணுகலாம் என்பதையும் பார்க்கலாம்"</string>
     <string name="manage_data_summary" msgid="8537870912521944449">"தானாக நீக்குதல், தரவு மூலங்கள், காப்புப் பிரதி மற்றும் மீட்டெடுத்தல்"</string>
-    <!-- no translation found for banner_group_more_items (1071243933488973950) -->
-    <skip />
-    <!-- no translation found for banner_group_fewer_items (3792478123282046349) -->
-    <skip />
+    <string name="banner_group_more_items" msgid="1071243933488973950">"மேலும்"</string>
+    <string name="banner_group_fewer_items" msgid="3792478123282046349">"சுருக்கு"</string>
     <string name="backup_title" msgid="211503191266235085">"காப்புப் பிரதி எடு"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"தரவு மூலங்களும் முன்னுரிமையும்"</string>
     <string name="set_units_title" msgid="2657822539603758029">"அலகுகளை அமை"</string>

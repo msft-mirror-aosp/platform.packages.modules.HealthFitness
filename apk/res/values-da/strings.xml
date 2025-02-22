@@ -39,10 +39,8 @@
     <string name="browse_data_title" msgid="5232691805953326097">"Gennemse data"</string>
     <string name="browse_data_subtitle" msgid="7025164374898103993">"Se data og de apps, der kan tilgå dem"</string>
     <string name="manage_data_summary" msgid="8537870912521944449">"Automatisk sletning, datakilder, sikkerhedskopiering og gendannelse"</string>
-    <!-- no translation found for banner_group_more_items (1071243933488973950) -->
-    <skip />
-    <!-- no translation found for banner_group_fewer_items (3792478123282046349) -->
-    <skip />
+    <string name="banner_group_more_items" msgid="1071243933488973950">"Flere elementer"</string>
+    <string name="banner_group_fewer_items" msgid="3792478123282046349">"Færre elementer"</string>
     <string name="backup_title" msgid="211503191266235085">"Sikkerhedskopiering"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Datakilder og prioritet"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Angiv enheder"</string>
@@ -1177,10 +1175,8 @@
     <string name="fitness_and_wellness" msgid="2002316898861559748">"Fitness og sundhed"</string>
     <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Hele tiden"</string>
     <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Under brug"</string>
-    <!-- no translation found for view_permissions_description_all_the_time (3434945199164069475) -->
-    <skip />
-    <!-- no translation found for view_permissions_description_while_in_use (507698943902581557) -->
-    <skip />
+    <string name="view_permissions_description_all_the_time" msgid="3434945199164069475">"<xliff:g id="APP_NAME">%1$s</xliff:g> kan til enhver tid tilgå alle dine trænings- og sundhedsdata"</string>
+    <string name="view_permissions_description_while_in_use" msgid="507698943902581557">"<xliff:g id="APP_NAME">%1$s</xliff:g> kan tilgå alle dine trænings- og sundhedsdata, når appen er i brug"</string>
     <string name="allowed_to_access" msgid="4179317387300812335">"Har adgang"</string>
     <string name="allowed_to_read" msgid="2775365229411407406">"Har tilladelse til at læse"</string>
     <string name="give_permission_prompt" msgid="5788144216023065504">"Disse tilladelser giver <xliff:g id="APP_NAME">%1$s</xliff:g> adgang til data fra din enheds sensorer."</string>
@@ -1192,10 +1188,8 @@
     <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Vil du fjerne adgangen til <xliff:g id="DATA_TYPE">%s</xliff:g> for alle apps på dit ur?"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"Flueben"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"Kryds"</string>
-    <!-- no translation found for current_allow_mode_all_the_time (3329625277933258855) -->
-    <skip />
-    <!-- no translation found for current_allow_mode_while_in_use (6358053330935305061) -->
-    <skip />
+    <string name="current_allow_mode_all_the_time" msgid="3329625277933258855">"<xliff:g id="APP_NAME">%1$s</xliff:g> kan i øjeblikket tilgå trænings- og sundhedsdata til enhver tid"</string>
+    <string name="current_allow_mode_while_in_use" msgid="6358053330935305061">"<xliff:g id="APP_NAME">%1$s</xliff:g> kan i øjeblikket tilgå trænings- og sundhedsdata, når appen er i brug"</string>
     <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Vil du give <xliff:g id="APP_NAME">%1$s</xliff:g> adgang til trænings- og sundhedsdata hele tiden?"</string>
     <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> har adgang til <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
     <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Administrer tilladelser for træning og sundhed"</string>

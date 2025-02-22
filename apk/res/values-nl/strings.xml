@@ -39,10 +39,8 @@
     <string name="browse_data_title" msgid="5232691805953326097">"Door gegevens browsen"</string>
     <string name="browse_data_subtitle" msgid="7025164374898103993">"Bekijk gegevens en welke apps er toegang toe hebben"</string>
     <string name="manage_data_summary" msgid="8537870912521944449">"Verwijder gegevens automatisch, gegevensbronnen, back-up en herstel"</string>
-    <!-- no translation found for banner_group_more_items (1071243933488973950) -->
-    <skip />
-    <!-- no translation found for banner_group_fewer_items (3792478123282046349) -->
-    <skip />
+    <string name="banner_group_more_items" msgid="1071243933488973950">"Meer items"</string>
+    <string name="banner_group_fewer_items" msgid="3792478123282046349">"Minder items"</string>
     <string name="backup_title" msgid="211503191266235085">"Back-up"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Gegevensbronnen en prioriteit"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Eenheden instellen"</string>
