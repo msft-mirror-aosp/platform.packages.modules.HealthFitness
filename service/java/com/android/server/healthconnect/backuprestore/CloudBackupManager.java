@@ -31,7 +31,6 @@ import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.util.Slog;
 
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.BackupChangeTokenHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
@@ -39,7 +38,6 @@ import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsReques
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
 /**
@@ -61,15 +59,13 @@ public final class CloudBackupManager {
     public CloudBackupManager(
             TransactionManager transactionManager,
             AppInfoHelper appInfoHelper,
-            AccessLogsHelper accessLogsHelper,
             DeviceInfoHelper deviceInfoHelper,
             HealthConnectMappings healthConnectMappings,
             InternalHealthConnectMappings internalHealthConnectMappings,
             ChangeLogsHelper changeLogsHelper,
             ChangeLogsRequestHelper changeLogsRequestHelper,
             HealthDataCategoryPriorityHelper priorityHelper,
-            PreferenceHelper preferenceHelper,
-            ReadAccessLogsHelper readAccessLogsHelper) {
+            PreferenceHelper preferenceHelper) {
         mTransactionManager = transactionManager;
         mPriorityHelper = priorityHelper;
         mPreferenceHelper = preferenceHelper;
@@ -78,13 +74,11 @@ public final class CloudBackupManager {
                 new CloudBackupDatabaseHelper(
                         transactionManager,
                         appInfoHelper,
-                        accessLogsHelper,
                         deviceInfoHelper,
                         healthConnectMappings,
                         internalHealthConnectMappings,
                         changeLogsHelper,
-                        changeLogsRequestHelper,
-                        readAccessLogsHelper);
+                        changeLogsRequestHelper);
     }
 
     /**

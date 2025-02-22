@@ -23,6 +23,7 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 import static android.healthconnect.cts.utils.DataFactory.getDataOrigin;
 
 import static com.android.healthfitness.flags.Flags.FLAG_ACTIVITY_INTENSITY_DB;
+import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTORE_DB;
 import static com.android.healthfitness.flags.Flags.FLAG_ECOSYSTEM_METRICS;
 import static com.android.healthfitness.flags.Flags.FLAG_ECOSYSTEM_METRICS_DB_CHANGES;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
@@ -168,8 +169,40 @@ public class TransactionManagerTest {
                 mTransactionManager.readRecordsByIds(
                         readTransactionRequest,
                         mAppInfoHelper,
-                        mAccessLogsHelper,
                         mDeviceInfoHelper,
+                        mAccessLogsHelper,
+                        mReadAccessLogsHelper,
+                        /* shouldRecordAccessLog= */ false);
+        assertThat(records).hasSize(1);
+        assertThat(records.get(0).getUuid()).isEqualTo(UUID.fromString(uuid));
+    }
+
+    @Test
+    public void readRecordsById_ignoresMissingIds() {
+        long timeMillis = 456;
+        String uuid =
+                mTransactionTestUtils
+                        .insertRecords(
+                                TEST_PACKAGE_NAME,
+                                createBloodPressureRecord(timeMillis, 120.0, 80.0))
+                        .get(0);
+
+        ReadRecordsRequestUsingIds<BloodPressureRecord> request =
+                new ReadRecordsRequestUsingIds.Builder<>(BloodPressureRecord.class)
+                        .addId(UUID.randomUUID().toString())
+                        .addId(uuid)
+                        .addId(UUID.randomUUID().toString())
+                        .build();
+        ReadTransactionRequest readTransactionRequest =
+                mTransactionTestUtils.getReadTransactionRequest(
+                        request.toReadRecordsRequestParcel());
+
+        List<RecordInternal<?>> records =
+                mTransactionManager.readRecordsByIds(
+                        readTransactionRequest,
+                        mAppInfoHelper,
+                        mDeviceInfoHelper,
+                        mAccessLogsHelper,
                         mReadAccessLogsHelper,
                         /* shouldRecordAccessLog= */ false);
         assertThat(records).hasSize(1);
@@ -200,8 +233,8 @@ public class TransactionManagerTest {
                 mTransactionManager.readRecordsByIds(
                         request,
                         mAppInfoHelper,
-                        mAccessLogsHelper,
                         mDeviceInfoHelper,
+                        mAccessLogsHelper,
                         mReadAccessLogsHelper,
                         /* shouldRecordAccessLog= */ false);
         assertThat(records).hasSize(2);
@@ -225,8 +258,8 @@ public class TransactionManagerTest {
         mTransactionManager.readRecordsByIds(
                 readTransactionRequest,
                 mAppInfoHelper,
-                mAccessLogsHelper,
                 mDeviceInfoHelper,
+                mAccessLogsHelper,
                 mReadAccessLogsHelper,
                 /* shouldRecordAccessLog= */ false);
 
@@ -255,8 +288,8 @@ public class TransactionManagerTest {
                                 mTransactionManager.readRecordsByIds(
                                         readTransactionRequest,
                                         mAppInfoHelper,
-                                        mAccessLogsHelper,
                                         mDeviceInfoHelper,
+                                        mAccessLogsHelper,
                                         mReadAccessLogsHelper,
                                         /* shouldRecordAccessLog= */ false));
         assertThat(thrown).hasMessageThat().contains("Expect read by id request");
@@ -567,8 +600,8 @@ public class TransactionManagerTest {
         mTransactionManager.readRecordsByIds(
                 readTransactionRequest,
                 mAppInfoHelper,
-                mAccessLogsHelper,
                 mDeviceInfoHelper,
+                mAccessLogsHelper,
                 mReadAccessLogsHelper,
                 /* shouldRecordAccessLog= */ true);
 
@@ -587,7 +620,8 @@ public class TransactionManagerTest {
         FLAG_ECOSYSTEM_METRICS,
         FLAG_ECOSYSTEM_METRICS_DB_CHANGES,
         FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
-        FLAG_ACTIVITY_INTENSITY_DB
+        FLAG_ACTIVITY_INTENSITY_DB,
+        FLAG_CLOUD_BACKUP_AND_RESTORE_DB
     })
     public void flagsEnabled_readSelfData_readRecordsById_doNotAddReadAccessLog() {
         String readerPackage = "reader.package";
@@ -612,8 +646,8 @@ public class TransactionManagerTest {
         mTransactionManager.readRecordsByIds(
                 readTransactionRequest,
                 mAppInfoHelper,
-                mAccessLogsHelper,
                 mDeviceInfoHelper,
+                mAccessLogsHelper,
                 mReadAccessLogsHelper,
                 /* shouldRecordAccessLog= */ true);
 
@@ -653,8 +687,8 @@ public class TransactionManagerTest {
         mTransactionManager.readRecordsByIds(
                 readTransactionRequest,
                 mAppInfoHelper,
-                mAccessLogsHelper,
                 mDeviceInfoHelper,
+                mAccessLogsHelper,
                 mReadAccessLogsHelper,
                 /* shouldRecordAccessLog= */ false);
 
@@ -694,8 +728,8 @@ public class TransactionManagerTest {
         mTransactionManager.readRecordsByIds(
                 readTransactionRequest,
                 mAppInfoHelper,
-                mAccessLogsHelper,
                 mDeviceInfoHelper,
+                mAccessLogsHelper,
                 mReadAccessLogsHelper,
                 /* shouldRecordAccessLog= */ true);
 

@@ -33,6 +33,7 @@
     <attr name="seeAllCompatibleAppsIcon" format="reference"/>
     <attr name="sendFeedbackIcon" format="reference"/>
     <attr name="searchIcon" format="reference"/>
+    <attr name="emptySearchIcon" format="reference"/>
 
     <!-- Categories page -->
     <attr name="autoDeleteIcon" format="reference"/>

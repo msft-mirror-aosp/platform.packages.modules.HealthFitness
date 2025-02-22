@@ -42,11 +42,9 @@ import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper.DatabaseHelpers;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
 import com.android.server.healthconnect.testing.fixtures.SQLiteDatabaseFixture;
@@ -63,7 +61,7 @@ import org.mockito.Mock;
 import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
-@EnableFlags(Flags.FLAG_DEVELOPMENT_DATABASE)
+@EnableFlags({Flags.FLAG_CLOUD_BACKUP_AND_RESTORE, Flags.FLAG_CLOUD_BACKUP_AND_RESTORE_DB})
 public final class CloudBackupRestoreTest {
 
     @Rule(order = 1)
@@ -77,8 +75,6 @@ public final class CloudBackupRestoreTest {
 
     private AppInfoHelper mAppInfoHelper;
     private DeviceInfoHelper mDeviceInfoHelper;
-    private AccessLogsHelper mAccessLogsHelper;
-    private ReadAccessLogsHelper mReadAccessLogsHelper;
     private DatabaseHelpers mDatabaseHelpers;
     private TransactionManager mTransactionManager;
     private TransactionTestUtils mTransactionTestUtils;
@@ -103,8 +99,6 @@ public final class CloudBackupRestoreTest {
         mTransactionManager = healthConnectInjector.getTransactionManager();
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
         mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
-        mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
-        mReadAccessLogsHelper = healthConnectInjector.getReadAccessLogsHelper();
         mDatabaseHelpers = healthConnectInjector.getDatabaseHelpers();
         mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mRecordProtoConverter = new RecordProtoConverter();
@@ -114,15 +108,13 @@ public final class CloudBackupRestoreTest {
                 new CloudBackupManager(
                         mTransactionManager,
                         mAppInfoHelper,
-                        mAccessLogsHelper,
                         mDeviceInfoHelper,
                         healthConnectInjector.getHealthConnectMappings(),
                         healthConnectInjector.getInternalHealthConnectMappings(),
                         healthConnectInjector.getChangeLogsHelper(),
                         healthConnectInjector.getChangeLogsRequestHelper(),
                         healthConnectInjector.getHealthDataCategoryPriorityHelper(),
-                        healthConnectInjector.getPreferenceHelper(),
-                        mReadAccessLogsHelper);
+                        healthConnectInjector.getPreferenceHelper());
         mCloudRestoreManager =
                 new CloudRestoreManager(
                         mTransactionManager,
@@ -151,13 +143,8 @@ public final class CloudBackupRestoreTest {
                                 RecordTypeIdentifier.RECORD_TYPE_STEPS,
                                 List.of(stepsRecord.getUuid())));
         List<RecordInternal<?>> records =
-                mTransactionManager.readRecordsByIds(
-                        readRequest,
-                        mAppInfoHelper,
-                        mAccessLogsHelper,
-                        mDeviceInfoHelper,
-                        mReadAccessLogsHelper,
-                        /* shouldRecordAccessLog= */ false);
+                mTransactionManager.readRecordsByIdsWithoutAccessLogs(
+                        readRequest, mAppInfoHelper, mDeviceInfoHelper);
         assertThat(records).hasSize(1);
         // Comparing proto representations because internal records don't implement equals
         assertThat(mRecordProtoConverter.toRecordProto(records.get(0)))

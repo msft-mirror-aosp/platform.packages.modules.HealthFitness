@@ -16,6 +16,8 @@
 
 package com.android.server.healthconnect.backuprestore;
 
+import static android.health.connect.Constants.DEFAULT_LONG;
+
 import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTORE;
 import static com.android.server.healthconnect.backuprestore.RecordProtoConverter.PROTO_VERSION;
 
@@ -23,6 +25,9 @@ import android.annotation.FlaggedApi;
 import android.annotation.Nullable;
 import android.health.connect.backuprestore.BackupSettings;
 import android.health.connect.backuprestore.RestoreChange;
+import android.health.connect.datatypes.RecordTypeIdentifier;
+import android.health.connect.internal.datatypes.ExerciseSessionRecordInternal;
+import android.health.connect.internal.datatypes.PlannedExerciseSessionRecordInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.util.Slog;
 
@@ -34,11 +39,17 @@ import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
+import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -99,20 +110,18 @@ public class CloudRestoreManager {
     /** Restores backup data changes. */
     public void pushChangesForRestore(List<RestoreChange> changes) {
         Slog.i(TAG, "Restoring " + changes.size() + " changes");
-        List<Record> records =
-                changes.stream().map(this::toRecord).filter(Objects::nonNull).toList();
+        var protoRecords = changes.stream().map(this::toRecord).filter(Objects::nonNull).toList();
+        var internalRecords =
+                protoRecords.stream().map(this::toRecordInternal).filter(Objects::nonNull).toList();
+        removeNonExistentReferences(internalRecords);
+
         UpsertTransactionRequest upsertRequest =
                 UpsertTransactionRequest.createForRestore(
-                        records.stream()
-                                .map(this::toRecordInternal)
-                                .filter(Objects::nonNull)
-                                .toList(),
-                        mDeviceInfoHelper,
-                        mAppInfoHelper);
+                        internalRecords, mDeviceInfoHelper, mAppInfoHelper);
         var insertedRecords =
                 mTransactionManager.insertAllRecords(mAppInfoHelper, null, upsertRequest);
 
-        records.stream()
+        protoRecords.stream()
                 .collect(
                         Collectors.groupingBy(
                                 Record::getPackageName,
@@ -125,6 +134,55 @@ public class CloudRestoreManager {
                                 mAppInfoHelper.updateAppInfoRecordTypesUsedOnInsert(
                                         recordTypes, packageName));
         Slog.i(TAG, "Restored " + insertedRecords.size() + " records out of " + changes.size());
+    }
+
+    /**
+     * Removes references from exercise sessions to training plans that do not exist.
+     *
+     * <p>A training plan can be deleted before an exercise session that references it is restored.
+     * In that scenario we will need to remove the reference before inserting to prevent a crash.
+     */
+    private void removeNonExistentReferences(List<? extends RecordInternal<?>> internalRecords) {
+        Set<UUID> seenPlannedSessions = new HashSet<>();
+        Set<ExerciseSessionRecordInternal> sessionsToCheck = new HashSet<>();
+        for (var internalRecord : internalRecords) {
+            if (internalRecord instanceof PlannedExerciseSessionRecordInternal plannedSession) {
+                seenPlannedSessions.add(plannedSession.getUuid());
+            } else if (internalRecord instanceof ExerciseSessionRecordInternal session) {
+                var plannedSessionId = session.getPlannedExerciseSessionId();
+                if (plannedSessionId != null && !seenPlannedSessions.contains(plannedSessionId)) {
+                    sessionsToCheck.add(session);
+                }
+            }
+        }
+        List<RecordInternal<?>> existingPlannedSessions =
+                mTransactionManager.readRecordsByIdsWithoutAccessLogs(
+                        new ReadTransactionRequest(
+                                mAppInfoHelper,
+                                /* packageName= */ "",
+                                Map.of(
+                                        RecordTypeIdentifier.RECORD_TYPE_PLANNED_EXERCISE_SESSION,
+                                        sessionsToCheck.stream()
+                                                .map(
+                                                        ExerciseSessionRecordInternal
+                                                                ::getPlannedExerciseSessionId)
+                                                .filter(Objects::nonNull)
+                                                .toList()),
+                                DEFAULT_LONG,
+                                Collections.emptySet(),
+                                /* isInForeground= */ true,
+                                /* isReadingSelfData= */ false),
+                        mAppInfoHelper,
+                        mDeviceInfoHelper);
+        Set<UUID> existingPlannedSessionIds =
+                existingPlannedSessions.stream()
+                        .map(RecordInternal::getUuid)
+                        .collect(Collectors.toSet());
+        for (var session : sessionsToCheck) {
+            if (!existingPlannedSessionIds.contains(session.getPlannedExerciseSessionId())) {
+                session.setPlannedExerciseSessionId(null);
+            }
+        }
     }
 
     @Nullable

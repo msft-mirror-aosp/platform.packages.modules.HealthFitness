@@ -555,6 +555,24 @@ public final class TransactionManager {
     }
 
     /**
+     * Reads the records {@link RecordInternal} stored in the HealthConnect database without
+     * generating any access logs.
+     *
+     * @param request a read request.
+     * @return List of records read {@link RecordInternal} from table based on ids.
+     * @throws IllegalArgumentException if the {@link ReadTransactionRequest} contains pagination
+     *     information, which should use {@link #readRecordsAndPageToken(ReadTransactionRequest)}
+     *     instead.
+     */
+    public List<RecordInternal<?>> readRecordsByIdsWithoutAccessLogs(
+            ReadTransactionRequest request,
+            AppInfoHelper appInfoHelper,
+            DeviceInfoHelper deviceInfoHelper)
+            throws SQLiteException {
+        return readRecordsByIds(request, appInfoHelper, deviceInfoHelper, null, null, false);
+    }
+
+    /**
      * Reads the records {@link RecordInternal} stored in the HealthConnect database.
      *
      * @param request a read request.
@@ -566,9 +584,9 @@ public final class TransactionManager {
     public List<RecordInternal<?>> readRecordsByIds(
             ReadTransactionRequest request,
             AppInfoHelper appInfoHelper,
-            AccessLogsHelper accessLogsHelper,
             DeviceInfoHelper deviceInfoHelper,
-            ReadAccessLogsHelper readAccessLogsHelper,
+            @Nullable AccessLogsHelper accessLogsHelper,
+            @Nullable ReadAccessLogsHelper readAccessLogsHelper,
             boolean shouldRecordAccessLog)
             throws SQLiteException {
         // TODO(b/308158714): Make this build time check once we have different classes.
@@ -588,16 +606,20 @@ public final class TransactionManager {
         }
 
         if (Flags.ecosystemMetrics() && shouldRecordAccessLog && !request.isReadingSelfData()) {
-            readAccessLogsHelper.recordAccessLogForNonAggregationReads(
-                    getWritableDb(),
-                    request.getPackageName(),
-                    /* readTimeStamp= */ Instant.now().toEpochMilli(),
-                    recordInternals);
+            Objects.requireNonNull(readAccessLogsHelper)
+                    .recordAccessLogForNonAggregationReads(
+                            getWritableDb(),
+                            request.getPackageName(),
+                            /* readTimeStamp= */ Instant.now().toEpochMilli(),
+                            recordInternals);
         }
         if (Flags.addMissingAccessLogs()) {
             if (!request.isReadingSelfData() && shouldRecordAccessLog) {
-                accessLogsHelper.recordReadAccessLog(
-                        getWritableDb(), request.getPackageName(), request.getRecordTypeIds());
+                Objects.requireNonNull(accessLogsHelper)
+                        .recordReadAccessLog(
+                                getWritableDb(),
+                                request.getPackageName(),
+                                request.getRecordTypeIds());
             }
         }
         return recordInternals;
