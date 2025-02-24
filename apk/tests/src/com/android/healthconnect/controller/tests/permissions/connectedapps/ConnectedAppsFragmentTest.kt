@@ -451,8 +451,7 @@ class ConnectedAppsFragmentTest {
 
         launchFragment<ConnectedAppsFragment>(Bundle())
 
-        onView(withText("You don't currently have any compatible apps installed"))
-            .check(matches(isDisplayed()))
+        onView(withText("No compatible apps installed")).check(matches(isDisplayed()))
         onView(withText("Things to try")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("Check for updates")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("Make sure installed apps are up-to-date"))
@@ -481,8 +480,7 @@ class ConnectedAppsFragmentTest {
 
         launchFragment<ConnectedAppsFragment>(Bundle())
 
-        onView(withText("You don't currently have any compatible apps installed"))
-            .check(matches(isDisplayed()))
+        onView(withText("No compatible apps installed")).check(matches(isDisplayed()))
         onView(withText("Things to try")).check(doesNotExist())
         onView(withText("Check for updates")).check(doesNotExist())
         onView(withText("Make sure installed apps are up-to-date")).check(doesNotExist())
