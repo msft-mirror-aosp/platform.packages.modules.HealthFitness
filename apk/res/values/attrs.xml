@@ -144,6 +144,8 @@
     <attr name="textAppearanceRouteRequest" format="reference"/>
     <attr name="textAppearancePreferenceCategory" format="reference"/>
     <attr name="textAppearanceErrorMessage" format="reference"/>
+    <attr name="headerTitle" format="reference"/>
+    <attr name="headerDetails" format="reference"/>
 
     <!-- Buttons -->
     <attr name="dialogButtonFull" format="reference"/>
