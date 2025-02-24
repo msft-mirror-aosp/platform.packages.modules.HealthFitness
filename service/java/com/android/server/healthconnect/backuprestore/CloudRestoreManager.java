@@ -42,6 +42,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCatego
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -64,6 +65,7 @@ public class CloudRestoreManager {
     private static final String TAG = "CloudRestoreManager";
 
     private final TransactionManager mTransactionManager;
+    private final InternalHealthConnectMappings mInternalHealthConnectMappings;
     private final DeviceInfoHelper mDeviceInfoHelper;
     private final AppInfoHelper mAppInfoHelper;
     private final RecordProtoConverter mRecordProtoConverter = new RecordProtoConverter();
@@ -73,11 +75,13 @@ public class CloudRestoreManager {
 
     public CloudRestoreManager(
             TransactionManager transactionManager,
+            InternalHealthConnectMappings internalHealthConnectMappings,
             DeviceInfoHelper deviceInfoHelper,
             AppInfoHelper appInfoHelper,
             HealthDataCategoryPriorityHelper priorityHelper,
             PreferenceHelper preferenceHelper) {
         mTransactionManager = transactionManager;
+        mInternalHealthConnectMappings = internalHealthConnectMappings;
         mDeviceInfoHelper = deviceInfoHelper;
         mAppInfoHelper = appInfoHelper;
         mPriorityHelper = priorityHelper;
@@ -130,9 +134,12 @@ public class CloudRestoreManager {
 
         UpsertTransactionRequest upsertRequest =
                 UpsertTransactionRequest.createForRestore(
-                        internalRecords, mDeviceInfoHelper, mAppInfoHelper);
-        var insertedRecords =
-                mTransactionManager.insertAllRecords(mAppInfoHelper, null, upsertRequest);
+                        internalRecords,
+                        mTransactionManager,
+                        mInternalHealthConnectMappings,
+                        mDeviceInfoHelper,
+                        mAppInfoHelper);
+        var insertedRecords = upsertRequest.execute();
 
         protoRecords.stream()
                 .collect(

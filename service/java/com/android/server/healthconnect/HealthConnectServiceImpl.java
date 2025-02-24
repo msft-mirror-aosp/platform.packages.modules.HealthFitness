@@ -406,6 +406,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 cloudBackupAndRestore()
                         ? new CloudRestoreManager(
                                 mTransactionManager,
+                                mInternalHealthConnectMappings,
                                 mDeviceInfoHelper,
                                 mAppInfoHelper,
                                 mHealthDataCategoryPriorityHelper,
@@ -538,13 +539,14 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             UpsertTransactionRequest.createForInsert(
                                     Objects.requireNonNull(attributionSource.getPackageName()),
                                     recordInternals,
+                                    mTransactionManager,
+                                    mInternalHealthConnectMappings,
                                     mDeviceInfoHelper,
                                     mAppInfoHelper,
+                                    mAccessLogsHelper,
                                     mDataPermissionEnforcer.collectExtraWritePermissionStateMapping(
                                             recordInternals, attributionSource));
-                    List<String> uuids =
-                            mTransactionManager.insertAllRecords(
-                                    mAppInfoHelper, mAccessLogsHelper, insertRequest);
+                    List<String> uuids = insertRequest.execute();
                     tryAndReturnResult(callback, uuids, logger);
 
                     HealthConnectThreadScheduler.scheduleInternalTask(
@@ -930,16 +932,18 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             recordsParcel.getRecordsChunkSize());
                     mDataPermissionEnforcer.enforceRecordsWritePermissions(
                             recordInternals, attributionSource);
-                    UpsertTransactionRequest request =
+                    UpsertTransactionRequest updateRequest =
                             UpsertTransactionRequest.createForUpdate(
                                     Objects.requireNonNull(attributionSource.getPackageName()),
                                     recordInternals,
+                                    mTransactionManager,
+                                    mInternalHealthConnectMappings,
                                     mDeviceInfoHelper,
                                     mAppInfoHelper,
+                                    mAccessLogsHelper,
                                     mDataPermissionEnforcer.collectExtraWritePermissionStateMapping(
                                             recordInternals, attributionSource));
-                    mTransactionManager.updateAllRecords(
-                            mAppInfoHelper, mAccessLogsHelper, request);
+                    updateRequest.execute();
                     tryAndReturnResult(callback, logger);
                     logRecordTypeSpecificUpsertMetrics(
                             recordInternals, attributionSource.getPackageName());

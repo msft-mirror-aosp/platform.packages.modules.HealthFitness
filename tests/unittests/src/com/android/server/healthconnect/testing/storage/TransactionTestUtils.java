@@ -105,16 +105,16 @@ public final class TransactionTestUtils {
 
     /** Inserts records attributed to the given package. */
     public List<String> insertRecords(String packageName, List<RecordInternal<?>> records) {
-        AppInfoHelper appInfoHelper = mHealthConnectInjector.getAppInfoHelper();
-        return mTransactionManager.insertAllRecords(
-                appInfoHelper,
-                mHealthConnectInjector.getAccessLogsHelper(),
-                UpsertTransactionRequest.createForInsert(
+        return UpsertTransactionRequest.createForInsert(
                         packageName,
                         records,
+                        mTransactionManager,
+                        mHealthConnectInjector.getInternalHealthConnectMappings(),
                         mHealthConnectInjector.getDeviceInfoHelper(),
                         mHealthConnectInjector.getAppInfoHelper(),
-                        /* extraPermsStateMap= */ new ArrayMap<>()));
+                        mHealthConnectInjector.getAccessLogsHelper(),
+                        /* extraPermsStateMap= */ new ArrayMap<>())
+                .execute();
     }
 
     /** Inserts records attributed to the given package. */
@@ -124,16 +124,16 @@ public final class TransactionTestUtils {
 
     /** Inserts records attributed to the given package. */
     public void updateRecords(String packageName, List<RecordInternal<?>> records) {
-        AppInfoHelper appInfoHelper = mHealthConnectInjector.getAppInfoHelper();
-        mTransactionManager.updateAllRecords(
-                appInfoHelper,
-                mHealthConnectInjector.getAccessLogsHelper(),
-                UpsertTransactionRequest.createForUpdate(
+        UpsertTransactionRequest.createForUpdate(
                         packageName,
                         records,
+                        mTransactionManager,
+                        mHealthConnectInjector.getInternalHealthConnectMappings(),
                         mHealthConnectInjector.getDeviceInfoHelper(),
                         mHealthConnectInjector.getAppInfoHelper(),
-                        /* extraPermsStateMap= */ new ArrayMap<>()));
+                        mHealthConnectInjector.getAccessLogsHelper(),
+                        /* extraPermsStateMap= */ new ArrayMap<>())
+                .execute();
     }
 
     /** Creates a {@link ReadTransactionRequest} from the given record to id map. */

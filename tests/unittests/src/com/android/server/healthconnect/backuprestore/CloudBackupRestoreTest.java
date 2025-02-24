@@ -118,6 +118,7 @@ public final class CloudBackupRestoreTest {
         mCloudRestoreManager =
                 new CloudRestoreManager(
                         mTransactionManager,
+                        healthConnectInjector.getInternalHealthConnectMappings(),
                         mDeviceInfoHelper,
                         mAppInfoHelper,
                         healthConnectInjector.getHealthDataCategoryPriorityHelper(),
