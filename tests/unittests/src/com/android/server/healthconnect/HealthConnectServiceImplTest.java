@@ -396,6 +396,7 @@ public class HealthConnectServiceImplTest {
                         healthConnectInjector.getMedicalDataSourceHelper(),
                         healthConnectInjector.getExportManager(),
                         healthConnectInjector.getExportImportSettingsStorage(),
+                        healthConnectInjector.getExportImportNotificationSender(),
                         healthConnectInjector.getBackupRestore(),
                         healthConnectInjector.getAccessLogsHelper(),
                         healthConnectInjector.getHealthDataCategoryPriorityHelper(),
