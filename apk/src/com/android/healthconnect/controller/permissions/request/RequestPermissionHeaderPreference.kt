@@ -115,7 +115,10 @@ constructor(
                             appName,
                         )
                     } else {
-                        context.getString(R.string.request_permissions_header_title, appName)
+                        context.getString(
+                            R.string.request_fitness_permissions_header_title,
+                            appName,
+                        )
                     }
                 }
                 is AdditionalScreenState -> {
@@ -245,13 +248,15 @@ constructor(
         when (screenState) {
             is MedicalScreenState.ShowMedicalReadWrite -> {
                 dataAccessType.text =
-                    context.getString(R.string.request_permissions_data_access_type_read_write)
+                    context.getString(
+                        R.string.request_medical_permissions_data_access_type_read_write
+                    )
                 updateMedicalAccessInfo(showWrite = true)
                 updatePrivacyPolicy()
             }
             is MedicalScreenState.ShowMedicalRead -> {
                 dataAccessType.text =
-                    context.getString(R.string.request_permissions_data_access_type_read)
+                    context.getString(R.string.request_medical_permissions_data_access_type_read)
                 updateMedicalAccessInfo(showWrite = false)
                 updatePrivacyPolicy()
             }
@@ -265,7 +270,7 @@ constructor(
         when (screenState) {
             is FitnessScreenState.ShowFitnessRead -> {
                 dataAccessType.text =
-                    context.getString(R.string.request_permissions_data_access_type_read)
+                    context.getString(R.string.request_fitness_permissions_data_access_type_read)
                 updateFitnessAccessInfo(
                     isHistoryGranted =
                         (screenState as FitnessScreenState.ShowFitnessRead).historyGranted
@@ -274,13 +279,15 @@ constructor(
             }
             is FitnessScreenState.ShowFitnessWrite -> {
                 dataAccessType.text =
-                    context.getString(R.string.request_permissions_data_access_type_write)
+                    context.getString(R.string.request_fitness_permissions_data_access_type_write)
                 accessInfo.visibility = View.GONE
                 updatePrivacyPolicy()
             }
             is FitnessScreenState.ShowFitnessReadWrite -> {
                 dataAccessType.text =
-                    context.getString(R.string.request_permissions_data_access_type_read_write)
+                    context.getString(
+                        R.string.request_fitness_permissions_data_access_type_read_write
+                    )
                 updateFitnessAccessInfo(
                     isHistoryGranted =
                         (screenState as FitnessScreenState.ShowFitnessReadWrite).historyGranted
