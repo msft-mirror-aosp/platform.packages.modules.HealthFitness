@@ -1479,11 +1479,7 @@ class HomeFragmentTest {
 
     // region Expressive display tests
     @Test
-    // TODO (b/390418465) update this to B when the flag condition changes
-    @SdkSuppress(
-        minSdkVersion = Build.VERSION_CODES.VANILLA_ICE_CREAM,
-        codeName = "VanillaIceCream",
-    )
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
     @DisableFlags(Flags.FLAG_ONBOARDING)
     @EnableFlags(SettingsThemeFlags.FLAG_IS_EXPRESSIVE_DESIGN_ENABLED)
     fun expressiveViewAllRecentAccess_navigatesToRecentAccess() {
@@ -1495,11 +1491,7 @@ class HomeFragmentTest {
     }
 
     @Test
-    // TODO (b/390418465) update this to B when the flag condition changes
-    @SdkSuppress(
-        minSdkVersion = Build.VERSION_CODES.VANILLA_ICE_CREAM,
-        codeName = "VanillaIceCream",
-    )
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
     @DisableFlags(Flags.FLAG_ONBOARDING)
     @EnableFlags(SettingsThemeFlags.FLAG_IS_EXPRESSIVE_DESIGN_ENABLED)
     fun expressiveWhenRecentAccessApps_in12HourFormat_showsCorrectTime() {
@@ -1540,11 +1532,7 @@ class HomeFragmentTest {
     }
 
     @Test
-    // TODO (b/390418465) update this to B when the flag condition changes
-    @SdkSuppress(
-        minSdkVersion = Build.VERSION_CODES.VANILLA_ICE_CREAM,
-        codeName = "VanillaIceCream",
-    )
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
     @DisableFlags(Flags.FLAG_ONBOARDING)
     @EnableFlags(SettingsThemeFlags.FLAG_IS_EXPRESSIVE_DESIGN_ENABLED)
     fun expressive_withNoRecentAccessApps() {
@@ -1571,11 +1559,7 @@ class HomeFragmentTest {
     }
 
     @Test
-    // TODO (b/390418465) update this to B when the flag condition changes
-    @SdkSuppress(
-        minSdkVersion = Build.VERSION_CODES.VANILLA_ICE_CREAM,
-        codeName = "VanillaIceCream",
-    )
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
     @DisableFlags(Flags.FLAG_ONBOARDING)
     @EnableFlags(SettingsThemeFlags.FLAG_IS_EXPRESSIVE_DESIGN_ENABLED)
     fun expressive_withErrorInRecentAccessApps() {
