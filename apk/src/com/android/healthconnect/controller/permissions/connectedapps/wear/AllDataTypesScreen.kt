@@ -104,12 +104,15 @@ fun AllDataTypesScreen(
                         )
                         .uppercaseLabel
                 )
-            val nAllowedApps = dataTypeToAllowedApps[healthPermission]?.size ?: 0
-            val nDeniedApps = dataTypeToDeniedApps[healthPermission]?.size ?: 0
+            val nAllowedApps =
+                dataTypeToAllowedApps[healthPermission]?.filter { !it.isSystem }?.size ?: 0
+            val nDeniedApps =
+                dataTypeToDeniedApps[healthPermission]?.filter { !it.isSystem }?.size ?: 0
             val nUsedApps =
                 dataTypeToAppToLastAccessTime
                     .find { it.permission == healthPermission }
                     ?.appAccesses
+                    ?.filter { !it.app.isSystem }
                     ?.size ?: 0
             val nRequestedApps = nAllowedApps + nDeniedApps
             val enabled =

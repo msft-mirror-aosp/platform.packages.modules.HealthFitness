@@ -20,6 +20,7 @@ package com.android.healthconnect.controller.permissions.connectedapps.wear
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
@@ -51,6 +52,7 @@ fun PerDataTypeScreen(
     showRecentAccess: Boolean,
     onAppChipClick: (String, String, String) -> Unit,
     onRemoveAllAppAccessButtonClick: (String, String) -> Unit,
+    onShowSystemClick: (Boolean) -> Unit,
 ) {
     // TODO: b/401597500 - The HealthPermission should be passed into these composables.
     val healthPermission = fromPermissionString(permissionStr)
@@ -61,6 +63,8 @@ fun PerDataTypeScreen(
                 )
                 .lowercaseLabel
         )
+    val showSystem by viewModel.showSystemFlow.collectAsState()
+
     ScrollableScreen(asScalingList = true, showTimeText = false, title = dataTypeStr) {
         // Allowed apps.
         item {
@@ -91,6 +95,21 @@ fun PerDataTypeScreen(
                 onAppChipClick,
             )
         }
+
+        // Show system apps button.
+        item {
+            WearPermissionButton(
+                label =
+                    if (showSystem) {
+                        stringResource(R.string.menu_hide_system)
+                    } else {
+                        stringResource(R.string.menu_show_system)
+                    },
+                labelMaxLines = Int.MAX_VALUE,
+                onClick = { onShowSystemClick(!showSystem) },
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
     }
 }
 
@@ -104,10 +123,16 @@ fun AllowedAppsList(
     onRemoveAllAppAccessButtonClick: (String, String) -> Unit,
 ) {
     val dataTypeToAllowedApps by viewModel.dataTypeToAllowedApps.collectAsState()
-    val allowedApps = dataTypeToAllowedApps[healthPermission]
+    val showSystem by viewModel.showSystemFlow.collectAsState()
     val dataTypeToAppToLastAccessTime by viewModel.dataTypeToAppToLastAccessTime.collectAsState()
-    val usedApps =
+    var allowedApps = dataTypeToAllowedApps[healthPermission]
+    var usedApps =
         dataTypeToAppToLastAccessTime.find { it.permission == healthPermission }?.appAccesses
+    if (!showSystem) {
+        allowedApps = allowedApps?.filter { !it.isSystem }?.toMutableList()
+        usedApps = usedApps?.filter { !it.app.isSystem }?.toMutableList()
+    }
+
     if (allowedApps?.isNotEmpty() == true) {
         val nApps = allowedApps.size
         Column {
@@ -164,10 +189,16 @@ fun DeniedAppsList(
     onAppChipClick: (String, String, String) -> Unit,
 ) {
     val dataTypeToDeniedApps by viewModel.dataTypeToDeniedApps.collectAsState()
-    val deniedApps = dataTypeToDeniedApps[healthPermission]
+    val showSystem by viewModel.showSystemFlow.collectAsState()
     val dataTypeToAppToLastAccessTime by viewModel.dataTypeToAppToLastAccessTime.collectAsState()
-    val usedApps =
+    var deniedApps = dataTypeToDeniedApps[healthPermission]
+    var usedApps =
         dataTypeToAppToLastAccessTime.find { it.permission == healthPermission }?.appAccesses
+    if (!showSystem) {
+        deniedApps = deniedApps?.filter { !it.isSystem }?.toMutableList()
+        usedApps = usedApps?.filter { !it.app.isSystem }?.toMutableList()
+    }
+
     if (deniedApps?.isNotEmpty() == true) {
         val nApps = deniedApps.size
         Column {
