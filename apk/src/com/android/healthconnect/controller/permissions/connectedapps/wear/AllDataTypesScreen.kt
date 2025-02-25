@@ -33,7 +33,6 @@ import com.android.healthconnect.controller.permissions.data.FitnessPermissionSt
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.permissioncontroller.wear.permission.components.ScrollableScreen
 import com.android.permissioncontroller.wear.permission.components.material3.WearPermissionButton
-import com.android.permissioncontroller.wear.permission.components.theme.ResourceHelper
 
 /** Wear Settings Permissions Screen to see allowed/disallowed status for all apps. */
 @Composable
@@ -43,7 +42,6 @@ fun AllDataTypesScreen(
     onClick: (String, String) -> Unit,
 ) {
     val res = LocalContext.current.resources
-    val materialUIVersion = ResourceHelper.materialUIVersionInApp
     val connectedApps by viewModel.connectedApps.collectAsState()
     val dataTypeToAllowedApps by viewModel.dataTypeToAllowedApps.collectAsState()
     val dataTypeToDeniedApps by viewModel.dataTypeToDeniedApps.collectAsState()
@@ -52,7 +50,6 @@ fun AllDataTypesScreen(
     val nTotalApps = connectedApps.size
 
     ScrollableScreen(
-        materialUIVersion = materialUIVersion,
         asScalingList = true,
         showTimeText = false,
         title = stringResource(R.string.fitness_and_wellness),
