@@ -50,18 +50,20 @@ public class RateLimiterTest {
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this).setStrictness(Strictness.LENIENT).build();
 
+    private RateLimiter mRateLimiter = new RateLimiter();
+
     @Test
     public void testTryAcquireApiCallQuota_invalidQuotaCategory() {
-        RateLimiter.clearCache();
+        mRateLimiter.clearCache();
         @QuotaCategory.Type int quotaCategory = 0;
         exception.expect(IllegalArgumentException.class);
         exception.expectMessage("Quota category not defined.");
-        RateLimiter.tryAcquireApiCallQuota(UID, quotaCategory, IS_IN_FOREGROUND_TRUE);
+        mRateLimiter.tryAcquireApiCallQuota(UID, quotaCategory, IS_IN_FOREGROUND_TRUE);
     }
 
     @Test
     public void testTryAcquireApiCallQuota_unmeteredForegroundCalls() {
-        RateLimiter.clearCache();
+        mRateLimiter.clearCache();
         @QuotaCategory.Type int quotaCategory = 1;
         tryAcquireCallQuotaNTimes(
                 quotaCategory, IS_IN_FOREGROUND_TRUE, MAX_FOREGROUND_READ_CALL_15M + 1);
@@ -69,7 +71,7 @@ public class RateLimiterTest {
 
     @Test
     public void testTryAcquireApiCallQuota_unmeteredBackgroundCalls() {
-        RateLimiter.clearCache();
+        mRateLimiter.clearCache();
         @QuotaCategory.Type int quotaCategory = 1;
         tryAcquireCallQuotaNTimes(
                 quotaCategory, IS_IN_FOREGROUND_TRUE, MAX_BACKGROUND_CALL_15M + 1);
@@ -77,7 +79,7 @@ public class RateLimiterTest {
 
     @Test
     public void testTryAcquireApiCallQuota_meteredForegroundCallsInLimit() {
-        RateLimiter.clearCache();
+        mRateLimiter.clearCache();
         @QuotaCategory.Type int quotaCategoryRead = 2;
         tryAcquireCallQuotaNTimes(
                 quotaCategoryRead, IS_IN_FOREGROUND_TRUE, MAX_FOREGROUND_READ_CALL_15M);
@@ -85,7 +87,7 @@ public class RateLimiterTest {
 
     @Test
     public void testTryAcquireApiCallQuota_meteredBackgroundCallsInLimit() {
-        RateLimiter.clearCache();
+        mRateLimiter.clearCache();
         @QuotaCategory.Type int quotaCategoryWrite = 3;
         tryAcquireCallQuotaNTimes(
                 quotaCategoryWrite, IS_IN_FOREGROUND_FALSE, MAX_BACKGROUND_CALL_15M);
@@ -93,7 +95,7 @@ public class RateLimiterTest {
 
     @Test
     public void testTryAcquireApiCallQuota_meteredForegroundCallsLimitExceeded() {
-        RateLimiter.clearCache();
+        mRateLimiter.clearCache();
         @QuotaCategory.Type int quotaCategoryRead = 2;
         Instant startTime = Instant.now();
         tryAcquireCallQuotaNTimes(
@@ -108,7 +110,7 @@ public class RateLimiterTest {
 
     @Test
     public void testTryAcquireApiCallQuota_meteredBackgroundCallsLimitExceeded() {
-        RateLimiter.clearCache();
+        mRateLimiter.clearCache();
         @QuotaCategory.Type int quotaCategoryWrite = 3;
         Instant startTime = Instant.now();
         tryAcquireCallQuotaNTimes(
@@ -123,7 +125,7 @@ public class RateLimiterTest {
 
     @Test
     public void testRecordMemoryRollingQuota_exceedBackgroundLimit() throws InterruptedException {
-        RateLimiter.clearCache();
+        mRateLimiter.clearCache();
         @QuotaCategory.Type int quotaCategoryWrite = 3;
         exception.expect(HealthConnectException.class);
         exception.expectMessage(containsString("API call quota exceeded"));
@@ -137,13 +139,13 @@ public class RateLimiterTest {
         exception.expect(HealthConnectException.class);
         exception.expectMessage(
                 "Records chunk size exceeded the max chunk limit: 5000000, was: 5000001");
-        RateLimiter.checkMaxChunkMemoryUsage(valueExceeding);
+        mRateLimiter.checkMaxChunkMemoryUsage(valueExceeding);
     }
 
     @Test
     public void checkMaxChunkMemoryUsage_inLimit() {
         long value = 5000000;
-        RateLimiter.checkMaxChunkMemoryUsage(value);
+        mRateLimiter.checkMaxChunkMemoryUsage(value);
     }
 
     @Test
@@ -152,13 +154,13 @@ public class RateLimiterTest {
         exception.expect(HealthConnectException.class);
         exception.expectMessage(
                 "Record size exceeded the single record size limit: 1000000, was: 1000001");
-        RateLimiter.checkMaxRecordMemoryUsage(valueExceeding);
+        mRateLimiter.checkMaxRecordMemoryUsage(valueExceeding);
     }
 
     @Test
     public void checkMaxRecordMemoryUsage_inLimit() {
         long value = 1000000;
-        RateLimiter.checkMaxRecordMemoryUsage(value);
+        mRateLimiter.checkMaxRecordMemoryUsage(value);
     }
 
     private int getCeilQuotaAcquired(
@@ -175,11 +177,12 @@ public class RateLimiterTest {
 
         if (quotaCategory == QuotaCategory.QUOTA_CATEGORY_WRITE) {
             for (int i = 0; i < nTimes; i++) {
-                RateLimiter.tryAcquireApiCallQuota(UID, quotaCategory, isInForeground, MEMORY_COST);
+                mRateLimiter.tryAcquireApiCallQuota(
+                        UID, quotaCategory, isInForeground, MEMORY_COST);
             }
         } else {
             for (int i = 0; i < nTimes; i++) {
-                RateLimiter.tryAcquireApiCallQuota(UID, quotaCategory, isInForeground);
+                mRateLimiter.tryAcquireApiCallQuota(UID, quotaCategory, isInForeground);
             }
         }
     }
@@ -190,7 +193,7 @@ public class RateLimiterTest {
             int nTimes,
             int memoryCost) {
         for (int i = 0; i < nTimes; i++) {
-            RateLimiter.tryAcquireApiCallQuota(UID, quotaCategory, isInForeground, memoryCost);
+            mRateLimiter.tryAcquireApiCallQuota(UID, quotaCategory, isInForeground, memoryCost);
         }
     }
 }
