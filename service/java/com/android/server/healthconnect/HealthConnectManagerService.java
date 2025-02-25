@@ -72,6 +72,7 @@ public class HealthConnectManagerService extends SystemService {
                         mHealthConnectInjector.getMedicalDataSourceHelper(),
                         mHealthConnectInjector.getExportManager(),
                         mHealthConnectInjector.getExportImportSettingsStorage(),
+                        mHealthConnectInjector.getExportImportNotificationSender(),
                         mHealthConnectInjector.getBackupRestore(),
                         mHealthConnectInjector.getAccessLogsHelper(),
                         mHealthConnectInjector.getHealthDataCategoryPriorityHelper(),
@@ -84,7 +85,8 @@ public class HealthConnectManagerService extends SystemService {
                         mHealthConnectInjector.getPreferenceHelper(),
                         mHealthConnectInjector.getDatabaseHelpers(),
                         mHealthConnectInjector.getPreferencesManager(),
-                        mHealthConnectInjector.getReadAccessLogsHelper());
+                        mHealthConnectInjector.getReadAccessLogsHelper(),
+                        mHealthConnectInjector.getAppOpsManagerLocal());
     }
 
     @Override
