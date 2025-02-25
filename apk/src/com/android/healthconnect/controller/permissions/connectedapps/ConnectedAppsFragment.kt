@@ -71,7 +71,9 @@ import com.android.healthconnect.controller.utils.setupMenu
 import com.android.healthconnect.controller.utils.setupSharedMenu
 import com.android.healthconnect.controller.utils.showLoadingDialog
 import com.android.settingslib.widget.BannerMessagePreferenceGroup
+import com.android.settingslib.widget.SettingsThemeHelper
 import com.android.settingslib.widget.TopIntroPreference
+import com.android.settingslib.widget.ZeroStatePreference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -85,6 +87,7 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
         private const val NOT_ALLOWED_APPS = "not_allowed_apps"
         private const val INACTIVE_APPS = "inactive_apps"
         private const val NEED_UPDATE_APPS = "need_update_apps"
+        private const val KEY_ZERO_STATE = "zero_state_preference"
         private const val THINGS_TO_TRY = "things_to_try_app_permissions_screen"
         private const val SETTINGS_AND_HELP = "settings_and_help"
         private const val BANNER_PREFERENCE_KEY = "banner_preference"
@@ -111,6 +114,7 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
     private val notAllowedAppsCategory: PreferenceGroup by pref(NOT_ALLOWED_APPS)
     private val inactiveAppsCategory: PreferenceGroup by pref(INACTIVE_APPS)
     private val needUpdateAppsCategory: PreferenceGroup by pref(NEED_UPDATE_APPS)
+    private val zeroStatePreference: ZeroStatePreference by pref(KEY_ZERO_STATE)
     private val thingsToTryCategory: PreferenceGroup by pref(THINGS_TO_TRY)
     private val settingsAndHelpCategory: PreferenceGroup by pref(SETTINGS_AND_HELP)
     private val bannerGroup: BannerMessagePreferenceGroup by pref(BANNER_GROUP)
@@ -238,6 +242,7 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
                 logger.logImpression(AppPermissionsElement.SEARCH_BUTTON)
 
                 topIntroPreference.title = getString(R.string.connected_apps_text)
+                zeroStatePreference.isVisible = false
                 thingsToTryCategory.isVisible = false
                 setAppAndSettingsCategoriesVisibility(true)
 
@@ -537,7 +542,14 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
     }
 
     private fun setUpEmptyState() {
-        topIntroPreference.title = getString(R.string.connected_apps_empty_list_section_title)
+        if (SettingsThemeHelper.isExpressiveTheme(requireContext())) {
+            topIntroPreference.isVisible = false
+            zeroStatePreference.isVisible = true
+        } else {
+            topIntroPreference.isVisible = true
+            topIntroPreference.title = getString(R.string.connected_apps_empty_list_section_title)
+            zeroStatePreference.isVisible = false
+        }
         if (
             deviceInfoUtils.isPlayStoreAvailable(requireContext()) ||
                 deviceInfoUtils.isSendFeedbackAvailable(requireContext())
