@@ -90,7 +90,11 @@ public class HealthConnectDailyService extends JobService {
                 healthConnectInjector.getMigrationStateManager();
         UsageStatsCollector usageStatsCollector =
                 healthConnectInjector.getUsageStatsCollector(
-                        HealthConnectContext.create(context, sUserHandle));
+                        HealthConnectContext.create(
+                                context,
+                                sUserHandle,
+                                /* databaseDirName= */ null,
+                                healthConnectInjector.getEnvironmentDataDirectory()));
         DatabaseStatsCollector databaseStatsCollector =
                 healthConnectInjector.getDatabaseStatsCollector();
         EcosystemStatsCollector ecosystemStatsCollector =

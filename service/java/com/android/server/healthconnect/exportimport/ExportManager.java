@@ -78,6 +78,7 @@ public class ExportManager {
     private final ExportImportSettingsStorage mExportImportSettingsStorage;
 
     private final HealthConnectNotificationSender mNotificationSender;
+    private final File mEnvironmentDataDirectory;
 
     // Tables to drop instead of tables to keep to avoid risk of bugs if new data types are added.
     /**
@@ -100,12 +101,14 @@ public class ExportManager {
             Clock clock,
             ExportImportSettingsStorage exportImportSettingsStorage,
             TransactionManager transactionManager,
-            HealthConnectNotificationSender notificationSender) {
+            HealthConnectNotificationSender notificationSender,
+            File environmentDataDirectory) {
         mContext = context;
         mClock = clock;
         mExportImportSettingsStorage = exportImportSettingsStorage;
         mTransactionManager = transactionManager;
         mNotificationSender = notificationSender;
+        mEnvironmentDataDirectory = environmentDataDirectory;
     }
 
     /**
@@ -119,7 +122,8 @@ public class ExportManager {
                 DATA_EXPORT_STARTED, NO_VALUE_RECORDED, NO_VALUE_RECORDED, NO_VALUE_RECORDED);
 
         HealthConnectContext dbContext =
-                HealthConnectContext.create(mContext, userHandle, LOCAL_EXPORT_DIR_NAME);
+                HealthConnectContext.create(
+                        mContext, userHandle, LOCAL_EXPORT_DIR_NAME, mEnvironmentDataDirectory);
         File localExportDbFile = getLocalExportDbFile(dbContext);
         File localExportZipFile = getLocalExportZipFile(dbContext);
 
@@ -265,7 +269,8 @@ public class ExportManager {
     void deleteLocalExportFiles(UserHandle userHandle) {
         Slog.i(TAG, "Delete local export files started.");
         HealthConnectContext dbContext =
-                HealthConnectContext.create(mContext, userHandle, LOCAL_EXPORT_DIR_NAME);
+                HealthConnectContext.create(
+                        mContext, userHandle, LOCAL_EXPORT_DIR_NAME, mEnvironmentDataDirectory);
         File localExportDbFile = getLocalExportDbFile(dbContext);
         File localExportZipFile = getLocalExportZipFile(dbContext);
         if (localExportDbFile.exists()) {

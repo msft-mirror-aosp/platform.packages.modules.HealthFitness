@@ -59,6 +59,8 @@ import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappi
 import com.android.server.healthconnect.storage.utils.PreferencesManager;
 import com.android.server.healthconnect.utils.TimeSource;
 
+import java.io.File;
+
 /**
  * Interface for Health Connect Dependency Injector.
  *
@@ -243,6 +245,12 @@ public abstract class HealthConnectInjector {
      * Injector.
      */
     public abstract HealthConnectThreadScheduler getThreadScheduler();
+
+    /**
+     * Getter for {@link File} instance representing root directory where Health Connect data should
+     * be stored. Use this instead of {@link Environment#getDataDirectory}.
+     */
+    public abstract File getEnvironmentDataDirectory();
 
     /** Used to initialize the Injector. */
     public static void setInstance(HealthConnectInjector healthConnectInjector) {

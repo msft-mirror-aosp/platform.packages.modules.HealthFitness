@@ -74,8 +74,6 @@ import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.testing.TestUtils;
 import com.android.server.healthconnect.testing.fakes.FakePreferenceHelper;
-import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
-import com.android.server.healthconnect.testing.fixtures.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.testing.storage.TransactionTestUtils;
 
 import com.google.common.collect.ImmutableList;
@@ -85,6 +83,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.quality.Strictness;
@@ -121,9 +120,10 @@ public class ImportManagerTest {
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(HealthConnectManager.class)
                     .mockStatic(ExportImportLogger.class)
-                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();
+
+    @Rule public final TemporaryFolder mEnvironmentDataDirectory = new TemporaryFolder();
 
     private ImportManager mImportManagerSpy;
 
@@ -154,6 +154,7 @@ public class ImportManagerTest {
                         .setPreferenceHelper(new FakePreferenceHelper())
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
+                        .setEnvironmentDataDirectory(mEnvironmentDataDirectory.getRoot())
                         .build();
         mTransactionManager = healthConnectInjector.getTransactionManager();
         mDatabaseHelpers = healthConnectInjector.getDatabaseHelpers();
@@ -185,7 +186,8 @@ public class ImportManagerTest {
                         mDeviceInfoHelper,
                         mPriorityHelper,
                         fakeClock,
-                        mNotificationSender);
+                        mNotificationSender,
+                        mEnvironmentDataDirectory.getRoot());
         mImportManagerSpy = ExtendedMockito.spy(importManager);
         doReturn(TEST_COMPRESSED_FILE_SIZE)
                 .when(mImportManagerSpy)
@@ -404,7 +406,11 @@ public class ImportManagerTest {
                         DEFAULT_USER_HANDLE);
 
         File databaseDir =
-                HealthConnectContext.create(mContext, mContext.getUser(), IMPORT_DATABASE_DIR_NAME)
+                HealthConnectContext.create(
+                                mContext,
+                                mContext.getUser(),
+                                IMPORT_DATABASE_DIR_NAME,
+                                mEnvironmentDataDirectory.getRoot())
                         .getDataDir();
         assertThat(new File(databaseDir, IMPORT_DATABASE_FILE_NAME).exists()).isFalse();
     }

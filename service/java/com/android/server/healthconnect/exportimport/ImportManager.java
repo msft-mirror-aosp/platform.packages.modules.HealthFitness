@@ -76,6 +76,7 @@ public class ImportManager {
     private final TransactionManager mTransactionManager;
     private final HealthConnectNotificationSender mNotificationSender;
     private final ExportImportSettingsStorage mExportImportSettingsStorage;
+    private final File mEnvironmentDataDirectory;
     @Nullable private final Clock mClock;
 
     public ImportManager(
@@ -86,7 +87,8 @@ public class ImportManager {
             DeviceInfoHelper deviceInfoHelper,
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
             @Nullable Clock clock,
-            HealthConnectNotificationSender notificationSender) {
+            HealthConnectNotificationSender notificationSender,
+            File environmentDataDirectory) {
         mContext = context;
         mDatabaseMerger =
                 new DatabaseMerger(
@@ -98,6 +100,7 @@ public class ImportManager {
         mExportImportSettingsStorage = exportImportSettingsStorage;
         mClock = clock;
         mNotificationSender = notificationSender;
+        mEnvironmentDataDirectory = environmentDataDirectory;
     }
 
     /** Reads and merges the backup data from a local file. */
@@ -116,7 +119,8 @@ public class ImportManager {
 
         Context userContext = mContext.createContextAsUser(userHandle, 0);
         HealthConnectContext dbContext =
-                HealthConnectContext.create(mContext, userHandle, IMPORT_DATABASE_DIR_NAME);
+                HealthConnectContext.create(
+                        mContext, userHandle, IMPORT_DATABASE_DIR_NAME, mEnvironmentDataDirectory);
         File importDbFile = dbContext.getDatabasePath(IMPORT_DATABASE_FILE_NAME);
 
         int zipFileSize = getZipFileSize(userContext, uri);
