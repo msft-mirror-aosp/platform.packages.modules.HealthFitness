@@ -25,6 +25,7 @@ import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.hasSibling
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isNotChecked
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withTagValue
@@ -93,6 +94,24 @@ fun checkBoxOf(keyText: String): Matcher<View> {
  */
 fun hasIndirectSibling(targetMatcher: Matcher<View>): Matcher<View> {
     return isDescendantOfA(hasSibling(hasDescendant(targetMatcher)))
+}
+
+/** A custom matcher to find a [Preference] with the given title and summary. */
+fun withTitleAndSummary(titleText: String, summaryText: String): Matcher<View> {
+    return allOf(
+        withId(android.R.id.title),
+        withText(titleText),
+        hasSibling(hasDescendant(withText(summaryText))),
+    )
+}
+
+/** A custom matcher to find a [Preference] with the given title and no visible summary. */
+fun withTitleNoSummary(titleText: String): Matcher<View> {
+    return allOf(
+        withId(android.R.id.title),
+        withText(titleText),
+        hasSibling(hasDescendant(allOf(withId(android.R.id.summary), not(isDisplayed())))),
+    )
 }
 
 fun atPosition(position: Int, itemMatcher: Matcher<View?>): Matcher<View?> {
