@@ -16,6 +16,9 @@
 
 package com.android.server.healthconnect.backuprestore;
 
+import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTORE;
+import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTORE_DB;
+import static com.android.healthfitness.flags.Flags.FLAG_ECOSYSTEM_METRICS_DB_CHANGES;
 import static com.android.server.healthconnect.backuprestore.ProtoTestData.TEST_PACKAGE_NAME;
 import static com.android.server.healthconnect.testing.storage.TransactionTestUtils.createStepsRecord;
 
@@ -33,7 +36,6 @@ import android.platform.test.flag.junit.SetFlagsRule;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
@@ -61,7 +63,11 @@ import org.mockito.Mock;
 import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
-@EnableFlags({Flags.FLAG_CLOUD_BACKUP_AND_RESTORE, Flags.FLAG_CLOUD_BACKUP_AND_RESTORE_DB})
+@EnableFlags({
+    FLAG_CLOUD_BACKUP_AND_RESTORE,
+    FLAG_CLOUD_BACKUP_AND_RESTORE_DB,
+    FLAG_ECOSYSTEM_METRICS_DB_CHANGES
+})
 public final class CloudBackupRestoreTest {
 
     @Rule(order = 1)
