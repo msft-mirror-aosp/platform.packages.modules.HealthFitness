@@ -65,6 +65,7 @@ import com.android.healthfitness.flags.Flags;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.HealthConnectThreadScheduler;
 import com.android.server.healthconnect.exportimport.DatabaseMerger;
+import com.android.server.healthconnect.fitness.FitnessRecordReadHelper;
 import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.GrantTimeXmlHelper;
@@ -216,6 +217,7 @@ public final class BackupRestore {
             MigrationStateManager migrationStateManager,
             PreferenceHelper preferenceHelper,
             TransactionManager transactionManager,
+            FitnessRecordReadHelper fitnessRecordReadHelper,
             Context context,
             DeviceInfoHelper deviceInfoHelper,
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
@@ -230,7 +232,8 @@ public final class BackupRestore {
                         appInfoHelper,
                         deviceInfoHelper,
                         healthDataCategoryPriorityHelper,
-                        transactionManager);
+                        transactionManager,
+                        fitnessRecordReadHelper);
         mPreferenceHelper = preferenceHelper;
         mTransactionManager = transactionManager;
         mThreadScheduler = threadScheduler;

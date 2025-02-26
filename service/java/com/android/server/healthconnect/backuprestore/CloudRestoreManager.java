@@ -31,6 +31,7 @@ import android.health.connect.internal.datatypes.PlannedExerciseSessionRecordInt
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.util.Slog;
 
+import com.android.server.healthconnect.fitness.FitnessRecordReadHelper;
 import com.android.server.healthconnect.proto.backuprestore.AppInfoMap;
 import com.android.server.healthconnect.proto.backuprestore.BackupData;
 import com.android.server.healthconnect.proto.backuprestore.Record;
@@ -40,7 +41,6 @@ import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
-import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
@@ -65,6 +65,7 @@ public class CloudRestoreManager {
     private static final String TAG = "CloudRestoreManager";
 
     private final TransactionManager mTransactionManager;
+    private final FitnessRecordReadHelper mFitnessRecordReadHelper;
     private final InternalHealthConnectMappings mInternalHealthConnectMappings;
     private final DeviceInfoHelper mDeviceInfoHelper;
     private final AppInfoHelper mAppInfoHelper;
@@ -75,12 +76,14 @@ public class CloudRestoreManager {
 
     public CloudRestoreManager(
             TransactionManager transactionManager,
+            FitnessRecordReadHelper fitnessRecordReadHelper,
             InternalHealthConnectMappings internalHealthConnectMappings,
             DeviceInfoHelper deviceInfoHelper,
             AppInfoHelper appInfoHelper,
             HealthDataCategoryPriorityHelper priorityHelper,
             PreferenceHelper preferenceHelper) {
         mTransactionManager = transactionManager;
+        mFitnessRecordReadHelper = fitnessRecordReadHelper;
         mInternalHealthConnectMappings = internalHealthConnectMappings;
         mDeviceInfoHelper = deviceInfoHelper;
         mAppInfoHelper = appInfoHelper;
@@ -176,24 +179,22 @@ public class CloudRestoreManager {
             }
         }
         List<RecordInternal<?>> existingPlannedSessions =
-                mTransactionManager.readRecordsByIdsWithoutAccessLogs(
-                        new ReadTransactionRequest(
-                                mAppInfoHelper,
-                                /* packageName= */ "",
-                                Map.of(
-                                        RecordTypeIdentifier.RECORD_TYPE_PLANNED_EXERCISE_SESSION,
-                                        sessionsToCheck.stream()
-                                                .map(
-                                                        ExerciseSessionRecordInternal
-                                                                ::getPlannedExerciseSessionId)
-                                                .filter(Objects::nonNull)
-                                                .toList()),
-                                DEFAULT_LONG,
-                                Collections.emptySet(),
-                                /* isInForeground= */ true,
-                                /* isReadingSelfData= */ false),
-                        mAppInfoHelper,
-                        mDeviceInfoHelper);
+                mFitnessRecordReadHelper.readRecords(
+                        mTransactionManager,
+                        /* callingPackageName= */ "",
+                        Map.of(
+                                RecordTypeIdentifier.RECORD_TYPE_PLANNED_EXERCISE_SESSION,
+                                sessionsToCheck.stream()
+                                        .map(
+                                                ExerciseSessionRecordInternal
+                                                        ::getPlannedExerciseSessionId)
+                                        .filter(Objects::nonNull)
+                                        .toList()),
+                        DEFAULT_LONG,
+                        Collections.emptySet(),
+                        /* isInForeground= */ true,
+                        /* shouldRecordAccessLog= */ false,
+                        /* isReadingSelfData= */ false);
         Set<UUID> existingPlannedSessionIds =
                 existingPlannedSessions.stream()
                         .map(RecordInternal::getUuid)

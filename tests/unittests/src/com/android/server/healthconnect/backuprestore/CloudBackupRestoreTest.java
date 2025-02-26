@@ -47,7 +47,6 @@ import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper.DatabaseHelpers;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
-import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
 import com.android.server.healthconnect.testing.fixtures.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.testing.storage.TransactionTestUtils;
@@ -113,6 +112,7 @@ public final class CloudBackupRestoreTest {
         mCloudBackupManager =
                 new CloudBackupManager(
                         mTransactionManager,
+                        healthConnectInjector.getFitnessRecordReadHelper(),
                         mAppInfoHelper,
                         mDeviceInfoHelper,
                         healthConnectInjector.getHealthConnectMappings(),
@@ -124,6 +124,7 @@ public final class CloudBackupRestoreTest {
         mCloudRestoreManager =
                 new CloudRestoreManager(
                         mTransactionManager,
+                        healthConnectInjector.getFitnessRecordReadHelper(),
                         healthConnectInjector.getInternalHealthConnectMappings(),
                         mDeviceInfoHelper,
                         mAppInfoHelper,
@@ -149,14 +150,11 @@ public final class CloudBackupRestoreTest {
                         .build()
                         .toByteArray());
 
-        ReadTransactionRequest readRequest =
-                mTransactionTestUtils.getReadTransactionRequest(
+        List<RecordInternal<?>> records =
+                mTransactionTestUtils.readRecordsByIds(
                         ImmutableMap.of(
                                 RecordTypeIdentifier.RECORD_TYPE_STEPS,
                                 List.of(stepsRecord.getUuid())));
-        List<RecordInternal<?>> records =
-                mTransactionManager.readRecordsByIdsWithoutAccessLogs(
-                        readRequest, mAppInfoHelper, mDeviceInfoHelper);
         assertThat(records).hasSize(1);
         // Comparing proto representations because internal records don't implement equals
         assertThat(mRecordProtoConverter.toRecordProto(records.get(0)))

@@ -177,6 +177,7 @@ public class BackupRestoreTest {
                         healthConnectInjector.getMigrationStateManager(),
                         healthConnectInjector.getPreferenceHelper(),
                         healthConnectInjector.getTransactionManager(),
+                        healthConnectInjector.getFitnessRecordReadHelper(),
                         mServiceContext,
                         healthConnectInjector.getDeviceInfoHelper(),
                         healthConnectInjector.getHealthDataCategoryPriorityHelper(),

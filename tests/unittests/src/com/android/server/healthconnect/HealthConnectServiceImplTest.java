@@ -292,6 +292,7 @@ public class HealthConnectServiceImplTest {
     private static final long DEFAULT_PACKAGE_APP_INFO = 123L;
 
     private static final String HC_PACKAGE_NAME = "com.android.healthconnect";
+
     /** Package name where {@link HealthConnectServiceImplTest this test} runs in. */
     private static final String THIS_TEST_PACKAGE_NAME = "com.android.healthconnect.unittests";
 
@@ -403,6 +404,7 @@ public class HealthConnectServiceImplTest {
                         healthConnectInjector.getMigrationStateManager(),
                         healthConnectInjector.getMigrationUiStateManager(),
                         healthConnectInjector.getMigrationCleaner(),
+                        healthConnectInjector.getFitnessRecordReadHelper(),
                         healthConnectInjector.getMedicalResourceHelper(),
                         healthConnectInjector.getMedicalDataSourceHelper(),
                         healthConnectInjector.getExportManager(),
@@ -3007,8 +3009,7 @@ public class HealthConnectServiceImplTest {
         PermissionGroupInfo info = new PermissionGroupInfo();
         info.packageName = HC_PACKAGE_NAME;
         when(mPackageManager.getPermissionGroupInfo(
-                        eq(HealthPermissions.HEALTH_PERMISSION_GROUP),
-                        eq(0)))
+                        eq(HealthPermissions.HEALTH_PERMISSION_GROUP), eq(0)))
                 .thenReturn(info);
 
         PackageInfo mockPackageInfo = new PackageInfo();

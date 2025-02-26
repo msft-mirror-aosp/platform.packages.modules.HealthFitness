@@ -70,7 +70,6 @@ import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper.D
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
-import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.testing.TestUtils;
 import com.android.server.healthconnect.testing.fakes.FakePreferenceHelper;
@@ -183,6 +182,7 @@ public class ImportManagerTest {
                         mContext,
                         mExportImportSettingsStorage,
                         mTransactionManager,
+                        healthConnectInjector.getFitnessRecordReadHelper(),
                         mDeviceInfoHelper,
                         mPriorityHelper,
                         fakeClock,
@@ -234,22 +234,14 @@ public class ImportManagerTest {
 
         List<UUID> stepsUuids = ImmutableList.of(UUID.fromString(uuids.get(0)));
         List<UUID> bloodPressureUuids = ImmutableList.of(UUID.fromString(uuids.get(1)));
-        ReadTransactionRequest request =
-                mTransactionTestUtils.getReadTransactionRequest(
+
+        List<RecordInternal<?>> records =
+                mTransactionTestUtils.readRecordsByIds(
                         ImmutableMap.of(
                                 RecordTypeIdentifier.RECORD_TYPE_STEPS,
                                 stepsUuids,
                                 RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE,
                                 bloodPressureUuids));
-
-        List<RecordInternal<?>> records =
-                mTransactionManager.readRecordsByIds(
-                        request,
-                        mAppInfoHelper,
-                        mDeviceInfoHelper,
-                        mAccessLogsHelper,
-                        mReadAccessLogsHelper,
-                        /* shouldRecordAccessLog= */ false);
         assertThat(records).hasSize(2);
         assertThat(records.get(0).getUuid()).isEqualTo(stepsUuids.get(0));
         assertThat(records.get(1).getUuid()).isEqualTo(bloodPressureUuids.get(0));
@@ -370,22 +362,14 @@ public class ImportManagerTest {
 
         List<UUID> stepsUuids = ImmutableList.of(UUID.fromString(uuids.get(0)));
         List<UUID> bloodPressureUuids = ImmutableList.of(UUID.fromString(uuids.get(1)));
-        ReadTransactionRequest request =
-                mTransactionTestUtils.getReadTransactionRequest(
+
+        List<RecordInternal<?>> records =
+                mTransactionTestUtils.readRecordsByIds(
                         ImmutableMap.of(
                                 RecordTypeIdentifier.RECORD_TYPE_STEPS,
                                 stepsUuids,
                                 RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE,
                                 bloodPressureUuids));
-
-        List<RecordInternal<?>> records =
-                mTransactionManager.readRecordsByIds(
-                        request,
-                        mAppInfoHelper,
-                        mDeviceInfoHelper,
-                        mAccessLogsHelper,
-                        mReadAccessLogsHelper,
-                        /* shouldRecordAccessLog= */ false);
         assertThat(records).hasSize(1);
         assertThat(records.get(0).getUuid()).isEqualTo(bloodPressureUuids.get(0));
     }
@@ -620,22 +604,14 @@ public class ImportManagerTest {
 
         List<UUID> stepsUuids = ImmutableList.of(UUID.fromString(uuids.get(0)));
         List<UUID> bloodPressureUuids = ImmutableList.of(UUID.fromString(uuids.get(1)));
-        ReadTransactionRequest request =
-                mTransactionTestUtils.getReadTransactionRequest(
+
+        List<RecordInternal<?>> records =
+                mTransactionTestUtils.readRecordsByIds(
                         ImmutableMap.of(
                                 RecordTypeIdentifier.RECORD_TYPE_STEPS,
                                 stepsUuids,
                                 RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE,
                                 bloodPressureUuids));
-
-        List<RecordInternal<?>> records =
-                mTransactionManager.readRecordsByIds(
-                        request,
-                        mAppInfoHelper,
-                        mDeviceInfoHelper,
-                        mAccessLogsHelper,
-                        mReadAccessLogsHelper,
-                        /* shouldRecordAccessLog= */ false);
         assertThat(records).hasSize(2);
         assertThat(records.get(0).getUuid()).isEqualTo(stepsUuids.get(0));
         assertThat(records.get(1).getUuid()).isEqualTo(bloodPressureUuids.get(0));

@@ -16,6 +16,8 @@
 
 package com.android.server.healthconnect.backuprestore;
 
+import static android.health.connect.Constants.DEFAULT_LONG;
+
 import static com.android.server.healthconnect.backuprestore.CloudBackupSettingsHelper.AUTO_DELETE_PREF_KEY;
 import static com.android.server.healthconnect.backuprestore.CloudBackupSettingsHelper.DISTANCE_UNIT_PREF_KEY;
 import static com.android.server.healthconnect.backuprestore.CloudBackupSettingsHelper.ENERGY_UNIT_PREF_KEY;
@@ -54,6 +56,7 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.fitness.FitnessRecordReadHelper;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
@@ -69,7 +72,6 @@ import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper.D
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
-import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
 import com.android.server.healthconnect.testing.fixtures.SQLiteDatabaseFixture;
@@ -123,6 +125,7 @@ public class CloudRestoreManagerTest {
     private AppInfoHelper mAppInfoHelper;
     private DeviceInfoHelper mDeviceInfoHelper;
     private TransactionManager mTransactionManager;
+    private FitnessRecordReadHelper mFitnessRecordReadHelper;
     private TransactionTestUtils mTransactionTestUtils;
     private CloudRestoreManager mCloudRestoreManager;
     private RecordProtoConverter mRecordProtoConverter;
@@ -146,6 +149,7 @@ public class CloudRestoreManagerTest {
                         .build();
 
         mTransactionManager = healthConnectInjector.getTransactionManager();
+        mFitnessRecordReadHelper = healthConnectInjector.getFitnessRecordReadHelper();
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
         mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
         mPriorityHelper = healthConnectInjector.getHealthDataCategoryPriorityHelper();
@@ -157,7 +161,8 @@ public class CloudRestoreManagerTest {
         mCloudRestoreManager =
                 new CloudRestoreManager(
                         mTransactionManager,
-                        healthConnectInjector.getInternalHealthConnectMappings(),
+                        mFitnessRecordReadHelper,
+                        mMappings,
                         mDeviceInfoHelper,
                         mAppInfoHelper,
                         mPriorityHelper,
@@ -190,16 +195,13 @@ public class CloudRestoreManagerTest {
         mCloudRestoreManager.restoreChanges(
                 List.of(stepsChange, bloodPressureChange), APP_INFO_MAP.toByteArray());
 
-        ReadTransactionRequest request =
-                mTransactionTestUtils.getReadTransactionRequest(
+        List<RecordInternal<?>> records =
+                mTransactionTestUtils.readRecordsByIds(
                         ImmutableMap.of(
                                 RecordTypeIdentifier.RECORD_TYPE_STEPS,
                                 List.of(UUID.fromString(stepsRecord.getUuid())),
                                 RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE,
                                 List.of(UUID.fromString(bloodPressureRecord.getUuid()))));
-        List<RecordInternal<?>> records =
-                mTransactionManager.readRecordsByIdsWithoutAccessLogs(
-                        request, mAppInfoHelper, mDeviceInfoHelper);
         assertThat(records).hasSize(2);
         assertThat(mRecordProtoConverter.toRecordProto(records.get(0))).isEqualTo(stepsRecord);
         assertThat(mRecordProtoConverter.toRecordProto(records.get(1)))
@@ -474,24 +476,22 @@ public class CloudRestoreManagerTest {
 
     @NotNull
     private RecordInternal<?> readExerciseSession(String sessionId) {
-        ReadTransactionRequest request =
-                new ReadTransactionRequest(
-                        mAppInfoHelper,
-                        /* packageName= */ "",
+        List<RecordInternal<?>> records =
+                mFitnessRecordReadHelper.readRecords(
+                        mTransactionManager,
+                        /* callingPackageName= */ "",
                         ImmutableMap.of(
                                 RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION,
                                 List.of(UUID.fromString(sessionId))),
-                        /* startDateAccessMillis= */ 0,
+                        DEFAULT_LONG,
                         Set.copyOf(
                                 mMappings
                                         .getRecordHelper(
                                                 RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION)
                                         .getExtraReadPermissions()),
                         /* isInForeground= */ true,
+                        /* shouldRecordAccessLog= */ false,
                         /* isReadingSelfData= */ false);
-        List<RecordInternal<?>> records =
-                mTransactionManager.readRecordsByIdsWithoutAccessLogs(
-                        request, mAppInfoHelper, mDeviceInfoHelper);
         assertThat(records.size()).isEqualTo(1);
         return records.get(0);
     }
