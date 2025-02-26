@@ -43,6 +43,7 @@ import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.util.Pair;
 import android.util.Slog;
 
+import com.android.server.healthconnect.proto.backuprestore.AppInfoMap;
 import com.android.server.healthconnect.proto.backuprestore.BackupData;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
@@ -50,6 +51,8 @@ import com.android.server.healthconnect.storage.datatypehelpers.BackupChangeToke
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
@@ -79,6 +82,7 @@ public class CloudBackupDatabaseHelper {
     private final ChangeLogsHelper mChangeLogsHelper;
     private final ChangeLogsRequestHelper mChangeLogsRequestHelper;
     private final RecordProtoConverter mRecordProtoConverter = new RecordProtoConverter();
+    private final CloudBackupSettingsHelper mSettingsHelper;
     private final List<Integer> mRecordTypes;
 
     private static final String TAG = "CloudBackupRestoreDatabaseHelper";
@@ -90,7 +94,9 @@ public class CloudBackupDatabaseHelper {
             HealthConnectMappings healthConnectMappings,
             InternalHealthConnectMappings internalHealthConnectMappings,
             ChangeLogsHelper changeLogsHelper,
-            ChangeLogsRequestHelper changeLogsRequestHelper) {
+            ChangeLogsRequestHelper changeLogsRequestHelper,
+            HealthDataCategoryPriorityHelper priorityHelper,
+            PreferenceHelper preferenceHelper) {
         mTransactionManager = transactionManager;
         mAppInfoHelper = appInfoHelper;
         mDeviceInfoHelper = deviceInfoHelper;
@@ -98,6 +104,8 @@ public class CloudBackupDatabaseHelper {
         mInternalHealthConnectMappings = internalHealthConnectMappings;
         mChangeLogsHelper = changeLogsHelper;
         mChangeLogsRequestHelper = changeLogsRequestHelper;
+        mSettingsHelper =
+                new CloudBackupSettingsHelper(priorityHelper, preferenceHelper, appInfoHelper);
         mRecordTypes =
                 Stream.concat(
                                 RECORD_TYPE_MIGRATION_ORDERING_OVERRIDES.stream()
@@ -232,7 +240,7 @@ public class CloudBackupDatabaseHelper {
                         nextDataTablePageToken,
                         changeLogsTablePageToken);
         return new GetChangesForBackupResponse(
-                PROTO_VERSION, backupChanges, backupChangeTokenRowId);
+                PROTO_VERSION, backupChanges, backupChangeTokenRowId, serializeAppInfo());
     }
 
     private String getChangeLogsPageToken() {
@@ -327,7 +335,7 @@ public class CloudBackupDatabaseHelper {
                         EMPTY_PAGE_TOKEN.encode(),
                         changeLogsResponse.getNextPageToken());
         return new GetChangesForBackupResponse(
-                PROTO_VERSION, backupChanges, backupChangeTokenRowId);
+                PROTO_VERSION, backupChanges, backupChangeTokenRowId, serializeAppInfo());
     }
 
     private List<BackupChange> convertRecordsToBackupChange(List<RecordInternal<?>> records) {
@@ -361,6 +369,13 @@ public class CloudBackupDatabaseHelper {
     private byte[] serializeRecordInternal(RecordInternal<?> recordInternal) {
         return BackupData.newBuilder()
                 .setRecord(mRecordProtoConverter.toRecordProto(recordInternal))
+                .build()
+                .toByteArray();
+    }
+
+    private byte[] serializeAppInfo() {
+        return AppInfoMap.newBuilder()
+                .putAllAppInfo(mSettingsHelper.getAppInfo())
                 .build()
                 .toByteArray();
     }

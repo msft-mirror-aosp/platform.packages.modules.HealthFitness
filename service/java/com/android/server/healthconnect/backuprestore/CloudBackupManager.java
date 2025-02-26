@@ -78,7 +78,9 @@ public final class CloudBackupManager {
                         healthConnectMappings,
                         internalHealthConnectMappings,
                         changeLogsHelper,
-                        changeLogsRequestHelper);
+                        changeLogsRequestHelper,
+                        priorityHelper,
+                        preferenceHelper);
     }
 
     /**
