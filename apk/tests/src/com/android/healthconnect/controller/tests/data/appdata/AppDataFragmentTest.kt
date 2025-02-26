@@ -134,8 +134,9 @@ class AppDataFragmentTest {
             )
         )
 
-        onView(withText("No data")).check(matches(isDisplayed()))
+        onView(withText("No data")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("Data from Health Connect test app will show here"))
+            .perform(scrollTo())
             .check(matches(isDisplayed()))
     }
 
