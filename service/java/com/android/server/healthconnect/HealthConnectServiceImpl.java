@@ -390,7 +390,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         exportImportNotificationSender);
 
         mCloudBackupManager =
-                Flags.cloudBackupAndRestore()
+                cloudBackupAndRestore()
                         ? new CloudBackupManager(
                                 mTransactionManager,
                                 mAppInfoHelper,
@@ -403,7 +403,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 mPreferenceHelper)
                         : null;
         mCloudRestoreManager =
-                Flags.cloudBackupAndRestore()
+                cloudBackupAndRestore()
                         ? new CloudRestoreManager(
                                 mTransactionManager,
                                 mDeviceInfoHelper,
@@ -3237,6 +3237,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     @TargetApi(Build.VERSION_CODES.BAKLAVA)
     public void getChangesForBackup(
             @Nullable String changeToken, IGetChangesForBackupResponseCallback callback) {
+        // TODO: b/399075964 - add proper exception handling
         if (mCloudBackupManager == null) return;
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
@@ -3246,12 +3247,14 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
-                        mContext.enforcePermission(
-                                BACKUP_HEALTH_CONNECT_DATA_AND_SETTINGS,
-                                pid,
-                                uid,
-                                "Caller does not have permission to call getChangesForBackup.");
-                        callback.onResult(mCloudBackupManager.getChangesForBackup(changeToken));
+                        if (cloudBackupAndRestore()) {
+                            mContext.enforcePermission(
+                                    BACKUP_HEALTH_CONNECT_DATA_AND_SETTINGS,
+                                    pid,
+                                    uid,
+                                    "Caller does not have permission to call getChangesForBackup.");
+                            callback.onResult(mCloudBackupManager.getChangesForBackup(changeToken));
+                        }
                     } catch (IllegalArgumentException e) {
                         tryAndThrowException(errorCallback, e, ERROR_INVALID_ARGUMENT);
                     } catch (Exception e) {
@@ -3273,12 +3276,15 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
-                        mContext.enforcePermission(
-                                BACKUP_HEALTH_CONNECT_DATA_AND_SETTINGS,
-                                pid,
-                                uid,
-                                "Caller does not have permission to call getSettingsForBackup.");
-                        callback.onResult(mCloudBackupManager.getSettingsForBackup());
+                        if (cloudBackupAndRestore()) {
+                            mContext.enforcePermission(
+                                    BACKUP_HEALTH_CONNECT_DATA_AND_SETTINGS,
+                                    pid,
+                                    uid,
+                                    "Caller does not have permission to call"
+                                            + " getSettingsForBackup.");
+                            callback.onResult(mCloudBackupManager.getSettingsForBackup());
+                        }
                     } catch (Exception e) {
                         tryAndThrowException(errorCallback, e, ERROR_INTERNAL);
                     }
@@ -3287,10 +3293,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     @Override
     @TargetApi(Build.VERSION_CODES.BAKLAVA)
-    public void pushSettingsForRestore(
-            BackupSettings backupSettings, IEmptyResponseCallback callback) {
+    public void restoreSettings(BackupSettings backupSettings, IEmptyResponseCallback callback) {
+        // TODO: b/399075964 - add proper exception handling
         if (mCloudRestoreManager == null) return;
-        if (!cloudBackupAndRestore()) return;
         checkParamsNonNull(backupSettings);
         checkParamsNonNull(callback);
         final int uid = Binder.getCallingUid();
@@ -3301,13 +3306,15 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
-                        mContext.enforcePermission(
-                                RESTORE_HEALTH_CONNECT_DATA_AND_SETTINGS,
-                                pid,
-                                uid,
-                                "Caller does not have permission to call pushSettingsForRestore.");
-                        mCloudRestoreManager.pushSettingsForRestore(backupSettings);
-                        callback.onResult();
+                        if (cloudBackupAndRestore()) {
+                            mContext.enforcePermission(
+                                    RESTORE_HEALTH_CONNECT_DATA_AND_SETTINGS,
+                                    pid,
+                                    uid,
+                                    "Caller does not have permission to call restoreSettings.");
+                            mCloudRestoreManager.restoreSettings(backupSettings);
+                            callback.onResult();
+                        }
                     } catch (Exception e) {
                         tryAndThrowException(errorCallback, e, ERROR_INTERNAL);
                     }
@@ -3317,6 +3324,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     @Override
     @TargetApi(Build.VERSION_CODES.BAKLAVA)
     public void canRestore(int dataVersion, ICanRestoreResponseCallback callback) {
+        // TODO: b/399075964 - add proper exception handling
         if (mCloudRestoreManager == null) return;
         checkParamsNonNull(dataVersion);
         final int uid = Binder.getCallingUid();
@@ -3327,7 +3335,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
-                        if (Flags.cloudBackupAndRestore()) {
+                        if (cloudBackupAndRestore()) {
                             mContext.enforcePermission(
                                     RESTORE_HEALTH_CONNECT_DATA_AND_SETTINGS,
                                     pid,
@@ -3343,8 +3351,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     @Override
     @TargetApi(Build.VERSION_CODES.BAKLAVA)
-    public void pushChangesForRestore(
+    public void restoreChanges(
             List<RestoreChange> changes, byte[] appInfoMap, IEmptyResponseCallback callback) {
+        // TODO: b/399075964 - add proper exception handling
         if (mCloudRestoreManager == null) return;
         checkParamsNonNull(changes);
         final int uid = Binder.getCallingUid();
@@ -3355,14 +3364,13 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
-                        if (Flags.cloudBackupAndRestore()) {
+                        if (cloudBackupAndRestore()) {
                             mContext.enforcePermission(
                                     RESTORE_HEALTH_CONNECT_DATA_AND_SETTINGS,
                                     pid,
                                     uid,
-                                    "Caller does not have permission to call"
-                                            + " pushChangesForRestore.");
-                            mCloudRestoreManager.pushChangesForRestore(changes, appInfoMap);
+                                    "Caller does not have permission to call" + " restoreChanges.");
+                            mCloudRestoreManager.restoreChanges(changes, appInfoMap);
                         }
                         callback.onResult();
                     } catch (Exception e) {
