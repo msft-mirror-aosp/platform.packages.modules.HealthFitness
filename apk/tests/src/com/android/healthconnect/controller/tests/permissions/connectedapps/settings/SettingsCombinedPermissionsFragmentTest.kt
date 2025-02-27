@@ -43,7 +43,9 @@ import com.android.healthconnect.controller.permissions.app.AppPermissionViewMod
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel.RevokeAllState.NotStarted
 import com.android.healthconnect.controller.permissions.app.SettingsCombinedPermissionsFragment
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
@@ -51,7 +53,6 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.logging.DataRestoreElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -76,8 +77,8 @@ import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
-import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class SettingsCombinedPermissionsFragmentTest {
@@ -192,21 +193,58 @@ class SettingsCombinedPermissionsFragmentTest {
         onView(withText("Fitness and wellness")).check(matches(isDisplayed()))
         onView(withText("Exercise, sleep, nutrition and others")).check(matches(isDisplayed()))
         onView(withText("Health records")).check(matches(isDisplayed()))
-        onView(withText("Lab results, medications, immunizations and others"))
+        onView(withText("Lab results, medications, vaccines and others"))
             .check(matches(isDisplayed()))
         onView(withText("Additional access")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Past data, background data"))
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
         onView(withText("Manage app")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("Remove access for this app"))
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(
                 withText(
-                    "Data you share with Health Connect test app is covered by their privacy policy"
+                    "You can learn how Health Connect test app handles your data in the developer's privacy policy"
                 )
             )
             .perform(scrollTo())
             .check(matches(isDisplayed()))
-        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.MANAGE_PERMISSIONS_PAGE)
+    }
+
+    @Test
+    fun fragmentStarts_logPageImpression() {
+        val writePermission =
+            FitnessPermission(FitnessPermissionType.EXERCISE, PermissionsAccessType.WRITE)
+        val readPermission =
+            FitnessPermission(FitnessPermissionType.DISTANCE, PermissionsAccessType.READ)
+        whenever(viewModel.fitnessPermissions).then {
+            MutableLiveData(listOf(writePermission, readPermission))
+        }
+        whenever(viewModel.grantedFitnessPermissions).then {
+            MutableLiveData(setOf(writePermission))
+        }
+        whenever(viewModel.isPackageSupported(TEST_APP_PACKAGE_NAME)).then { true }
+
+        val validState =
+            AdditionalAccessViewModel.State(
+                backgroundReadUIState =
+                    AdditionalAccessViewModel.AdditionalPermissionState(
+                        isDeclared = true,
+                        isEnabled = false,
+                        isGranted = false,
+                    )
+            )
+        whenever(additionalAccessViewModel.additionalAccessState).then {
+            MutableLiveData(validState)
+        }
+
+        launchFragment<SettingsCombinedPermissionsFragment>(
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+        )
+
+        verify(healthConnectLogger, atLeast(1))
+            .setPageId(PageName.SETTINGS_MANAGE_COMBINED_APP_PERMISSIONS_PAGE)
         verify(healthConnectLogger).logPageImpression()
     }
 
@@ -499,6 +537,13 @@ class SettingsCombinedPermissionsFragmentTest {
                 )
             )
         }
+        whenever(viewModel.revokeAllShouldIncludeBackground()).thenReturn(true)
+        whenever(viewModel.revokeAllShouldIncludePastData()).thenReturn(true)
+        whenever(viewModel.medicalPermissions).then {
+            MutableLiveData(
+                listOf(HealthPermission.MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA))
+            )
+        }
         launchFragment<SettingsCombinedPermissionsFragment>(
             bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
         )
@@ -525,7 +570,7 @@ class SettingsCombinedPermissionsFragmentTest {
                 )
             )
             .inRoot(isDialog())
-            .check(doesNotExist())
+            .check(matches(not(isDisplayed())))
     }
 
     @Test
@@ -546,6 +591,13 @@ class SettingsCombinedPermissionsFragmentTest {
                             isGranted = false,
                         ),
                 )
+            )
+        }
+        whenever(viewModel.revokeAllShouldIncludeBackground()).thenReturn(true)
+        whenever(viewModel.revokeAllShouldIncludePastData()).thenReturn(false)
+        whenever(viewModel.medicalPermissions).then {
+            MutableLiveData(
+                listOf(HealthPermission.MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA))
             )
         }
         launchFragment<SettingsCombinedPermissionsFragment>(
@@ -574,7 +626,7 @@ class SettingsCombinedPermissionsFragmentTest {
                 )
             )
             .inRoot(isDialog())
-            .check(doesNotExist())
+            .check(matches(not(isDisplayed())))
     }
 
     @Test
@@ -595,6 +647,13 @@ class SettingsCombinedPermissionsFragmentTest {
                             isGranted = true,
                         ),
                 )
+            )
+        }
+        whenever(viewModel.revokeAllShouldIncludeBackground()).thenReturn(false)
+        whenever(viewModel.revokeAllShouldIncludePastData()).thenReturn(true)
+        whenever(viewModel.medicalPermissions).then {
+            MutableLiveData(
+                listOf(HealthPermission.MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA))
             )
         }
         launchFragment<SettingsCombinedPermissionsFragment>(
@@ -623,11 +682,18 @@ class SettingsCombinedPermissionsFragmentTest {
                 )
             )
             .inRoot(isDialog())
-            .check(doesNotExist())
+            .check(matches(not(isDisplayed())))
     }
 
     @Test
     fun removeAccessButton_noAdditionalPermissions_showsConfirmationDialog() {
+        whenever(viewModel.revokeAllShouldIncludeBackground()).thenReturn(false)
+        whenever(viewModel.revokeAllShouldIncludePastData()).thenReturn(false)
+        whenever(viewModel.medicalPermissions).then {
+            MutableLiveData(
+                listOf(HealthPermission.MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA))
+            )
+        }
         launchFragment<SettingsCombinedPermissionsFragment>(
             bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
         )
@@ -654,11 +720,18 @@ class SettingsCombinedPermissionsFragmentTest {
                 )
             )
             .inRoot(isDialog())
-            .check(doesNotExist())
+            .check(matches(not(isDisplayed())))
     }
 
     @Test
     fun removeAccessButton_confirmationDialogNoCheckbox_remainsAfterRotation() {
+        whenever(viewModel.revokeAllShouldIncludeBackground()).thenReturn(false)
+        whenever(viewModel.revokeAllShouldIncludePastData()).thenReturn(false)
+        whenever(viewModel.medicalPermissions).then {
+            MutableLiveData(
+                listOf(HealthPermission.MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA))
+            )
+        }
         val scenario =
             launchFragment<SettingsCombinedPermissionsFragment>(
                 bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
@@ -686,7 +759,7 @@ class SettingsCombinedPermissionsFragmentTest {
                 )
             )
             .inRoot(isDialog())
-            .check(doesNotExist())
+            .check(matches(not(isDisplayed())))
 
         scenario.recreate()
         onView(withText("Remove all permissions?")).inRoot(isDialog()).check(matches(isDisplayed()))
@@ -707,6 +780,6 @@ class SettingsCombinedPermissionsFragmentTest {
                 )
             )
             .inRoot(isDialog())
-            .check(doesNotExist())
+            .check(matches(not(isDisplayed())))
     }
 }

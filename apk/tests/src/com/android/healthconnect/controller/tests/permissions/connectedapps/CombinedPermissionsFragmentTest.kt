@@ -42,6 +42,8 @@ import com.android.healthconnect.controller.permissions.additionalaccess.Permiss
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel.RevokeAllState.NotStarted
 import com.android.healthconnect.controller.permissions.app.CombinedPermissionsFragment
+import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
@@ -51,10 +53,10 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
-import com.android.healthconnect.controller.tests.utils.whenever
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.logging.AppAccessElement
+import com.android.healthconnect.controller.utils.logging.CombinedAppAccessElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -62,19 +64,18 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
-import javax.inject.Inject
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.*
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class CombinedPermissionsFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
-    @Inject lateinit var fakeFeatureUtils: FeatureUtils
 
     @BindValue val viewModel: AppPermissionViewModel = mock()
     @BindValue val healthConnectLogger: HealthConnectLogger = mock()
@@ -137,6 +138,13 @@ class CombinedPermissionsFragmentTest {
                 fragment.preferenceScreen.findPreference("manage_app") as PreferenceCategory?
             assertThat(managePermissions?.preferenceCount).isEqualTo(2)
             assertThat(manageApp?.preferenceCount).isEqualTo(2)
+
+            verify(healthConnectLogger, atLeast(1)).setPageId(PageName.COMBINED_APP_ACCESS_PAGE)
+            verify(healthConnectLogger).logPageImpression()
+            verify(healthConnectLogger)
+                .logImpression(CombinedAppAccessElement.FITNESS_PERMISSIONS_BUTTON)
+            verify(healthConnectLogger)
+                .logImpression(CombinedAppAccessElement.MEDICAL_PERMISSIONS_BUTTON)
         }
     }
 
@@ -185,10 +193,11 @@ class CombinedPermissionsFragmentTest {
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Health records")).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(withText("Lab results, medications, immunizations and others"))
+        onView(withText("Lab results, medications, vaccines and others"))
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Additional access")).check(doesNotExist())
+        onView(withText("Past data, background data")).check(doesNotExist())
         onView(withText("Manage app")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("See app data")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("Remove access for this app"))
@@ -216,7 +225,7 @@ class CombinedPermissionsFragmentTest {
                     "To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"
+                        "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
                 )
             )
             .perform(scrollTo())
@@ -254,6 +263,9 @@ class CombinedPermissionsFragmentTest {
         )
 
         onView(withText("Additional access")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Past data, background data"))
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
     }
 
     @Test
@@ -276,6 +288,9 @@ class CombinedPermissionsFragmentTest {
         )
 
         onView(withText("Additional access")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Past data, background data"))
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
         verify(healthConnectLogger).logImpression(AppAccessElement.ADDITIONAL_ACCESS_BUTTON)
     }
 
@@ -365,12 +380,21 @@ class CombinedPermissionsFragmentTest {
                 )
             )
         }
+        whenever(viewModel.revokeAllShouldIncludeBackground()).thenReturn(true)
+        whenever(viewModel.revokeAllShouldIncludePastData()).thenReturn(true)
+        whenever(viewModel.medicalPermissions).then {
+            MutableLiveData(
+                listOf(HealthPermission.MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA))
+            )
+        }
         launchFragment<CombinedPermissionsFragment>(
             bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
         )
         onView(withText("Remove access for this app"))
             .perform(scrollTo())
             .check(matches(isDisplayed()))
+        verify(healthConnectLogger)
+            .logImpression(CombinedAppAccessElement.REMOVE_ALL_PERMISSIONS_BUTTON)
         onView(withText("Remove access for this app")).perform(scrollTo()).perform(click())
 
         onView(withText("Remove all permissions?")).inRoot(isDialog()).check(matches(isDisplayed()))
@@ -412,6 +436,13 @@ class CombinedPermissionsFragmentTest {
                             isGranted = false,
                         ),
                 )
+            )
+        }
+        whenever(viewModel.revokeAllShouldIncludeBackground()).thenReturn(true)
+        whenever(viewModel.revokeAllShouldIncludePastData()).thenReturn(false)
+        whenever(viewModel.medicalPermissions).then {
+            MutableLiveData(
+                listOf(HealthPermission.MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA))
             )
         }
         launchFragment<CombinedPermissionsFragment>(
@@ -463,6 +494,13 @@ class CombinedPermissionsFragmentTest {
                 )
             )
         }
+        whenever(viewModel.revokeAllShouldIncludeBackground()).thenReturn(false)
+        whenever(viewModel.revokeAllShouldIncludePastData()).thenReturn(true)
+        whenever(viewModel.medicalPermissions).then {
+            MutableLiveData(
+                listOf(HealthPermission.MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA))
+            )
+        }
         launchFragment<CombinedPermissionsFragment>(
             bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
         )
@@ -494,6 +532,13 @@ class CombinedPermissionsFragmentTest {
 
     @Test
     fun removeAccessButton_noAdditionalPermissions_showsConfirmationDialog() {
+        whenever(viewModel.revokeAllShouldIncludeBackground()).thenReturn(false)
+        whenever(viewModel.revokeAllShouldIncludePastData()).thenReturn(false)
+        whenever(viewModel.medicalPermissions).then {
+            MutableLiveData(
+                listOf(HealthPermission.MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA))
+            )
+        }
         launchFragment<CombinedPermissionsFragment>(
             bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME)
         )
@@ -525,6 +570,13 @@ class CombinedPermissionsFragmentTest {
 
     @Test
     fun removeAccessButton_confirmationDialogWithCheckbox_remainsAfterRotation() {
+        whenever(viewModel.revokeAllShouldIncludeBackground()).thenReturn(false)
+        whenever(viewModel.revokeAllShouldIncludePastData()).thenReturn(false)
+        whenever(viewModel.medicalPermissions).then {
+            MutableLiveData(
+                listOf(HealthPermission.MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA))
+            )
+        }
         val scenario =
             launchFragment<CombinedPermissionsFragment>(
                 bundleOf(

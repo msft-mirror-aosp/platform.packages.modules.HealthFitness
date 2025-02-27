@@ -77,6 +77,8 @@ java_defaults {
         ":UnsupportedTestApp",
         ":OldPermissionsTestApp",
         ":MedicalPermissionsTestApp",
+        ":HealthConnectUITestApp6",
+        ":HealthConnectUITestApp7",
     ],
     test_config_template: "AndroidTestTemplate.xml",
     visibility: ["//visibility:private"],
@@ -101,6 +103,7 @@ java_library {
         "HealthConnectLibrary",
         "hilt_android_testing",
         "mockito-target-minus-junit4",
+        "mockito-kotlin2",
     ],
     libs: [
         "android.test.mock.stubs",
@@ -336,6 +339,7 @@ android_test {
     instrumentation_target_package: "com.android.healthconnect.controller.tests.extras",
 }
 
+// For development only, not used in *TS.
 android_test {
     name: "HealthConnectControllerUITests",
     srcs: [
@@ -350,6 +354,9 @@ android_test {
         "SafetyCenterTests",
         "HealthConnectMigrationApis",
         "HealthConnectExportApis",
+    ],
+    test_suites: [
+        "general-tests",
     ],
     package_name: "com.android.healthconnect.controller.tests",
     instrumentation_target_package: "com.android.healthconnect.controller.tests",

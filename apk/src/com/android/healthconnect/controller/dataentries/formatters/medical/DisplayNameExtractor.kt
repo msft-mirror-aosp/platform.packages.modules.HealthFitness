@@ -49,6 +49,7 @@ class DisplayNameExtractor @Inject constructor(@ApplicationContext private val c
         private const val CVX_SYSTEM = "http://hl7.org/fhir/sid/cvx"
         private const val VACCINE_CODE = "vaccineCode"
         private const val MEDICATION_CODEABLE_CONCEPT = "medicationCodeableConcept"
+        private const val MEDICATION_REFERENCE = "medicationReference"
         private const val MEDICATION = "medication"
         private const val ALIAS = "alias"
         private const val PREFIX = "prefix"
@@ -75,17 +76,13 @@ class DisplayNameExtractor @Inject constructor(@ApplicationContext private val c
         fhirData = JSONObject(fhirResourceJson)
         val resourceType = fhirData.optString(RESOURCE_TYPE)
 
-        fun concat(vararg args: String?): String {
-            return args.filterNotNull().filter { it.isNotBlank() }.joinToString(" ")
-        }
-
         return when (resourceType) {
             ALLERGY_INTOLERANCE,
             CONDITION,
             MEDICATION_RESOURCE,
             PROCEDURE -> extractCodeDisplay(CODE, listOf(SNOMED_SYSTEM))
             ENCOUNTER -> extractEncounter()
-            IMMUNIZATION -> extractCodeDisplay(VACCINE_CODE, listOf(CVX_SYSTEM))
+            IMMUNIZATION -> extractCodeDisplay(VACCINE_CODE, listOf(CVX_SYSTEM, SNOMED_SYSTEM))
             LOCATION,
             ORGANIZATION -> extractNameOrAlias()
             MEDICATION_REQUEST,
@@ -102,10 +99,12 @@ class DisplayNameExtractor @Inject constructor(@ApplicationContext private val c
         val codeOrVaccineCode = fhirData.optJSONObject(code) ?: return unknownResource
         return codeOrVaccineCode.optString(TEXT).takeIf { !it.isNullOrEmpty() }
             ?: codeOrVaccineCode.optJSONArray(CODING)?.let { codingArray ->
-                for (i in 0 until codingArray.length()) {
-                    val coding = codingArray.getJSONObject(i)
-                    if (coding.optString(SYSTEM) in codings) {
-                        return coding.optString(DISPLAY)
+                for (codingSystem in codings) {
+                    for (i in 0 until codingArray.length()) {
+                        val coding = codingArray.getJSONObject(i)
+                        if (coding.optString(SYSTEM) == codingSystem) {
+                            return coding.optString(DISPLAY)
+                        }
                     }
                 }
                 codingArray.optJSONObject(0)?.optString(DISPLAY)
@@ -114,12 +113,12 @@ class DisplayNameExtractor @Inject constructor(@ApplicationContext private val c
     }
 
     private fun extractEncounter(): String {
-        val classText = extractTextOrDisplay(CLASS)
+        val classText = fhirData.optJSONObject(CLASS)?.optStringOrNull(DISPLAY)
         val serviceText = extractTextOrDisplay(SERVICE_TYPE)
-        return if (classText == null || serviceText == null) {
+        return if (classText == null && serviceText == null) {
             unknownResource
         } else {
-            concat(classText, "-", serviceText)
+            concat(classText, serviceText, delim = " - ")
         }
     }
 
@@ -137,21 +136,20 @@ class DisplayNameExtractor @Inject constructor(@ApplicationContext private val c
             ?: unknownResource)
 
     private fun extractMedicationConcept(): String {
-        val medication =
-            fhirData.optJSONObject(MEDICATION_CODEABLE_CONCEPT)
-                ?: fhirData.optJSONObject(MEDICATION)
-                ?: return unknownResource
-        return medication.optStringOrNull(TEXT)
-            ?: medication.optJSONArray(CODING)?.let { codingArray ->
-                for (i in 0 until codingArray.length()) {
-                    val coding = codingArray.getJSONObject(i)
-                    if (coding.optString(SYSTEM) == SNOMED_SYSTEM) {
-                        return coding.optString(DISPLAY)
+        val medicationReference = fhirData.optJSONObject(MEDICATION_REFERENCE)
+        val medicationCodeableConcept = fhirData.optJSONObject(MEDICATION_CODEABLE_CONCEPT)
+        return medicationReference?.optStringOrNull(DISPLAY)
+            ?: medicationCodeableConcept?.optStringOrNull(TEXT)
+                ?: medicationCodeableConcept?.optJSONArray(CODING)?.let { codingArray ->
+                    for (i in 0 until codingArray.length()) {
+                        val coding = codingArray.getJSONObject(i)
+                        if (coding.optString(SYSTEM) == SNOMED_SYSTEM) {
+                            return coding.optString(DISPLAY)
+                        }
                     }
+                    codingArray.optJSONObject(0)?.optString(DISPLAY)
                 }
-                codingArray.optJSONObject(0)?.optString(DISPLAY)
-            }
-            ?: unknownResource
+                    ?: unknownResource
     }
 
     private fun extractPatient(): String {
@@ -201,28 +199,30 @@ class DisplayNameExtractor @Inject constructor(@ApplicationContext private val c
 
     private fun extractPractitionerRole(): String {
         val codeText =
-            fhirData.optJSONObject(CODE)?.optStringOrNull(TEXT)
+            fhirData.optJSONArray(CODE)?.optJSONObject(0)?.optStringOrNull(TEXT)
                 ?: fhirData
-                    .optJSONObject(CODE)
+                    .optJSONArray(CODE)
+                    ?.optJSONObject(0)
                     ?.optJSONArray(CODING)
                     ?.optJSONObject(0)
                     ?.optString(DISPLAY)
         val specialtyText =
-            fhirData.optJSONObject(SPECIALTY)?.optStringOrNull(TEXT)
+            fhirData.optJSONArray(SPECIALTY)?.optJSONObject(0)?.optStringOrNull(TEXT)
                 ?: fhirData
-                    .optJSONObject(SPECIALTY)
+                    .optJSONArray(SPECIALTY)
+                    ?.optJSONObject(0)
                     ?.optJSONArray(CODING)
                     ?.optJSONObject(0)
                     ?.optString(DISPLAY)
-        return if (codeText != "" && specialtyText != "") {
-            concat(codeText, "-", specialtyText)
-        } else {
+        return if (codeText == null && specialtyText == null) {
             unknownResource
+        } else {
+            concat(codeText, specialtyText, delim = " - ")
         }
     }
 
-    private fun concat(vararg args: String?): String {
-        return args.filterNotNull().filter { it.isNotBlank() }.joinToString(" ")
+    private fun concat(vararg args: String?, delim: String = " "): String {
+        return args.filterNotNull().filter { it.isNotBlank() }.joinToString(delim)
     }
 }
 

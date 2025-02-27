@@ -16,18 +16,21 @@
 
 package android.healthconnect.internal.datatypes.utils;
 
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_CONDITIONS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_LABORATORY_RESULTS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_MEDICATIONS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PREGNANCY;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROBLEMS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_PROCEDURES;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_SOCIAL_HISTORY;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VISITS;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VITAL_SIGNS;
 
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -44,32 +47,30 @@ import org.junit.Test;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
 public class MedicalResourceTypePermissionMapperTest {
     @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testGetMedicalReadPermissionForResourceType_immunizationType_returns() {
+    public void testGetMedicalReadPermissionForResourceType_vaccineType_returns() {
         String readPermission =
                 MedicalResourceTypePermissionMapper.getMedicalReadPermission(
-                        MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
+                        MEDICAL_RESOURCE_TYPE_VACCINES);
 
-        assertThat(readPermission).isEqualTo(HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION);
+        assertThat(readPermission).isEqualTo(HealthPermissions.READ_MEDICAL_DATA_VACCINES);
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalReadPermissionForResourceType_allergyType_returns() {
         String readPermission =
                 MedicalResourceTypePermissionMapper.getMedicalReadPermission(
-                        MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE);
+                        MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES);
 
         assertThat(readPermission)
-                .isEqualTo(HealthPermissions.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE);
+                .isEqualTo(HealthPermissions.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES);
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalReadPermissionForResourceType_labsType_returns() {
         String readPermission =
                 MedicalResourceTypePermissionMapper.getMedicalReadPermission(
@@ -80,7 +81,6 @@ public class MedicalResourceTypePermissionMapperTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalReadPermissionForResourceType_medicationsType_returns() {
         String readPermission =
                 MedicalResourceTypePermissionMapper.getMedicalReadPermission(
@@ -90,7 +90,25 @@ public class MedicalResourceTypePermissionMapperTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testGetMedicalReadPermissionForResourceType_personalDetailsType_returns() {
+        String readPermission =
+                MedicalResourceTypePermissionMapper.getMedicalReadPermission(
+                        MEDICAL_RESOURCE_TYPE_PERSONAL_DETAILS);
+
+        assertThat(readPermission).isEqualTo(HealthPermissions.READ_MEDICAL_DATA_PERSONAL_DETAILS);
+    }
+
+    @Test
+    public void testGetMedicalReadPermissionForResourceType_practitionerDetailsType_returns() {
+        String readPermission =
+                MedicalResourceTypePermissionMapper.getMedicalReadPermission(
+                        MEDICAL_RESOURCE_TYPE_PRACTITIONER_DETAILS);
+
+        assertThat(readPermission)
+                .isEqualTo(HealthPermissions.READ_MEDICAL_DATA_PRACTITIONER_DETAILS);
+    }
+
+    @Test
     public void testGetMedicalReadPermissionForResourceType_pregnancyType_returns() {
         String readPermission =
                 MedicalResourceTypePermissionMapper.getMedicalReadPermission(
@@ -100,17 +118,15 @@ public class MedicalResourceTypePermissionMapperTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testGetMedicalReadPermissionForResourceType_problemsType_returns() {
+    public void testGetMedicalReadPermissionForResourceType_conditionsType_returns() {
         String readPermission =
                 MedicalResourceTypePermissionMapper.getMedicalReadPermission(
-                        MEDICAL_RESOURCE_TYPE_PROBLEMS);
+                        MEDICAL_RESOURCE_TYPE_CONDITIONS);
 
-        assertThat(readPermission).isEqualTo(HealthPermissions.READ_MEDICAL_DATA_PROBLEMS);
+        assertThat(readPermission).isEqualTo(HealthPermissions.READ_MEDICAL_DATA_CONDITIONS);
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalReadPermissionForResourceType_proceduresType_returns() {
         String readPermission =
                 MedicalResourceTypePermissionMapper.getMedicalReadPermission(
@@ -120,7 +136,6 @@ public class MedicalResourceTypePermissionMapperTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalReadPermissionForResourceType_socialHistoryType_returns() {
         String readPermission =
                 MedicalResourceTypePermissionMapper.getMedicalReadPermission(
@@ -130,7 +145,15 @@ public class MedicalResourceTypePermissionMapperTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testGetMedicalReadPermissionForResourceType_visitsType_returns() {
+        String readPermission =
+                MedicalResourceTypePermissionMapper.getMedicalReadPermission(
+                        MEDICAL_RESOURCE_TYPE_VISITS);
+
+        assertThat(readPermission).isEqualTo(HealthPermissions.READ_MEDICAL_DATA_VISITS);
+    }
+
+    @Test
     public void testGetMedicalReadPermissionForResourceType_vitalSignsType_returns() {
         String readPermission =
                 MedicalResourceTypePermissionMapper.getMedicalReadPermission(
@@ -140,27 +163,22 @@ public class MedicalResourceTypePermissionMapperTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalReadPermissionForResourceType_unknownType_throws() {
         assertThrows(
                 IllegalArgumentException.class,
-                () ->
-                        MedicalResourceTypePermissionMapper.getMedicalReadPermission(
-                                MEDICAL_RESOURCE_TYPE_UNKNOWN));
+                () -> MedicalResourceTypePermissionMapper.getMedicalReadPermission(0));
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testGetMedicalResourceTypeForReadPermission_immunizationType_returns() {
+    public void testGetMedicalResourceTypeForReadPermission_vaccineType_returns() {
         int medicalResourceType =
                 MedicalResourceTypePermissionMapper.getMedicalResourceType(
-                        HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION);
+                        HealthPermissions.READ_MEDICAL_DATA_VACCINES);
 
-        assertThat(medicalResourceType).isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
+        assertThat(medicalResourceType).isEqualTo(MEDICAL_RESOURCE_TYPE_VACCINES);
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalResourceTypeForReadPermission_coversAllPermissions() {
         Set<String> medicalReadPermissions =
                 HealthPermissions.getAllMedicalPermissions().stream()
@@ -175,11 +193,10 @@ public class MedicalResourceTypePermissionMapperTest {
                         .collect(Collectors.toSet());
 
         assertThat(medicalResourceTypes.size()).isEqualTo(medicalReadPermissions.size());
-        assertThat(medicalResourceTypes.size()).isEqualTo(9);
+        assertThat(medicalResourceTypes.size()).isEqualTo(12);
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalResourceTypeForReadPermission_fitnessDataType_throws() {
         assertThrows(
                 IllegalArgumentException.class,

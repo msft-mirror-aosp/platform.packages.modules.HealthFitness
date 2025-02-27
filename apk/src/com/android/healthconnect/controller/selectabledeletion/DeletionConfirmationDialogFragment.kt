@@ -18,6 +18,7 @@ package com.android.healthconnect.controller.selectabledeletion
 import android.app.Dialog
 import android.os.Bundle
 import android.view.View
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
@@ -45,6 +46,7 @@ class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragme
         val title: TextView = view.findViewById(R.id.dialog_title)
         val message: TextView = view.findViewById(R.id.dialog_custom_message)
         val icon: ImageView = view.findViewById(R.id.dialog_icon)
+        val checkbox: CheckBox = view.findViewById(R.id.dialog_checkbox)
         val iconDrawable = AttributeResolver.getNullableDrawable(view.context, R.attr.deleteIcon)
 
         title.text = buildTitle()
@@ -53,6 +55,8 @@ class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragme
             icon.setImageDrawable(it)
             icon.visibility = View.VISIBLE
         }
+
+        setupCheckbox(checkbox)
 
         val alertDialogBuilder =
             AlertDialogBuilder(
@@ -65,6 +69,7 @@ class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragme
                     // TODO: create new log elements for new IA dialogs
                     DeletionDialogConfirmationElement.DELETION_DIALOG_CONFIRMATION_DELETE_BUTTON,
                 ) { _, _ ->
+                    viewModel.removePermissions = checkbox.isChecked
                     setFragmentResult(CONFIRMATION_KEY, Bundle())
                 }
                 .setNeutralButton(
@@ -73,6 +78,22 @@ class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragme
                 )
 
         return alertDialogBuilder.create()
+    }
+
+    private fun setupCheckbox(checkBox: CheckBox) {
+        val deletionType = viewModel.getDeletionType()
+        if (deletionType is DeletionType.DeleteHealthPermissionTypesFromApp) {
+            if (deletionType.healthPermissionTypes.size == deletionType.totalPermissionTypes) {
+                checkBox.visibility = View.VISIBLE
+            } else {
+                checkBox.visibility = View.GONE
+            }
+            val appName = deletionType.appName
+            checkBox.text =
+                getString(R.string.confirming_question_app_remove_all_permissions, appName)
+        } else {
+            checkBox.visibility = View.GONE
+        }
     }
 
     private fun buildTitle(): String {
@@ -145,12 +166,82 @@ class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragme
                 }
             }
             is DeletionType.DeleteEntriesFromApp -> {
-                // TODO
-                ""
+                val deletionMapSize = deletionType.idsToDataTypes.size
+                val appName = deletionType.appName
+                if (deletionMapSize == 1) {
+                    return getString(
+                        R.string.one_app_entry_selected_deletion_confirmation_dialog,
+                        appName,
+                    )
+                }
+                val selectedPeriod = deletionType.period
+                val startTime = deletionType.startTime
+                val displayString =
+                    formatDateTimeForTimePeriod(
+                        startTime,
+                        selectedPeriod,
+                        LocalDateTimeFormatter(requireContext()),
+                        timeSource,
+                        false,
+                    )
+
+                if (selectedPeriod == DateNavigationPeriod.PERIOD_DAY) {
+                    if (deletionMapSize < deletionType.totalEntries) {
+                        getString(
+                            R.string.some_app_entries_selected_day_deletion_confirmation_dialog,
+                            appName,
+                            displayString,
+                        )
+                    } else {
+                        getString(
+                            R.string.all_app_entries_selected_day_deletion_confirmation_dialog,
+                            appName,
+                            displayString,
+                        )
+                    }
+                } else if (selectedPeriod == DateNavigationPeriod.PERIOD_WEEK) {
+                    if (deletionMapSize < deletionType.totalEntries) {
+                        getString(
+                            R.string.some_app_entries_selected_week_deletion_confirmation_dialog,
+                            appName,
+                            displayString,
+                        )
+                    } else {
+                        getString(
+                            R.string.all_app_entries_selected_week_deletion_confirmation_dialog,
+                            appName,
+                            displayString,
+                        )
+                    }
+                } else {
+                    if (deletionMapSize < deletionType.totalEntries) {
+                        getString(
+                            R.string.some_app_entries_selected_month_deletion_confirmation_dialog,
+                            appName,
+                            displayString,
+                        )
+                    } else {
+                        getString(
+                            R.string.all_app_entries_selected_month_deletion_confirmation_dialog,
+                            appName,
+                            displayString,
+                        )
+                    }
+                }
             }
             is DeletionType.DeleteAppData -> {
-                // TODO
-                ""
+                val appName = deletionType.appName
+                getString(R.string.all_app_data_selected_deletion_confirmation_dialog, appName)
+            }
+            is DeletionType.DeleteInactiveAppData -> {
+                val appName = deletionType.appName
+                val healthPermissionType =
+                    getString(deletionType.healthPermissionType.lowerCaseLabel())
+                getString(
+                    R.string.inactive_app_data_selected_deletion_confirmation_dialog,
+                    healthPermissionType,
+                    appName,
+                )
             }
         }
     }

@@ -19,13 +19,13 @@ import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.permissions.api.GetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.api.HealthPermissionManager
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.kotlin.any
+import org.mockito.kotlin.whenever
 
 class GetGrantedHealthPermissionsUseCaseTest {
 

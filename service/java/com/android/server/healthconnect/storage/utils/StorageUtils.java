@@ -30,24 +30,23 @@ import static com.android.internal.annotations.VisibleForTesting.Visibility.PRIV
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.CLIENT_RECORD_ID_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.UUID_COLUMN_NAME;
-import static com.android.server.healthconnect.storage.utils.RecordTypeForUuidMappings.getRecordTypeIdForUuid;
 
 import static java.util.Objects.requireNonNull;
 
 import android.annotation.Nullable;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.RecordIdFilter;
 import android.health.connect.internal.datatypes.InstantRecordInternal;
 import android.health.connect.internal.datatypes.IntervalRecordInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
-import android.health.connect.internal.datatypes.utils.RecordMapper;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.health.connect.internal.datatypes.utils.RecordTypeRecordCategoryMapper;
 import android.util.Slog;
 
 import com.android.internal.annotations.VisibleForTesting;
-import com.android.server.healthconnect.storage.HealthConnectDatabase;
 
 import java.nio.ByteBuffer;
 import java.time.ZoneOffset;
@@ -71,7 +70,6 @@ public final class StorageUtils {
     public static final String TEXT_NULL = "TEXT";
     public static final String INTEGER = "INTEGER";
     public static final String INTEGER_UNIQUE = "INTEGER UNIQUE";
-    public static final String INTEGER_NOT_NULL_UNIQUE = "INTEGER NOT NULL UNIQUE";
     public static final String INTEGER_NOT_NULL = "INTEGER NOT NULL";
     public static final String REAL = "REAL";
     public static final String REAL_NOT_NULL = "REAL NOT NULL";
@@ -184,7 +182,7 @@ public final class StorageUtils {
         return getUUID(
                 packageName,
                 clientRecordId,
-                RecordMapper.getInstance().getRecordType(recordIdFilter.getRecordType()));
+                HealthConnectMappings.getInstance().getRecordType(recordIdFilter.getRecordType()));
     }
 
     public static void addPackageNameTo(RecordInternal<?> recordInternal, String packageName) {
@@ -352,7 +350,9 @@ public final class StorageUtils {
                                         + Integer.BYTES
                                         + clientRecordIdBytes.length)
                         .put(packageNameBytes)
-                        .putInt(getRecordTypeIdForUuid(recordTypeId))
+                        .putInt(
+                                InternalHealthConnectMappings.getInstance()
+                                        .getRecordTypeIdForUuid(recordTypeId))
                         .put(clientRecordIdBytes)
                         .array();
         return UUID.nameUUIDFromBytes(bytes);
@@ -361,7 +361,10 @@ public final class StorageUtils {
     /**
      * Returns if priority of apps needs to be considered to compute the aggregate request for the
      * record type.
+     *
+     * @deprecated use {@link InternalHealthConnectMappings#supportsPriority(int, int)}
      */
+    @Deprecated
     public static boolean supportsPriority(int recordType, int operationType) {
         if (operationType != SUM) {
             return false;
@@ -373,7 +376,12 @@ public final class StorageUtils {
         return recordCategory == ACTIVITY || recordCategory == SLEEP || recordCategory == WELLNESS;
     }
 
-    /** Returns if derivation needs to be done to calculate aggregate */
+    /**
+     * Returns if derivation needs to be done to calculate aggregate.
+     *
+     * @deprecated use {@link InternalHealthConnectMappings#isDerivedType(int)}
+     */
+    @Deprecated
     public static boolean isDerivedType(int recordType) {
         return recordType == RECORD_TYPE_BASAL_METABOLIC_RATE
                 || recordType == RECORD_TYPE_TOTAL_CALORIES_BURNED;
@@ -535,12 +543,12 @@ public final class StorageUtils {
         return id;
     }
 
-    public static boolean checkTableExists(HealthConnectDatabase database, String tableName) {
+    /** Checks whether {@code tableName} exists in the {@code database}. */
+    public static boolean checkTableExists(SQLiteDatabase database, String tableName) {
         try (Cursor cursor =
-                database.getReadableDatabase()
-                        .rawQuery(
-                                "SELECT name FROM sqlite_master WHERE type='table' AND name=?",
-                                new String[] {tableName})) {
+                database.rawQuery(
+                        "SELECT name FROM sqlite_master WHERE type='table' AND name=?",
+                        new String[] {tableName})) {
             if (cursor.getCount() == 0) {
                 Slog.d(TAG, "Table does not exist: " + tableName);
             }

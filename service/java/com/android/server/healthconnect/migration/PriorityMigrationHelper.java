@@ -60,19 +60,16 @@ public final class PriorityMigrationHelper extends DatabaseHelper {
 
     private static final Object sPriorityMigrationHelperLock = new Object();
 
-    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private static volatile PriorityMigrationHelper sPriorityMigrationHelper;
-
-    private final Object mPriorityMigrationHelperInstanceLock = new Object();
     @Nullable private Map<Integer, List<Long>> mPreMigrationPriorityCache;
 
     private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
     private final TransactionManager mTransactionManager;
 
-    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private PriorityMigrationHelper(
+    public PriorityMigrationHelper(
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
-            TransactionManager transactionManager) {
+            TransactionManager transactionManager,
+            DatabaseHelpers databaseHelpers) {
+        super(databaseHelpers);
         mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
         mTransactionManager = transactionManager;
     }
@@ -81,27 +78,23 @@ public final class PriorityMigrationHelper extends DatabaseHelper {
      * Populate the pre-migration priority table by copying entries from priority table at the start
      * of migration.
      */
-    public void populatePreMigrationPriority() {
-        synchronized (mPriorityMigrationHelperInstanceLock) {
-            // Populating table only if it was not already populated.
-            if (mTransactionManager.getNumberOfEntriesInTheTable(PRE_MIGRATION_TABLE_NAME) == 0) {
-                populatePreMigrationTable();
-            }
+    public synchronized void populatePreMigrationPriority() {
+        // Populating table only if it was not already populated.
+        if (mTransactionManager.queryNumEntries(PRE_MIGRATION_TABLE_NAME) == 0) {
+            populatePreMigrationTable();
         }
     }
 
     /**
      * Returns priority order stored for data category in module at the time migration was started.
      */
-    public List<Long> getPreMigrationPriority(int dataCategory) {
-        synchronized (mPriorityMigrationHelperInstanceLock) {
-            if (mPreMigrationPriorityCache == null) {
-                mPreMigrationPriorityCache = createPreMigrationTable();
-            }
-
-            return Collections.unmodifiableList(
-                    mPreMigrationPriorityCache.getOrDefault(dataCategory, new ArrayList<>()));
+    public synchronized List<Long> getPreMigrationPriority(int dataCategory) {
+        if (mPreMigrationPriorityCache == null) {
+            mPreMigrationPriorityCache = createPreMigrationTable();
         }
+
+        return Collections.unmodifiableList(
+                mPreMigrationPriorityCache.getOrDefault(dataCategory, new ArrayList<>()));
     }
 
     /**
@@ -124,17 +117,8 @@ public final class PriorityMigrationHelper extends DatabaseHelper {
     }
 
     @Override
-    public void clearData(TransactionManager transactionManager) {
-        synchronized (mPriorityMigrationHelperInstanceLock) {
-            super.clearData(transactionManager);
-        }
-    }
-
-    @Override
-    protected void clearCache() {
-        synchronized (mPriorityMigrationHelperInstanceLock) {
-            mPreMigrationPriorityCache = null;
-        }
+    protected synchronized void clearCache() {
+        mPreMigrationPriorityCache = null;
     }
 
     /** Returns a requests for creating pre-migration priority table. */
@@ -204,38 +188,5 @@ public final class PriorityMigrationHelper extends DatabaseHelper {
         contentValues.put(PRIORITY_ORDER_COLUMN_NAME, StorageUtils.flattenLongList(priorityList));
 
         return contentValues;
-    }
-
-    /** Creates(if it was not already created) and returns instance of PriorityMigrationHelper. */
-    public static PriorityMigrationHelper getInstance() {
-        return getInstance(
-                HealthDataCategoryPriorityHelper.getInstance(),
-                TransactionManager.getInitialisedInstance());
-    }
-
-    /** Creates(if it was not already created) and returns instance of PriorityMigrationHelper. */
-    public static PriorityMigrationHelper getInstance(
-            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
-            TransactionManager transactionManager) {
-        if (sPriorityMigrationHelper == null) {
-            synchronized (sPriorityMigrationHelperLock) {
-                if (sPriorityMigrationHelper == null) {
-                    sPriorityMigrationHelper =
-                            new PriorityMigrationHelper(
-                                    healthDataCategoryPriorityHelper, transactionManager);
-                }
-            }
-        }
-
-        return sPriorityMigrationHelper;
-    }
-
-    /** Used in testing to clear the instance to clear and re-reference the mocks. */
-    @VisibleForTesting
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    static void clearInstanceForTest() {
-        synchronized (sPriorityMigrationHelperLock) {
-            sPriorityMigrationHelper = null;
-        }
     }
 }

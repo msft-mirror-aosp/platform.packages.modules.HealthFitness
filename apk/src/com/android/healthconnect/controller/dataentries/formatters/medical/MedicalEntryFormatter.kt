@@ -69,8 +69,8 @@ constructor(
 
         return context.getString(
             R.string.data_entry_header_with_source_app,
-            dataSourceName,
             appName,
+            dataSourceName,
         )
     }
 

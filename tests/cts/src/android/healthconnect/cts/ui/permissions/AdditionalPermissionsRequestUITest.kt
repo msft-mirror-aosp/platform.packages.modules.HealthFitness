@@ -24,14 +24,15 @@ import android.health.connect.HealthConnectManager
 import android.health.connect.HealthPermissions.*
 import android.healthconnect.cts.lib.ActivityLauncher.launchRequestPermissionActivity
 import android.healthconnect.cts.lib.UiTestUtils.TEST_APP_PACKAGE_NAME
-import android.healthconnect.cts.lib.UiTestUtils.clickOnText
+import android.healthconnect.cts.lib.UiTestUtils.clickOnTextAndWaitForNewWindow
+import android.healthconnect.cts.lib.UiTestUtils.findText
+import android.healthconnect.cts.lib.UiTestUtils.findTextAndClick
 import android.healthconnect.cts.lib.UiTestUtils.grantPermissionViaPackageManager
 import android.healthconnect.cts.lib.UiTestUtils.revokePermissionViaPackageManager
+import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndFindText
 import android.healthconnect.cts.lib.UiTestUtils.skipOnboardingIfAppears
-import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.ui.HealthConnectBaseTest
 import android.healthconnect.cts.utils.ProxyActivity
-import androidx.test.uiautomator.By
 import com.android.compatibility.common.util.SystemUtil
 import com.android.compatibility.common.util.UiAutomatorUtils2.getUiDevice
 import com.google.common.truth.Truth
@@ -46,7 +47,10 @@ class AdditionalPermissionsRequestUITest : HealthConnectBaseTest() {
     fun setup() {
         revokePermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, READ_HEALTH_DATA_HISTORY)
         revokePermissionViaPackageManager(
-            context, TEST_APP_PACKAGE_NAME, READ_HEALTH_DATA_IN_BACKGROUND)
+            context,
+            TEST_APP_PACKAGE_NAME,
+            READ_HEALTH_DATA_IN_BACKGROUND,
+        )
         with(getUiDevice()) { executeShellCommand("settings put system font_scale 0.85") }
     }
 
@@ -54,7 +58,10 @@ class AdditionalPermissionsRequestUITest : HealthConnectBaseTest() {
     fun tearDown() {
         revokePermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, READ_HEALTH_DATA_HISTORY)
         revokePermissionViaPackageManager(
-            context, TEST_APP_PACKAGE_NAME, READ_HEALTH_DATA_IN_BACKGROUND)
+            context,
+            TEST_APP_PACKAGE_NAME,
+            READ_HEALTH_DATA_IN_BACKGROUND,
+        )
         revokePermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, READ_HEIGHT)
     }
 
@@ -63,15 +70,19 @@ class AdditionalPermissionsRequestUITest : HealthConnectBaseTest() {
         val permissions = listOf(READ_HEALTH_DATA_HISTORY, READ_HEALTH_DATA_IN_BACKGROUND)
         grantPermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, READ_HEIGHT)
         context.launchRequestPermissionActivity(
-            packageName = TEST_APP_PACKAGE_NAME, permissions = permissions) {
-                waitDisplayed(By.text("Allow additional access for Health Connect cts test app?"))
-                clickOnText("Access past data")
-                clickOnText("Access data in the background")
-                clickOnText("Allow")
+            packageName = TEST_APP_PACKAGE_NAME,
+            permissions = permissions,
+        ) {
+            findText("Allow additional access for Health Connect cts test app?")
+            scrollDownToAndFindText("Access past data")
+            findTextAndClick("Access past data")
+            scrollDownToAndFindText("Access data in the background")
+            findTextAndClick("Access data in the background")
+            clickOnTextAndWaitForNewWindow("Allow")
 
-                assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, READ_HEALTH_DATA_HISTORY)
-                assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, READ_HEALTH_DATA_IN_BACKGROUND)
-            }
+            assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, READ_HEALTH_DATA_HISTORY)
+            assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, READ_HEALTH_DATA_IN_BACKGROUND)
+        }
     }
 
     @Test
@@ -79,15 +90,19 @@ class AdditionalPermissionsRequestUITest : HealthConnectBaseTest() {
         val permissions = listOf(READ_HEALTH_DATA_HISTORY, READ_HEALTH_DATA_IN_BACKGROUND)
         grantPermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, READ_HEIGHT)
         context.launchRequestPermissionActivity(
-            packageName = TEST_APP_PACKAGE_NAME, permissions = permissions) {
-                waitDisplayed(By.text("Allow additional access for Health Connect cts test app?"))
-                clickOnText("Access past data")
-                clickOnText("Access data in the background")
-                clickOnText("Don't allow")
+            packageName = TEST_APP_PACKAGE_NAME,
+            permissions = permissions,
+        ) {
+            findText("Allow additional access for Health Connect cts test app?")
+            scrollDownToAndFindText("Access past data")
+            findTextAndClick("Access past data")
+            scrollDownToAndFindText("Access data in the background")
+            findTextAndClick("Access data in the background")
+            clickOnTextAndWaitForNewWindow("Don't allow")
 
-                assertPermNotGrantedForApp(TEST_APP_PACKAGE_NAME, READ_HEALTH_DATA_HISTORY)
-                assertPermNotGrantedForApp(TEST_APP_PACKAGE_NAME, READ_HEALTH_DATA_IN_BACKGROUND)
-            }
+            assertPermNotGrantedForApp(TEST_APP_PACKAGE_NAME, READ_HEALTH_DATA_HISTORY)
+            assertPermNotGrantedForApp(TEST_APP_PACKAGE_NAME, READ_HEALTH_DATA_IN_BACKGROUND)
+        }
     }
 
     @Test
@@ -95,14 +110,17 @@ class AdditionalPermissionsRequestUITest : HealthConnectBaseTest() {
         val permissions = listOf(READ_HEALTH_DATA_HISTORY, READ_HEALTH_DATA_IN_BACKGROUND)
         grantPermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, READ_HEIGHT)
         context.launchRequestPermissionActivity(
-            packageName = TEST_APP_PACKAGE_NAME, permissions = permissions) {
-                waitDisplayed(By.text("Allow additional access for Health Connect cts test app?"))
-                clickOnText("Access past data")
-                clickOnText("Allow")
+            packageName = TEST_APP_PACKAGE_NAME,
+            permissions = permissions,
+        ) {
+            findText("Allow additional access for Health Connect cts test app?")
+            scrollDownToAndFindText("Access past data")
+            findTextAndClick("Access past data")
+            clickOnTextAndWaitForNewWindow("Allow")
 
-                assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, READ_HEALTH_DATA_HISTORY)
-                assertPermNotGrantedForApp(TEST_APP_PACKAGE_NAME, READ_HEALTH_DATA_IN_BACKGROUND)
-            }
+            assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, READ_HEALTH_DATA_HISTORY)
+            assertPermNotGrantedForApp(TEST_APP_PACKAGE_NAME, READ_HEALTH_DATA_IN_BACKGROUND)
+        }
     }
 
     @Test
@@ -111,20 +129,22 @@ class AdditionalPermissionsRequestUITest : HealthConnectBaseTest() {
         grantPermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, READ_HEIGHT)
         grantPermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, READ_HEALTH_DATA_HISTORY)
         context.launchRequestPermissionActivity(
-            packageName = TEST_APP_PACKAGE_NAME, permissions = permissions) {
-                waitDisplayed(
-                    By.text("Allow Health Connect cts test app to access data in the background?"))
-                clickOnText("Allow")
+            packageName = TEST_APP_PACKAGE_NAME,
+            permissions = permissions,
+        ) {
+            findText("Allow Health Connect cts test app to access data in the background?")
+            clickOnTextAndWaitForNewWindow("Allow")
 
-                assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, READ_HEALTH_DATA_HISTORY)
-                assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, READ_HEALTH_DATA_IN_BACKGROUND)
-            }
+            assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, READ_HEALTH_DATA_HISTORY)
+            assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, READ_HEALTH_DATA_IN_BACKGROUND)
+        }
     }
 
     @Test
-    @Ignore("TODO: b/334538512")
+    @Ignore("b/382029765")
     fun requestAdditionalPermissions_noReadPermissions_returnsResultCanceled() {
         revokePermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, READ_HEIGHT)
+        revokePermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, READ_MINDFULNESS)
         val permissions = listOf(READ_HEALTH_DATA_HISTORY, READ_HEALTH_DATA_IN_BACKGROUND)
 
         val intent =
@@ -137,10 +157,12 @@ class AdditionalPermissionsRequestUITest : HealthConnectBaseTest() {
 
         SystemUtil.runWithShellPermissionIdentity(
             {
-                val result = ProxyActivity.launchActivityForResult(intent) { skipOnboardingIfAppears() }
+                val result =
+                    ProxyActivity.launchActivityForResult(intent) { skipOnboardingIfAppears() }
                 Truth.assertThat(result.resultCode).isEqualTo(Activity.RESULT_CANCELED)
             },
-            Manifest.permission.GRANT_RUNTIME_PERMISSIONS)
+            Manifest.permission.GRANT_RUNTIME_PERMISSIONS,
+        )
     }
 
     @Test
@@ -152,23 +174,27 @@ class AdditionalPermissionsRequestUITest : HealthConnectBaseTest() {
                 READ_HEIGHT,
                 WRITE_BODY_FAT,
                 READ_HEALTH_DATA_HISTORY,
-                READ_HEALTH_DATA_IN_BACKGROUND)
+                READ_HEALTH_DATA_IN_BACKGROUND,
+            )
         context.launchRequestPermissionActivity(
-            packageName = TEST_APP_PACKAGE_NAME, permissions = permissions) {
-                waitDisplayed(
-                    By.text("Allow Health Connect cts test app to access Health Connect?"))
-                clickOnText("Height")
-                clickOnText("Allow")
+            packageName = TEST_APP_PACKAGE_NAME,
+            permissions = permissions,
+        ) {
+            findText("Allow Health Connect cts test app to access Health Connect?")
+            scrollDownToAndFindText("Height")
+            findTextAndClick("Height")
+            clickOnTextAndWaitForNewWindow("Allow")
 
-                waitDisplayed(By.text("Allow additional access for Health Connect cts test app?"))
-                clickOnText("Access past data")
-                clickOnText("Allow")
+            findText("Allow additional access for Health Connect cts test app?")
+            scrollDownToAndFindText("Access past data")
+            findTextAndClick("Access past data")
+            clickOnTextAndWaitForNewWindow("Allow")
 
-                assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, READ_HEIGHT)
-                assertPermNotGrantedForApp(TEST_APP_PACKAGE_NAME, WRITE_BODY_FAT)
-                assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, READ_HEALTH_DATA_HISTORY)
-                assertPermNotGrantedForApp(TEST_APP_PACKAGE_NAME, READ_HEALTH_DATA_IN_BACKGROUND)
-            }
+            assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, READ_HEIGHT)
+            assertPermNotGrantedForApp(TEST_APP_PACKAGE_NAME, WRITE_BODY_FAT)
+            assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, READ_HEALTH_DATA_HISTORY)
+            assertPermNotGrantedForApp(TEST_APP_PACKAGE_NAME, READ_HEALTH_DATA_IN_BACKGROUND)
+        }
     }
 
     @Throws(Exception::class)

@@ -20,10 +20,9 @@ package com.android.healthconnect.controller.data.appdata
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
-import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.selectabledeletion.DeletionDataViewModel
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
@@ -38,8 +37,8 @@ class AppDataViewModel
 @Inject
 constructor(
     private val appInfoReader: AppInfoReader,
-    private val loadAppDataUseCase: AppDataUseCase,
-) : ViewModel() {
+    private val loadAllDataUseCase: AllDataUseCase,
+) : DeletionDataViewModel() {
 
     companion object {
         private const val TAG = "AppDataViewModel"
@@ -75,28 +74,13 @@ constructor(
     val appInfo: LiveData<AppMetadata>
         get() = _appInfo
 
-    private val _setOfPermissionTypesToBeDeleted = MutableLiveData<Set<HealthPermissionType>>()
-
-    val setOfPermissionTypesToBeDeleted: LiveData<Set<HealthPermissionType>>
-        get() = _setOfPermissionTypesToBeDeleted
-
-    private var appDataDeletionScreenState: AppDataDeletionScreenState =
-        AppDataDeletionScreenState.VIEW
-
-    private var numOfPermissionTypes: Int = 0
-
-    private val _allPermissionTypesSelected = MutableLiveData<Boolean>()
-
-    val allPermissionTypesSelected: LiveData<Boolean>
-        get() = _allPermissionTypesSelected
-
     fun loadAppData(packageName: String) {
         _appFitnessData.postValue(AppDataState.Loading)
         _appMedicalData.postValue(AppDataState.Loading)
         numOfPermissionTypes = 0
         viewModelScope.launch {
-            val fitnessData = async { loadAppDataUseCase.loadFitnessAppData(packageName) }
-            val medicalData = async { loadAppDataUseCase.loadMedicalAppData(packageName) }
+            val fitnessData = async { loadAllDataUseCase.loadFitnessAppData(packageName) }
+            val medicalData = async { loadAllDataUseCase.loadMedicalAppData(packageName) }
 
             handleResult(fitnessData.await(), _appFitnessData)
             handleResult(medicalData.await(), _appMedicalData)
@@ -138,50 +122,10 @@ constructor(
         viewModelScope.launch { _appInfo.postValue(appInfoReader.getAppMetadata(packageName)) }
     }
 
-    fun resetDeletionSet() {
-        _setOfPermissionTypesToBeDeleted.value = emptySet()
-    }
-
-    fun addToDeletionSet(permissionType: HealthPermissionType) {
-        val deleteSet = _setOfPermissionTypesToBeDeleted.value.orEmpty().toMutableSet()
-        deleteSet.add(permissionType)
-        _setOfPermissionTypesToBeDeleted.value = deleteSet.toSet()
-        if (numOfPermissionTypes == deleteSet.size) {
-            _allPermissionTypesSelected.postValue(true)
-        }
-    }
-
-    fun removeFromDeletionSet(permissionType: HealthPermissionType) {
-        val deleteSet = _setOfPermissionTypesToBeDeleted.value.orEmpty().toMutableSet()
-        deleteSet.remove(permissionType)
-        _setOfPermissionTypesToBeDeleted.value = deleteSet.toSet()
-        if (numOfPermissionTypes != deleteSet.size) {
-            _allPermissionTypesSelected.postValue(false)
-        }
-    }
-
-    fun setDeletionState(appDataDeletionScreenState: AppDataDeletionScreenState) {
-        this.appDataDeletionScreenState = appDataDeletionScreenState
-        if (this.appDataDeletionScreenState == AppDataDeletionScreenState.VIEW) {
-            resetDeletionSet()
-        }
-    }
-
-    fun getDeletionState(): AppDataDeletionScreenState {
-        return appDataDeletionScreenState
-    }
-
-    fun getNumOfPermissionTypes(): Int = numOfPermissionTypes
-
-    enum class AppDataDeletionScreenState {
-        VIEW,
-        DELETE,
-    }
-
     sealed class AppDataState {
-        object Loading : AppDataState()
+        data object Loading : AppDataState()
 
-        object Error : AppDataState()
+        data object Error : AppDataState()
 
         data class WithData(val dataMap: List<PermissionTypesPerCategory>) : AppDataState()
     }

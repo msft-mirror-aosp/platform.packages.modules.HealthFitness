@@ -20,17 +20,10 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-import android.util.Pair;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.internal.annotations.VisibleForTesting;
-import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper;
-import com.android.server.healthconnect.storage.request.AlterTableRequest;
-
-import java.util.List;
+import com.android.server.healthconnect.storage.datatypehelpers.BackupChangeTokenHelper;
 
 /**
  * Code to manage development features of the Health Connect database before they are ready for
@@ -49,7 +42,7 @@ public final class DevelopmentDatabaseHelper {
      * The current version number for the development database features. Increment this whenever you
      * make a breaking schema change to a development feature.
      */
-    @VisibleForTesting static final int CURRENT_VERSION = 8;
+    @VisibleForTesting static final int CURRENT_VERSION = 10;
 
     /** The name of the table to store development specific key value pairs. */
     private static final String SETTINGS_TABLE_NAME = "development_database_settings";
@@ -95,7 +88,15 @@ public final class DevelopmentDatabaseHelper {
 
         // Beyond this point are the development database changes
         dropAndCreateDevelopmentSettingsTable(db, CURRENT_VERSION);
-        phrForceUpdate(db);
+
+        // Code for under development schema changes goes in this method but below this comment
+        // TODO: b/375150124 - remove upgrade logic after DB schema is finalized
+        backupTokenForceUpgrade(db);
+    }
+
+    private static void backupTokenForceUpgrade(SQLiteDatabase db) {
+        dropTableIfExists(db, BackupChangeTokenHelper.getTableName());
+        BackupChangeTokenHelper.applyBackupTokenUpgrade(db);
     }
 
     @VisibleForTesting
@@ -115,38 +116,6 @@ public final class DevelopmentDatabaseHelper {
     @VisibleForTesting
     static void dropDevelopmentSettingsTable(SQLiteDatabase db) {
         dropTableIfExists(db, SETTINGS_TABLE_NAME);
-    }
-
-    private static void phrForceUpdate(SQLiteDatabase db) {
-        dropTableIfExists(db, MedicalResourceIndicesHelper.getTableName());
-        dropTableIfExists(db, MedicalResourceHelper.getMainTableName());
-        dropTableIfExists(db, MedicalDataSourceHelper.getMainTableName());
-        MedicalDataSourceHelper.onInitialUpgrade(db);
-        MedicalResourceHelper.onInitialUpgrade(db);
-        addPhrColumnsToAccessLogsTable(db);
-    }
-
-    private static void addPhrColumnsToAccessLogsTable(SQLiteDatabase db) {
-        // Alter the table to add new columns.
-        // Adding columns is not idempotent. When this is moved to production, this code
-        // should be guarded by checking the existence of a PHR table.
-        // For now in development, just catch any SQLite exception, and ignore anything with
-        // duplicate column name
-        List<Pair<String, String>> columns = AccessLogsHelper.getPhrAccessLogsColumnInfo();
-        for (Pair<String, String> columnInfo : columns) {
-            try {
-                DatabaseUpgradeHelper.executeSqlStatements(
-                        db,
-                        new AlterTableRequest(AccessLogsHelper.TABLE_NAME, List.of(columnInfo))
-                                .getAlterTableAddColumnsCommands());
-            } catch (SQLException ex) {
-                String message = ex.getMessage();
-                // swallow any duplicate column exceptions.
-                if (message == null || !message.contains("duplicate column name")) {
-                    throw ex;
-                }
-            }
-        }
     }
 
     @VisibleForTesting
