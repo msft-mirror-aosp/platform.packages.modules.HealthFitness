@@ -135,20 +135,18 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
 
         // Revoke all health permissions as we don't grant health permissions if permissions
         // usage intent is not supported.
-        if (Constants.DEBUG) {
-            Slog.d(
-                    TAG,
-                    "Revoking all health permissions of "
-                            + packageName
-                            + " for user: "
-                            + userHandle);
-        }
-
         try {
-            mPermissionHelper.revokeAllHealthPermissions(
+            if (mPermissionHelper.revokeAllHealthPermissions(
                     packageName,
                     "Health permissions usage activity has been removed.",
-                    userHandle);
+                    userHandle)) {
+                Slog.w(
+                        TAG,
+                        "Revoked all health permissions from "
+                                + packageName
+                                + " for user: "
+                                + userHandle);
+            }
         } catch (IllegalArgumentException ex) {
             // Catch IllegalArgumentException to fix a crash (b/24679220) due to race condition
             // in case this `revokeAllHealthPermissions()` method is called right after the
