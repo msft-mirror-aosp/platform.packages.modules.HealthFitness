@@ -29,6 +29,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.CompoundButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -48,16 +49,19 @@ class PermissionsRequestFragment : Fragment(R.layout.fragment_permissions_reques
         TreeNode(
             checkBoxId = R.id.all_permissions_checkbox,
             buttonId = null,
+            counterId = R.id.all_permissions_counter,
             children =
                 listOf(
                     TreeNode(
                         checkBoxId = R.id.fitness_permissions_checkbox,
                         buttonId = R.id.fitness_permissions_button,
+                        counterId = R.id.fitness_permissions_counter,
                         children =
                             listOf(
                                 TreeNode(
                                     checkBoxId = R.id.fitness_read_permissions_checkbox,
                                     buttonId = R.id.fitness_read_permissions_button,
+                                    counterId = R.id.fitness_read_permissions_counter,
                                     permissions =
                                         getDeclaredHealthPermissions {
                                             isReadPermission(it) && isFitnessPermission(it)
@@ -66,6 +70,7 @@ class PermissionsRequestFragment : Fragment(R.layout.fragment_permissions_reques
                                 TreeNode(
                                     checkBoxId = R.id.fitness_write_permissions_checkbox,
                                     buttonId = R.id.fitness_write_permissions_button,
+                                    counterId = R.id.fitness_write_permissions_counter,
                                     permissions =
                                         getDeclaredHealthPermissions {
                                             isWritePermission(it) && isFitnessPermission(it)
@@ -76,12 +81,15 @@ class PermissionsRequestFragment : Fragment(R.layout.fragment_permissions_reques
                     TreeNode(
                         checkBoxId = R.id.personal_health_record_permissions_checkbox,
                         buttonId = R.id.personal_health_record_permissions_button,
+                        counterId = R.id.personal_health_record_permissions_counter,
                         children =
                             listOf(
                                 TreeNode(
                                     checkBoxId =
                                         R.id.personal_health_record_read_permissions_checkbox,
                                     buttonId = R.id.personal_health_record_read_permissions_button,
+                                    counterId =
+                                        R.id.personal_health_record_read_permissions_counter,
                                     permissions =
                                         getDeclaredHealthPermissions { isMedicalReadPermission(it) },
                                 ),
@@ -89,6 +97,8 @@ class PermissionsRequestFragment : Fragment(R.layout.fragment_permissions_reques
                                     checkBoxId =
                                         R.id.personal_health_record_write_permissions_checkbox,
                                     buttonId = R.id.personal_health_record_write_permissions_button,
+                                    counterId =
+                                        R.id.personal_health_record_write_permissions_counter,
                                     permissions = listOf(WRITE_MEDICAL_DATA),
                                 ),
                             ),
@@ -96,16 +106,19 @@ class PermissionsRequestFragment : Fragment(R.layout.fragment_permissions_reques
                     TreeNode(
                         checkBoxId = R.id.additional_permissions_checkbox,
                         buttonId = R.id.additional_permissions_button,
+                        counterId = R.id.additional_permissions_counter,
                         children =
                             listOf(
                                 TreeNode(
                                     checkBoxId = R.id.history_read_permission_checkbox,
                                     buttonId = R.id.history_read_permission_button,
+                                    counterId = R.id.history_read_permission_counter,
                                     permissions = listOf(READ_HEALTH_DATA_IN_BACKGROUND),
                                 ),
                                 TreeNode(
                                     checkBoxId = R.id.background_read_permission_checkbox,
                                     buttonId = R.id.background_read_permission_button,
+                                    counterId = R.id.background_read_permission_counter,
                                     permissions = listOf(READ_HEALTH_DATA_HISTORY),
                                 ),
                             ),
@@ -142,6 +155,7 @@ class PermissionsRequestFragment : Fragment(R.layout.fragment_permissions_reques
                 it.checkBoxId.getView<CheckBox>().isChecked = true
             }
         }
+        updateCounters(tree)
 
         view.requireViewById<Button>(R.id.request_selected_permissions).setOnClickListener {
             val permissionsToGrant = mutableListOf<String>()
@@ -151,7 +165,7 @@ class PermissionsRequestFragment : Fragment(R.layout.fragment_permissions_reques
                 }
             }
             Log.i(tag, "Requesting ${permissionsToGrant.size} permissions")
-            if (areAllPermissionsGranted(permissionsToGrant)) {
+            if (permissionsToGrant.all{isPermissionGranted(it)}){
                 Toast.makeText(
                         this.requireContext(),
                         if (permissionsToGrant.isEmpty())
@@ -179,33 +193,48 @@ class PermissionsRequestFragment : Fragment(R.layout.fragment_permissions_reques
     private fun isMedicalReadPermission(permission: String) =
         permission.startsWith(medicalReadPermissionsPrefix)
 
-    private fun isFitnessPermission(permission: String) = !(isMedicalPermission(permission) ||
-            isAdditionalPermission(permission) || READ_EXERCISE_ROUTES == permission)
+    private fun isFitnessPermission(permission: String) =
+        !(isMedicalPermission(permission) ||
+            isAdditionalPermission(permission) ||
+            READ_EXERCISE_ROUTES == permission)
 
     private fun handlePermissionsResult(permissionMap: Map<String, Boolean>) {
-        val numberOfPermissionsMissing = permissionMap.values.count { !it }
+        val numberOfPermissionsGranted = permissionMap.values.count { it }
+        val numberOfPermissionsDenied = permissionMap.keys.size - numberOfPermissionsGranted
         Toast.makeText(
                 this.requireContext(),
-                if (numberOfPermissionsMissing == 0) getString(R.string.all_permissions_success)
-                else
-                    getString(
-                        R.string.number_of_permissions_not_granted,
-                        numberOfPermissionsMissing,
-                    ),
-                Toast.LENGTH_SHORT,
+                "Granted: $numberOfPermissionsGranted Denied: $numberOfPermissionsDenied",
+                Toast.LENGTH_LONG,
             )
             .show()
+        updateCounters(tree)
     }
 
-    private fun areAllPermissionsGranted(permissions: List<String>) =
-        permissions.all {
-            ContextCompat.checkSelfPermission(requireContext(), it) ==
+    private fun isPermissionGranted(permission: String) =
+            ContextCompat.checkSelfPermission(requireContext(), permission) ==
                 PackageManager.PERMISSION_GRANTED
+
+    private class PermissionCounter(val grantedPermissions: Int, val totalPermissions: Int)
+
+    private fun updateCounters(treeNode: TreeNode): PermissionCounter {
+        var grantedPermissions = 0
+        var totalPermissions = 0
+        for (child in treeNode.children) {
+            val counter = updateCounters(child)
+            grantedPermissions += counter.grantedPermissions
+            totalPermissions += counter.totalPermissions
         }
+        grantedPermissions += treeNode.permissions.count { isPermissionGranted(it) }
+        totalPermissions += treeNode.permissions.size
+        treeNode.counterId.getView<TextView>().text =
+            String.format("%s/%s", grantedPermissions, totalPermissions)
+        return PermissionCounter(grantedPermissions, totalPermissions)
+    }
 
     private class TreeNode(
         @IdRes val checkBoxId: Int,
         @IdRes val buttonId: Int?,
+        @IdRes val counterId: Int,
         val permissions: List<String> = listOf<String>(),
         val children: List<TreeNode> = listOf<TreeNode>(),
     ) {
