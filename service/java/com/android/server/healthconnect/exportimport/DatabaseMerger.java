@@ -381,7 +381,9 @@ public final class DatabaseMerger {
                     }
 
                     List<String> currentPriorityList =
-                            mHealthDataCategoryPriorityHelper.syncAndGetPriorityOrder(category);
+                            mAppInfoHelper.getPackageNames(
+                                    mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
+                                            category));
                     List<String> newPriorityList =
                             Stream.concat(currentPriorityList.stream(), importPriorityList.stream())
                                     .distinct()

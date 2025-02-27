@@ -577,5 +577,5 @@ interface IHealthConnectService {
      * @param changes Changes to be restored.
      * @param callback Callback to receive result of performing this operation.
      */
-     void pushChangesForRestore(in List<RestoreChange> changes, in IEmptyResponseCallback callback);
+     void pushChangesForRestore(in List<RestoreChange> changes, in byte[] appInfoMap, in IEmptyResponseCallback callback);
 }

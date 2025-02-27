@@ -3344,7 +3344,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     @Override
     @TargetApi(Build.VERSION_CODES.BAKLAVA)
     public void pushChangesForRestore(
-            List<RestoreChange> changes, IEmptyResponseCallback callback) {
+            List<RestoreChange> changes, byte[] appInfoMap, IEmptyResponseCallback callback) {
         if (mCloudRestoreManager == null) return;
         checkParamsNonNull(changes);
         final int uid = Binder.getCallingUid();
@@ -3362,7 +3362,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                     uid,
                                     "Caller does not have permission to call"
                                             + " pushChangesForRestore.");
-                            mCloudRestoreManager.pushChangesForRestore(changes);
+                            mCloudRestoreManager.pushChangesForRestore(changes, appInfoMap);
                         }
                         callback.onResult();
                     } catch (Exception e) {
