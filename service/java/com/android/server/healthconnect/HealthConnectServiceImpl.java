@@ -300,6 +300,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private final ReadAccessLogsHelper mReadAccessLogsHelper;
     // This will be null if the phr_fhir_structural_validation flag is false.
     @Nullable private FhirResourceValidator mFhirResourceValidator;
+    private final HealthConnectThreadScheduler mThreadScheduler;
 
     private volatile UserHandle mCurrentForegroundUser;
 
@@ -332,7 +333,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             DatabaseHelpers databaseHelpers,
             PreferencesManager preferencesManager,
             ReadAccessLogsHelper readAccessLogsHelper,
-            AppOpsManagerLocal appOpsManagerLocal) {
+            AppOpsManagerLocal appOpsManagerLocal,
+            HealthConnectThreadScheduler threadScheduler) {
         mContext = context;
         mCurrentForegroundUser = context.getUser();
         mTimeSource = timeSource;
@@ -370,6 +372,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mDatabaseHelpers = databaseHelpers;
         mPreferencesManager = preferencesManager;
         mReadAccessLogsHelper = readAccessLogsHelper;
+        mThreadScheduler = threadScheduler;
 
         mPermissionManager = mContext.getSystemService(PermissionManager.class);
         mAppOpsManagerLocal = appOpsManagerLocal;
@@ -547,7 +550,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                     mAppInfoHelper, mAccessLogsHelper, insertRequest);
                     tryAndReturnResult(callback, uuids, logger);
 
-                    HealthConnectThreadScheduler.scheduleInternalTask(
+                    mThreadScheduler.scheduleInternalTask(
                             () -> postInsertTasks(attributionSource, recordsParcel));
 
                     logRecordTypeSpecificUpsertMetrics(
@@ -945,7 +948,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             recordInternals, attributionSource.getPackageName());
                     logger.setDataTypesFromRecordInternals(recordInternals);
                     // Update activity dates table
-                    HealthConnectThreadScheduler.scheduleInternalTask(
+                    mThreadScheduler.scheduleInternalTask(
                             () ->
                                     mActivityDateHelper.reSyncByRecordTypeIds(
                                             recordInternals.stream()
@@ -1265,8 +1268,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 mTransactionManager.deleteAllRecords(
                         deleteTransactionRequest, shouldRecordDeleteAccessLogs, mAccessLogsHelper);
         tryAndReturnResult(callback, logger);
-        HealthConnectThreadScheduler.scheduleInternalTask(
-                () -> postDeleteTasks(recordTypeIdsToDelete));
+        mThreadScheduler.scheduleInternalTask(() -> postDeleteTasks(recordTypeIdsToDelete));
 
         logger.setNumberOfRecords(numberOfRecordsDeleted)
                 .setDataTypesFromRecordTypes(recordTypeIdsToDelete);
@@ -1282,7 +1284,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
-        HealthConnectThreadScheduler.scheduleControllerTask(
+        mThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
@@ -1331,7 +1333,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
-        HealthConnectThreadScheduler.scheduleControllerTask(
+        mThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
@@ -1369,7 +1371,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
-        HealthConnectThreadScheduler.scheduleControllerTask(
+        mThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
@@ -1431,7 +1433,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
-        HealthConnectThreadScheduler.scheduleControllerTask(
+        mThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
@@ -1477,7 +1479,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
-        HealthConnectThreadScheduler.scheduleControllerTask(
+        mThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
@@ -1515,7 +1517,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
 
-        HealthConnectThreadScheduler.scheduleControllerTask(
+        mThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
@@ -1559,7 +1561,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
 
-        HealthConnectThreadScheduler.scheduleControllerTask(
+        mThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
@@ -1605,7 +1607,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
 
-        HealthConnectThreadScheduler.scheduleInternalTask(
+        mThreadScheduler.scheduleInternalTask(
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
@@ -1651,7 +1653,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
 
-        HealthConnectThreadScheduler.scheduleInternalTask(
+        mThreadScheduler.scheduleInternalTask(
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
@@ -1689,7 +1691,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         int pid = Binder.getCallingPid();
         UserHandle callingUserHandle = getCallingUserHandle();
 
-        HealthConnectThreadScheduler.scheduleInternalTask(
+        mThreadScheduler.scheduleInternalTask(
                 () -> {
                     try {
                         enforceIsForegroundUser(callingUserHandle);
@@ -1732,7 +1734,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
 
-        HealthConnectThreadScheduler.scheduleInternalTask(
+        mThreadScheduler.scheduleInternalTask(
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
@@ -1788,7 +1790,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 }
             }
 
-            HealthConnectThreadScheduler.scheduleInternalTask(
+            mThreadScheduler.scheduleInternalTask(
                     () -> {
                         if (!mBackupRestore.prepForStagingIfNotAlreadyDone()) {
                             try {
@@ -1905,7 +1907,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     MANAGE_HEALTH_DATA_PERMISSION, Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
             final UserHandle userHandle = Binder.getCallingUserHandle();
             enforceIsForegroundUser(userHandle);
-            HealthConnectThreadScheduler.schedule(
+            mThreadScheduler.schedule(
                     mContext,
                     () -> {
                         try {
@@ -1969,7 +1971,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
-        HealthConnectThreadScheduler.scheduleControllerTask(
+        mThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
@@ -2031,7 +2033,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             mContext.enforceCallingPermission(MANAGE_HEALTH_DATA_PERMISSION, null);
             mExportImportSettingsStorage.configure(settings);
 
-            HealthConnectThreadScheduler.scheduleInternalTask(
+            mThreadScheduler.scheduleInternalTask(
                     () -> {
                         try {
                             ExportImportJobs.schedulePeriodicExportJob(
@@ -2068,7 +2070,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
-        HealthConnectThreadScheduler.scheduleControllerTask(
+        mThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
@@ -2118,7 +2120,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
-        HealthConnectThreadScheduler.scheduleControllerTask(
+        mThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
@@ -2146,7 +2148,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
-        HealthConnectThreadScheduler.scheduleControllerTask(
+        mThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
@@ -2166,7 +2168,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
-        HealthConnectThreadScheduler.scheduleControllerTask(
+        mThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
@@ -2190,7 +2192,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
 
-        HealthConnectThreadScheduler.scheduleControllerTask(
+        mThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
@@ -3102,7 +3104,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             ErrorCallback errorCallback,
             int uid,
             boolean isController) {
-        HealthConnectThreadScheduler.schedule(
+        mThreadScheduler.schedule(
                 mContext,
                 () -> {
                     int errorCode = ERROR_UNKNOWN;
@@ -3196,7 +3198,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
-        HealthConnectThreadScheduler.scheduleControllerTask(
+        mThreadScheduler.scheduleControllerTask(
                 () -> {
                     if (!isPersonalHealthRecordEnabled()) {
                         HealthConnectException unsupportedException =
@@ -3243,7 +3245,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
         final ErrorCallback errorCallback = callback::onError;
-        HealthConnectThreadScheduler.scheduleControllerTask(
+        mThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
@@ -3272,7 +3274,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
         final ErrorCallback errorCallback = callback::onError;
-        HealthConnectThreadScheduler.scheduleControllerTask(
+        mThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
@@ -3302,7 +3304,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
         final ErrorCallback errorCallback = callback::onError;
-        HealthConnectThreadScheduler.scheduleControllerTask(
+        mThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
@@ -3331,7 +3333,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
         final ErrorCallback errorCallback = callback::onError;
-        HealthConnectThreadScheduler.scheduleControllerTask(
+        mThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
@@ -3360,7 +3362,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
         final ErrorCallback errorCallback = callback::onError;
-        HealthConnectThreadScheduler.scheduleControllerTask(
+        mThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);

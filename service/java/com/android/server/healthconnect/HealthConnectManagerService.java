@@ -86,7 +86,8 @@ public class HealthConnectManagerService extends SystemService {
                         mHealthConnectInjector.getDatabaseHelpers(),
                         mHealthConnectInjector.getPreferencesManager(),
                         mHealthConnectInjector.getReadAccessLogsHelper(),
-                        mHealthConnectInjector.getAppOpsManagerLocal());
+                        mHealthConnectInjector.getAppOpsManagerLocal(),
+                        mHealthConnectInjector.getThreadScheduler());
     }
 
     @Override
@@ -111,13 +112,14 @@ public class HealthConnectManagerService extends SystemService {
             mHealthConnectService.cancelBackupRestoreTimeouts();
         }
 
-        HealthConnectThreadScheduler.shutdownThreadPools();
+        HealthConnectThreadScheduler threadScheduler = mHealthConnectInjector.getThreadScheduler();
+        threadScheduler.shutdownThreadPools();
         RateLimiter.clearCache();
         HealthConnectDailyJobs.cancelAllJobs(mContext);
         mHealthConnectInjector.getDatabaseHelpers().clearAllCache();
         mHealthConnectInjector.getTransactionManager().shutDownCurrentUser();
         mHealthConnectInjector.getMigrationStateManager().shutDownCurrentUser(mContext);
-        HealthConnectThreadScheduler.resetThreadPools();
+        threadScheduler.resetThreadPools();
 
         mCurrentForegroundUser = to.getUserHandle();
 
@@ -180,7 +182,8 @@ public class HealthConnectManagerService extends SystemService {
             mHealthConnectInjector.getPreferenceHelper().clearCache();
         }
 
-        HealthConnectThreadScheduler.scheduleInternalTask(
+        HealthConnectThreadScheduler threadScheduler = mHealthConnectInjector.getThreadScheduler();
+        threadScheduler.scheduleInternalTask(
                 () -> {
                     try {
                         HealthConnectDailyJobs.schedule(mContext, mCurrentForegroundUser);
@@ -189,7 +192,7 @@ public class HealthConnectManagerService extends SystemService {
                     }
                 });
 
-        HealthConnectThreadScheduler.scheduleInternalTask(
+        threadScheduler.scheduleInternalTask(
                 () -> {
                     try {
                         mHealthConnectInjector
@@ -202,7 +205,7 @@ public class HealthConnectManagerService extends SystemService {
                     }
                 });
 
-        HealthConnectThreadScheduler.scheduleInternalTask(
+        threadScheduler.scheduleInternalTask(
                 () -> {
                     try {
                         mHealthConnectInjector
@@ -212,7 +215,7 @@ public class HealthConnectManagerService extends SystemService {
                         Slog.e(TAG, "Failed to start user unlocked state changes actions", e);
                     }
                 });
-        HealthConnectThreadScheduler.scheduleInternalTask(
+        threadScheduler.scheduleInternalTask(
                 () -> {
                     try {
                         mHealthConnectInjector.getPreferenceHelper().initializePreferences();
@@ -221,7 +224,7 @@ public class HealthConnectManagerService extends SystemService {
                     }
                 });
 
-        HealthConnectThreadScheduler.scheduleInternalTask(
+        threadScheduler.scheduleInternalTask(
                 () -> {
                     try {
                         ExportImportJobs.schedulePeriodicJobIfNotScheduled(

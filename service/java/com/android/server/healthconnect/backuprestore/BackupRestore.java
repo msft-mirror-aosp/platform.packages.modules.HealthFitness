@@ -206,6 +206,7 @@ public final class BackupRestore {
     private boolean mActivelyStagingRemoteData = false;
 
     private volatile UserHandle mCurrentForegroundUser;
+    private final HealthConnectThreadScheduler mThreadScheduler;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     public BackupRestore(
@@ -216,7 +217,8 @@ public final class BackupRestore {
             TransactionManager transactionManager,
             Context context,
             DeviceInfoHelper deviceInfoHelper,
-            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper) {
+            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
+            HealthConnectThreadScheduler threadScheduler) {
         mFirstGrantTimeManager = firstGrantTimeManager;
         mMigrationStateManager = migrationStateManager;
         mContext = context;
@@ -229,12 +231,13 @@ public final class BackupRestore {
                         transactionManager);
         mPreferenceHelper = preferenceHelper;
         mTransactionManager = transactionManager;
+        mThreadScheduler = threadScheduler;
     }
 
     public void setupForUser(UserHandle currentForegroundUser) {
         Slog.d(TAG, "Performing user switch operations.");
         mCurrentForegroundUser = currentForegroundUser;
-        HealthConnectThreadScheduler.scheduleInternalTask(this::scheduleAllJobs);
+        mThreadScheduler.scheduleInternalTask(this::scheduleAllJobs);
     }
 
     /**
@@ -1006,7 +1009,7 @@ public final class BackupRestore {
     }
 
     private void triggerMergingIfApplicable() {
-        HealthConnectThreadScheduler.scheduleInternalTask(
+        mThreadScheduler.scheduleInternalTask(
                 () -> {
                     if (shouldAttemptMerging()) {
                         Slog.i(TAG, "Attempting merging.");
@@ -1110,7 +1113,7 @@ public final class BackupRestore {
                 return false;
             }
 
-            HealthConnectThreadScheduler.scheduleInternalTask(
+            sBackupRestore.mThreadScheduler.scheduleInternalTask(
                     () -> jobFinished(params, sBackupRestore.handleJob(params.getExtras())));
 
             return true;

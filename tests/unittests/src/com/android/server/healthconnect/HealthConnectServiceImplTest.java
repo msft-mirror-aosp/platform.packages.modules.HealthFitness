@@ -331,6 +331,7 @@ public class HealthConnectServiceImplTest {
     private BackupRestore mBackupRestore;
     private ThreadPoolExecutor mInternalTaskScheduler;
     private String mTestPackageName;
+    private HealthConnectThreadScheduler mThreadScheduler;
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
@@ -352,7 +353,6 @@ public class HealthConnectServiceImplTest {
         when(mServiceContext.getSystemService(PermissionManager.class))
                 .thenReturn(mPermissionManager);
 
-        mInternalTaskScheduler = HealthConnectThreadScheduler.sInternalBackgroundExecutor;
         mFakeTimeSource = new FakeTimeSource(NOW);
         mAttributionSource = mContext.getAttributionSource();
         mTestPackageName = mAttributionSource.getPackageName();
@@ -376,6 +376,8 @@ public class HealthConnectServiceImplTest {
                         .setTimeSource(mFakeTimeSource)
                         .setAppOpsManagerLocal(mAppOpsManagerLocal)
                         .build();
+        mThreadScheduler = healthConnectInjector.getThreadScheduler();
+        mInternalTaskScheduler = mThreadScheduler.mInternalBackgroundExecutor;
 
         mHealthConnectService =
                 new HealthConnectServiceImpl(
@@ -407,13 +409,14 @@ public class HealthConnectServiceImplTest {
                         healthConnectInjector.getDatabaseHelpers(),
                         healthConnectInjector.getPreferencesManager(),
                         healthConnectInjector.getReadAccessLogsHelper(),
-                        healthConnectInjector.getAppOpsManagerLocal());
+                        healthConnectInjector.getAppOpsManagerLocal(),
+                        healthConnectInjector.getThreadScheduler());
         mBackupRestore = healthConnectInjector.getBackupRestore();
     }
 
     @After
     public void tearDown() throws TimeoutException {
-        waitForAllScheduledTasksToComplete();
+        waitForAllScheduledTasksToComplete(mThreadScheduler);
         clearInvocations(mPreferenceHelper);
         clearInvocations(mPreferencesManager);
     }
@@ -2745,7 +2748,7 @@ public class HealthConnectServiceImplTest {
     public void testUserSwitching() throws TimeoutException {
         mHealthConnectService.setupForUser(mUserHandle);
 
-        waitForAllScheduledTasksToComplete();
+        waitForAllScheduledTasksToComplete(mThreadScheduler);
     }
 
     /**
