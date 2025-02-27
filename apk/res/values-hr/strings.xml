@@ -444,7 +444,7 @@
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Pročitajte pravila o privatnosti"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Pristupljeno u posljednja 24 sata"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Pristup aplikacije"</string>
-    <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Trenutačno nije instalirana nijedna kompatibilna aplikacija"</string>
+    <string name="connected_apps_empty_list_section_title" msgid="7684166767384190933">"Nije instalirana nijedna kompatibilna aplikacija"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Dodatni pristup"</string>
     <string name="additional_access_summary" msgid="1076197455435130191">"Prethodni podaci, pozadinski podaci"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Uklonjena su dodatna dopuštenja za ovu aplikaciju"</string>
