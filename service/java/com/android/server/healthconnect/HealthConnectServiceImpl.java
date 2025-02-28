@@ -3241,8 +3241,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     @TargetApi(Build.VERSION_CODES.BAKLAVA)
     public void getChangesForBackup(
             @Nullable String changeToken, IGetChangesForBackupResponseCallback callback) {
-        // TODO: b/399075964 - add proper exception handling
-        if (mCloudBackupManager == null) return;
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
@@ -3250,15 +3248,22 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         HealthConnectThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
-                        enforceIsForegroundUser(userHandle);
-                        if (isCloudBackupRestoreEnabled()) {
-                            mContext.enforcePermission(
-                                    BACKUP_HEALTH_CONNECT_DATA_AND_SETTINGS,
-                                    pid,
-                                    uid,
-                                    "Caller does not have permission to call getChangesForBackup.");
-                            callback.onResult(mCloudBackupManager.getChangesForBackup(changeToken));
+                        if (mCloudBackupManager == null || !isCloudBackupRestoreEnabled()) {
+                            throw new UnsupportedOperationException(
+                                    "getChangesForBackup is not supported.");
                         }
+                        enforceIsForegroundUser(userHandle);
+
+                        mContext.enforcePermission(
+                                BACKUP_HEALTH_CONNECT_DATA_AND_SETTINGS,
+                                pid,
+                                uid,
+                                "Caller does not have permission to call getChangesForBackup.");
+                        callback.onResult(mCloudBackupManager.getChangesForBackup(changeToken));
+                    } catch (UnsupportedOperationException e) {
+                        tryAndThrowException(errorCallback, e, ERROR_UNSUPPORTED_OPERATION);
+                    } catch (SecurityException e) {
+                        tryAndThrowException(errorCallback, e, ERROR_SECURITY);
                     } catch (IllegalArgumentException e) {
                         tryAndThrowException(errorCallback, e, ERROR_INVALID_ARGUMENT);
                     } catch (Exception e) {
@@ -3270,7 +3275,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     @Override
     @TargetApi(Build.VERSION_CODES.BAKLAVA)
     public void getSettingsForBackup(IGetSettingsForBackupResponseCallback callback) {
-        if (mCloudBackupManager == null) return;
         checkParamsNonNull(callback);
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
@@ -3279,16 +3283,22 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         HealthConnectThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
-                        enforceIsForegroundUser(userHandle);
-                        if (isCloudBackupRestoreEnabled()) {
-                            mContext.enforcePermission(
-                                    BACKUP_HEALTH_CONNECT_DATA_AND_SETTINGS,
-                                    pid,
-                                    uid,
-                                    "Caller does not have permission to call"
-                                            + " getSettingsForBackup.");
-                            callback.onResult(mCloudBackupManager.getSettingsForBackup());
+                        if (mCloudBackupManager == null || !isCloudBackupRestoreEnabled()) {
+                            throw new UnsupportedOperationException(
+                                    "getSettingsForBackup is not supported.");
                         }
+                        enforceIsForegroundUser(userHandle);
+                        mContext.enforcePermission(
+                                BACKUP_HEALTH_CONNECT_DATA_AND_SETTINGS,
+                                pid,
+                                uid,
+                                "Caller does not have permission to call"
+                                        + " getSettingsForBackup.");
+                        callback.onResult(mCloudBackupManager.getSettingsForBackup());
+                    } catch (UnsupportedOperationException e) {
+                        tryAndThrowException(errorCallback, e, ERROR_UNSUPPORTED_OPERATION);
+                    } catch (SecurityException e) {
+                        tryAndThrowException(errorCallback, e, ERROR_SECURITY);
                     } catch (Exception e) {
                         tryAndThrowException(errorCallback, e, ERROR_INTERNAL);
                     }
@@ -3298,8 +3308,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     @Override
     @TargetApi(Build.VERSION_CODES.BAKLAVA)
     public void restoreSettings(BackupSettings backupSettings, IEmptyResponseCallback callback) {
-        // TODO: b/399075964 - add proper exception handling
-        if (mCloudRestoreManager == null) return;
         checkParamsNonNull(backupSettings);
         checkParamsNonNull(callback);
         final int uid = Binder.getCallingUid();
@@ -3309,16 +3317,25 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         HealthConnectThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
-                        enforceIsForegroundUser(userHandle);
-                        if (isCloudBackupRestoreEnabled()) {
-                            mContext.enforcePermission(
-                                    RESTORE_HEALTH_CONNECT_DATA_AND_SETTINGS,
-                                    pid,
-                                    uid,
-                                    "Caller does not have permission to call restoreSettings.");
-                            mCloudRestoreManager.restoreSettings(backupSettings);
-                            callback.onResult();
+                        if (mCloudRestoreManager == null || !isCloudBackupRestoreEnabled()) {
+                            throw new UnsupportedOperationException(
+                                    "restoreSettings is not supported.");
                         }
+                        enforceIsForegroundUser(userHandle);
+
+                        mContext.enforcePermission(
+                                RESTORE_HEALTH_CONNECT_DATA_AND_SETTINGS,
+                                pid,
+                                uid,
+                                "Caller does not have permission to call restoreSettings.");
+                        mCloudRestoreManager.restoreSettings(backupSettings);
+                        callback.onResult();
+                    } catch (UnsupportedOperationException e) {
+                        tryAndThrowException(errorCallback, e, ERROR_UNSUPPORTED_OPERATION);
+                    } catch (SecurityException e) {
+                        tryAndThrowException(errorCallback, e, ERROR_SECURITY);
+                    } catch (IllegalArgumentException e) {
+                        tryAndThrowException(errorCallback, e, ERROR_INVALID_ARGUMENT);
                     } catch (Exception e) {
                         tryAndThrowException(errorCallback, e, ERROR_INTERNAL);
                     }
@@ -3328,8 +3345,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     @Override
     @TargetApi(Build.VERSION_CODES.BAKLAVA)
     public void canRestore(int dataVersion, ICanRestoreResponseCallback callback) {
-        // TODO: b/399075964 - add proper exception handling
-        if (mCloudRestoreManager == null) return;
         checkParamsNonNull(dataVersion);
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
@@ -3338,15 +3353,20 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         HealthConnectThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
-                        enforceIsForegroundUser(userHandle);
-                        if (isCloudBackupRestoreEnabled()) {
-                            mContext.enforcePermission(
-                                    RESTORE_HEALTH_CONNECT_DATA_AND_SETTINGS,
-                                    pid,
-                                    uid,
-                                    "Caller does not have permission to call canRestore.");
-                            callback.onResult(mCloudRestoreManager.canRestore(dataVersion));
+                        if (mCloudRestoreManager == null || !isCloudBackupRestoreEnabled()) {
+                            throw new UnsupportedOperationException("canRestore is not supported.");
                         }
+                        enforceIsForegroundUser(userHandle);
+                        mContext.enforcePermission(
+                                RESTORE_HEALTH_CONNECT_DATA_AND_SETTINGS,
+                                pid,
+                                uid,
+                                "Caller does not have permission to call canRestore.");
+                        callback.onResult(mCloudRestoreManager.canRestore(dataVersion));
+                    } catch (UnsupportedOperationException e) {
+                        tryAndThrowException(errorCallback, e, ERROR_UNSUPPORTED_OPERATION);
+                    } catch (SecurityException e) {
+                        tryAndThrowException(errorCallback, e, ERROR_SECURITY);
                     } catch (Exception e) {
                         tryAndThrowException(errorCallback, e, ERROR_INTERNAL);
                     }
@@ -3357,8 +3377,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     @TargetApi(Build.VERSION_CODES.BAKLAVA)
     public void restoreChanges(
             List<RestoreChange> changes, byte[] appInfoMap, IEmptyResponseCallback callback) {
-        // TODO: b/399075964 - add proper exception handling
-        if (mCloudRestoreManager == null) return;
         checkParamsNonNull(changes);
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
@@ -3367,16 +3385,24 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         HealthConnectThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
-                        enforceIsForegroundUser(userHandle);
-                        if (isCloudBackupRestoreEnabled()) {
-                            mContext.enforcePermission(
-                                    RESTORE_HEALTH_CONNECT_DATA_AND_SETTINGS,
-                                    pid,
-                                    uid,
-                                    "Caller does not have permission to call" + " restoreChanges.");
-                            mCloudRestoreManager.restoreChanges(changes, appInfoMap);
+                        if (mCloudRestoreManager == null || !isCloudBackupRestoreEnabled()) {
+                            throw new UnsupportedOperationException(
+                                    "restoreChanges is not supported.");
                         }
+                        enforceIsForegroundUser(userHandle);
+                        mContext.enforcePermission(
+                                RESTORE_HEALTH_CONNECT_DATA_AND_SETTINGS,
+                                pid,
+                                uid,
+                                "Caller does not have permission to call" + " restoreChanges.");
+                        mCloudRestoreManager.restoreChanges(changes, appInfoMap);
                         callback.onResult();
+                    } catch (UnsupportedOperationException e) {
+                        tryAndThrowException(errorCallback, e, ERROR_UNSUPPORTED_OPERATION);
+                    } catch (SecurityException e) {
+                        tryAndThrowException(errorCallback, e, ERROR_SECURITY);
+                    } catch (IllegalArgumentException e) {
+                        tryAndThrowException(errorCallback, e, ERROR_INVALID_ARGUMENT);
                     } catch (Exception e) {
                         tryAndThrowException(errorCallback, e, ERROR_INTERNAL);
                     }
