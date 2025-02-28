@@ -35,8 +35,8 @@ import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKG
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.datatypes.MedicalDataSource.validateMedicalDataSourceIds;
 
+import static com.android.healthfitness.flags.AconfigFlagHelper.isCloudBackupRestoreEnabled;
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
-import static com.android.healthfitness.flags.Flags.cloudBackupAndRestore;
 import static com.android.healthfitness.flags.Flags.personalHealthRecordTelemetry;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.CREATE_MEDICAL_DATA_SOURCE;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_DATA;
@@ -390,7 +390,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         exportImportNotificationSender);
 
         mCloudBackupManager =
-                cloudBackupAndRestore()
+                isCloudBackupRestoreEnabled()
                         ? new CloudBackupManager(
                                 mTransactionManager,
                                 mAppInfoHelper,
@@ -403,7 +403,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 mPreferenceHelper)
                         : null;
         mCloudRestoreManager =
-                cloudBackupAndRestore()
+                isCloudBackupRestoreEnabled()
                         ? new CloudRestoreManager(
                                 mTransactionManager,
                                 mInternalHealthConnectMappings,
@@ -3251,7 +3251,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
-                        if (cloudBackupAndRestore()) {
+                        if (isCloudBackupRestoreEnabled()) {
                             mContext.enforcePermission(
                                     BACKUP_HEALTH_CONNECT_DATA_AND_SETTINGS,
                                     pid,
@@ -3280,7 +3280,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
-                        if (cloudBackupAndRestore()) {
+                        if (isCloudBackupRestoreEnabled()) {
                             mContext.enforcePermission(
                                     BACKUP_HEALTH_CONNECT_DATA_AND_SETTINGS,
                                     pid,
@@ -3310,7 +3310,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
-                        if (cloudBackupAndRestore()) {
+                        if (isCloudBackupRestoreEnabled()) {
                             mContext.enforcePermission(
                                     RESTORE_HEALTH_CONNECT_DATA_AND_SETTINGS,
                                     pid,
@@ -3339,7 +3339,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
-                        if (cloudBackupAndRestore()) {
+                        if (isCloudBackupRestoreEnabled()) {
                             mContext.enforcePermission(
                                     RESTORE_HEALTH_CONNECT_DATA_AND_SETTINGS,
                                     pid,
@@ -3368,7 +3368,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 () -> {
                     try {
                         enforceIsForegroundUser(userHandle);
-                        if (cloudBackupAndRestore()) {
+                        if (isCloudBackupRestoreEnabled()) {
                             mContext.enforcePermission(
                                     RESTORE_HEALTH_CONNECT_DATA_AND_SETTINGS,
                                     pid,

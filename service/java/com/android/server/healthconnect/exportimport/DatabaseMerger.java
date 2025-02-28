@@ -22,7 +22,7 @@ import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_PLANNED_EXERCISE_SESSION;
 
-import static com.android.healthfitness.flags.Flags.cloudBackupAndRestore;
+import static com.android.healthfitness.flags.AconfigFlagHelper.isCloudBackupRestoreEnabled;
 import static com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper.APP_ID_PRIORITY_ORDER_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper.HEALTH_DATA_CATEGORY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper.PRIORITY_TABLE_NAME;
@@ -458,7 +458,7 @@ public final class DatabaseMerger {
             //
             // Only generate change logs when any change logs token are present. Client apps can
             // only read change logs if they have ever requested a change logs token.
-            if (cloudBackupAndRestore()
+            if (isCloudBackupRestoreEnabled()
                     && mTransactionManager.checkTableExists(ChangeLogsRequestHelper.TABLE_NAME)
                     && mTransactionManager.queryNumEntries(ChangeLogsRequestHelper.TABLE_NAME)
                             != 0) {
