@@ -58,7 +58,6 @@ import android.health.connect.internal.datatypes.RecordInternal;
 import android.platform.test.annotations.DisableFlags;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
-import android.util.ArrayMap;
 import android.util.Pair;
 
 import androidx.test.core.app.ApplicationProvider;
@@ -72,13 +71,10 @@ import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
 import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
-import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
-import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
 import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
 import com.android.server.healthconnect.testing.fixtures.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.testing.storage.TransactionTestUtils;
@@ -518,57 +514,6 @@ public class TransactionManagerTest {
 
         List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
         assertThat(result).isEmpty();
-    }
-
-    @Test
-    public void insertAllRecords_noChangeLogs() {
-        UpsertTransactionRequest upsertTransactionRequest =
-                UpsertTransactionRequest.createForRestore(
-                        List.of(
-                                createStepsRecord(500, 750, 100)
-                                        .setPackageName(TEST_PACKAGE_NAME)
-                                        .setUuid(UUID.randomUUID())),
-                        mDeviceInfoHelper,
-                        mAppInfoHelper);
-        mTransactionManager.insertOrIgnoreAllOnConflict(
-                upsertTransactionRequest.getUpsertRequests());
-
-        assertThat(mTransactionManager.count(new ReadTableRequest(ChangeLogsHelper.TABLE_NAME)))
-                .isEqualTo(0);
-    }
-
-    @Test
-    public void insertAllRecordsForRestore_addChangeLogs_withNoAccessLogs() {
-        UpsertTransactionRequest upsertTransactionRequest =
-                UpsertTransactionRequest.createForRestore(
-                        List.of(
-                                createStepsRecord(500, 750, 100)
-                                        .setPackageName(TEST_PACKAGE_NAME)
-                                        .setUuid(UUID.randomUUID())),
-                        mDeviceInfoHelper,
-                        mAppInfoHelper);
-        mTransactionManager.insertAllRecords(mAppInfoHelper, null, upsertTransactionRequest);
-
-        assertThat(mTransactionManager.count(new ReadTableRequest(ChangeLogsHelper.TABLE_NAME)))
-                .isEqualTo(1);
-        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
-        assertThat(result).isEmpty();
-    }
-
-    @Test
-    public void insertAllRecords_addAccessLogs() {
-        UpsertTransactionRequest upsertTransactionRequest =
-                UpsertTransactionRequest.createForInsert(
-                        TEST_PACKAGE_NAME /* packageName */,
-                        List.of(createStepsRecord(500, 750, 100).setPackageName(TEST_PACKAGE_NAME)),
-                        mDeviceInfoHelper,
-                        mAppInfoHelper,
-                        new ArrayMap<>());
-        mTransactionManager.insertAllRecords(
-                mAppInfoHelper, mAccessLogsHelper, upsertTransactionRequest);
-
-        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
-        assertThat(result).isNotEmpty();
     }
 
     @Test
