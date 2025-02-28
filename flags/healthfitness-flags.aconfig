@@ -542,3 +542,12 @@ flag {
     is_fixed_read_only: true
     is_exported: true
 }
+
+flag {
+    name: "launch_onboarding_activity"
+    namespace: "health_fitness_aconfig"
+    description: "Flag for launching an onboarding activity exported by a client app"
+    bug: "270672374"
+    is_fixed_read_only: true
+    is_exported: true
+}

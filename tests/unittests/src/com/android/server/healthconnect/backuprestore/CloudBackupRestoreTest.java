@@ -133,7 +133,7 @@ public final class CloudBackupRestoreTest {
                 mCloudBackupManager.getChangesForBackup(null).getChanges();
         assertThat(backupChanges).hasSize(1);
         mDatabaseHelpers.clearAllData(mTransactionManager);
-        mCloudRestoreManager.pushChangesForRestore(
+        mCloudRestoreManager.restoreChanges(
                 backupChanges.stream().map(change -> new RestoreChange(change.getData())).toList(),
                 AppInfoMap.newBuilder()
                         .putAppInfo(
