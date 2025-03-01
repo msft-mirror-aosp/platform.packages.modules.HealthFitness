@@ -19,6 +19,9 @@ import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
 import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_UNKNOWN;
 
+import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTORE;
+import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTORE_DB;
+import static com.android.healthfitness.flags.Flags.FLAG_ECOSYSTEM_METRICS_DB_CHANGES;
 import static com.android.server.healthconnect.backuprestore.RecordProtoConverter.PROTO_VERSION;
 import static com.android.server.healthconnect.testing.storage.TransactionTestUtils.createStepsRecord;
 
@@ -37,7 +40,6 @@ import android.platform.test.flag.junit.SetFlagsRule;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
@@ -70,7 +72,11 @@ import java.util.List;
 
 /** Unit test for class {@link CloudBackupManager}. */
 @RunWith(AndroidJUnit4.class)
-@EnableFlags({Flags.FLAG_CLOUD_BACKUP_AND_RESTORE, Flags.FLAG_CLOUD_BACKUP_AND_RESTORE_DB})
+@EnableFlags({
+    FLAG_CLOUD_BACKUP_AND_RESTORE,
+    FLAG_CLOUD_BACKUP_AND_RESTORE_DB,
+    FLAG_ECOSYSTEM_METRICS_DB_CHANGES
+})
 public class CloudBackupManagerTest {
     private static final String TEST_PACKAGE_NAME = "test.package.name";
     private static final long TEST_START_TIME_IN_MILLIS = 2000;
