@@ -446,7 +446,11 @@ public final class DatabaseMerger {
             //    correct package name.
             UpsertTransactionRequest upsertTransactionRequest =
                     UpsertTransactionRequest.createForRestore(
-                            records, mDeviceInfoHelper, mAppInfoHelper);
+                            records,
+                            mTransactionManager,
+                            mInternalHealthConnectMappings,
+                            mDeviceInfoHelper,
+                            mAppInfoHelper);
 
             // Both methods use ON CONFLICT IGNORE strategy, which means that if the source data
             // being inserted into target db already exists, the source data will be ignored. We
@@ -458,8 +462,7 @@ public final class DatabaseMerger {
                     && mTransactionManager.checkTableExists(ChangeLogsRequestHelper.TABLE_NAME)
                     && mTransactionManager.queryNumEntries(ChangeLogsRequestHelper.TABLE_NAME)
                             != 0) {
-                mTransactionManager.insertAllRecords(
-                        mAppInfoHelper, /* accessLogsHelper */ null, upsertTransactionRequest);
+                upsertTransactionRequest.execute();
             } else {
                 mTransactionManager.insertOrIgnoreAllOnConflict(
                         upsertTransactionRequest.getUpsertRequests());
