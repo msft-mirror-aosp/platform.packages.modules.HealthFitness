@@ -444,7 +444,7 @@
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"អានគោលការណ៍ឯកជនភាព"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"បានចូលប្រើក្នុងរយៈពេល 24 ម៉ោងចុងក្រោយ"</string>
     <string name="app_access_title" msgid="7137018424885371763">"សិទ្ធិចូលប្រើកម្មវិធី"</string>
-    <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"បច្ចុប្បន្ននេះ អ្នកមិនបានដំឡើង​កម្មវិធីដែលត្រូវគ្នាទេ"</string>
+    <string name="connected_apps_empty_list_section_title" msgid="7684166767384190933">"មិនបានដំឡើងកម្មវិធីដែលត្រូវគ្នា​ទេ"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"សិទ្ធិ​ចូល​ប្រើបន្ថែម"</string>
     <string name="additional_access_summary" msgid="1076197455435130191">"ទិន្នន័យពីមុន ទិន្នន័យ​ផ្ទៃ​ខាង​ក្រោយ"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"បានដកការអនុញ្ញាតបន្ថែមចេញសម្រាប់កម្មវិធីនេះ"</string>

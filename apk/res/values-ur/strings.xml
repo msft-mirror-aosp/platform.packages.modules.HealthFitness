@@ -444,7 +444,7 @@
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"رازداری کی پالیسی پڑھیں"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"گزشتہ 24 گھنٹے میں رسائی حاصل کی گئی"</string>
     <string name="app_access_title" msgid="7137018424885371763">"ایپ تک رسائی"</string>
-    <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"آپ کے پاس فی الحال کوئی موافق ایپ انسٹال نہیں ہے"</string>
+    <string name="connected_apps_empty_list_section_title" msgid="7684166767384190933">"کوئی موافق ایپ انسٹال نہیں ہے"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"اضافی رسائی"</string>
     <string name="additional_access_summary" msgid="1076197455435130191">"ماضی کا ڈیٹا، پس منظر کا ڈیٹا"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"اس ایپ کے لیے اضافی اجازتیں ہٹا دی گئیں"</string>

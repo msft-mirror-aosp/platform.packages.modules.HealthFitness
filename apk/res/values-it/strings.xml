@@ -444,7 +444,7 @@
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Leggi le norme sulla privacy"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Ultimo accesso: nelle ultime 24 ore"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Accesso dell\'app"</string>
-    <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Al momento non hai app compatibili installate"</string>
+    <string name="connected_apps_empty_list_section_title" msgid="7684166767384190933">"Nessuna app compatibile installata"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Accesso aggiuntivo"</string>
     <string name="additional_access_summary" msgid="1076197455435130191">"Dati precedenti, dati in background"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Autorizzazioni aggiuntive rimosse per questa app"</string>

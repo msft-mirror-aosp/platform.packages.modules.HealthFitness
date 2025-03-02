@@ -444,7 +444,8 @@
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"गोपनीयता नीति पढ्नुहोस्"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"पछिल्लो २४ घण्टामा प्रयोग गरिएको"</string>
     <string name="app_access_title" msgid="7137018424885371763">"एपलाई दिइएका अनुमति"</string>
-    <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"तपाईंले अहिले कुनै पनि कम्प्याटिबल एप इन्स्टल गर्नुभएको छैन"</string>
+    <!-- no translation found for connected_apps_empty_list_section_title (7684166767384190933) -->
+    <skip />
     <string name="additional_access_label" msgid="4645249249222528341">"अतिरिक्त एक्सेस"</string>
     <string name="additional_access_summary" msgid="1076197455435130191">"विगतको डेटा, ब्याकग्राउन्ड डेटा"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"यो एपलाई दिइएका अतिरिक्त अनुमतिहरू हटाइएका छन्"</string>
