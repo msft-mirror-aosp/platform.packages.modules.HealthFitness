@@ -444,8 +444,7 @@
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"પ્રાઇવસી પૉલિસી વાંચો"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"છેલ્લા 24 કલાકમાં ઍક્સેસ કરેલી પરવાનગીઓ"</string>
     <string name="app_access_title" msgid="7137018424885371763">"ઍપનો ઍક્સેસ"</string>
-    <!-- no translation found for connected_apps_empty_list_section_title (7684166767384190933) -->
-    <skip />
+    <string name="connected_apps_empty_list_section_title" msgid="7684166767384190933">"કોઈ સુસંગત ઍપ ઇન્સ્ટૉલ કરેલી નથી"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"વધારાનો ઍક્સેસ"</string>
     <string name="additional_access_summary" msgid="1076197455435130191">"ભૂતકાળનો ડેટા, બૅકગ્રાઉન્ડ ડેટા"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"આ ઍપ માટેની વધારાની પરવાનગીઓ કાઢી નાખી"</string>
