@@ -45,11 +45,13 @@ public class HealthConnectManagerService extends SystemService {
     private final HealthConnectServiceImpl mHealthConnectService;
     private final UserManager mUserManager;
     private final HealthConnectInjector mHealthConnectInjector;
+    private final RateLimiter mRateLimiter;
 
     private UserHandle mCurrentForegroundUser;
 
     public HealthConnectManagerService(Context context) {
         super(context);
+        mRateLimiter = new RateLimiter();
         mContext = context;
         mCurrentForegroundUser = context.getUser();
         mUserManager = context.getSystemService(UserManager.class);
@@ -87,7 +89,8 @@ public class HealthConnectManagerService extends SystemService {
                         mHealthConnectInjector.getPreferencesManager(),
                         mHealthConnectInjector.getReadAccessLogsHelper(),
                         mHealthConnectInjector.getAppOpsManagerLocal(),
-                        mHealthConnectInjector.getThreadScheduler());
+                        mHealthConnectInjector.getThreadScheduler(),
+                        mRateLimiter);
     }
 
     @Override
@@ -114,7 +117,7 @@ public class HealthConnectManagerService extends SystemService {
 
         HealthConnectThreadScheduler threadScheduler = mHealthConnectInjector.getThreadScheduler();
         threadScheduler.shutdownThreadPools();
-        RateLimiter.clearCache();
+        mRateLimiter.clearCache();
         HealthConnectDailyJobs.cancelAllJobs(mContext);
         mHealthConnectInjector.getDatabaseHelpers().clearAllCache();
         mHealthConnectInjector.getTransactionManager().shutDownCurrentUser();

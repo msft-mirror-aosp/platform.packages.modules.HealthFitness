@@ -298,6 +298,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private final DatabaseHelpers mDatabaseHelpers;
     private final PreferencesManager mPreferencesManager;
     private final ReadAccessLogsHelper mReadAccessLogsHelper;
+    private final RateLimiter mRateLimiter;
     // This will be null if the phr_fhir_structural_validation flag is false.
     @Nullable private FhirResourceValidator mFhirResourceValidator;
     private final HealthConnectThreadScheduler mThreadScheduler;
@@ -334,7 +335,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             PreferencesManager preferencesManager,
             ReadAccessLogsHelper readAccessLogsHelper,
             AppOpsManagerLocal appOpsManagerLocal,
-            HealthConnectThreadScheduler threadScheduler) {
+            HealthConnectThreadScheduler threadScheduler,
+            RateLimiter rateLimiter) {
         mContext = context;
         mCurrentForegroundUser = context.getUser();
         mTimeSource = timeSource;
@@ -373,6 +375,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mPreferencesManager = preferencesManager;
         mReadAccessLogsHelper = readAccessLogsHelper;
         mThreadScheduler = threadScheduler;
+        mRateLimiter = rateLimiter;
 
         mPermissionManager = mContext.getSystemService(PermissionManager.class);
         mAppOpsManagerLocal = appOpsManagerLocal;
@@ -1863,7 +1866,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             mBackupRestore.deleteAndResetEverything(userHandle);
             mMigrationStateManager.clearCaches(mContext);
             mDatabaseHelpers.clearAllData(mTransactionManager);
-            RateLimiter.clearCache();
+            mRateLimiter.clearCache();
             String[] packageNames = mContext.getPackageManager().getPackagesForUid(uid);
             for (String packageName : packageNames) {
                 mFirstGrantTimeManager.setFirstGrantTime(packageName, Instant.now(), userHandle);
@@ -1882,7 +1885,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         // to shell in a mainline update.
         mContext.enforceCallingPermission(
                 DELETE_STAGED_HEALTH_CONNECT_REMOTE_DATA_PERMISSION, null);
-        RateLimiter.setLowerRateLimitsForTesting(enabled);
+        mRateLimiter.setLowerRateLimitsForTesting(enabled);
     }
 
     /**
@@ -3422,7 +3425,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             boolean isInForeground,
             HealthConnectServiceLogger.Builder logger) {
         try {
-            RateLimiter.tryAcquireApiCallQuota(uid, quotaCategory, isInForeground);
+            mRateLimiter.tryAcquireApiCallQuota(uid, quotaCategory, isInForeground);
         } catch (RateLimiterException rateLimiterException) {
             logger.setRateLimit(
                     rateLimiterException.getRateLimiterQuotaBucket(),
@@ -3439,7 +3442,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             HealthConnectServiceLogger.Builder logger,
             long memoryCost) {
         try {
-            RateLimiter.tryAcquireApiCallQuota(uid, quotaCategory, isInForeground, memoryCost);
+            mRateLimiter.tryAcquireApiCallQuota(uid, quotaCategory, isInForeground, memoryCost);
         } catch (RateLimiterException rateLimiterException) {
             logger.setRateLimit(
                     rateLimiterException.getRateLimiterQuotaBucket(),
@@ -3450,8 +3453,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     private void enforceMemoryRateLimit(List<Long> recordsSize, long recordsChunkSize) {
-        recordsSize.forEach(RateLimiter::checkMaxRecordMemoryUsage);
-        RateLimiter.checkMaxChunkMemoryUsage(recordsChunkSize);
+        recordsSize.forEach(mRateLimiter::checkMaxRecordMemoryUsage);
+        mRateLimiter.checkMaxChunkMemoryUsage(recordsChunkSize);
     }
 
     /**
