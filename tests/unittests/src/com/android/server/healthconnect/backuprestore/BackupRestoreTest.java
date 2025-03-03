@@ -180,7 +180,8 @@ public class BackupRestoreTest {
                         healthConnectInjector.getTransactionManager(),
                         mServiceContext,
                         healthConnectInjector.getDeviceInfoHelper(),
-                        healthConnectInjector.getHealthDataCategoryPriorityHelper());
+                        healthConnectInjector.getHealthDataCategoryPriorityHelper(),
+                        healthConnectInjector.getThreadScheduler());
     }
 
     @After

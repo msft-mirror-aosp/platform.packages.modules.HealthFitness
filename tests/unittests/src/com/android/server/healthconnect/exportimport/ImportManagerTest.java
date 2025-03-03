@@ -53,6 +53,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.HealthConnectThreadScheduler;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.logging.ExportImportLogger;
@@ -137,6 +138,7 @@ public class ImportManagerTest {
     private DeviceInfoHelper mDeviceInfoHelper;
     private ReadAccessLogsHelper mReadAccessLogsHelper;
     private InternalHealthConnectMappings mInternalHealthConnectMappings;
+    private HealthConnectThreadScheduler mThreadScheduler;
 
     @Mock private HealthConnectNotificationSender mNotificationSender;
     // TODO(b/373322447): Remove the mock FirstGrantTimeManager
@@ -161,6 +163,7 @@ public class ImportManagerTest {
         mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
         mInternalHealthConnectMappings = healthConnectInjector.getInternalHealthConnectMappings();
         mReadAccessLogsHelper = healthConnectInjector.getReadAccessLogsHelper();
+        mThreadScheduler = healthConnectInjector.getThreadScheduler();
 
         mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
@@ -191,7 +194,7 @@ public class ImportManagerTest {
 
     @After
     public void tearDown() throws Exception {
-        TestUtils.waitForAllScheduledTasksToComplete();
+        TestUtils.waitForAllScheduledTasksToComplete(mThreadScheduler);
 
         File testDir = mContext.getDir(TEST_DIRECTORY_NAME, Context.MODE_PRIVATE);
         File[] allContents = testDir.listFiles();
