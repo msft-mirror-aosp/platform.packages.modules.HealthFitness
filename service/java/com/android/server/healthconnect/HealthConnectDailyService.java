@@ -113,7 +113,8 @@ public class HealthConnectDailyService extends JobService {
                                     usageStatsCollector,
                                     databaseStatsCollector,
                                     dailyCleanupJob,
-                                    ecosystemStatsCollector);
+                                    ecosystemStatsCollector,
+                                    healthConnectInjector.getHealthFitnessStatsLog());
                             jobFinished(params, false);
                         });
                 return true;

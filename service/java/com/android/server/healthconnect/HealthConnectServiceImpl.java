@@ -68,6 +68,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.sqlite.SQLiteException;
+import android.health.HealthFitnessStatsLog;
 import android.health.connect.Constants;
 import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.DeleteMedicalResourcesRequest;
@@ -181,6 +182,7 @@ import com.android.server.healthconnect.exportimport.DocumentProvidersManager;
 import com.android.server.healthconnect.exportimport.ExportImportJobs;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.exportimport.ImportManager;
+import com.android.server.healthconnect.logging.ExportImportLogger;
 import com.android.server.healthconnect.logging.HealthConnectServiceLogger;
 import com.android.server.healthconnect.migration.DataMigrationManager;
 import com.android.server.healthconnect.migration.MigrationCleaner;
@@ -303,6 +305,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     // This will be null if the phr_fhir_structural_validation flag is false.
     @Nullable private FhirResourceValidator mFhirResourceValidator;
     private final HealthConnectThreadScheduler mThreadScheduler;
+    private final HealthFitnessStatsLog mStatsLog;
 
     private volatile UserHandle mCurrentForegroundUser;
 
@@ -338,7 +341,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             AppOpsManagerLocal appOpsManagerLocal,
             HealthConnectThreadScheduler threadScheduler,
             RateLimiter rateLimiter,
-            File environmentDataDirectory) {
+            File environmentDataDirectory,
+            ExportImportLogger exportImportLogger,
+            HealthFitnessStatsLog statsLog) {
         mContext = context;
         mCurrentForegroundUser = context.getUser();
         mTimeSource = timeSource;
@@ -396,7 +401,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         mHealthDataCategoryPriorityHelper,
                         clockForLogging,
                         exportImportNotificationSender,
-                        environmentDataDirectory);
+                        environmentDataDirectory,
+                        exportImportLogger);
 
         mCloudBackupManager =
                 isCloudBackupRestoreEnabled()
@@ -421,6 +427,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 mHealthDataCategoryPriorityHelper,
                                 mPreferenceHelper)
                         : null;
+        mStatsLog = statsLog;
     }
 
     public void setupForUser(UserHandle currentForegroundUser) {
@@ -517,6 +524,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final UserHandle userHandle = Binder.getCallingUserHandle();
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(false, INSERT_DATA)
+                        .setHealthFitnessStatsLog(mStatsLog)
                         .setPackageName(attributionSource.getPackageName());
 
         ErrorCallback errorCallback = callback::onError;
@@ -602,6 +610,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(
                                 holdsDataManagementPermission, READ_AGGREGATED_DATA)
+                        .setHealthFitnessStatsLog(mStatsLog)
                         .setPackageName(attributionSource.getPackageName());
 
         ErrorCallback errorCallback = callback::onError;
@@ -715,6 +724,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 Objects.requireNonNull(attributionSource.getPackageName());
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(holdsDataManagementPermission, READ_DATA)
+                        .setHealthFitnessStatsLog(mStatsLog)
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -917,6 +927,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final UserHandle userHandle = Binder.getCallingUserHandle();
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(false, UPDATE_DATA)
+                        .setHealthFitnessStatsLog(mStatsLog)
                         .setPackageName(attributionSource.getPackageName());
         scheduleLoggingHealthDataApiErrors(
                 () -> {
@@ -987,6 +998,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final UserHandle userHandle = Binder.getCallingUserHandle();
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(false, GET_CHANGES_TOKEN)
+                        .setHealthFitnessStatsLog(mStatsLog)
                         .setPackageName(attributionSource.getPackageName());
         scheduleLoggingHealthDataApiErrors(
                 () -> {
@@ -1037,6 +1049,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final String callerPackageName = Objects.requireNonNull(attributionSource.getPackageName());
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(false, GET_CHANGES)
+                        .setHealthFitnessStatsLog(mStatsLog)
                         .setPackageName(callerPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -1157,6 +1170,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final boolean holdsDataManagementPermission = hasDataManagementPermission(uid, pid);
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(holdsDataManagementPermission, DELETE_DATA)
+                        .setHealthFitnessStatsLog(mStatsLog)
                         .setPackageName(attributionSource.getPackageName());
 
         scheduleLoggingHealthDataApiErrors(
@@ -1223,6 +1237,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final boolean holdsDataManagementPermission = hasDataManagementPermission(uid, pid);
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(holdsDataManagementPermission, DELETE_DATA)
+                        .setHealthFitnessStatsLog(mStatsLog)
                         .setPackageName(attributionSource.getPackageName());
 
         final RequestContext requestContext = RequestContext.create();
@@ -2246,6 +2261,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(
                                 holdsDataManagementPermission, CREATE_MEDICAL_DATA_SOURCE)
+                        .setHealthFitnessStatsLog(mStatsLog)
                         .setPackageName(packageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2315,6 +2331,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(
                                 holdsDataManagementPermission, GET_MEDICAL_DATA_SOURCES_BY_IDS)
+                        .setHealthFitnessStatsLog(mStatsLog)
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2434,6 +2451,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(
                                 holdsDataManagementPermission, GET_MEDICAL_DATA_SOURCES_BY_REQUESTS)
+                        .setHealthFitnessStatsLog(mStatsLog)
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2530,6 +2548,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(
                                 holdsDataManagementPermission, DELETE_MEDICAL_DATA_SOURCE_WITH_DATA)
+                        .setHealthFitnessStatsLog(mStatsLog)
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2632,6 +2651,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(
                                 holdsDataManagementPermission, UPSERT_MEDICAL_RESOURCES)
+                        .setHealthFitnessStatsLog(mStatsLog)
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2738,6 +2758,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(
                                 holdsDataManagementPermission, READ_MEDICAL_RESOURCES_BY_IDS)
+                        .setHealthFitnessStatsLog(mStatsLog)
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2865,6 +2886,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(
                                 holdsDataManagementPermission, READ_MEDICAL_RESOURCES_BY_REQUESTS)
+                        .setHealthFitnessStatsLog(mStatsLog)
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -2988,6 +3010,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(
                                 holdsDataManagementPermission, DELETE_MEDICAL_RESOURCES_BY_IDS)
+                        .setHealthFitnessStatsLog(mStatsLog)
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -3059,6 +3082,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(
                                 holdsDataManagementPermission, DELETE_MEDICAL_RESOURCES_BY_REQUESTS)
+                        .setHealthFitnessStatsLog(mStatsLog)
                         .setPackageName(callingPackageName);
 
         scheduleLoggingHealthDataApiErrors(
@@ -3643,7 +3667,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             RecordHelper<?> recordHelper =
                     mInternalHealthConnectMappings.getRecordHelper(
                             recordTypeToRecordInternalsEntry.getKey());
-            recordHelper.logUpsertMetrics(recordTypeToRecordInternalsEntry.getValue(), packageName);
+            recordHelper.logUpsertMetrics(
+                    mStatsLog, recordTypeToRecordInternalsEntry.getValue(), packageName);
         }
     }
 
@@ -3658,7 +3683,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             RecordHelper<?> recordHelper =
                     mInternalHealthConnectMappings.getRecordHelper(
                             recordTypeToRecordInternalsEntry.getKey());
-            recordHelper.logReadMetrics(recordTypeToRecordInternalsEntry.getValue(), packageName);
+            recordHelper.logReadMetrics(
+                    mStatsLog, recordTypeToRecordInternalsEntry.getValue(), packageName);
         }
     }
 

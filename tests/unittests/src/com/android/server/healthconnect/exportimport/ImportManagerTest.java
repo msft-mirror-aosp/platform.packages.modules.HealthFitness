@@ -119,7 +119,6 @@ public class ImportManagerTest {
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(HealthConnectManager.class)
-                    .mockStatic(ExportImportLogger.class)
                     .setStrictness(Strictness.LENIENT)
                     .build();
 
@@ -145,6 +144,7 @@ public class ImportManagerTest {
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
     // TODO(b/373322447): Remove the mock HealthPermissionIntentAppsTracker
     @Mock private HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
+    @Mock private ExportImportLogger mExportImportLogger;
 
     @Before
     public void setUp() throws Exception {
@@ -187,7 +187,8 @@ public class ImportManagerTest {
                         mPriorityHelper,
                         fakeClock,
                         mNotificationSender,
-                        mEnvironmentDataDirectory.getRoot());
+                        mEnvironmentDataDirectory.getRoot(),
+                        mExportImportLogger);
         mImportManagerSpy = ExtendedMockito.spy(importManager);
         doReturn(TEST_COMPRESSED_FILE_SIZE)
                 .when(mImportManagerSpy)
@@ -424,18 +425,14 @@ public class ImportManagerTest {
 
         mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
 
-        ExtendedMockito.verify(
-                () ->
-                        ExportImportLogger.logImportStatus(
-                                eq(DATA_IMPORT_STARTED),
-                                eq(ExportImportLogger.NO_VALUE_RECORDED),
-                                eq(ExportImportLogger.NO_VALUE_RECORDED),
-                                eq(ExportImportLogger.NO_VALUE_RECORDED)),
-                times(1));
-        ExtendedMockito.verify(
-                () ->
-                        ExportImportLogger.logImportStatus(
-                                DATA_IMPORT_ERROR_WRONG_FILE, 0, 0, TEST_COMPRESSED_FILE_SIZE));
+        verify(mExportImportLogger, times(1))
+                .logImportStatus(
+                        eq(DATA_IMPORT_STARTED),
+                        eq(ExportImportLogger.NO_VALUE_RECORDED),
+                        eq(ExportImportLogger.NO_VALUE_RECORDED),
+                        eq(ExportImportLogger.NO_VALUE_RECORDED));
+        verify(mExportImportLogger)
+                .logImportStatus(DATA_IMPORT_ERROR_WRONG_FILE, 0, 0, TEST_COMPRESSED_FILE_SIZE);
     }
 
     @Test
@@ -503,16 +500,13 @@ public class ImportManagerTest {
 
         mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
 
-        ExtendedMockito.verify(
-                () ->
-                        ExportImportLogger.logImportStatus(
-                                eq(DATA_IMPORT_STARTED),
-                                eq(ExportImportLogger.NO_VALUE_RECORDED),
-                                eq(ExportImportLogger.NO_VALUE_RECORDED),
-                                eq(ExportImportLogger.NO_VALUE_RECORDED)),
-                times(1));
-        ExtendedMockito.verify(
-                () -> ExportImportLogger.logImportStatus(DATA_IMPORT_ERROR_WRONG_FILE, 0, 0, 0));
+        verify(mExportImportLogger, times(1))
+                .logImportStatus(
+                        eq(DATA_IMPORT_STARTED),
+                        eq(ExportImportLogger.NO_VALUE_RECORDED),
+                        eq(ExportImportLogger.NO_VALUE_RECORDED),
+                        eq(ExportImportLogger.NO_VALUE_RECORDED));
+        verify(mExportImportLogger).logImportStatus(DATA_IMPORT_ERROR_WRONG_FILE, 0, 0, 0);
     }
 
     @Test
@@ -566,14 +560,12 @@ public class ImportManagerTest {
 
         mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
 
-        ExtendedMockito.verify(
-                () ->
-                        ExportImportLogger.logImportStatus(
-                                eq(DATA_IMPORT_STARTED),
-                                eq(ExportImportLogger.NO_VALUE_RECORDED),
-                                eq(ExportImportLogger.NO_VALUE_RECORDED),
-                                eq(ExportImportLogger.NO_VALUE_RECORDED)),
-                times(1));
+        verify(mExportImportLogger, times(1))
+                .logImportStatus(
+                        eq(DATA_IMPORT_STARTED),
+                        eq(ExportImportLogger.NO_VALUE_RECORDED),
+                        eq(ExportImportLogger.NO_VALUE_RECORDED),
+                        eq(ExportImportLogger.NO_VALUE_RECORDED));
     }
 
     @Test
@@ -584,23 +576,19 @@ public class ImportManagerTest {
 
         mImportManagerSpy.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
 
-        ExtendedMockito.verify(
-                () ->
-                        ExportImportLogger.logImportStatus(
-                                eq(DATA_IMPORT_STARTED),
-                                eq(ExportImportLogger.NO_VALUE_RECORDED),
-                                eq(ExportImportLogger.NO_VALUE_RECORDED),
-                                eq(ExportImportLogger.NO_VALUE_RECORDED)),
-                times(1));
+        verify(mExportImportLogger, times(1))
+                .logImportStatus(
+                        eq(DATA_IMPORT_STARTED),
+                        eq(ExportImportLogger.NO_VALUE_RECORDED),
+                        eq(ExportImportLogger.NO_VALUE_RECORDED),
+                        eq(ExportImportLogger.NO_VALUE_RECORDED));
 
-        ExtendedMockito.verify(
-                () ->
-                        ExportImportLogger.logImportStatus(
-                                DATA_IMPORT_ERROR_NONE,
-                                0,
-                                expectedOriginalFileSize,
-                                TEST_COMPRESSED_FILE_SIZE),
-                times(1));
+        verify(mExportImportLogger, times(1))
+                .logImportStatus(
+                        DATA_IMPORT_ERROR_NONE,
+                        0,
+                        expectedOriginalFileSize,
+                        TEST_COMPRESSED_FILE_SIZE);
     }
 
     @Test

@@ -91,7 +91,9 @@ public class HealthConnectManagerService extends SystemService {
                         mHealthConnectInjector.getAppOpsManagerLocal(),
                         mHealthConnectInjector.getThreadScheduler(),
                         mRateLimiter,
-                        mHealthConnectInjector.getEnvironmentDataDirectory());
+                        mHealthConnectInjector.getEnvironmentDataDirectory(),
+                        mHealthConnectInjector.getExportImportLogger(),
+                        mHealthConnectInjector.getHealthFitnessStatsLog());
     }
 
     @Override

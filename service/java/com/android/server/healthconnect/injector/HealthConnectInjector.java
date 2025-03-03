@@ -16,6 +16,7 @@
 
 package com.android.server.healthconnect.injector;
 
+import android.health.HealthFitnessStatsLog;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 
 import androidx.annotation.Nullable;
@@ -25,6 +26,7 @@ import com.android.server.appop.AppOpsManagerLocal;
 import com.android.server.healthconnect.HealthConnectThreadScheduler;
 import com.android.server.healthconnect.backuprestore.BackupRestore;
 import com.android.server.healthconnect.exportimport.ExportManager;
+import com.android.server.healthconnect.logging.ExportImportLogger;
 import com.android.server.healthconnect.logging.UsageStatsCollector;
 import com.android.server.healthconnect.migration.MigrationBroadcastScheduler;
 import com.android.server.healthconnect.migration.MigrationCleaner;
@@ -251,6 +253,16 @@ public abstract class HealthConnectInjector {
      * be stored. Use this instead of {@link Environment#getDataDirectory}.
      */
     public abstract File getEnvironmentDataDirectory();
+
+    /**
+     * Getter for {@link HealthFitnessStatsLog} instance initialised by the Health Connect Injector.
+     */
+    public abstract HealthFitnessStatsLog getHealthFitnessStatsLog();
+
+    /**
+     * Getter for {@link ExportImportLogger} instance initialised by the Health Connect Injector.
+     */
+    public abstract ExportImportLogger getExportImportLogger();
 
     /** Used to initialize the Injector. */
     public static void setInstance(HealthConnectInjector healthConnectInjector) {
