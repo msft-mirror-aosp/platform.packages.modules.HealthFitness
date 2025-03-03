@@ -219,6 +219,12 @@ public class CloudRestoreManager {
     private RecordInternal<?> toRecordInternal(Record record) {
         try {
             return mRecordProtoConverter.toRecordInternal(record);
+        } catch (IllegalArgumentException e) {
+            Slog.e(
+                    TAG,
+                    "Failed to convert record, likely because the record type is not supported",
+                    e);
+            throw e;
         } catch (Exception e) {
             Slog.e(TAG, "Failed to convert record", e);
             return null;

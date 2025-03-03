@@ -444,7 +444,8 @@
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"గోప్యతా పాలసీని చదవండి"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"గత 24 గంటల్లో యాక్సెస్ చేయబడింది"</string>
     <string name="app_access_title" msgid="7137018424885371763">"యాప్ యాక్సెస్"</string>
-    <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"మీ వద్ద ప్రస్తుతం అనుకూలమైన యాప్‌లు ఏవీ ఇన్‌స్టాల్ అయి లేవు"</string>
+    <!-- no translation found for connected_apps_empty_list_section_title (7684166767384190933) -->
+    <skip />
     <string name="additional_access_label" msgid="4645249249222528341">"అదనపు యాక్సెస్‌"</string>
     <string name="additional_access_summary" msgid="1076197455435130191">"గతంలోని డేటా, బ్యాక్‌గ్రౌండ్ డేటా"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"ఈ యాప్‌నకు సంబంధించిన అదనపు అనుమతులు తీసివేయబడ్డాయి"</string>

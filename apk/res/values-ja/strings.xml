@@ -444,7 +444,7 @@
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"プライバシー ポリシーを読む"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"過去 24 時間にアクセス"</string>
     <string name="app_access_title" msgid="7137018424885371763">"アプリのアクセス権"</string>
-    <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"現在、対応アプリがインストールされていません"</string>
+    <string name="connected_apps_empty_list_section_title" msgid="7684166767384190933">"対応するアプリがインストールされていません"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"アクセス権の追加"</string>
     <string name="additional_access_summary" msgid="1076197455435130191">"過去のデータ、バックグラウンド データ"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"このアプリの追加権限を削除しました"</string>
