@@ -30,6 +30,7 @@ import static org.mockito.Mockito.mock;
 import android.content.Context;
 import android.health.connect.accesslog.AccessLog;
 import android.health.connect.internal.datatypes.RecordInternal;
+import android.os.UserHandle;
 import android.util.ArrayMap;
 
 import androidx.test.core.app.ApplicationProvider;
@@ -43,6 +44,7 @@ import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTra
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.AppOpLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
@@ -76,6 +78,7 @@ public class UpsertTransactionRequestTest {
     private AppInfoHelper mAppInfoHelper;
     private DeviceInfoHelper mDeviceInfoHelper;
     private AccessLogsHelper mAccessLogsHelper;
+    private UserHandle mUserHandle;
 
     @Before
     public void setup() {
@@ -85,12 +88,14 @@ public class UpsertTransactionRequestTest {
                         .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
                         .setHealthPermissionIntentAppsTracker(
                                 mock(HealthPermissionIntentAppsTracker.class))
+                        .setAppOpLogsHelper(mock(AppOpLogsHelper.class))
                         .build();
         mTransactionManager = healthConnectInjector.getTransactionManager();
         mInternalHealthConnectMappings = healthConnectInjector.getInternalHealthConnectMappings();
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
         mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
+        mUserHandle = context.getUser();
 
         TransactionTestUtils transactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         transactionTestUtils.insertApp("package.name");
@@ -169,7 +174,7 @@ public class UpsertTransactionRequestTest {
 
         assertThat(mTransactionManager.count(new ReadTableRequest(ChangeLogsHelper.TABLE_NAME)))
                 .isEqualTo(1);
-        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs(mUserHandle);
         assertThat(result).isNotEmpty();
     }
 
@@ -188,7 +193,7 @@ public class UpsertTransactionRequestTest {
 
         assertThat(mTransactionManager.count(new ReadTableRequest(ChangeLogsHelper.TABLE_NAME)))
                 .isEqualTo(1);
-        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs(mUserHandle);
         assertThat(result).isEmpty();
     }
 }

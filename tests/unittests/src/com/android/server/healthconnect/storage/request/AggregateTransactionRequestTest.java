@@ -41,6 +41,7 @@ import android.health.connect.accesslog.AccessLog;
 import android.health.connect.aidl.AggregateDataRequestParcel;
 import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.StepsRecord;
+import android.os.UserHandle;
 import android.platform.test.annotations.DisableFlags;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
@@ -57,6 +58,7 @@ import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTra
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.AppOpLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
@@ -95,6 +97,7 @@ public class AggregateTransactionRequestTest {
     private ReadAccessLogsHelper mReadAccessLogsHelper;
     private InternalHealthConnectMappings mInternalHealthConnectMappings;
     private TransactionTestUtils mTransactionTestUtils;
+    private UserHandle mUserHandle;
 
     @Before
     public void setup() {
@@ -104,6 +107,7 @@ public class AggregateTransactionRequestTest {
                         .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
                         .setHealthPermissionIntentAppsTracker(
                                 mock(HealthPermissionIntentAppsTracker.class))
+                        .setAppOpLogsHelper(mock(AppOpLogsHelper.class))
                         .build();
 
         mTransactionManager = healthConnectInjector.getTransactionManager();
@@ -113,6 +117,7 @@ public class AggregateTransactionRequestTest {
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         mReadAccessLogsHelper = spy(healthConnectInjector.getReadAccessLogsHelper());
         mInternalHealthConnectMappings = healthConnectInjector.getInternalHealthConnectMappings();
+        mUserHandle = context.getUser();
 
         mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
@@ -144,7 +149,7 @@ public class AggregateTransactionRequestTest {
                         /* shouldRecordAccessLog= */ true);
         aggregateTransactionRequest.getAggregateDataResponseParcel();
 
-        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs(mUserHandle);
         AccessLog log = result.get(0);
         assertThat(log.getPackageName()).isEqualTo(TEST_PACKAGE_NAME);
         assertThat(log.getRecordTypes()).containsExactly(HeartRateRecord.class);

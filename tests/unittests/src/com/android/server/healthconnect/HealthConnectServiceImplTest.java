@@ -100,13 +100,17 @@ import static org.mockito.Mockito.when;
 import android.app.ActivityManager;
 import android.content.AttributionSource;
 import android.content.Context;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PermissionGroupInfo;
+import android.content.pm.PermissionInfo;
 import android.content.pm.ResolveInfo;
 import android.database.sqlite.SQLiteException;
 import android.health.HealthFitnessStatsLog;
 import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.GetMedicalDataSourcesRequest;
 import android.health.connect.HealthConnectException;
+import android.health.connect.HealthPermissions;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.ReadMedicalResourcesInitialRequest;
 import android.health.connect.UpsertMedicalResourceRequest;
@@ -288,6 +292,7 @@ public class HealthConnectServiceImplTest {
     private static final String TEST_URI = "content://com.android.server.healthconnect/testuri";
     private static final long DEFAULT_PACKAGE_APP_INFO = 123L;
 
+    private static final String HC_PACKAGE_NAME = "com.android.healthconnect";
     /** Package name where {@link HealthConnectServiceImplTest this test} runs in. */
     private static final String THIS_TEST_PACKAGE_NAME = "com.android.healthconnect.unittests";
 
@@ -350,6 +355,7 @@ public class HealthConnectServiceImplTest {
         mUserHandle = mContext.getUser();
 
         when(mPackageManager.getPackageUid(anyString(), anyInt())).thenReturn(Process.myUid());
+        when(mServiceContext.getApplicationContext()).thenReturn(mServiceContext);
         when(mServiceContext.getPackageManager()).thenReturn(mPackageManager);
         when(mServiceContext.getUser()).thenReturn(mUserHandle);
         when(mServiceContext.createContextAsUser(mUserHandle, 0)).thenReturn(mServiceContext);
@@ -357,6 +363,7 @@ public class HealthConnectServiceImplTest {
                 .thenReturn(mContext.getSystemService(ActivityManager.class));
         when(mServiceContext.getSystemService(PermissionManager.class))
                 .thenReturn(mPermissionManager);
+        setUpHealthPermissions();
 
         mFakeTimeSource = new FakeTimeSource(NOW);
         mAttributionSource = mContext.getAttributionSource();
@@ -2997,6 +3004,34 @@ public class HealthConnectServiceImplTest {
         when(mPermissionManager.checkPermissionForDataDelivery(
                         permission, mAttributionSource, null))
                 .thenReturn(PermissionManager.PERMISSION_GRANTED);
+    }
+
+    private void setUpHealthPermissions() throws PackageManager.NameNotFoundException {
+        PermissionGroupInfo info = new PermissionGroupInfo();
+        info.packageName = HC_PACKAGE_NAME;
+        when(mPackageManager.getPermissionGroupInfo(
+                        eq(HealthPermissions.HEALTH_PERMISSION_GROUP),
+                        eq(0)))
+                .thenReturn(info);
+
+        PackageInfo mockPackageInfo = new PackageInfo();
+        // For now add a few of the HealthPermissions just for the test.
+        mockPackageInfo.permissions =
+                new PermissionInfo[] {
+                    createPermissionInfo(HealthPermissions.READ_HEART_RATE),
+                    createPermissionInfo(HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND),
+                    createPermissionInfo(HealthPermissions.READ_SKIN_TEMPERATURE),
+                    createPermissionInfo(HealthPermissions.READ_OXYGEN_SATURATION),
+                };
+        when(mPackageManager.getPackageInfo(eq(HC_PACKAGE_NAME), any()))
+                .thenReturn(mockPackageInfo);
+    }
+
+    private PermissionInfo createPermissionInfo(String permissionName) {
+        PermissionInfo permissionInfo = new PermissionInfo();
+        permissionInfo.name = permissionName;
+        permissionInfo.group = HealthPermissions.HEALTH_PERMISSION_GROUP;
+        return permissionInfo;
     }
 
     private void setUpPassingPermissionCheckFor(String permission) {

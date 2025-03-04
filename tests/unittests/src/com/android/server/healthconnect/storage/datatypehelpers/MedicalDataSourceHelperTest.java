@@ -77,6 +77,8 @@ import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.healthconnect.cts.phr.utils.PhrDataFactory;
 import android.net.Uri;
+import android.os.Process;
+import android.os.UserHandle;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.Pair;
@@ -144,9 +146,11 @@ public class MedicalDataSourceHelperTest {
     private AccessLogsHelper mAccessLogsHelper;
     private PhrTestUtils mUtil;
     private FakeTimeSource mFakeTimeSource;
+    private UserHandle mUserHandle;
 
     @Mock private Context mContext;
     @Mock private PackageManager mPackageManager;
+    @Mock private AppOpLogsHelper mAppOpLogsHelper;
     @Mock private Drawable mDrawable;
 
     @Before
@@ -163,6 +167,7 @@ public class MedicalDataSourceHelperTest {
                         .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
                         .setHealthPermissionIntentAppsTracker(
                                 mock(HealthPermissionIntentAppsTracker.class))
+                        .setAppOpLogsHelper(mAppOpLogsHelper)
                         .setTimeSource(mFakeTimeSource)
                         .build();
 
@@ -171,6 +176,7 @@ public class MedicalDataSourceHelperTest {
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         mMedicalDataSourceHelper = healthConnectInjector.getMedicalDataSourceHelper();
         mMedicalResourceHelper = healthConnectInjector.getMedicalResourceHelper();
+        mUserHandle = Process.myUserHandle();
 
         mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mUtil = new PhrTestUtils(healthConnectInjector);
@@ -691,7 +697,7 @@ public class MedicalDataSourceHelperTest {
                         /* medicalResourceTypes= */ Set.of(),
                         /* isMedicalDataSourceAccessed= */ true);
 
-        assertThat(mAccessLogsHelper.queryAccessLogs())
+        assertThat(mAccessLogsHelper.queryAccessLogs(mUserHandle))
                 .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
                 .contains(expected);
     }
@@ -719,7 +725,7 @@ public class MedicalDataSourceHelperTest {
                         /* medicalResourceTypes= */ Set.of(),
                         /* isMedicalDataSourceAccessed= */ true);
 
-        assertThat(mAccessLogsHelper.queryAccessLogs())
+        assertThat(mAccessLogsHelper.queryAccessLogs(mUserHandle))
                 .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
                 .doesNotContain(readAccessLog);
     }
@@ -747,7 +753,7 @@ public class MedicalDataSourceHelperTest {
                         /* medicalResourceTypes= */ Set.of(),
                         /* isMedicalDataSourceAccessed= */ true);
 
-        assertThat(mAccessLogsHelper.queryAccessLogs())
+        assertThat(mAccessLogsHelper.queryAccessLogs(mUserHandle))
                 .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
                 .doesNotContain(expected);
     }
@@ -775,7 +781,7 @@ public class MedicalDataSourceHelperTest {
                         /* medicalResourceTypes= */ Set.of(),
                         /* isMedicalDataSourceAccessed= */ true);
 
-        assertThat(mAccessLogsHelper.queryAccessLogs())
+        assertThat(mAccessLogsHelper.queryAccessLogs(mUserHandle))
                 .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
                 .doesNotContain(expected);
     }
@@ -822,7 +828,7 @@ public class MedicalDataSourceHelperTest {
                         /* medicalResourceTypes= */ Set.of(),
                         /* isMedicalDataSourceAccessed= */ true);
 
-        assertThat(mAccessLogsHelper.queryAccessLogs())
+        assertThat(mAccessLogsHelper.queryAccessLogs(mUserHandle))
                 .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
                 .contains(expected);
     }
@@ -867,7 +873,7 @@ public class MedicalDataSourceHelperTest {
                         /* medicalResourceTypes= */ Set.of(),
                         /* isMedicalDataSourceAccessed= */ true);
 
-        assertThat(mAccessLogsHelper.queryAccessLogs())
+        assertThat(mAccessLogsHelper.queryAccessLogs(mUserHandle))
                 .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
                 .contains(expected);
     }
@@ -905,7 +911,7 @@ public class MedicalDataSourceHelperTest {
                         /* medicalResourceTypes= */ Set.of(),
                         /* isMedicalDataSourceAccessed= */ true);
 
-        assertThat(mAccessLogsHelper.queryAccessLogs())
+        assertThat(mAccessLogsHelper.queryAccessLogs(mUserHandle))
                 .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
                 .contains(expected);
     }
@@ -922,7 +928,7 @@ public class MedicalDataSourceHelperTest {
                 /* isCalledFromBgWithoutBgRead= */ false,
                 mAppInfoHelper);
 
-        assertThat(mAccessLogsHelper.queryAccessLogs()).isEmpty();
+        assertThat(mAccessLogsHelper.queryAccessLogs(mUserHandle)).isEmpty();
     }
 
     @Test
@@ -949,7 +955,7 @@ public class MedicalDataSourceHelperTest {
         // No access log should be created for read,
         // since app is intending to access self data as it has
         // no read permissions.
-        assertThat(mAccessLogsHelper.queryAccessLogs()).doesNotContain(expected);
+        assertThat(mAccessLogsHelper.queryAccessLogs(mUserHandle)).doesNotContain(expected);
     }
 
     @Test
@@ -982,7 +988,7 @@ public class MedicalDataSourceHelperTest {
                         /* medicalResourceTypes= */ Set.of(),
                         /* isMedicalDataSourceAccessed= */ true);
 
-        assertThat(mAccessLogsHelper.queryAccessLogs())
+        assertThat(mAccessLogsHelper.queryAccessLogs(mUserHandle))
                 .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
                 .contains(expected);
     }
@@ -2635,7 +2641,7 @@ public class MedicalDataSourceHelperTest {
                         /* medicalResourceTypes= */ Set.of(),
                         /* isMedicalDataSourceAccessed= */ true);
 
-        assertThat(mAccessLogsHelper.queryAccessLogs())
+        assertThat(mAccessLogsHelper.queryAccessLogs(mUserHandle))
                 .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
                 .contains(readAccessLog);
     }
@@ -2673,7 +2679,7 @@ public class MedicalDataSourceHelperTest {
                         /* medicalResourceTypes= */ Set.of(),
                         /* isMedicalDataSourceAccessed= */ true);
 
-        assertThat(mAccessLogsHelper.queryAccessLogs())
+        assertThat(mAccessLogsHelper.queryAccessLogs(mUserHandle))
                 .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
                 .contains(readAccessLog);
     }
@@ -2715,7 +2721,7 @@ public class MedicalDataSourceHelperTest {
                         /* medicalResourceTypes= */ Set.of(),
                         /* isMedicalDataSourceAccessed= */ true);
 
-        assertThat(mAccessLogsHelper.queryAccessLogs())
+        assertThat(mAccessLogsHelper.queryAccessLogs(mUserHandle))
                 .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
                 .contains(readAccessLog);
     }
@@ -2757,7 +2763,7 @@ public class MedicalDataSourceHelperTest {
                         /* medicalResourceTypes= */ Set.of(),
                         /* isMedicalDataSourceAccessed= */ true);
 
-        assertThat(mAccessLogsHelper.queryAccessLogs())
+        assertThat(mAccessLogsHelper.queryAccessLogs(mUserHandle))
                 .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
                 .contains(readAccessLog);
     }
@@ -2798,7 +2804,7 @@ public class MedicalDataSourceHelperTest {
                         /* medicalResourceTypes= */ Set.of(),
                         /* isMedicalDataSourceAccessed= */ true);
 
-        assertThat(mAccessLogsHelper.queryAccessLogs())
+        assertThat(mAccessLogsHelper.queryAccessLogs(mUserHandle))
                 .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
                 .doesNotContain(readAccessLog);
     }
@@ -2840,7 +2846,7 @@ public class MedicalDataSourceHelperTest {
                         /* medicalResourceTypes= */ Set.of(),
                         /* isMedicalDataSourceAccessed= */ true);
 
-        assertThat(mAccessLogsHelper.queryAccessLogs())
+        assertThat(mAccessLogsHelper.queryAccessLogs(mUserHandle))
                 .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
                 .doesNotContain(readAccessLog);
     }
@@ -2881,7 +2887,7 @@ public class MedicalDataSourceHelperTest {
                         /* medicalResourceTypes= */ Set.of(),
                         /* isMedicalDataSourceAccessed= */ true);
 
-        assertThat(mAccessLogsHelper.queryAccessLogs())
+        assertThat(mAccessLogsHelper.queryAccessLogs(mUserHandle))
                 .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
                 .contains(readAccessLog);
     }
@@ -2908,7 +2914,7 @@ public class MedicalDataSourceHelperTest {
                         /* medicalResourceTypes= */ Set.of(),
                         /* isMedicalDataSourceAccessed= */ true);
 
-        assertThat(mAccessLogsHelper.queryAccessLogs())
+        assertThat(mAccessLogsHelper.queryAccessLogs(mUserHandle))
                 .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
                 .doesNotContain(readAccessLog);
     }
@@ -2990,7 +2996,7 @@ public class MedicalDataSourceHelperTest {
                         /* medicalResourceTypes= */ Set.of(),
                         /* isMedicalDataSourceAccessed= */ true);
 
-        assertThat(mAccessLogsHelper.queryAccessLogs())
+        assertThat(mAccessLogsHelper.queryAccessLogs(mUserHandle))
                 .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
                 .doesNotContain(deleteAccessLog);
     }
@@ -3020,7 +3026,7 @@ public class MedicalDataSourceHelperTest {
                         /* medicalResourceTypes= */ Set.of(MEDICAL_RESOURCE_TYPE_VACCINES),
                         /* isMedicalDataSourceAccessed= */ true);
 
-        assertThat(mAccessLogsHelper.queryAccessLogs())
+        assertThat(mAccessLogsHelper.queryAccessLogs(mUserHandle))
                 .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
                 .contains(deleteAccessLog);
     }
@@ -3054,7 +3060,7 @@ public class MedicalDataSourceHelperTest {
                                 MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES),
                         /* isMedicalDataSourceAccessed= */ true);
 
-        assertThat(mAccessLogsHelper.queryAccessLogs())
+        assertThat(mAccessLogsHelper.queryAccessLogs(mUserHandle))
                 .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
                 .contains(deleteAccessLog);
     }
@@ -3084,7 +3090,7 @@ public class MedicalDataSourceHelperTest {
                         /* medicalResourceTypes= */ Set.of(),
                         /* isMedicalDataSourceAccessed= */ true);
 
-        assertThat(mAccessLogsHelper.queryAccessLogs())
+        assertThat(mAccessLogsHelper.queryAccessLogs(mUserHandle))
                 .comparingElementsUsing(ACCESS_LOG_EQUIVALENCE)
                 .contains(deleteAccessLog);
     }
