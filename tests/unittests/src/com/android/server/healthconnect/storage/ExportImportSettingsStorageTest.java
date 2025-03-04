@@ -40,7 +40,6 @@ import android.platform.test.flag.junit.SetFlagsRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.healthfitness.flags.Flags;
-import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.testing.fakes.FakePreferenceHelper;
 
@@ -49,6 +48,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 import java.time.Instant;
 
@@ -64,9 +65,7 @@ public final class ExportImportSettingsStorageTest {
             "next_export_sequential_number_key";
     private static final String TEST_URI = "content://com.android.server.healthconnect/testuri";
 
-    @Rule
-    public final ExtendedMockitoRule mExtendedMockitoRule =
-            new ExtendedMockitoRule.Builder(this).build();
+    @Rule public final MockitoRule mMockitoRule = MockitoJUnit.rule();
 
     @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 
