@@ -146,10 +146,7 @@
         <item name="textAppearanceRouteRequest">@style/TextAppearance.HealthConnect.RouteRequest</item>
         <item name="textAppearancePreferenceCategory">@style/TextAppearance.HealthConnect.CategoryTitle</item>
         <item name="textAppearanceErrorMessage">@style/TextAppearance.HealthConnect.ErrorMessage</item>
-        <item name="permissionHeaderTitle">@style/TextAppearance.HealthConnect.Headline4</item>
-<!--        TODO maybe change? -->
-        <item name="headerTitle">@style/TextAppearance.HealthConnect.Headline2</item>
-        <item name="headerSummary">@style/TextAppearance.HealthConnect.SummaryLarge</item>
+        <item name="headerTitle">@style/TextAppearance.HealthConnect.Headline4</item>
         <item name="headerDetails">@style/TextAppearance.HealthConnect.SummaryLarge</item>
 
         <!-- Buttons -->

@@ -34,7 +34,6 @@ import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.exportimport.ExportSetupActivity
 import com.android.healthconnect.controller.exportimport.ExportStatusPreference
-import com.android.healthconnect.controller.exportimport.ExportStatusPreference.Companion.EXPORT_STATUS_PREFERENCE
 import com.android.healthconnect.controller.exportimport.ImportFlowActivity
 import com.android.healthconnect.controller.exportimport.api.ExportFrequency
 import com.android.healthconnect.controller.exportimport.api.ExportSettings
@@ -65,7 +64,6 @@ import com.android.healthconnect.controller.utils.withinOneYearAfter
 import com.android.healthfitness.flags.Flags.exportImportFastFollow
 import com.android.settingslib.widget.BannerMessagePreferenceGroup
 import com.android.settingslib.widget.FooterPreference
-import com.android.settingslib.widget.SettingsThemeHelper
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Duration
 import java.time.Instant
@@ -81,6 +79,7 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
         const val IMPORT_DATA_PREFERENCE_KEY = "import_data"
         const val EXPORT_IMPORT_SETTINGS_CATEGORY_PREFERENCE_KEY = "settings_category"
         const val IMPORT_ERROR_BANNER_KEY = "import_error_banner"
+        const val IMPORT_ERROR_BANNER_ORDER = 0
         const val PREVIOUS_EXPORT_STATUS_ORDER = 2
         const val IMPORT_FILE_URI_KEY = "selectedUri"
         const val BANNER_GROUP = "banner_group"
@@ -110,6 +109,7 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
 
     private val importDataPreference: HealthPreference by pref(IMPORT_DATA_PREFERENCE_KEY)
     private val bannerGroup: BannerMessagePreferenceGroup by pref(BANNER_GROUP)
+
     private val settingsCategory: PreferenceGroup by
         pref(EXPORT_IMPORT_SETTINGS_CATEGORY_PREFERENCE_KEY)
 
@@ -224,13 +224,18 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
     }
 
     private fun maybeShowPreviousExportStatus(scheduledExportUiState: ScheduledExportUiState) {
-        settingsCategory.removePreferenceRecursively(EXPORT_STATUS_PREFERENCE)
+        settingsCategory.removePreferenceRecursively(
+            ExportStatusPreference.EXPORT_STATUS_PREFERENCE
+        )
         val lastSuccessfulExportTime = scheduledExportUiState.lastSuccessfulExportTime
         if (lastSuccessfulExportTime != null) {
             val lastExportTime = getLastExportTime(lastSuccessfulExportTime)
             val exportLocation = getExportLocationString(scheduledExportUiState)
             settingsCategory.addPreference(
-                getExportStatusPreference(lastExportTime, exportLocation)
+                ExportStatusPreference(requireContext(), lastExportTime, exportLocation).also {
+                    it.order = PREVIOUS_EXPORT_STATUS_ORDER
+                    it.isSelectable = false
+                }
             )
         } else if (
             exportImportFastFollow() &&
@@ -239,29 +244,12 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
                     ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays
         ) {
             val lastExportMessage = getString(R.string.no_last_export_message)
-            settingsCategory.addPreference(getExportStatusPreference(lastExportMessage, null))
-        }
-    }
-
-    private fun getExportStatusPreference(
-        lastExportTime: String,
-        exportLocation: String?,
-    ): HealthPreference {
-        val preference =
-            if (SettingsThemeHelper.isExpressiveTheme(requireContext())) {
-                HealthPreference(requireContext()).also {
-                    it.title = lastExportTime
-                    it.summary = exportLocation
+            settingsCategory.addPreference(
+                ExportStatusPreference(requireContext(), lastExportMessage, null).also {
+                    it.order = PREVIOUS_EXPORT_STATUS_ORDER
                 }
-            } else {
-                ExportStatusPreference(requireContext(), lastExportTime, exportLocation)
-            }
-        preference.order = PREVIOUS_EXPORT_STATUS_ORDER
-        preference.key = EXPORT_STATUS_PREFERENCE
-        if (!exportLocation.isNullOrEmpty()) {
-            preference.isSelectable = false
+            )
         }
-        return preference
     }
 
     private fun getExportLocationString(scheduledExportUiState: ScheduledExportUiState): String? {
