@@ -34,7 +34,6 @@ import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission.Companion.fromPermissionString
 import com.android.permissioncontroller.wear.permission.components.ScrollableScreen
 import com.android.permissioncontroller.wear.permission.components.material3.WearPermissionButton
-import com.android.permissioncontroller.wear.permission.components.theme.ResourceHelper
 
 /** Wear Settings Permissions Screen to allow/disallow a single data type permission for an app. */
 @Composable
@@ -45,7 +44,6 @@ fun ControlSingleDataTypeForSingleAppScreen(
     packageName: String,
     onAdditionalPermissionClick: (String) -> Unit,
 ) {
-    val materialUIVersion = ResourceHelper.materialUIVersionInApp
     val healthPermission = fromPermissionString(permissionStr)
 
     // Get app metadata. PackageName is passed from allowed/denied apps page and must be in the
@@ -61,12 +59,7 @@ fun ControlSingleDataTypeForSingleAppScreen(
     val backgroundReadStatus by viewModel.appToBackgroundReadStatus.collectAsState()
     val isBackgroundPermissionRequested = appMetadata!! in backgroundReadStatus
 
-    ScrollableScreen(
-        materialUIVersion = materialUIVersion,
-        asScalingList = true,
-        showTimeText = false,
-        title = appMetadata!!.appName,
-    ) {
+    ScrollableScreen(asScalingList = true, showTimeText = false, title = appMetadata!!.appName) {
         // Data type text.
         item { Row(horizontalArrangement = Arrangement.Start) { Text(dataTypeStr) } }
 
