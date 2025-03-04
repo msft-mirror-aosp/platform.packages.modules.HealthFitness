@@ -21,7 +21,7 @@
         android:showAsAction="always|collapseActionView"
         android:title="@string/data_sources_and_priority_title"/>
     <item
-        android:id="@+id/menu_delete"
+        android:id="@+id/menu_enter_deletion_state"
         android:icon="?attr/deleteForeverIcon"
         android:showAsAction="always|collapseActionView"
         android:title="@string/enter_deletion_button_content_description"/>

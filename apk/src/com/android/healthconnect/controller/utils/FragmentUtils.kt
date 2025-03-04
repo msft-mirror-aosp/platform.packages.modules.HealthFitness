@@ -1,17 +1,17 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
+/**
+ * Copyright (C) 2022 The Android Open Source Project
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
  *
+ * ```
  *      http://www.apache.org/licenses/LICENSE-2.0
+ * ```
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 package com.android.healthconnect.controller.utils
 
@@ -47,14 +47,11 @@ fun Fragment.setupMenu(
     viewLifecycleOwner: LifecycleOwner,
     logger: HealthConnectLogger? = null,
     onMenuItemSelected: (MenuItem) -> Boolean,
-    onPrepareMenu: ((Menu) -> Unit)? = null,
-): MenuProvider {
+) {
 
     val hiltEntryPoint =
         EntryPointAccessors.fromApplication(
-            requireContext().applicationContext,
-            DeviceInfoUtilsEntryPoint::class.java,
-        )
+            requireContext().applicationContext, DeviceInfoUtilsEntryPoint::class.java)
 
     deviceInfoUtils = hiltEntryPoint.deviceInfoUtils()
 
@@ -65,11 +62,6 @@ fun Fragment.setupMenu(
                 menuInflater.inflate(menuRes, menu)
                 menu.findItem(R.id.menu_send_feedback).isVisible =
                     deviceInfoUtils.isSendFeedbackAvailable(requireContext())
-            }
-
-            override fun onPrepareMenu(menu: Menu) {
-                super.onPrepareMenu(menu)
-                onPrepareMenu?.invoke(menu)
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -91,21 +83,16 @@ fun Fragment.setupMenu(
         }
 
     (requireActivity() as MenuHost).addMenuProvider(
-        menuProvider,
-        viewLifecycleOwner,
-        Lifecycle.State.RESUMED,
-    )
-
-    return menuProvider
+        menuProvider, viewLifecycleOwner, Lifecycle.State.RESUMED)
 }
 
 fun Fragment.setupSharedMenu(
     viewLifecycleOwner: LifecycleOwner,
     logger: HealthConnectLogger? = null,
     @MenuRes menuRes: Int = R.menu.send_feedback_and_help,
-    onMenuItemSelected: (MenuItem) -> Boolean = { false },
-): MenuProvider {
-    return setupMenu(menuRes, viewLifecycleOwner, logger, onMenuItemSelected)
+    onMenuItemSelected: (MenuItem) -> Boolean = { false }
+) {
+    setupMenu(menuRes, viewLifecycleOwner, logger, onMenuItemSelected)
 }
 
 fun Fragment.showLoadingDialog() {

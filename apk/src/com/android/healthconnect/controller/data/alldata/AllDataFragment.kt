@@ -17,7 +17,6 @@ package com.android.healthconnect.controller.data.alldata
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.annotation.VisibleForTesting
@@ -78,9 +77,11 @@ open class AllDataFragment : Hilt_AllDataFragment() {
         const val IS_BROWSE_MEDICAL_DATA_SCREEN = "key_is_browse_medical_data_screen"
     }
 
-    @Inject lateinit var logger: HealthConnectLogger
+    @Inject
+    lateinit var logger: HealthConnectLogger
 
-    @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
+    @Inject
+    lateinit var deviceInfoUtils: DeviceInfoUtils
 
     /** Decides whether this screen is supposed to display Fitness data or Medical data. */
     private var showMedicalData = false
@@ -101,8 +102,7 @@ open class AllDataFragment : Hilt_AllDataFragment() {
 
     private val entriesViewModel: EntriesViewModel by activityViewModels()
 
-    private var menu: Menu? = null
-
+    // Empty state
     private val onMenuItemClickedListener: (MenuItem) -> Boolean = { menuItem ->
         when (menuItem.itemId) {
             R.id.menu_data_sources -> {
@@ -112,30 +112,27 @@ open class AllDataFragment : Hilt_AllDataFragment() {
             }
 
             R.id.menu_enter_deletion_state -> {
-                if (VIEW == viewModel.getDeletionScreenStateValue()) {
-                    logger.logInteraction(ToolbarElement.TOOLBAR_ENTER_DELETION_STATE_BUTTON)
-                    triggerDeletionState(DELETE)
-                } else {
-                    if (viewModel.hasSelectedItems()) {
-                        logger.logInteraction(ToolbarElement.TOOLBAR_DELETE_BUTTON)
-                        deleteData()
-                    } else {
-                        logger.logInteraction(ToolbarElement.TOOLBAR_EXIT_DELETION_STATE_BUTTON)
-                        triggerDeletionState(VIEW)
-                    }
-                }
+                logger.logInteraction(ToolbarElement.TOOLBAR_ENTER_DELETION_STATE_BUTTON)
+                // enter deletion state
+                triggerDeletionState(DELETE)
+                true
+            }
 
+            R.id.delete -> {
+                logger.logInteraction(ToolbarElement.TOOLBAR_DELETE_BUTTON)
+                deleteData()
+                true
+            }
+
+            R.id.menu_exit_deletion_state -> {
+                logger.logInteraction(ToolbarElement.TOOLBAR_EXIT_DELETION_STATE_BUTTON)
+                // exit deletion state
+                triggerDeletionState(VIEW)
                 true
             }
 
             else -> false
         }
-    }
-
-    private val onPrepareMenu: (Menu) -> Unit = { menu ->
-        this.menu = menu
-        val dataSource = menu.findItem(R.id.menu_data_sources)
-        dataSource.isVisible = !showMedicalData
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -164,13 +161,6 @@ open class AllDataFragment : Hilt_AllDataFragment() {
         super.onViewCreated(view, savedInstanceState)
         loadAllData()
         setTopIntroVisibility(false)
-        setupMenu(
-            R.menu.all_data_menu,
-            viewLifecycleOwner,
-            logger,
-            onMenuItemClickedListener,
-            onPrepareMenu,
-        )
 
         viewModel.allData.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -285,38 +275,42 @@ open class AllDataFragment : Hilt_AllDataFragment() {
         }
     }
 
+
     private fun updateMenu(screenState: DeletionScreenState, hasData: Boolean = true) {
-        val menuItem = menu?.findItem(R.id.menu_delete) ?: return
-        if (!hasData) {
-            menuItem.isVisible = false
-            return
-        }
-        if (VIEW == screenState) {
-            // Enter deletion state
-            menuItem.apply {
-                setIcon(R.drawable.ic_delete_forever)
-                setContentDescription(getString(R.string.enter_deletion_button_content_description))
-                setTitle(R.string.enter_deletion_button_content_description)
+        val menuResId = when {
+            !hasData && showMedicalData -> { // Browse Medical - empty state
+                R.menu.send_feedback_and_help
             }
-        } else {
-            if (viewModel.hasSelectedItems()) {
-                // delete selected items state
-                menuItem.apply {
-                    setIcon(R.drawable.ic_delete)
-                    setContentDescription(getString(R.string.delete_button_content_description))
-                    setTitle(R.string.delete_button_content_description)
-                }
-            } else {
-                // exit deletion state
-                menuItem.apply {
-                    setIcon(R.drawable.ic_close)
-                    setContentDescription(
-                        getString(R.string.exit_deletion_button_content_description)
-                    )
-                    setTitle(R.string.exit_deletion_button_content_description)
-                }
+
+            screenState == VIEW && showMedicalData -> { // Browse Medical - view mode
+                logger.logImpression(ToolbarElement.TOOLBAR_ENTER_DELETION_STATE_BUTTON)
+                R.menu.all_data_menu_without_data_sources
+            }
+
+            !hasData -> { // Browse Fitness data - empty state
+                logger.logImpression(ToolbarElement.TOOLBAR_DATA_SOURCES_BUTTON)
+                R.menu.all_data_empty_state_menu
+            }
+
+
+            screenState == VIEW -> { // Browse Fitness data - view mode
+                logger.logImpression(ToolbarElement.TOOLBAR_ENTER_DELETION_STATE_BUTTON)
+                R.menu.all_data_menu
+            }
+
+            viewModel.setOfPermissionTypesToBeDeleted.value.orEmpty()
+                .isEmpty() -> { // Delete mode - no item selected
+                logger.logImpression(ToolbarElement.TOOLBAR_EXIT_DELETION_STATE_BUTTON)
+                R.menu.all_data_delete_menu
+            }
+
+            else -> { // Delete mode - with items selected
+                logger.logImpression(ToolbarElement.TOOLBAR_DELETE_BUTTON)
+                R.menu.deletion_state_menu
             }
         }
+
+        setupMenu(menuResId, viewLifecycleOwner, logger, onMenuItemClickedListener)
     }
 
     @VisibleForTesting
@@ -403,8 +397,7 @@ open class AllDataFragment : Hilt_AllDataFragment() {
         selectAllCheckboxPreference.isVisible = screenState == DELETE
         setTopIntroVisibility(showMedicalData && screenState == VIEW)
         if (screenState == DELETE) {
-            viewModel.allPermissionTypesSelected.observe(viewLifecycleOwner) {
-                allPermissionTypesSelected ->
+            viewModel.allPermissionTypesSelected.observe(viewLifecycleOwner) { allPermissionTypesSelected ->
                 selectAllCheckboxPreference.removeOnPreferenceClickListener()
                 selectAllCheckboxPreference.setIsChecked(allPermissionTypesSelected)
                 selectAllCheckboxPreference.setOnPreferenceClickListenerWithCheckbox(
