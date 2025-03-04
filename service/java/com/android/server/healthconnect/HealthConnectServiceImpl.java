@@ -1530,7 +1530,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         enforceIsForegroundUser(userHandle);
                         mContext.enforcePermission(MANAGE_HEALTH_DATA_PERMISSION, pid, uid, null);
                         throwExceptionIfDataSyncInProgress();
-                        final List<AccessLog> accessLogsList = mAccessLogsHelper.queryAccessLogs();
+                        final List<AccessLog> accessLogsList =
+                                mAccessLogsHelper.queryAccessLogs(userHandle);
                         callback.onResult(new AccessLogsResponseParcel(accessLogsList));
                     } catch (SecurityException securityException) {
                         Slog.e(TAG, "SecurityException: ", securityException);

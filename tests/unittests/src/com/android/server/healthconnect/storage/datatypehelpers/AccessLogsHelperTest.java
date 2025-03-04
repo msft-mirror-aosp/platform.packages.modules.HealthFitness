@@ -24,6 +24,7 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BODY_FAT;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_DISTANCE;
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_HEART_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_HEIGHT;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_SKIN_TEMPERATURE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS;
@@ -41,16 +42,22 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_N
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.when;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.health.connect.accesslog.AccessLog;
 import android.health.connect.datatypes.BloodPressureRecord;
 import android.health.connect.datatypes.BodyFatRecord;
 import android.health.connect.datatypes.DistanceRecord;
+import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.HeightRecord;
 import android.health.connect.datatypes.SkinTemperatureRecord;
 import android.health.connect.datatypes.StepsCadenceRecord;
 import android.health.connect.datatypes.StepsRecord;
+import android.os.UserHandle;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.Pair;
@@ -96,11 +103,13 @@ public class AccessLogsHelperTest {
 
     private TransactionManager mTransactionManager;
     private AccessLogsHelper mAccessLogsHelper;
+    private UserHandle mUserHandle;
 
     // TODO(b/373322447): Remove the mock FirstGrantTimeManager
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
     // TODO(b/373322447): Remove the mock HealthPermissionIntentAppsTracker
     @Mock private HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
+    @Mock private AppOpLogsHelper mAppOpLogsHelper;
 
     @Before
     public void setup() {
@@ -110,9 +119,11 @@ public class AccessLogsHelperTest {
                         .setPreferenceHelper(new FakePreferenceHelper())
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
+                        .setAppOpLogsHelper(mAppOpLogsHelper)
                         .build();
         mTransactionManager = healthConnectInjector.getTransactionManager();
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
+        mUserHandle = context.getUser();
 
         TransactionTestUtils transactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         transactionTestUtils.insertApp(DATA_SOURCE_PACKAGE_NAME);
@@ -146,7 +157,7 @@ public class AccessLogsHelperTest {
                                         OPERATION_TYPE_READ,
                                         /* accessedMedicalDataSource= */ false));
 
-        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs(mUserHandle);
         AccessLog accessLog = result.get(0);
 
         assertThat(result).hasSize(1);
@@ -174,7 +185,7 @@ public class AccessLogsHelperTest {
                                         OPERATION_TYPE_READ,
                                         /* accessedMedicalDataSource= */ false));
 
-        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs(mUserHandle);
         AccessLog accessLog = result.get(0);
 
         assertThat(result).hasSize(1);
@@ -203,7 +214,7 @@ public class AccessLogsHelperTest {
                                         OPERATION_TYPE_READ,
                                         /* accessedMedicalDataSource= */ true));
 
-        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs(mUserHandle);
         AccessLog accessLog = result.get(0);
 
         assertThat(result).hasSize(1);
@@ -223,7 +234,7 @@ public class AccessLogsHelperTest {
                 /* recordTypeList= */ List.of(RECORD_TYPE_STEPS),
                 OPERATION_TYPE_READ);
 
-        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs(mUserHandle);
         AccessLog accessLog = result.get(0);
 
         assertThat(result).hasSize(1);
@@ -254,7 +265,7 @@ public class AccessLogsHelperTest {
                             /* accessedMedicalDataSource= */ false);
                 });
 
-        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs(mUserHandle);
         AccessLog accessLog1 = result.get(0);
         AccessLog accessLog2 = result.get(1);
 
@@ -288,7 +299,7 @@ public class AccessLogsHelperTest {
                             db, DATA_SOURCE_PACKAGE_NAME, Set.of(RECORD_TYPE_HEIGHT));
                 });
 
-        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs(mUserHandle);
         assertThat(result).hasSize(2);
         assertThat(result.get(0).getRecordTypes()).containsExactly(BloodPressureRecord.class);
         assertThat(result.get(1).getRecordTypes()).containsExactly(HeightRecord.class);
@@ -302,8 +313,57 @@ public class AccessLogsHelperTest {
                 new UpsertTableRequest(AccessLogsHelper.TABLE_NAME, contentValues);
         mTransactionManager.insert(request);
 
-        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs(mUserHandle);
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void queryAccessLogs_readsFromAppOpsHelper_success() {
+        when(mAppOpLogsHelper.getAccessLogsFromAppOps(mUserHandle))
+                .thenReturn(
+                        List.of(
+                                new AccessLog(
+                                        DATA_SOURCE_PACKAGE_NAME,
+                                        List.of(RECORD_TYPE_HEART_RATE),
+                                        /* accessTime= */ 1000,
+                                        OPERATION_TYPE_READ)));
+
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs(mUserHandle);
+        assertThat(result).hasSize(1);
+        AccessLog log = result.get(0);
+        assertThat(log.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
+        assertThat(log.getRecordTypes()).containsExactly(HeartRateRecord.class);
+        assertThat(log.getOperationType()).isEqualTo(OPERATION_TYPE_READ);
+    }
+
+    @Test
+    public void queryAccessLogs_readsFromDbAndAppOpsHelper_success() {
+        Set<Integer> recordTypeIds = Set.of(RECORD_TYPE_DISTANCE, RECORD_TYPE_STEPS);
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    mAccessLogsHelper.recordReadAccessLog(
+                            db, DATA_SOURCE_PACKAGE_NAME, recordTypeIds);
+                });
+        when(mAppOpLogsHelper.getAccessLogsFromAppOps(mUserHandle))
+                .thenReturn(
+                        List.of(
+                                new AccessLog(
+                                        DATA_SOURCE_PACKAGE_NAME,
+                                        List.of(RECORD_TYPE_HEART_RATE),
+                                        /* accessTime= */ 1000,
+                                        OPERATION_TYPE_READ)));
+
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs(mUserHandle);
+        assertThat(result).hasSize(2);
+        AccessLog dbLog = result.get(0);
+        assertThat(dbLog.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
+        assertThat(dbLog.getRecordTypes()).containsExactly(DistanceRecord.class, StepsRecord.class);
+        assertThat(dbLog.getOperationType()).isEqualTo(OPERATION_TYPE_READ);
+
+        AccessLog appOpLog = result.get(1);
+        assertThat(appOpLog.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
+        assertThat(appOpLog.getRecordTypes()).containsExactly(HeartRateRecord.class);
+        assertThat(appOpLog.getOperationType()).isEqualTo(OPERATION_TYPE_READ);
     }
 
     @Test
@@ -315,7 +375,7 @@ public class AccessLogsHelperTest {
                             db, DATA_SOURCE_PACKAGE_NAME, recordTypeIds);
                 });
 
-        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs(mUserHandle);
         assertThat(result).hasSize(1);
         AccessLog log = result.get(0);
         assertThat(log.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
@@ -331,7 +391,7 @@ public class AccessLogsHelperTest {
                     mAccessLogsHelper.recordDeleteAccessLog(db, "unknown.app", recordTypeIds);
                 });
 
-        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs(mUserHandle);
         assertThat(result).isEmpty();
     }
 
@@ -344,13 +404,50 @@ public class AccessLogsHelperTest {
                             db, DATA_SOURCE_PACKAGE_NAME, recordTypeIds);
                 });
 
-        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs(mUserHandle);
         assertThat(result).hasSize(1);
         AccessLog log = result.get(0);
         assertThat(log.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
         assertThat(log.getRecordTypes())
                 .containsExactly(DistanceRecord.class, SkinTemperatureRecord.class);
         assertThat(log.getOperationType()).isEqualTo(OPERATION_TYPE_READ);
+    }
+
+    @Test
+    public void recordReadAccessLog_granularAppOpsFilterOut_remainingRecordWritten() {
+        // Filter out HR record since there is a granular app op for it.
+        when(mAppOpLogsHelper.getRecordsWithSystemAppOps())
+                .thenReturn(Set.of(RECORD_TYPE_HEART_RATE));
+
+        Set<Integer> recordTypeIds = Set.of(RECORD_TYPE_DISTANCE, RECORD_TYPE_HEART_RATE);
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    mAccessLogsHelper.recordReadAccessLog(
+                            db, DATA_SOURCE_PACKAGE_NAME, recordTypeIds);
+                });
+
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs(mUserHandle);
+        assertThat(result).hasSize(1);
+        AccessLog log = result.get(0);
+        assertThat(log.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
+        assertThat(log.getRecordTypes()).containsExactly(DistanceRecord.class);
+        assertThat(log.getOperationType()).isEqualTo(OPERATION_TYPE_READ);
+    }
+
+    @Test
+    public void recordReadAccessLog_granularAppOpsFilterOut_emptyRecordNotWritten() {
+        when(mAppOpLogsHelper.getRecordsWithSystemAppOps())
+                .thenReturn(Set.of(RECORD_TYPE_HEART_RATE));
+
+        Set<Integer> recordTypeIds = Set.of(RECORD_TYPE_HEART_RATE);
+        mTransactionManager.runAsTransaction(
+                db -> {
+                    mAccessLogsHelper.recordReadAccessLog(
+                            db, DATA_SOURCE_PACKAGE_NAME, recordTypeIds);
+                });
+
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs(mUserHandle);
+        assertThat(result).isEmpty();
     }
 
     @Test
@@ -361,7 +458,7 @@ public class AccessLogsHelperTest {
                     mAccessLogsHelper.recordReadAccessLog(db, "unknown.app", recordTypeIds);
                 });
 
-        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs(mUserHandle);
         assertThat(result).isEmpty();
     }
 
@@ -374,7 +471,7 @@ public class AccessLogsHelperTest {
                             db, DATA_SOURCE_PACKAGE_NAME, recordTypeIds);
                 });
 
-        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs(mUserHandle);
         assertThat(result).hasSize(1);
         AccessLog log = result.get(0);
         assertThat(log.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
@@ -390,7 +487,7 @@ public class AccessLogsHelperTest {
                     mAccessLogsHelper.recordUpsertAccessLog(db, "unknown.app", recordTypeIds);
                 });
 
-        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs(mUserHandle);
         assertThat(result).isEmpty();
     }
 

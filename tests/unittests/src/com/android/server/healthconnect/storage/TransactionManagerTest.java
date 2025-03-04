@@ -55,6 +55,7 @@ import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.internal.datatypes.RecordInternal;
+import android.os.UserHandle;
 import android.platform.test.annotations.DisableFlags;
 import android.platform.test.annotations.EnableFlags;
 import android.platform.test.flag.junit.SetFlagsRule;
@@ -71,6 +72,7 @@ import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.AppOpLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
 import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
@@ -117,6 +119,7 @@ public class TransactionManagerTest {
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
     // TODO(b/373322447): Remove the mock HealthPermissionIntentAppsTracker
     @Mock private HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
+    @Mock private AppOpLogsHelper mAppOpLogsHelper;
 
     private TransactionTestUtils mTransactionTestUtils;
     private TransactionManager mTransactionManager;
@@ -124,6 +127,7 @@ public class TransactionManagerTest {
     private AccessLogsHelper mAccessLogsHelper;
     private DeviceInfoHelper mDeviceInfoHelper;
     private ReadAccessLogsHelper mReadAccessLogsHelper;
+    private UserHandle mUserHandle;
 
     @Before
     public void setup() {
@@ -132,12 +136,14 @@ public class TransactionManagerTest {
                 HealthConnectInjectorImpl.newBuilderForTest(context)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
+                        .setAppOpLogsHelper(mAppOpLogsHelper)
                         .build();
         mTransactionManager = healthConnectInjector.getTransactionManager();
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
         mReadAccessLogsHelper = spy(healthConnectInjector.getReadAccessLogsHelper());
+        mUserHandle = context.getUser();
 
         mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
@@ -259,7 +265,7 @@ public class TransactionManagerTest {
                 mReadAccessLogsHelper,
                 /* shouldRecordAccessLog= */ false);
 
-        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs(mUserHandle);
         assertThat(result).isEmpty();
     }
 
@@ -345,7 +351,7 @@ public class TransactionManagerTest {
                 mReadAccessLogsHelper,
                 /* packageNamesByAppIds= */ null);
 
-        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs(mUserHandle);
         assertThat(result).hasSize(1);
         AccessLog log = result.get(0);
         assertThat(log.getPackageName()).isEqualTo(TEST_PACKAGE_NAME);
@@ -373,7 +379,7 @@ public class TransactionManagerTest {
                 mReadAccessLogsHelper,
                 /* packageNamesByAppIds= */ null);
 
-        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs(mUserHandle);
         assertThat(result).isEmpty();
     }
 
@@ -486,7 +492,7 @@ public class TransactionManagerTest {
                 /* shouldRecordDeleteAccessLogs= */ true,
                 mAccessLogsHelper);
 
-        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs(mUserHandle);
         assertThat(result).hasSize(1);
         AccessLog log = result.get(0);
         assertThat(log.getPackageName()).isEqualTo(TEST_PACKAGE_NAME);
@@ -512,7 +518,7 @@ public class TransactionManagerTest {
                 /* shouldRecordDeleteAccessLogs= */ false,
                 mAccessLogsHelper);
 
-        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs();
+        List<AccessLog> result = mAccessLogsHelper.queryAccessLogs(mUserHandle);
         assertThat(result).isEmpty();
     }
 
