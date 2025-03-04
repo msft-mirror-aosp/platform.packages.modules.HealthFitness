@@ -47,7 +47,7 @@ constructor(
     private val options: List<RadioButtonOption>,
     private val logger: HealthConnectLogger,
     preferenceKey: String,
-    preferenceTitleResId: Int,
+    preferenceTitleResId: Int? = null,
     currentSelectedKey: String? = null,
     attrs: AttributeSet? = null,
 ) : PreferenceCategory(context, attrs) {
@@ -56,7 +56,12 @@ constructor(
 
     init {
         key = preferenceKey
-        title = context.getString(preferenceTitleResId)
+        title =
+            if (preferenceTitleResId != null) {
+                context.getString(preferenceTitleResId)
+            } else {
+                ""
+            }
     }
 
     data class RadioButtonOption(
@@ -102,4 +107,6 @@ constructor(
         selectedKey = newSelectedOptionKey
         updateSelectedPreference()
     }
+
+    fun getSelectedOption(): String? = selectedKey
 }
