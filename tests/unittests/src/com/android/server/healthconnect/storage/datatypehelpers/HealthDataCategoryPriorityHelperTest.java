@@ -38,6 +38,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.HealthConnectThreadScheduler;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
@@ -91,6 +92,7 @@ public class HealthDataCategoryPriorityHelperTest {
 
     private AppInfoHelper mAppInfoHelper;
     private HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
+    private HealthConnectThreadScheduler mThreadScheduler;
 
     @Before
     public void setUp() throws Exception {
@@ -117,11 +119,12 @@ public class HealthDataCategoryPriorityHelperTest {
 
         mHealthDataCategoryPriorityHelper =
                 healthConnectInjector.getHealthDataCategoryPriorityHelper();
+        mThreadScheduler = healthConnectInjector.getThreadScheduler();
     }
 
     @After
     public void tearDown() throws Exception {
-        TestUtils.waitForAllScheduledTasksToComplete();
+        TestUtils.waitForAllScheduledTasksToComplete(mThreadScheduler);
     }
 
     @Test

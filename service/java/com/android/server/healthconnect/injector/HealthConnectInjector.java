@@ -22,6 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.server.appop.AppOpsManagerLocal;
+import com.android.server.healthconnect.HealthConnectThreadScheduler;
 import com.android.server.healthconnect.backuprestore.BackupRestore;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.logging.UsageStatsCollector;
@@ -236,6 +237,12 @@ public abstract class HealthConnectInjector {
      * Getter for {@link AppOpsManagerLocal} instance initialised by the Health Connect Injector.
      */
     public abstract AppOpsManagerLocal getAppOpsManagerLocal();
+
+    /**
+     * Getter for {@link HealthConnectThreadScheduler} instance initialised by the Health Connect
+     * Injector.
+     */
+    public abstract HealthConnectThreadScheduler getThreadScheduler();
 
     /** Used to initialize the Injector. */
     public static void setInstance(HealthConnectInjector healthConnectInjector) {

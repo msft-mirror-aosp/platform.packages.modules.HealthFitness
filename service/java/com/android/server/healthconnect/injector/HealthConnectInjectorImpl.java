@@ -25,6 +25,7 @@ import androidx.annotation.Nullable;
 
 import com.android.server.LocalManagerRegistry;
 import com.android.server.appop.AppOpsManagerLocal;
+import com.android.server.healthconnect.HealthConnectThreadScheduler;
 import com.android.server.healthconnect.backuprestore.BackupRestore;
 import com.android.server.healthconnect.exportimport.ExportImportNotificationSender;
 import com.android.server.healthconnect.exportimport.ExportManager;
@@ -112,6 +113,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     private final ReadAccessLogsHelper mReadAccessLogsHelper;
     private final HealthConnectNotificationSender mExportImportNotificationSender;
     private final AppOpsManagerLocal mAppOpsManagerLocal;
+    private final HealthConnectThreadScheduler mThreadScheduler;
 
     public HealthConnectInjectorImpl(Context context) {
         this(new Builder(context));
@@ -144,6 +146,10 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         mInternalHealthConnectMappings = InternalHealthConnectMappings.getInstance();
         mHealthConnectMappings = HealthConnectMappings.getInstance();
         mTimeSource = builder.mTimeSource == null ? new TimeSourceImpl() : builder.mTimeSource;
+        mThreadScheduler =
+                builder.mThreadScheduler == null
+                        ? new HealthConnectThreadScheduler()
+                        : builder.mThreadScheduler;
         mMigrationEntityHelper =
                 builder.mMigrationEntityHelper == null
                         ? new MigrationEntityHelper(mDatabaseHelpers)
@@ -182,7 +188,8 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                                 mPreferenceHelper,
                                 mPackageInfoUtils,
                                 mHealthConnectMappings,
-                                mDatabaseHelpers)
+                                mDatabaseHelpers,
+                                mThreadScheduler)
                         : builder.mHealthDataCategoryPriorityHelper;
         mPriorityMigrationHelper =
                 builder.mPriorityMigrationHelper == null
@@ -211,7 +218,10 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         mMigrationStateManager =
                 builder.mMigrationStateManager == null
                         ? new MigrationStateManager(
-                                userHandle, mPreferenceHelper, mMigrationBroadcastScheduler)
+                                userHandle,
+                                mPreferenceHelper,
+                                mMigrationBroadcastScheduler,
+                                mThreadScheduler)
                         : builder.mMigrationStateManager;
         mDeviceInfoHelper =
                 builder.mDeviceInfoHelper == null
@@ -252,7 +262,8 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                                         : builder.mFirstGrantTimeDatastore,
                                 mPackageInfoUtils,
                                 mHealthDataCategoryPriorityHelper,
-                                mMigrationStateManager)
+                                mMigrationStateManager,
+                                mThreadScheduler)
                         : builder.mFirstGrantTimeManager;
         mHealthConnectPermissionHelper =
                 builder.mHealthConnectPermissionHelper == null
@@ -272,7 +283,8 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                                 mFirstGrantTimeManager,
                                 mHealthConnectPermissionHelper,
                                 userHandle,
-                                mHealthDataCategoryPriorityHelper)
+                                mHealthDataCategoryPriorityHelper,
+                                mThreadScheduler)
                         : builder.mPermissionPackageChangesOrchestrator;
         mMigrationCleaner =
                 builder.mMigrationCleaner == null
@@ -312,7 +324,8 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         mTransactionManager,
                         context,
                         mDeviceInfoHelper,
-                        mHealthDataCategoryPriorityHelper);
+                        mHealthDataCategoryPriorityHelper,
+                        mThreadScheduler);
         mPreferencesManager =
                 builder.mPreferencesManager == null
                         ? new PreferencesManager(mPreferenceHelper)
@@ -526,6 +539,11 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         return mAppOpsManagerLocal;
     }
 
+    @Override
+    public HealthConnectThreadScheduler getThreadScheduler() {
+        return mThreadScheduler;
+    }
+
     /**
      * Returns a new Builder of Health Connect Injector
      *
@@ -582,6 +600,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         @Nullable private ReadAccessLogsHelper mReadAccessLogsHelper;
         @Nullable private File mEnvironmentDataDirectory;
         @Nullable private AppOpsManagerLocal mAppOpsManagerLocal;
+        @Nullable private HealthConnectThreadScheduler mThreadScheduler;
 
         private Builder(Context context) {
             mContext = context;
@@ -820,6 +839,12 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         /** Set fake or custom {@link AppOpsManagerLocal}. */
         public Builder setAppOpsManagerLocal(AppOpsManagerLocal appOpsManagerLocal) {
             mAppOpsManagerLocal = Objects.requireNonNull(appOpsManagerLocal);
+            return this;
+        }
+
+        /** Set fake or custom {@link AppOpsManagerLocal}. */
+        public Builder setThreadScheduler(HealthConnectThreadScheduler threadScheduler) {
+            mThreadScheduler = Objects.requireNonNull(threadScheduler);
             return this;
         }
 

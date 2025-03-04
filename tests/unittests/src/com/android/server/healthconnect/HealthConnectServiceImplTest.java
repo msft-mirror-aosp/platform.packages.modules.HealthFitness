@@ -34,8 +34,6 @@ import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.HealthPermissions.getAllMedicalPermissions;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
 import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
-import static android.health.connect.ratelimiter.RateLimiter.QuotaCategory.QUOTA_CATEGORY_READ;
-import static android.health.connect.ratelimiter.RateLimiter.QuotaCategory.QUOTA_CATEGORY_WRITE;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_FHIR_VERSION;
@@ -299,7 +297,6 @@ public class HealthConnectServiceImplTest {
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(HealthFitnessStatsLog.class)
-                    .spyStatic(RateLimiter.class)
                     .setStrictness(Strictness.LENIENT)
                     .addStaticMockFixtures(EnvironmentFixture::new)
                     .build();
@@ -315,6 +312,7 @@ public class HealthConnectServiceImplTest {
     @Mock private PreferenceHelper mPreferenceHelper;
     @Mock private PreferencesManager mPreferencesManager;
     @Mock private AppOpsManagerLocal mAppOpsManagerLocal;
+    @Mock private RateLimiter mRateLimiter;
     @Mock private PackageManager mPackageManager;
     @Mock private PermissionManager mPermissionManager;
     @Mock private MedicalDataSourceHelper mMedicalDataSourceHelper;
@@ -338,6 +336,7 @@ public class HealthConnectServiceImplTest {
     private BackupRestore mBackupRestore;
     private ThreadPoolExecutor mInternalTaskScheduler;
     private String mTestPackageName;
+    private HealthConnectThreadScheduler mThreadScheduler;
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
@@ -359,7 +358,6 @@ public class HealthConnectServiceImplTest {
         when(mServiceContext.getSystemService(PermissionManager.class))
                 .thenReturn(mPermissionManager);
 
-        mInternalTaskScheduler = HealthConnectThreadScheduler.sInternalBackgroundExecutor;
         mFakeTimeSource = new FakeTimeSource(NOW);
         mAttributionSource = mContext.getAttributionSource();
         mTestPackageName = mAttributionSource.getPackageName();
@@ -383,6 +381,8 @@ public class HealthConnectServiceImplTest {
                         .setTimeSource(mFakeTimeSource)
                         .setAppOpsManagerLocal(mAppOpsManagerLocal)
                         .build();
+        mThreadScheduler = healthConnectInjector.getThreadScheduler();
+        mInternalTaskScheduler = mThreadScheduler.mInternalBackgroundExecutor;
 
         mHealthConnectService =
                 new HealthConnectServiceImpl(
@@ -414,13 +414,15 @@ public class HealthConnectServiceImplTest {
                         healthConnectInjector.getDatabaseHelpers(),
                         healthConnectInjector.getPreferencesManager(),
                         healthConnectInjector.getReadAccessLogsHelper(),
-                        healthConnectInjector.getAppOpsManagerLocal());
+                        healthConnectInjector.getAppOpsManagerLocal(),
+                        healthConnectInjector.getThreadScheduler(),
+                        mRateLimiter);
         mBackupRestore = healthConnectInjector.getBackupRestore();
     }
 
     @After
     public void tearDown() throws TimeoutException {
-        waitForAllScheduledTasksToComplete();
+        waitForAllScheduledTasksToComplete(mThreadScheduler);
         clearInvocations(mPreferenceHelper);
         clearInvocations(mPreferencesManager);
     }
@@ -2752,7 +2754,7 @@ public class HealthConnectServiceImplTest {
     public void testUserSwitching() throws TimeoutException {
         mHealthConnectService.setupForUser(mUserHandle);
 
-        waitForAllScheduledTasksToComplete();
+        waitForAllScheduledTasksToComplete(mThreadScheduler);
     }
 
     @Test
@@ -2840,40 +2842,12 @@ public class HealthConnectServiceImplTest {
         when(mPermissionManager.checkPermissionForDataDelivery(any(), any(), any()))
                 .thenReturn(PermissionManager.PERMISSION_GRANTED);
         when(mAppOpsManagerLocal.isUidInForeground(anyInt())).thenReturn(true);
-        ExtendedMockito.doNothing()
-                .when(
-                        () ->
-                                RateLimiter.tryAcquireApiCallQuota(
-                                        anyInt(),
-                                        eq(QUOTA_CATEGORY_WRITE),
-                                        anyBoolean(),
-                                        anyLong()));
-        ExtendedMockito.doNothing()
-                .when(
-                        () ->
-                                RateLimiter.tryAcquireApiCallQuota(
-                                        anyInt(),
-                                        eq(QUOTA_CATEGORY_READ),
-                                        anyBoolean(),
-                                        anyLong()));
-        ExtendedMockito.doNothing().when(() -> RateLimiter.checkMaxChunkMemoryUsage(anyLong()));
-        ExtendedMockito.doNothing().when(() -> RateLimiter.checkMaxRecordMemoryUsage(anyLong()));
         setUpPhrMocksWithIrrelevantResponses();
     }
 
     private void setUpCreateMedicalDataSourceDefaultMocks() {
         setDataManagementPermission(PERMISSION_DENIED);
         when(mAppOpsManagerLocal.isUidInForeground(anyInt())).thenReturn(true);
-        ExtendedMockito.doNothing()
-                .when(
-                        () ->
-                                RateLimiter.tryAcquireApiCallQuota(
-                                        anyInt(),
-                                        eq(QUOTA_CATEGORY_WRITE),
-                                        anyBoolean(),
-                                        anyLong()));
-        ExtendedMockito.doNothing().when(() -> RateLimiter.checkMaxRecordMemoryUsage(anyLong()));
-        ExtendedMockito.doNothing().when(() -> RateLimiter.checkMaxChunkMemoryUsage(anyLong()));
         when(mMedicalDataSourceHelper.createMedicalDataSource(
                         eq(getCreateMedicalDataSourceRequest()), any()))
                 .thenReturn(getMedicalDataSourceRequiredFieldsOnly());
