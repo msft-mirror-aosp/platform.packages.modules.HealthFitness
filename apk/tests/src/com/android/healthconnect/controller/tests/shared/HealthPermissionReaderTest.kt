@@ -254,10 +254,26 @@ class HealthPermissionReaderTest {
     }
 
     @Test
-    fun getAppsWithHealthPermissions_returnsSupportedApps_handHeldDevices() = runTest {
+    fun getAppsWithHealthPermissions_handHeldDevices_returnsSupportedApps() = runTest {
         assumeFalse(context.packageManager.hasSystemFeature(PackageManager.FEATURE_WATCH))
         assertThat(permissionReader.getAppsWithHealthPermissions())
             .containsAtLeast(TEST_APP_PACKAGE_NAME, TEST_APP_PACKAGE_NAME_2)
+    }
+
+    // Still need the SDK version check here because @RequiresFlagsEnabled
+    // won't work on older platforms where the flags aren't defined (b/383440585).
+    @Test
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
+    @RequiresFlagsEnabled(
+        FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED,
+        Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED
+    )
+    fun getAppsWithHealthPermissions_handHeldDevices_replaceBodySensors_returnsSplitPermissionApps() = runTest {
+        assumeFalse(context.packageManager.hasSystemFeature(PackageManager.FEATURE_WATCH))
+        runWithShellPermissionIdentity({
+            assertThat(permissionReader.getAppsWithHealthPermissions()).containsAtLeast(
+                TEST_APP_PACKAGE_NAME, TEST_APP_PACKAGE_NAME_2, BODY_SENSORS_TEST_APP_PACKAGE_NAME)
+                }, MANAGE_HEALTH_PERMISSIONS)
     }
 
     @Test
@@ -267,18 +283,38 @@ class HealthPermissionReaderTest {
     }
 
     @Test
-    fun getAppsWithHealthPermissions_doesNotReturnUnsupportedApps_handHeldDevices() = runTest {
+    @RequiresFlagsDisabled(Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED)
+    fun getAppsWithHealthPermissions_handHeldDevices_doesNotReturnUnsupportedOrSplitPermissionApps() = runTest {
         assumeFalse(context.packageManager.hasSystemFeature(PackageManager.FEATURE_WATCH))
-        assertThat(permissionReader.getAppsWithHealthPermissions())
-            .doesNotContain(UNSUPPORTED_TEST_APP_PACKAGE_NAME)
+
+        val healthApps: MutableList<String> = mutableListOf()
+        runWithShellPermissionIdentity({
+            healthApps.addAll(permissionReader.getAppsWithHealthPermissions())
+        }, MANAGE_HEALTH_PERMISSIONS)
+        assertThat(healthApps).doesNotContain(UNSUPPORTED_TEST_APP_PACKAGE_NAME)
+        assertThat(healthApps).doesNotContain(BODY_SENSORS_TEST_APP_PACKAGE_NAME)
     }
 
+    // Still need the SDK version check here because @RequiresFlagsEnabled
+    // won't work on older platforms where the flags aren't defined (b/383440585).
+    @Test
     @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
     @RequiresFlagsEnabled(
         FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED,
         Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED
     )
+    fun getAppsWithHealthPermissions_handHeldDevices_doesNotReturnUnsupportedApps() = runTest {
+        assumeFalse(context.packageManager.hasSystemFeature(PackageManager.FEATURE_WATCH))
+        assertThat(permissionReader.getAppsWithHealthPermissions())
+            .doesNotContain(UNSUPPORTED_TEST_APP_PACKAGE_NAME)
+    }
+
     @Test
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
+    @RequiresFlagsEnabled(
+        FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED,
+        Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED
+    )
     fun getAppsWithHealthPermissions_returnAppsRequestingHealthPermissions_wearDevices() = runTest {
         assumeTrue(context.packageManager.hasSystemFeature(PackageManager.FEATURE_WATCH))
 
@@ -296,9 +332,9 @@ class HealthPermissionReaderTest {
             .doesNotContain(MEDICAL_PERMISSIONS_TEST_APP_PACKAGE_NAME)
     }
 
+    @Test
     @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
     @RequiresFlagsEnabled(FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED)
-    @Test
     fun getSystemHealthPermissions_returnSystemHealthPermissions() = runTest {
         assertThat(permissionReader.getSystemHealthPermissions())
             .containsExactly(

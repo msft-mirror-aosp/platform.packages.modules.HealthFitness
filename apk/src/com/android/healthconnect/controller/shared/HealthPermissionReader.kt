@@ -119,7 +119,12 @@ constructor(
             return getPackagesRequestingSystemHealthPermissions()
         }
         return try {
-            appsWithDeclaredIntent().filter { getValidHealthPermissions(it).isNotEmpty() }
+            val healthApps = mutableListOf<String>()
+            healthApps.addAll(appsWithDeclaredIntent().filter { getValidHealthPermissions(it).isNotEmpty() })
+            if (Flags.replaceBodySensorPermissionEnabled()) {
+                healthApps.addAll(getPackagesRequestingSplitBodySensorPermissions())
+            }
+            healthApps.distinct()
         } catch (e: Exception) {
             emptyList()
         }
@@ -181,6 +186,113 @@ constructor(
             ) {
                 healthApps.add(packageName)
             }
+        }
+        return healthApps
+    }
+
+    /**
+     * Identifies apps that are requesting health permissions as a result of a
+     * split-permission upgrade from their use of the legacy body sensors
+     * permission.
+     *
+     * @return a list of app package names that have requested at least one health permission.
+     */
+    private fun getPackagesRequestingSplitBodySensorPermissions(): List<String> {
+        val packages =
+            context.packageManager.getInstalledPackagesAsUser(
+                PackageManager.GET_PERMISSIONS,
+                Process.myUserHandle().getIdentifier(),
+            )
+        val healthPermissions = getHealthPermissions()
+        val healthApps = mutableListOf<String>()
+
+        for (info in packages) {
+            val packageName = info.packageName
+            val requestedPermissions = info.requestedPermissions ?: continue
+            val requestedHealthPermissions =
+                requestedPermissions.filter { it in healthPermissions }
+
+            val indexOfReadHr = requestedPermissions.indexOf(HealthPermissions.READ_HEART_RATE)
+            // Split permission only applies to READ_HEART_RATE.
+            if (indexOfReadHr < 0) {
+                continue
+            }
+
+            // If there are other health permissions (other than READ_HEALTH_DATA_IN_BACKGROUND)
+            // don't consider this a pure split-permission request.
+            if (requestedHealthPermissions.size > 2) {
+                continue
+            }
+
+            val indexOfReadBackground = requestedPermissions.indexOf(
+                HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND)
+            val declaresBackgroundPermission = indexOfReadBackground >= 0
+            // If there are two health permissions declared, make sure the other is
+            // READ_HEALTH_DATA_IN_BACKGROUND.
+            if (requestedHealthPermissions.size == 2 && !declaresBackgroundPermission) {
+                continue
+            }
+
+            val permissionsToCheck =
+                if (declaresBackgroundPermission) {
+                    listOf(
+                        HealthPermissions.READ_HEART_RATE,
+                        HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND,
+                    )
+                } else {
+                    listOf(HealthPermissions.READ_HEART_RATE)
+                }
+
+                // Check the READ_HEART_RATE permission flag to see if it's a split-permission.
+                val permissionToFlags =
+                    getHealthPermissionsFlagsUseCase(packageName, permissionsToCheck)
+
+
+                if (declaresBackgroundPermission) {
+                    // READ_HEALTH_DATA_IN_BACKGROUND is not due to split-permission.
+                    if (
+                        permissionToFlags.get(
+                            HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND)?.let { flags
+                            ->
+                            (flags and PackageManager.FLAG_PERMISSION_REVOKE_WHEN_REQUESTED) == 0
+                        } ?: true
+                    ) {
+                        continue
+                    }
+                }
+
+                // READ_HEART_RATE is not due to split-permission.
+                if (permissionToFlags.get(HealthPermissions.READ_HEART_RATE)?.let { flags ->
+                    (flags and PackageManager.FLAG_PERMISSION_REVOKE_WHEN_REQUESTED) == 0
+                } ?: true) {
+                    continue
+                }
+
+                // Filter out system apps.
+                val backgroundPermissionUserSensitive =
+                    if (declaresBackgroundPermission) {
+                        isUserSensitive(
+                            permissionToFlags[HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND],
+                            info.requestedPermissionsFlags?.getOrNull(indexOfReadBackground))
+                    } else {
+                        false
+                    }
+
+                val heartRatePermissionUserSensitive =
+                    isUserSensitive(
+                        permissionToFlags[HealthPermissions.READ_HEART_RATE],
+                        info.requestedPermissionsFlags?.getOrNull(indexOfReadHr))
+
+                // TODO: b/379937107 - For now, filter out the system apps.
+                // User sensitive apps are not user system apps.
+                if (!heartRatePermissionUserSensitive && !backgroundPermissionUserSensitive) {
+                    continue
+                }
+
+                // Made it through the gauntlet! A non-system app that is
+                // requesting READ_HEART_RATE (and possibly
+                // READ_HEALTH_DATA_IN_BACKGROUND due to a split-permission.
+                healthApps.add(packageName)
         }
         return healthApps
     }
