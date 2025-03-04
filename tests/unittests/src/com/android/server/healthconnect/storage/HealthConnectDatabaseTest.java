@@ -58,12 +58,12 @@ import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTra
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceIndicesHelper;
-import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
 import com.android.server.healthconnect.testing.storage.TransactionTestUtils;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.quality.Strictness;
 
@@ -86,8 +86,10 @@ public class HealthConnectDatabaseTest {
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(ExportImportLogger.class)
                     .setStrictness(Strictness.LENIENT)
-                    .addStaticMockFixtures(EnvironmentFixture::new)
                     .build();
+
+    @Rule(order = 2)
+    public final TemporaryFolder mEnvironmentDataDirectory = new TemporaryFolder();
 
     @Before
     public void setup() {
@@ -218,7 +220,11 @@ public class HealthConnectDatabaseTest {
     private HealthConnectDatabase initializeEmptyHealthConnectDatabase() {
         HealthConnectDatabase healthConnectDatabase =
                 new HealthConnectDatabase(
-                        HealthConnectContext.create(mContext, mContext.getUser()));
+                        HealthConnectContext.create(
+                                mContext,
+                                mContext.getUser(),
+                                /* databaseDirName= */ null,
+                                mEnvironmentDataDirectory.getRoot()));
 
         // Make sure there is nothing there already.
         File databasePath = healthConnectDatabase.getDatabasePath();
@@ -253,10 +259,11 @@ public class HealthConnectDatabaseTest {
                 });
     }
 
-    private static HealthConnectInjector getHealthConnectInjector(Context context) {
+    private HealthConnectInjector getHealthConnectInjector(Context context) {
         return HealthConnectInjectorImpl.newBuilderForTest(context)
                 .setHealthPermissionIntentAppsTracker(mock(HealthPermissionIntentAppsTracker.class))
                 .setFirstGrantTimeManager(mock(FirstGrantTimeManager.class))
+                .setEnvironmentDataDirectory(mEnvironmentDataDirectory.getRoot())
                 .build();
     }
 }

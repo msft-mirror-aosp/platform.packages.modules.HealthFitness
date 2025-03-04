@@ -118,6 +118,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     private final HealthConnectNotificationSender mExportImportNotificationSender;
     private final AppOpsManagerLocal mAppOpsManagerLocal;
     private final HealthConnectThreadScheduler mThreadScheduler;
+    private final File mEnvironmentDataDirectory;
 
     public HealthConnectInjectorImpl(Context context) {
         this(new Builder(context));
@@ -131,19 +132,17 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         // Any class that is using this user below are responsible for making sure that they
         // update any reference to user when it changes.
         UserHandle userHandle = builder.mUserHandle;
-        HealthConnectContext hcContext =
-                builder.mEnvironmentDataDirectory == null
-                        ? HealthConnectContext.create(context, userHandle)
-                        : HealthConnectContext.create(
-                                context,
-                                userHandle,
-                                /* databaseDirName= */ null,
-                                builder.mEnvironmentDataDirectory);
-
-        File environmentDataDirectory =
+        mEnvironmentDataDirectory =
                 builder.mEnvironmentDataDirectory == null
                         ? Environment.getDataDirectory()
                         : builder.mEnvironmentDataDirectory;
+
+        HealthConnectContext hcContext =
+                HealthConnectContext.create(
+                        context,
+                        userHandle,
+                        /* databaseDirName= */ null,
+                        mEnvironmentDataDirectory);
 
         mDatabaseHelpers = new DatabaseHelpers();
         mInternalHealthConnectMappings = InternalHealthConnectMappings.getInstance();
@@ -212,7 +211,8 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                                 Clock.systemUTC(),
                                 mExportImportSettingsStorage,
                                 mTransactionManager,
-                                mExportImportNotificationSender)
+                                mExportImportNotificationSender,
+                                mEnvironmentDataDirectory)
                         : builder.mExportManager;
         mMigrationBroadcastScheduler =
                 builder.mMigrationBroadcastScheduler == null
@@ -271,7 +271,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                                 mPermissionIntentAppsTracker,
                                 builder.mFirstGrantTimeDatastore == null
                                         ? FirstGrantTimeDatastore.createInstance(
-                                                environmentDataDirectory)
+                                                mEnvironmentDataDirectory)
                                         : builder.mFirstGrantTimeDatastore,
                                 mPackageInfoUtils,
                                 mHealthDataCategoryPriorityHelper,
@@ -338,7 +338,8 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         context,
                         mDeviceInfoHelper,
                         mHealthDataCategoryPriorityHelper,
-                        mThreadScheduler);
+                        mThreadScheduler,
+                        mEnvironmentDataDirectory);
         mPreferencesManager =
                 builder.mPreferencesManager == null
                         ? new PreferencesManager(mPreferenceHelper)
@@ -555,6 +556,10 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     @Override
     public HealthConnectThreadScheduler getThreadScheduler() {
         return mThreadScheduler;
+    }
+
+    public File getEnvironmentDataDirectory() {
+        return mEnvironmentDataDirectory;
     }
 
     /**

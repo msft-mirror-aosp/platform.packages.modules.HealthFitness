@@ -69,8 +69,6 @@ import com.android.server.healthconnect.storage.HealthConnectContext;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.testing.fakes.FakePreferenceHelper;
-import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
-import com.android.server.healthconnect.testing.fixtures.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.testing.storage.PhrTestUtils;
 import com.android.server.healthconnect.testing.storage.TransactionTestUtils;
 
@@ -78,6 +76,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.quality.Strictness;
@@ -104,9 +103,10 @@ public class ExportManagerTest {
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(ExportImportLogger.class)
-                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();
+
+    @Rule public final TemporaryFolder mEnvironmentDataDirectory = new TemporaryFolder();
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
@@ -135,6 +135,7 @@ public class ExportManagerTest {
                         .setPreferenceHelper(new FakePreferenceHelper())
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
+                        .setEnvironmentDataDirectory(mEnvironmentDataDirectory.getRoot())
                         .build();
         mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
@@ -150,13 +151,17 @@ public class ExportManagerTest {
                         fakeClock,
                         mExportImportSettingsStorage,
                         transactionManager,
-                        healthConnectInjector.getExportImportNotificationSender());
+                        healthConnectInjector.getExportImportNotificationSender(),
+                        healthConnectInjector.getEnvironmentDataDirectory());
 
         mPhrTestUtils = new PhrTestUtils(healthConnectInjector);
 
         mExportedDbContext =
                 HealthConnectContext.create(
-                        mContext, mContext.getUser(), REMOTE_EXPORT_DATABASE_DIR_NAME);
+                        mContext,
+                        mContext.getUser(),
+                        REMOTE_EXPORT_DATABASE_DIR_NAME,
+                        mEnvironmentDataDirectory.getRoot());
         configureExportUri();
     }
 
@@ -333,7 +338,11 @@ public class ExportManagerTest {
         assertThat(mExportManager.runExport(mContext.getUser())).isTrue();
 
         HealthConnectContext hcContext =
-                HealthConnectContext.create(mContext, mContext.getUser(), LOCAL_EXPORT_DIR_NAME);
+                HealthConnectContext.create(
+                        mContext,
+                        mContext.getUser(),
+                        LOCAL_EXPORT_DIR_NAME,
+                        mEnvironmentDataDirectory.getRoot());
         assertThat(hcContext.getDatabasePath(LOCAL_EXPORT_DATABASE_FILE_NAME).exists()).isFalse();
         assertThat(hcContext.getDatabasePath(LOCAL_EXPORT_ZIP_FILE_NAME).exists()).isFalse();
     }
@@ -387,7 +396,11 @@ public class ExportManagerTest {
     @Test
     public void deleteLocalExportFiles_deletesLocalCopies() {
         HealthConnectContext hcContext =
-                HealthConnectContext.create(mContext, mContext.getUser(), LOCAL_EXPORT_DIR_NAME);
+                HealthConnectContext.create(
+                        mContext,
+                        mContext.getUser(),
+                        LOCAL_EXPORT_DIR_NAME,
+                        mEnvironmentDataDirectory.getRoot());
         new File(hcContext.getDataDir(), LOCAL_EXPORT_DATABASE_FILE_NAME).mkdirs();
         new File(hcContext.getDataDir(), LOCAL_EXPORT_ZIP_FILE_NAME).mkdirs();
 

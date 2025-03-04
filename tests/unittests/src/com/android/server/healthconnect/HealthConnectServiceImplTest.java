@@ -423,7 +423,8 @@ public class HealthConnectServiceImplTest {
                         healthConnectInjector.getReadAccessLogsHelper(),
                         healthConnectInjector.getAppOpsManagerLocal(),
                         healthConnectInjector.getThreadScheduler(),
-                        mRateLimiter);
+                        mRateLimiter,
+                        healthConnectInjector.getEnvironmentDataDirectory());
         mBackupRestore = healthConnectInjector.getBackupRestore();
     }
 

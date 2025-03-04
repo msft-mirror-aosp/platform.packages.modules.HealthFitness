@@ -56,14 +56,13 @@ import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.testing.fakes.FakePreferenceHelper;
-import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
-import com.android.server.healthconnect.testing.fixtures.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.testing.storage.PhrTestUtils;
 import com.android.server.healthconnect.testing.storage.TransactionTestUtils;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.quality.Strictness;
@@ -89,9 +88,10 @@ public class BackupRestoreWithoutMocksTest {
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(BackupRestore.BackupRestoreJobService.class)
-                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();
+
+    @Rule public final TemporaryFolder mEnvironmentDataDirectory = new TemporaryFolder();
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
@@ -115,6 +115,7 @@ public class BackupRestoreWithoutMocksTest {
                         .setPreferenceHelper(new FakePreferenceHelper())
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
+                        .setEnvironmentDataDirectory(mEnvironmentDataDirectory.getRoot())
                         .build();
         mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
@@ -131,7 +132,8 @@ public class BackupRestoreWithoutMocksTest {
                         mContext,
                         healthConnectInjector.getDeviceInfoHelper(),
                         healthConnectInjector.getHealthDataCategoryPriorityHelper(),
-                        healthConnectInjector.getThreadScheduler());
+                        healthConnectInjector.getThreadScheduler(),
+                        healthConnectInjector.getEnvironmentDataDirectory());
 
         mPhrTestUtils = new PhrTestUtils(healthConnectInjector);
     }
@@ -156,7 +158,12 @@ public class BackupRestoreWithoutMocksTest {
         assertThat(mTransactionTestUtils.queryNumEntries("steps_record_table")).isEqualTo(1);
 
         // Create the files where the database and the grant time files will be backed up to.
-        HealthConnectContext dbContext = HealthConnectContext.create(mContext, mContext.getUser());
+        HealthConnectContext dbContext =
+                HealthConnectContext.create(
+                        mContext,
+                        mContext.getUser(),
+                        /* databaseDirName= */ null,
+                        mEnvironmentDataDirectory.getRoot());
         File dbFileBacked = createAndGetEmptyFile(dbContext.getDataDir(), STAGED_DATABASE_NAME);
         File grantTimeFileBacked =
                 createAndGetEmptyFile(dbContext.getDataDir(), GRANT_TIME_FILE_NAME);
@@ -205,7 +212,12 @@ public class BackupRestoreWithoutMocksTest {
         assertThat(mTransactionTestUtils.queryNumEntries("steps_record_table")).isEqualTo(1);
 
         // Create the files where the database and the grant time files will be backed up to.
-        HealthConnectContext dbContext = HealthConnectContext.create(mContext, mContext.getUser());
+        HealthConnectContext dbContext =
+                HealthConnectContext.create(
+                        mContext,
+                        mContext.getUser(),
+                        /* databaseDirName= */ null,
+                        mEnvironmentDataDirectory.getRoot());
         File dbFileBacked = createAndGetEmptyFile(dbContext.getDataDir(), STAGED_DATABASE_NAME);
         File grantTimeFileBacked =
                 createAndGetEmptyFile(dbContext.getDataDir(), GRANT_TIME_FILE_NAME);
@@ -246,7 +258,11 @@ public class BackupRestoreWithoutMocksTest {
     public void testMerge_withPhrMergeEnabled_over5000Resources_copiesAllPhrData()
             throws Exception {
         HealthConnectContext dbContext =
-                HealthConnectContext.create(mContext, mContext.getUser(), STAGED_DATABASE_DIR);
+                HealthConnectContext.create(
+                        mContext,
+                        mContext.getUser(),
+                        STAGED_DATABASE_DIR,
+                        mEnvironmentDataDirectory.getRoot());
         createAndGetEmptyFile(dbContext.getDataDir(), STAGED_DATABASE_NAME);
         HealthConnectDatabase stagedDb = new HealthConnectDatabase(dbContext, STAGED_DATABASE_NAME);
         mTransactionTestUtils.insertApp(stagedDb, TEST_PACKAGE_NAME);
@@ -300,7 +316,11 @@ public class BackupRestoreWithoutMocksTest {
     })
     public void testMerge_withPhrMergeEnabled_copiesAllPhrData() throws Exception {
         HealthConnectContext dbContext =
-                HealthConnectContext.create(mContext, mContext.getUser(), STAGED_DATABASE_DIR);
+                HealthConnectContext.create(
+                        mContext,
+                        mContext.getUser(),
+                        STAGED_DATABASE_DIR,
+                        mEnvironmentDataDirectory.getRoot());
         createAndGetEmptyFile(dbContext.getDataDir(), STAGED_DATABASE_NAME);
         HealthConnectDatabase stagedDb = new HealthConnectDatabase(dbContext, STAGED_DATABASE_NAME);
         mTransactionTestUtils.insertApp(stagedDb, TEST_PACKAGE_NAME);
@@ -370,7 +390,11 @@ public class BackupRestoreWithoutMocksTest {
                 .isEqualTo(1);
         // Create the staged db file.
         HealthConnectContext dbContext =
-                HealthConnectContext.create(mContext, mContext.getUser(), STAGED_DATABASE_DIR);
+                HealthConnectContext.create(
+                        mContext,
+                        mContext.getUser(),
+                        STAGED_DATABASE_DIR,
+                        mEnvironmentDataDirectory.getRoot());
         createAndGetEmptyFile(dbContext.getDataDir(), STAGED_DATABASE_NAME);
         HealthConnectDatabase stagedDb = new HealthConnectDatabase(dbContext, STAGED_DATABASE_NAME);
         mTransactionTestUtils.insertApp(stagedDb, TEST_PACKAGE_NAME);
@@ -431,7 +455,11 @@ public class BackupRestoreWithoutMocksTest {
                 .isEqualTo(1);
         // Create the staged db file.
         HealthConnectContext dbContext =
-                HealthConnectContext.create(mContext, mContext.getUser(), STAGED_DATABASE_DIR);
+                HealthConnectContext.create(
+                        mContext,
+                        mContext.getUser(),
+                        STAGED_DATABASE_DIR,
+                        mEnvironmentDataDirectory.getRoot());
         createAndGetEmptyFile(dbContext.getDataDir(), STAGED_DATABASE_NAME);
         HealthConnectDatabase stagedDb = new HealthConnectDatabase(dbContext, STAGED_DATABASE_NAME);
         mTransactionTestUtils.insertApp(stagedDb, TEST_PACKAGE_NAME);
@@ -478,7 +506,11 @@ public class BackupRestoreWithoutMocksTest {
     @DisableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_ENABLE_D2D_AND_EXPORT_IMPORT})
     public void testMerge_withPhrMergeDisabled_doesNotCopyPhrData() throws Exception {
         HealthConnectContext dbContext =
-                HealthConnectContext.create(mContext, mContext.getUser(), STAGED_DATABASE_DIR);
+                HealthConnectContext.create(
+                        mContext,
+                        mContext.getUser(),
+                        STAGED_DATABASE_DIR,
+                        mEnvironmentDataDirectory.getRoot());
         createAndGetEmptyFile(dbContext.getDataDir(), STAGED_DATABASE_NAME);
         HealthConnectDatabase stagedDb = new HealthConnectDatabase(dbContext, STAGED_DATABASE_NAME);
         mTransactionTestUtils.insertApp(stagedDb, TEST_PACKAGE_NAME);

@@ -224,6 +224,7 @@ import com.android.server.healthconnect.utils.TimeSource;
 
 import org.json.JSONException;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -336,7 +337,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             ReadAccessLogsHelper readAccessLogsHelper,
             AppOpsManagerLocal appOpsManagerLocal,
             HealthConnectThreadScheduler threadScheduler,
-            RateLimiter rateLimiter) {
+            RateLimiter rateLimiter,
+            File environmentDataDirectory) {
         mContext = context;
         mCurrentForegroundUser = context.getUser();
         mTimeSource = timeSource;
@@ -393,7 +395,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         mDeviceInfoHelper,
                         mHealthDataCategoryPriorityHelper,
                         clockForLogging,
-                        exportImportNotificationSender);
+                        exportImportNotificationSender,
+                        environmentDataDirectory);
 
         mCloudBackupManager =
                 isCloudBackupRestoreEnabled()

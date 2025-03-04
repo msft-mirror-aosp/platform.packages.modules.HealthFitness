@@ -40,7 +40,6 @@ import android.platform.test.flag.junit.SetFlagsRule;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
@@ -57,15 +56,16 @@ import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCatego
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
-import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
-import com.android.server.healthconnect.testing.fixtures.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.testing.storage.TransactionTestUtils;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,11 +86,9 @@ public class CloudBackupManagerTest {
     @Rule(order = 1)
     public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 
-    @Rule(order = 2)
-    public final ExtendedMockitoRule mExtendedMockitoRule =
-            new ExtendedMockitoRule.Builder(this)
-                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
-                    .build();
+    @Rule public final MockitoRule mMockitoRule = MockitoJUnit.rule();
+
+    @Rule public final TemporaryFolder mEnvironmentDataDirectory = new TemporaryFolder();
 
     private Context mContext;
     private TransactionManager mTransactionManager;
@@ -109,6 +107,7 @@ public class CloudBackupManagerTest {
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
+                        .setEnvironmentDataDirectory(mEnvironmentDataDirectory.getRoot())
                         .build();
 
         mTransactionManager = healthConnectInjector.getTransactionManager();
@@ -233,7 +232,12 @@ public class CloudBackupManagerTest {
                         TEST_START_TIME_IN_MILLIS, TEST_END_TIME_IN_MILLIS, TEST_STEP_COUNT));
 
         // Delete backup_change_token_table.
-        HealthConnectContext dbContext = HealthConnectContext.create(mContext, mContext.getUser());
+        HealthConnectContext dbContext =
+                HealthConnectContext.create(
+                        mContext,
+                        mContext.getUser(),
+                        /* databaseDirName= */ null,
+                        mEnvironmentDataDirectory.getRoot());
         try (HealthConnectDatabase database = new HealthConnectDatabase(dbContext)) {
             database.getWritableDatabase()
                     .execSQL("DROP TABLE IF EXISTS " + BackupChangeTokenHelper.getTableName());
