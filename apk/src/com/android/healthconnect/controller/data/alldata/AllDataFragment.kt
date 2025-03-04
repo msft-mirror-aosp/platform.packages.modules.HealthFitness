@@ -1,23 +1,22 @@
 /*
- * Copyright (C) 2025 The Android Open Source Project
+ * Copyright (C) 2023 The Android Open Source Project
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
  *
+ * ```
  *      http://www.apache.org/licenses/LICENSE-2.0
+ * ```
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 package com.android.healthconnect.controller.data.alldata
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.annotation.VisibleForTesting
@@ -44,6 +43,7 @@ import com.android.healthconnect.controller.selectabledeletion.DeletionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionViewModel
 import com.android.healthconnect.controller.selectabledeletion.SelectAllCheckboxPreference
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.uppercaseTitle
+import com.android.healthconnect.controller.shared.HealthDataCategoryInt
 import com.android.healthconnect.controller.shared.children
 import com.android.healthconnect.controller.shared.preference.EmptyPreferenceCategory
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
@@ -57,6 +57,7 @@ import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.ToolbarElement
 import com.android.healthconnect.controller.utils.pref
 import com.android.healthconnect.controller.utils.setupMenu
+import com.android.healthconnect.controller.utils.setupSharedMenu
 import com.android.settingslib.widget.FooterPreference
 import com.android.settingslib.widget.SettingsThemeHelper
 import com.android.settingslib.widget.ZeroStatePreference
@@ -68,6 +69,7 @@ import javax.inject.Inject
 open class AllDataFragment : Hilt_AllDataFragment() {
 
     companion object {
+        private const val TAG = "AllDataFragmentTag"
         private const val DELETION_TAG = "DeletionTag"
         private const val KEY_SELECT_ALL = "key_select_all"
         private const val KEY_PERMISSION_TYPE = "key_permission_type"
@@ -79,11 +81,12 @@ open class AllDataFragment : Hilt_AllDataFragment() {
     }
 
     @Inject lateinit var logger: HealthConnectLogger
-
     @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
 
     /** Decides whether this screen is supposed to display Fitness data or Medical data. */
     private var showMedicalData = false
+
+    @HealthDataCategoryInt private var category: Int = 0
 
     private val viewModel: AllDataViewModel by viewModels()
 
@@ -101,9 +104,21 @@ open class AllDataFragment : Hilt_AllDataFragment() {
 
     private val entriesViewModel: EntriesViewModel by activityViewModels()
 
-    private var menu: Menu? = null
+    // Empty state
+    private val onDataSourcesClick: (MenuItem) -> Boolean = { menuItem ->
+        when (menuItem.itemId) {
+            R.id.menu_data_sources -> {
+                logger.logInteraction(ToolbarElement.TOOLBAR_DATA_SOURCES_BUTTON)
+                findNavController().navigate(R.id.action_allDataFragment_to_dataSourcesFragment)
+                true
+            }
 
-    private val onMenuItemClickedListener: (MenuItem) -> Boolean = { menuItem ->
+            else -> false
+        }
+    }
+
+    // Not in deletion state
+    private val onMenuSetup: (MenuItem) -> Boolean = { menuItem ->
         when (menuItem.itemId) {
             R.id.menu_data_sources -> {
                 logger.logInteraction(ToolbarElement.TOOLBAR_DATA_SOURCES_BUTTON)
@@ -112,19 +127,9 @@ open class AllDataFragment : Hilt_AllDataFragment() {
             }
 
             R.id.menu_enter_deletion_state -> {
-                if (VIEW == viewModel.getDeletionScreenStateValue()) {
-                    logger.logInteraction(ToolbarElement.TOOLBAR_ENTER_DELETION_STATE_BUTTON)
-                    triggerDeletionState(DELETE)
-                } else {
-                    if (viewModel.hasSelectedItems()) {
-                        logger.logInteraction(ToolbarElement.TOOLBAR_DELETE_BUTTON)
-                        deleteData()
-                    } else {
-                        logger.logInteraction(ToolbarElement.TOOLBAR_EXIT_DELETION_STATE_BUTTON)
-                        triggerDeletionState(VIEW)
-                    }
-                }
-
+                logger.logInteraction(ToolbarElement.TOOLBAR_ENTER_DELETION_STATE_BUTTON)
+                // enter deletion state
+                triggerDeletionState(DELETE)
                 true
             }
 
@@ -132,10 +137,31 @@ open class AllDataFragment : Hilt_AllDataFragment() {
         }
     }
 
-    private val onPrepareMenu: (Menu) -> Unit = { menu ->
-        this.menu = menu
-        val dataSource = menu.findItem(R.id.menu_data_sources)
-        dataSource.isVisible = !showMedicalData
+    // In deletion state with data selected
+    private val onEnterDeletionState: (MenuItem) -> Boolean = { menuItem ->
+        when (menuItem.itemId) {
+            R.id.delete -> {
+                logger.logInteraction(ToolbarElement.TOOLBAR_DELETE_BUTTON)
+                deleteData()
+                true
+            }
+
+            else -> false
+        }
+    }
+
+    // In deletion state without any data selected
+    private val onEmptyDeleteSetSetup: (MenuItem) -> Boolean = { menuItem ->
+        when (menuItem.itemId) {
+            R.id.menu_exit_deletion_state -> {
+                logger.logInteraction(ToolbarElement.TOOLBAR_EXIT_DELETION_STATE_BUTTON)
+                // exit deletion state
+                triggerDeletionState(VIEW)
+                true
+            }
+
+            else -> false
+        }
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -164,13 +190,6 @@ open class AllDataFragment : Hilt_AllDataFragment() {
         super.onViewCreated(view, savedInstanceState)
         loadAllData()
         setTopIntroVisibility(false)
-        setupMenu(
-            R.menu.all_data_menu,
-            viewLifecycleOwner,
-            logger,
-            onMenuItemClickedListener,
-            onPrepareMenu,
-        )
 
         viewModel.allData.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -216,8 +235,8 @@ open class AllDataFragment : Hilt_AllDataFragment() {
         }
     }
 
-    private fun setTopIntroVisibility(show: Boolean) {
-        if (show) {
+    private fun setTopIntroVisibility(visible: Boolean) {
+        if (visible) {
             if (findPreference<Preference>(KEY_TOP_INTRO) == null) {
                 preferenceScreen.addPreference(
                     topIntroPreference(
@@ -286,37 +305,51 @@ open class AllDataFragment : Hilt_AllDataFragment() {
     }
 
     private fun updateMenu(screenState: DeletionScreenState, hasData: Boolean = true) {
-        val menuItem = menu?.findItem(R.id.menu_delete) ?: return
-        if (!hasData) {
-            menuItem.isVisible = false
+        if (!hasData && showMedicalData) {
+            setupSharedMenu(viewLifecycleOwner, logger)
             return
         }
-        if (VIEW == screenState) {
-            // Enter deletion state
-            menuItem.apply {
-                setIcon(R.drawable.ic_delete_forever)
-                setContentDescription(getString(R.string.enter_deletion_button_content_description))
-                setTitle(R.string.enter_deletion_button_content_description)
-            }
-        } else {
-            if (viewModel.hasSelectedItems()) {
-                // delete selected items state
-                menuItem.apply {
-                    setIcon(R.drawable.ic_delete)
-                    setContentDescription(getString(R.string.delete_button_content_description))
-                    setTitle(R.string.delete_button_content_description)
-                }
-            } else {
-                // exit deletion state
-                menuItem.apply {
-                    setIcon(R.drawable.ic_close)
-                    setContentDescription(
-                        getString(R.string.exit_deletion_button_content_description)
-                    )
-                    setTitle(R.string.exit_deletion_button_content_description)
-                }
-            }
+
+        if (!hasData) {
+            logger.logImpression(ToolbarElement.TOOLBAR_DATA_SOURCES_BUTTON)
+            setupMenu(
+                R.menu.all_data_empty_state_menu,
+                viewLifecycleOwner,
+                logger,
+                onDataSourcesClick,
+            )
+            return
         }
+
+        if (screenState == VIEW && showMedicalData) {
+            setupMenu(
+                R.menu.all_data_menu_without_data_sources,
+                viewLifecycleOwner,
+                logger,
+                onMenuSetup,
+            )
+            return
+        }
+
+        if (screenState == VIEW) {
+            logger.logImpression(ToolbarElement.TOOLBAR_ENTER_DELETION_STATE_BUTTON)
+            setupMenu(R.menu.all_data_menu, viewLifecycleOwner, logger, onMenuSetup)
+            return
+        }
+
+        if (viewModel.setOfPermissionTypesToBeDeleted.value.orEmpty().isEmpty()) {
+            logger.logImpression(ToolbarElement.TOOLBAR_EXIT_DELETION_STATE_BUTTON)
+            setupMenu(
+                R.menu.all_data_delete_menu,
+                viewLifecycleOwner,
+                logger,
+                onEmptyDeleteSetSetup,
+            )
+            return
+        }
+
+        logger.logImpression(ToolbarElement.TOOLBAR_DELETE_BUTTON)
+        setupMenu(R.menu.deletion_state_menu, viewLifecycleOwner, logger, onEnterDeletionState)
     }
 
     @VisibleForTesting
