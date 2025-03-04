@@ -1,17 +1,17 @@
-/**
- * Copyright (C) 2022 The Android Open Source Project
+/*
+ * Copyright (C) 2025 The Android Open Source Project
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * ```
  *      http://www.apache.org/licenses/LICENSE-2.0
- * ```
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.android.healthconnect.controller.permissions.connectedapps
 
@@ -214,6 +214,7 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
                 is DisconnectAllState.Loading -> {
                     showLoadingDialog()
                 }
+
                 else -> {
                     dismissLoadingDialog()
                 }
@@ -228,17 +229,24 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
                 setupSharedMenu(viewLifecycleOwner, logger)
                 setUpEmptyState()
             } else {
-                setupMenu(R.menu.connected_apps, viewLifecycleOwner, logger) { menuItem ->
-                    when (menuItem.itemId) {
-                        R.id.menu_search -> {
-                            searchMenuItem = menuItem
-                            logger.logInteraction(AppPermissionsElement.SEARCH_BUTTON)
-                            findNavController().navigate(R.id.action_connectedApps_to_searchApps)
-                            true
+                setupMenu(
+                    R.menu.connected_apps,
+                    viewLifecycleOwner,
+                    logger,
+                    { menuItem ->
+                        when (menuItem.itemId) {
+                            R.id.menu_search -> {
+                                searchMenuItem = menuItem
+                                logger.logInteraction(AppPermissionsElement.SEARCH_BUTTON)
+                                findNavController()
+                                    .navigate(R.id.action_connectedApps_to_searchApps)
+                                true
+                            }
+
+                            else -> false
                         }
-                        else -> false
-                    }
-                }
+                    },
+                )
                 logger.logImpression(AppPermissionsElement.SEARCH_BUTTON)
 
                 topIntroPreference.title = getString(R.string.connected_apps_text)
@@ -383,8 +391,10 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
             when (app.permissionsType) {
                 AppPermissionsType.FITNESS_PERMISSIONS_ONLY ->
                     R.id.action_connectedApps_to_fitnessApp
+
                 AppPermissionsType.MEDICAL_PERMISSIONS_ONLY ->
                     R.id.action_connectedApps_to_medicalApp
+
                 AppPermissionsType.COMBINED_PERMISSIONS ->
                     R.id.action_connectedApps_to_combinedPermissions
             }
