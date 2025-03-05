@@ -26,9 +26,14 @@
         <item name="android:backgroundTint">@color/settingslib_materialColorPrimary</item>
     </style>
 
-    <style name="TextAppearance.HealthConnect.Expressive.Heading" parent="@style/SettingsLibCollapsingToolbarTitle.Expanded">
+    <style name="TextAppearance.HealthConnect.Expressive.PermissionHeading" parent="@style/SettingsLibCollapsingToolbarTitle.Expanded">
         <item name="android:textSize">28sp</item>
         <item name="android:lineHeight">36sp</item>
+    </style>
+
+    <style name="TextAppearance.HealthConnect.Expressive.Heading" parent="@style/SettingsLibCollapsingToolbarTitle.Expanded">
+        <item name="android:textSize">36sp</item>
+        <item name="android:lineHeight">44sp</item>
     </style>
 
     <style name="TextAppearance.HealthConnect.Expressive.DetailedHeading" parent="@style/SettingsLibCollapsingToolbarTitle.Expanded">
