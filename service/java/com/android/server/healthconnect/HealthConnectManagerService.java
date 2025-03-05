@@ -247,6 +247,17 @@ public class HealthConnectManagerService extends SystemService {
                         Slog.e(TAG, "Failed to schedule periodic export job.", e);
                     }
                 });
+
+        if (Flags.stepTrackingEnabled()) {
+            threadScheduler.scheduleInternalTask(
+                    () -> {
+                        try {
+                            mHealthConnectInjector.getTrackerManager().initialize();
+                        } catch (Exception e) {
+                            Slog.e(TAG, "Failed to initialize steps tracker.", e);
+                        }
+                    });
+        }
     }
 
     private static Context getUserContext(Context context, UserHandle user) {
