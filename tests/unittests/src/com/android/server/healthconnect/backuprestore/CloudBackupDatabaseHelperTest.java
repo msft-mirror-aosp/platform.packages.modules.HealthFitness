@@ -155,6 +155,7 @@ public class CloudBackupDatabaseHelperTest {
         mCloudBackupDatabaseHelper =
                 new CloudBackupDatabaseHelper(
                         mTransactionManager,
+                        healthConnectInjector.getFitnessRecordReadHelper(),
                         mAppInfoHelper,
                         deviceInfoHelper,
                         healthConnectMappings,

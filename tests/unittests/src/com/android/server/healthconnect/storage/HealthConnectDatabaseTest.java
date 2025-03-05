@@ -164,15 +164,8 @@ public class HealthConnectDatabaseTest {
         assertPhrTablesExist(transactionManager);
         // read the StepsRecord and assert that it's intact
         List<RecordInternal<?>> recordInternals =
-                transactionManager.readRecordsByIds(
-                        transactionTestUtils.getReadTransactionRequest(
-                                TEST_PACKAGE_NAME,
-                                Map.of(RECORD_TYPE_STEPS, originalStepsRecordUuids)),
-                        injector.getAppInfoHelper(),
-                        injector.getDeviceInfoHelper(),
-                        injector.getAccessLogsHelper(),
-                        injector.getReadAccessLogsHelper(),
-                        false);
+                transactionTestUtils.readRecordsByIds(
+                        TEST_PACKAGE_NAME, Map.of(RECORD_TYPE_STEPS, originalStepsRecordUuids));
         assertThat(recordInternals).hasSize(1);
         assertThat(recordInternals.get(0).toExternalRecord())
                 .isEqualTo(originalStepsRecordInternal.toExternalRecord());

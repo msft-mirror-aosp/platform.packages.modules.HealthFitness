@@ -182,6 +182,7 @@ import com.android.server.healthconnect.exportimport.DocumentProvidersManager;
 import com.android.server.healthconnect.exportimport.ExportImportJobs;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.exportimport.ImportManager;
+import com.android.server.healthconnect.fitness.FitnessRecordReadHelper;
 import com.android.server.healthconnect.logging.ExportImportLogger;
 import com.android.server.healthconnect.logging.HealthConnectServiceLogger;
 import com.android.server.healthconnect.migration.DataMigrationManager;
@@ -216,7 +217,6 @@ import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHe
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.request.AggregateTransactionRequest;
 import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
-import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInternalRequest;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
@@ -287,6 +287,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private final DeviceInfoHelper mDeviceInfoHelper;
     private final ExportImportSettingsStorage mExportImportSettingsStorage;
     private final PreferenceHelper mPreferenceHelper;
+    private FitnessRecordReadHelper mFitnessRecordReadHelper;
     private MedicalResourceHelper mMedicalResourceHelper;
     private MedicalDataSourceHelper mMedicalDataSourceHelper;
     private final ExportManager mExportManager;
@@ -320,6 +321,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             MigrationStateManager migrationStateManager,
             MigrationUiStateManager migrationUiStateManager,
             MigrationCleaner migrationCleaner,
+            FitnessRecordReadHelper fitnessRecordReadHelper,
             MedicalResourceHelper medicalResourceHelper,
             MedicalDataSourceHelper medicalDataSourceHelper,
             ExportManager exportManager,
@@ -362,6 +364,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mMigrationUiStateManager.attachTo(migrationStateManager);
         migrationCleaner.attachTo(migrationStateManager);
 
+        mFitnessRecordReadHelper = fitnessRecordReadHelper;
         mMedicalResourceHelper = medicalResourceHelper;
         mMedicalDataSourceHelper = medicalDataSourceHelper;
 
@@ -397,6 +400,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         mContext,
                         mExportImportSettingsStorage,
                         mTransactionManager,
+                        mFitnessRecordReadHelper,
                         mDeviceInfoHelper,
                         mHealthDataCategoryPriorityHelper,
                         clockForLogging,
@@ -408,6 +412,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 isCloudBackupRestoreEnabled()
                         ? new CloudBackupManager(
                                 mTransactionManager,
+                                mFitnessRecordReadHelper,
                                 mAppInfoHelper,
                                 mDeviceInfoHelper,
                                 mHealthConnectMappings,
@@ -421,6 +426,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 isCloudBackupRestoreEnabled()
                         ? new CloudRestoreManager(
                                 mTransactionManager,
+                                mFitnessRecordReadHelper,
                                 mInternalHealthConnectMappings,
                                 mDeviceInfoHelper,
                                 mAppInfoHelper,
@@ -800,48 +806,21 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             }
                         }
 
-                        ReadTransactionRequest readTransactionRequest =
-                                new ReadTransactionRequest(
-                                        mAppInfoHelper,
+                        boolean shouldRecordAccessLog = !holdsDataManagementPermission;
+                        Pair<List<RecordInternal<?>>, PageTokenWrapper> readRecordsResponse =
+                                mFitnessRecordReadHelper.readRecords(
+                                        mTransactionManager,
                                         callingPackageName,
                                         request,
                                         startDateAccessEpochMilli,
                                         enforceSelfRead,
                                         grantedExtraReadPermissions,
-                                        isInForeground);
-                        // throw an exception if read requested is not for a single record type
-                        // i.e. size of read table request is not equal to 1.
-                        if (readTransactionRequest.getReadRequests().size() != 1) {
-                            throw new IllegalArgumentException(
-                                    "Read requested is not for a single record type");
-                        }
+                                        isInForeground,
+                                        shouldRecordAccessLog,
+                                        /* packageNamesByAppIds= */ null);
+                        List<RecordInternal<?>> records = readRecordsResponse.first;
+                        long pageToken = readRecordsResponse.second.encode();
 
-                        List<RecordInternal<?>> records;
-                        long pageToken;
-                        boolean shouldRecordAccessLog = !holdsDataManagementPermission;
-                        if (request.getRecordIdFiltersParcel() != null) {
-                            records =
-                                    mTransactionManager.readRecordsByIds(
-                                            readTransactionRequest,
-                                            mAppInfoHelper,
-                                            mDeviceInfoHelper,
-                                            mAccessLogsHelper,
-                                            mReadAccessLogsHelper,
-                                            shouldRecordAccessLog);
-                            pageToken = DEFAULT_LONG;
-                        } else {
-                            Pair<List<RecordInternal<?>>, PageTokenWrapper> readRecordsResponse =
-                                    mTransactionManager.readRecordsAndPageToken(
-                                            readTransactionRequest,
-                                            mAppInfoHelper,
-                                            mDeviceInfoHelper,
-                                            shouldRecordAccessLog,
-                                            mAccessLogsHelper,
-                                            mReadAccessLogsHelper,
-                                            /* packageNamesByAppIds= */ null);
-                            records = readRecordsResponse.first;
-                            pageToken = readRecordsResponse.second.encode();
-                        }
                         logger.setNumberOfRecords(records.size());
 
                         if (Constants.DEBUG) {
@@ -869,7 +848,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     } catch (TypeNotPresentException exception) {
                         // All the requested package names are not present, so simply
                         // return an empty list
-                        if (ReadTransactionRequest.TYPE_NOT_PRESENT_PACKAGE_NAME.equals(
+                        if (FitnessRecordReadHelper.TYPE_NOT_PRESENT_PACKAGE_NAME.equals(
                                 exception.typeName())) {
                             if (Constants.DEBUG) {
                                 Slog.d(TAG, "No app info recorded for " + callingPackageName);
@@ -1114,21 +1093,15 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                     .getPackageNamesToFilter()
                                     .equals(singletonList(callerPackageName));
                     List<RecordInternal<?>> recordInternals =
-                            mTransactionManager.readRecordsByIds(
-                                    new ReadTransactionRequest(
-                                            mAppInfoHelper,
-                                            callerPackageName,
-                                            recordTypeToInsertedUuids,
-                                            startDateAccessEpochMilli,
-                                            grantedExtraReadPermissions,
-                                            isInForeground,
-                                            isReadingSelfData),
-                                    mAppInfoHelper,
-                                    mDeviceInfoHelper,
-                                    mAccessLogsHelper,
-                                    mReadAccessLogsHelper,
-                                    /* shouldRecordAccessLog= */ true);
-
+                            mFitnessRecordReadHelper.readRecords(
+                                    mTransactionManager,
+                                    callerPackageName,
+                                    recordTypeToInsertedUuids,
+                                    startDateAccessEpochMilli,
+                                    grantedExtraReadPermissions,
+                                    isInForeground,
+                                    /* shouldRecordAccessLog= */ true,
+                                    isReadingSelfData);
                     List<DeletedLog> deletedLogs =
                             ChangeLogsHelper.getDeletedLogs(changeLogsResponse.getChangeLogsMap());
 

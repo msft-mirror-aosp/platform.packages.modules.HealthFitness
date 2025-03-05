@@ -129,6 +129,7 @@ public class BackupRestoreWithoutMocksTest {
                         healthConnectInjector.getMigrationStateManager(),
                         healthConnectInjector.getPreferenceHelper(),
                         transactionManager,
+                        healthConnectInjector.getFitnessRecordReadHelper(),
                         mContext,
                         healthConnectInjector.getDeviceInfoHelper(),
                         healthConnectInjector.getHealthDataCategoryPriorityHelper(),

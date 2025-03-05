@@ -129,6 +129,7 @@ public class CloudBackupManagerTest {
         mCloudBackupManager =
                 new CloudBackupManager(
                         mTransactionManager,
+                        healthConnectInjector.getFitnessRecordReadHelper(),
                         appInfoHelper,
                         deviceInfoHelper,
                         healthConnectMappings,
