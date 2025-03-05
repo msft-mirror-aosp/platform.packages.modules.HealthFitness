@@ -34,7 +34,9 @@ import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.exportimport.ExportFrequencyFragment
 import com.android.healthconnect.controller.exportimport.api.ExportFrequency
 import com.android.healthconnect.controller.exportimport.api.ExportSettingsViewModel
+import com.android.healthconnect.controller.tests.utils.checkBoxOf
 import com.android.healthconnect.controller.tests.utils.launchFragment
+import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.utils.logging.ExportFrequencyElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.google.common.truth.Truth.assertThat
@@ -46,6 +48,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
@@ -70,19 +73,19 @@ class ExportFrequencyFragmentTest {
         whenever(exportSettingsViewModel.selectedExportFrequency).then {
             MutableLiveData(ExportFrequency.EXPORT_FREQUENCY_NEVER)
         }
+        toggleAnimation(false)
     }
 
     @After
     fun tearDown() {
         reset(healthConnectLogger)
         reset(exportSettingsViewModel)
+        toggleAnimation(true)
     }
 
     @Test
     fun exportFrequencyFragment_isDisplayedCorrectly() {
         launchFragment<ExportFrequencyFragment>(Bundle())
-
-        onView(withId(R.id.export_frequency_header_repeat_icon)).check(matches(isDisplayed()))
 
         onView(withText("Set up scheduled export")).check(matches(isDisplayed()))
         onView(withText("Choose how frequently to export your data")).check(matches(isDisplayed()))
@@ -98,8 +101,6 @@ class ExportFrequencyFragmentTest {
     @Test
     fun exportFrequencyFragment_impressionsLogged() {
         launchFragment<ExportFrequencyFragment>(Bundle())
-
-        onView(withId(R.id.export_frequency_header_repeat_icon)).check(matches(isDisplayed()))
 
         verify(healthConnectLogger).logPageImpression()
         verify(healthConnectLogger)
@@ -118,9 +119,11 @@ class ExportFrequencyFragmentTest {
     fun exportFrequencyFragment_cancelButton_isClickable() {
         launchFragment<ExportFrequencyFragment>(Bundle())
 
-        onView(withId(R.id.export_import_cancel_button)).check(matches(isClickable()))
-        onView(withId(R.id.export_import_cancel_button)).perform(click())
+        onView(withId(R.id.secondary_button)).check(matches(isClickable()))
+        onView(withId(R.id.secondary_button)).perform(click())
 
+        verify(exportSettingsViewModel)
+            .updateSelectedFrequency(ExportFrequency.EXPORT_FREQUENCY_NEVER)
         verify(healthConnectLogger)
             .logInteraction(ExportFrequencyElement.EXPORT_FREQUENCY_BACK_BUTTON)
     }
@@ -133,8 +136,8 @@ class ExportFrequencyFragmentTest {
             Navigation.setViewNavController(this.requireView(), navHostController)
         }
 
-        onView(withId(R.id.export_import_next_button)).check(matches(isClickable()))
-        onView(withId(R.id.export_import_next_button)).perform(click())
+        onView(withId(R.id.primary_button_full)).check(matches(isClickable()))
+        onView(withId(R.id.primary_button_full)).perform(click())
 
         assertThat(navHostController.currentDestination?.id)
             .isEqualTo(R.id.exportDestinationFragment)
@@ -150,9 +153,11 @@ class ExportFrequencyFragmentTest {
             Navigation.setViewNavController(this.requireView(), navHostController)
         }
 
-        onView(withId(R.id.radio_button_daily)).check(matches(isChecked()))
-        onView(withId(R.id.export_import_next_button)).perform(click())
+        onView(withText("Daily")).perform(click())
+        onView(withId(R.id.primary_button_full)).perform(click())
 
+        verify(exportSettingsViewModel, times(2))
+            .updateSelectedFrequency(ExportFrequency.EXPORT_FREQUENCY_DAILY)
         verify(healthConnectLogger)
             .logInteraction(ExportFrequencyElement.EXPORT_FREQUENCY_DAILY_BUTTON)
     }
@@ -165,9 +170,11 @@ class ExportFrequencyFragmentTest {
             Navigation.setViewNavController(this.requireView(), navHostController)
         }
 
-        onView(withId(R.id.radio_button_weekly)).perform(click())
-        onView(withId(R.id.export_import_next_button)).perform(click())
+        onView(withText("Weekly")).perform(click())
+        onView(withId(R.id.primary_button_full)).perform(click())
 
+        verify(exportSettingsViewModel)
+            .updateSelectedFrequency(ExportFrequency.EXPORT_FREQUENCY_WEEKLY)
         verify(healthConnectLogger)
             .logInteraction(ExportFrequencyElement.EXPORT_FREQUENCY_WEEKLY_BUTTON)
     }
@@ -180,9 +187,11 @@ class ExportFrequencyFragmentTest {
             Navigation.setViewNavController(this.requireView(), navHostController)
         }
 
-        onView(withId(R.id.radio_button_monthly)).perform(click())
-        onView(withId(R.id.export_import_next_button)).perform(click())
+        onView(withText("Monthly")).perform(click())
+        onView(withId(R.id.primary_button_full)).perform(click())
 
+        verify(exportSettingsViewModel)
+            .updateSelectedFrequency(ExportFrequency.EXPORT_FREQUENCY_MONTHLY)
         verify(healthConnectLogger)
             .logInteraction(ExportFrequencyElement.EXPORT_FREQUENCY_MONTHLY_BUTTON)
     }
@@ -191,11 +200,9 @@ class ExportFrequencyFragmentTest {
     fun exportFrequencyFragment_dailyButtonIsCheckedByDefault() {
         launchFragment<ExportFrequencyFragment>(Bundle())
 
-        onView(withId(R.id.radio_button_daily)).check(matches(isChecked()))
+        onView(checkBoxOf("Daily")).check(matches(isChecked()))
 
-        verify(exportSettingsViewModel, times(2))
-            .updateSelectedFrequency(ExportFrequency.EXPORT_FREQUENCY_DAILY)
-        verify(healthConnectLogger, times(0))
+        verify(healthConnectLogger, never())
             .logInteraction(ExportFrequencyElement.EXPORT_FREQUENCY_DAILY_BUTTON)
     }
 
@@ -203,11 +210,11 @@ class ExportFrequencyFragmentTest {
     fun exportFrequencyFragment_checksWeeklyButton_updatesSelectedFrequency() {
         launchFragment<ExportFrequencyFragment>(Bundle())
 
-        onView(withId(R.id.radio_button_weekly)).perform(click())
+        onView(withText("Weekly")).perform(click())
 
         verify(exportSettingsViewModel)
             .updateSelectedFrequency(ExportFrequency.EXPORT_FREQUENCY_WEEKLY)
-        verify(healthConnectLogger, times(0))
+        verify(healthConnectLogger)
             .logInteraction(ExportFrequencyElement.EXPORT_FREQUENCY_WEEKLY_BUTTON)
     }
 
@@ -215,11 +222,11 @@ class ExportFrequencyFragmentTest {
     fun exportFrequencyFragment_checksMonthlyButton_updatesSelectedFrequency() {
         launchFragment<ExportFrequencyFragment>(Bundle())
 
-        onView(withId(R.id.radio_button_monthly)).perform(click())
+        onView(withText("Monthly")).perform(click())
 
         verify(exportSettingsViewModel)
             .updateSelectedFrequency(ExportFrequency.EXPORT_FREQUENCY_MONTHLY)
-        verify(healthConnectLogger, times(0))
+        verify(healthConnectLogger)
             .logInteraction(ExportFrequencyElement.EXPORT_FREQUENCY_MONTHLY_BUTTON)
     }
 
@@ -230,7 +237,7 @@ class ExportFrequencyFragmentTest {
         }
         launchFragment<ExportFrequencyFragment>(Bundle())
 
-        onView(withId(R.id.radio_button_daily)).check(matches(isChecked()))
+        onView(checkBoxOf("Daily")).check(matches(isChecked()))
     }
 
     @Test
@@ -240,7 +247,7 @@ class ExportFrequencyFragmentTest {
         }
         launchFragment<ExportFrequencyFragment>(Bundle())
 
-        onView(withId(R.id.radio_button_weekly)).check(matches(isChecked()))
+        onView(checkBoxOf("Weekly")).check(matches(isChecked()))
     }
 
     @Test
@@ -250,6 +257,6 @@ class ExportFrequencyFragmentTest {
         }
         launchFragment<ExportFrequencyFragment>(Bundle())
 
-        onView(withId(R.id.radio_button_monthly)).check(matches(isChecked()))
+        onView(checkBoxOf("Monthly")).check(matches(isChecked()))
     }
 }
