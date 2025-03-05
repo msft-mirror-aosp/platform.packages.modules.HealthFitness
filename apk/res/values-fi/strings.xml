@@ -444,8 +444,7 @@
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Lue tietosuojakäytäntö"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Käytetty 24 viime tunnin aikana"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Sovellusten pääsyoikeudet"</string>
-    <!-- no translation found for connected_apps_empty_list_section_title (7684166767384190933) -->
-    <skip />
+    <string name="connected_apps_empty_list_section_title" msgid="7684166767384190933">"Yhteensopivia sovelluksia ei ole asennettu"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Lisäluvat"</string>
     <string name="additional_access_summary" msgid="1076197455435130191">"Aiempi data, taustatiedot"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Sovelluksen lisäluvat poistettu"</string>

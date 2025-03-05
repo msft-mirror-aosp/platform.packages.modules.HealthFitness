@@ -444,8 +444,7 @@
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"閱讀隱私權政策"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"上次存取時間：過去 24 小時內"</string>
     <string name="app_access_title" msgid="7137018424885371763">"應用程式存取權"</string>
-    <!-- no translation found for connected_apps_empty_list_section_title (7684166767384190933) -->
-    <skip />
+    <string name="connected_apps_empty_list_section_title" msgid="7684166767384190933">"未安裝相容的應用程式"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"額外存取權"</string>
     <string name="additional_access_summary" msgid="1076197455435130191">"過去的資料、背景資料"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"這個應用程式的其他權限已移除"</string>

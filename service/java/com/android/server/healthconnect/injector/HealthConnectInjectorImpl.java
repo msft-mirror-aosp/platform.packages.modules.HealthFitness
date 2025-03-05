@@ -16,7 +16,9 @@
 
 package com.android.server.healthconnect.injector;
 
+import android.app.AppOpsManager;
 import android.content.Context;
+import android.health.connect.HealthConnectManager;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.os.Environment;
 import android.os.UserHandle;
@@ -50,6 +52,7 @@ import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.AppOpLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper.DatabaseHelpers;
@@ -90,6 +93,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     private final MigrationStateManager mMigrationStateManager;
     private final DeviceInfoHelper mDeviceInfoHelper;
     private final AppInfoHelper mAppInfoHelper;
+    private final AppOpLogsHelper mAppOpLogsHelper;
     private final AccessLogsHelper mAccessLogsHelper;
     private final ActivityDateHelper mActivityDateHelper;
     private final HealthConnectMappings mHealthConnectMappings;
@@ -127,7 +131,6 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         // Any class that is using this user below are responsible for making sure that they
         // update any reference to user when it changes.
         UserHandle userHandle = builder.mUserHandle;
-
         HealthConnectContext hcContext =
                 builder.mEnvironmentDataDirectory == null
                         ? HealthConnectContext.create(context, userHandle)
@@ -227,10 +230,20 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                 builder.mDeviceInfoHelper == null
                         ? new DeviceInfoHelper(mTransactionManager, mDatabaseHelpers)
                         : builder.mDeviceInfoHelper;
+        mAppOpLogsHelper =
+                builder.mAppOpLogsHelper == null
+                        ? new AppOpLogsHelper(
+                                context.getSystemService(AppOpsManager.class),
+                                context.getPackageManager(),
+                                HealthConnectManager.getHealthPermissions(context))
+                        : builder.mAppOpLogsHelper;
         mAccessLogsHelper =
                 builder.mAccessLogsHelper == null
                         ? new AccessLogsHelper(
-                                mTransactionManager, mAppInfoHelper, mDatabaseHelpers)
+                                mTransactionManager,
+                                mAppInfoHelper,
+                                mAppOpLogsHelper,
+                                mDatabaseHelpers)
                         : builder.mAccessLogsHelper;
         mActivityDateHelper =
                 builder.mActivityDateHelper == null
@@ -574,6 +587,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         @Nullable private MigrationStateManager mMigrationStateManager;
         @Nullable private DeviceInfoHelper mDeviceInfoHelper;
         @Nullable private AppInfoHelper mAppInfoHelper;
+        @Nullable private AppOpLogsHelper mAppOpLogsHelper;
         @Nullable private AccessLogsHelper mAccessLogsHelper;
         @Nullable private ActivityDateHelper mActivityDateHelper;
         @Nullable private ChangeLogsHelper mChangeLogsHelper;
@@ -676,6 +690,13 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         public Builder setAppInfoHelper(AppInfoHelper appInfoHelper) {
             Objects.requireNonNull(appInfoHelper);
             mAppInfoHelper = appInfoHelper;
+            return this;
+        }
+
+        /** Set fake or custom {@link AppOpLogsHelper} */
+        public Builder setAppOpLogsHelper(AppOpLogsHelper appOpLogsHelper) {
+            Objects.requireNonNull(appOpLogsHelper);
+            mAppOpLogsHelper = appOpLogsHelper;
             return this;
         }
 

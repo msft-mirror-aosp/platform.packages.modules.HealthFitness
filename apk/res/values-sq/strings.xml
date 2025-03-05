@@ -444,8 +444,7 @@
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Lexo politikën e privatësisë"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Qasja gjatë 24 orëve të fundit"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Qasja e aplikacionit"</string>
-    <!-- no translation found for connected_apps_empty_list_section_title (7684166767384190933) -->
-    <skip />
+    <string name="connected_apps_empty_list_section_title" msgid="7684166767384190933">"Nuk është instaluar asnjë aplikacion i përputhshëm"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Qasja shtesë"</string>
     <string name="additional_access_summary" msgid="1076197455435130191">"Të dhënat e kaluara, të dhënat në sfond"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"U hoqën lejet shtesë për këtë aplikacion"</string>
