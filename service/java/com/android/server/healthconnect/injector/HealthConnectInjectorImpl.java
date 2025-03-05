@@ -18,6 +18,7 @@ package com.android.server.healthconnect.injector;
 
 import android.app.AppOpsManager;
 import android.content.Context;
+import android.health.HealthFitnessStatsLog;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.os.Environment;
@@ -31,6 +32,7 @@ import com.android.server.healthconnect.HealthConnectThreadScheduler;
 import com.android.server.healthconnect.backuprestore.BackupRestore;
 import com.android.server.healthconnect.exportimport.ExportImportNotificationSender;
 import com.android.server.healthconnect.exportimport.ExportManager;
+import com.android.server.healthconnect.logging.ExportImportLogger;
 import com.android.server.healthconnect.logging.UsageStatsCollector;
 import com.android.server.healthconnect.migration.MigrationBroadcastScheduler;
 import com.android.server.healthconnect.migration.MigrationCleaner;
@@ -119,6 +121,8 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     private final AppOpsManagerLocal mAppOpsManagerLocal;
     private final HealthConnectThreadScheduler mThreadScheduler;
     private final File mEnvironmentDataDirectory;
+    private final HealthFitnessStatsLog mHealthFitnesssStatsLog;
+    private final ExportImportLogger mExportImportLogger;
 
     public HealthConnectInjectorImpl(Context context) {
         this(new Builder(context));
@@ -136,6 +140,9 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                 builder.mEnvironmentDataDirectory == null
                         ? Environment.getDataDirectory()
                         : builder.mEnvironmentDataDirectory;
+        mHealthFitnesssStatsLog =
+                builder.mStatsLog == null ? new HealthFitnessStatsLog() : builder.mStatsLog;
+        mExportImportLogger = new ExportImportLogger(mHealthFitnesssStatsLog);
 
         HealthConnectContext hcContext =
                 HealthConnectContext.create(
@@ -212,7 +219,8 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                                 mExportImportSettingsStorage,
                                 mTransactionManager,
                                 mExportImportNotificationSender,
-                                mEnvironmentDataDirectory)
+                                mEnvironmentDataDirectory,
+                                mExportImportLogger)
                         : builder.mExportManager;
         mMigrationBroadcastScheduler =
                 builder.mMigrationBroadcastScheduler == null
@@ -562,6 +570,16 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         return mEnvironmentDataDirectory;
     }
 
+    @Override
+    public HealthFitnessStatsLog getHealthFitnessStatsLog() {
+        return mHealthFitnesssStatsLog;
+    }
+
+    @Override
+    public ExportImportLogger getExportImportLogger() {
+        return mExportImportLogger;
+    }
+
     /**
      * Returns a new Builder of Health Connect Injector
      *
@@ -620,6 +638,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         @Nullable private File mEnvironmentDataDirectory;
         @Nullable private AppOpsManagerLocal mAppOpsManagerLocal;
         @Nullable private HealthConnectThreadScheduler mThreadScheduler;
+        @Nullable private HealthFitnessStatsLog mStatsLog;
 
         private Builder(Context context) {
             mContext = context;
@@ -871,6 +890,12 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         /** Set fake or custom {@link AppOpsManagerLocal}. */
         public Builder setThreadScheduler(HealthConnectThreadScheduler threadScheduler) {
             mThreadScheduler = Objects.requireNonNull(threadScheduler);
+            return this;
+        }
+
+        /** Set fake or custom {@link AppOpsManagerLocal}. */
+        public Builder setHealthFitnessStatsLog(HealthFitnessStatsLog statsLog) {
+            mStatsLog = Objects.requireNonNull(statsLog);
             return this;
         }
 

@@ -77,6 +77,7 @@ public class ImportManager {
     private final HealthConnectNotificationSender mNotificationSender;
     private final ExportImportSettingsStorage mExportImportSettingsStorage;
     private final File mEnvironmentDataDirectory;
+    private final ExportImportLogger mExportImportLogger;
     @Nullable private final Clock mClock;
 
     public ImportManager(
@@ -88,7 +89,8 @@ public class ImportManager {
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
             @Nullable Clock clock,
             HealthConnectNotificationSender notificationSender,
-            File environmentDataDirectory) {
+            File environmentDataDirectory,
+            ExportImportLogger exportImportLogger) {
         mContext = context;
         mDatabaseMerger =
                 new DatabaseMerger(
@@ -101,6 +103,7 @@ public class ImportManager {
         mClock = clock;
         mNotificationSender = notificationSender;
         mEnvironmentDataDirectory = environmentDataDirectory;
+        mExportImportLogger = exportImportLogger;
     }
 
     /** Reads and merges the backup data from a local file. */
@@ -111,7 +114,7 @@ public class ImportManager {
         mNotificationSender.sendNotificationAsUser(
                 NOTIFICATION_TYPE_IMPORT_IN_PROGRESS, userHandle);
 
-        ExportImportLogger.logImportStatus(
+        mExportImportLogger.logImportStatus(
                 DATA_IMPORT_STARTED,
                 ExportImportLogger.NO_VALUE_RECORDED,
                 ExportImportLogger.NO_VALUE_RECORDED,
@@ -313,7 +316,7 @@ public class ImportManager {
         if (!Flags.exportImportFastFollow()) return;
         // Convert to int to save on logs storage, int can hold about 68 years
         int timeToErrorMillis = mClock != null ? (int) (mClock.millis() - startTimeMillis) : -1;
-        ExportImportLogger.logImportStatus(
+        mExportImportLogger.logImportStatus(
                 importStatus, timeToErrorMillis, originalDataSizeKb, compressedDataSizeKb);
     }
 
@@ -323,7 +326,7 @@ public class ImportManager {
         if (!Flags.exportImportFastFollow()) return;
         // Convert to int to save on logs storage, int can hold about 68 years
         int timeToErrorMillis = mClock != null ? (int) (mClock.millis() - startTimeMillis) : -1;
-        ExportImportLogger.logImportStatus(
+        mExportImportLogger.logImportStatus(
                 DATA_IMPORT_ERROR_NONE,
                 timeToErrorMillis,
                 originalDataSizeKb,

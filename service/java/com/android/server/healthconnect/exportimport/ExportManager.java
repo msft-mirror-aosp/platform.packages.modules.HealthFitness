@@ -81,6 +81,7 @@ public class ExportManager {
 
     private final HealthConnectNotificationSender mNotificationSender;
     private final File mEnvironmentDataDirectory;
+    private final ExportImportLogger mExportImportLogger;
 
     // Tables to drop instead of tables to keep to avoid risk of bugs if new data types are added.
     /**
@@ -104,13 +105,15 @@ public class ExportManager {
             ExportImportSettingsStorage exportImportSettingsStorage,
             TransactionManager transactionManager,
             HealthConnectNotificationSender notificationSender,
-            File environmentDataDirectory) {
+            File environmentDataDirectory,
+            ExportImportLogger exportImportLogger) {
         mContext = context;
         mClock = clock;
         mExportImportSettingsStorage = exportImportSettingsStorage;
         mTransactionManager = transactionManager;
         mNotificationSender = notificationSender;
         mEnvironmentDataDirectory = environmentDataDirectory;
+        mExportImportLogger = exportImportLogger;
     }
 
     /**
@@ -120,7 +123,7 @@ public class ExportManager {
     public synchronized boolean runExport(UserHandle userHandle) {
         Slog.i(TAG, "Export started.");
         long startTimeMillis = mClock.millis();
-        ExportImportLogger.logExportStatus(
+        mExportImportLogger.logExportStatus(
                 DATA_EXPORT_STARTED, NO_VALUE_RECORDED, NO_VALUE_RECORDED, NO_VALUE_RECORDED);
 
         HealthConnectContext dbContext =
@@ -252,7 +255,7 @@ public class ExportManager {
         // explicit. The int can hold 24.855 days worth of milli seconds, which
         // is sufficient because the system would kill the process earlier.
         int timeToSuccessMillis = (int) (mClock.millis() - startTimeMillis);
-        ExportImportLogger.logExportStatus(
+        mExportImportLogger.logExportStatus(
                 DATA_EXPORT_ERROR_NONE,
                 timeToSuccessMillis,
                 originalDataSizeKb,
@@ -279,7 +282,7 @@ public class ExportManager {
 
         // Convert to int to save on logs storage, int can hold about 68 years
         int timeToErrorMillis = (int) (mClock.millis() - startTimeMillis);
-        ExportImportLogger.logExportStatus(
+        mExportImportLogger.logExportStatus(
                 exportStatus, timeToErrorMillis, originalDataSizeKb, compressedDataSizeKb);
     }
 

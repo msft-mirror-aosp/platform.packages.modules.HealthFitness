@@ -42,6 +42,7 @@ import android.content.ContentValues;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.health.HealthFitnessStatsLog;
 import android.health.connect.AggregateResult;
 import android.health.connect.PageTokenWrapper;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
@@ -418,20 +419,28 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     /**
      * Logs metrics specific to a record type's insertion/update.
      *
+     * @param statsLog the log to write to
      * @param recordInternals List of records being inserted/updated
      * @param packageName Caller package name
      */
-    public void logUpsertMetrics(List<RecordInternal<?>> recordInternals, String packageName) {
+    public void logUpsertMetrics(
+            HealthFitnessStatsLog statsLog,
+            List<RecordInternal<?>> recordInternals,
+            String packageName) {
         // Do nothing, implement in record specific helpers
     }
 
     /**
      * Logs metrics specific to a record type's read.
      *
+     * @param statsLog the log to write to
      * @param recordInternals List of records being read
      * @param packageName Caller package name
      */
-    public void logReadMetrics(List<RecordInternal<?>> recordInternals, String packageName) {
+    public void logReadMetrics(
+            HealthFitnessStatsLog statsLog,
+            List<RecordInternal<?>> recordInternals,
+            String packageName) {
         // Do nothing, implement in record specific helpers
     }
 
