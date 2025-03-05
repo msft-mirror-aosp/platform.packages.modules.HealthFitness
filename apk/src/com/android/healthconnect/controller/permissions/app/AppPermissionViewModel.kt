@@ -44,7 +44,6 @@ import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
-import com.android.healthconnect.controller.utils.PermissionUtils
 import com.android.healthfitness.flags.Flags
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -70,7 +69,6 @@ constructor(
     private val loadGrantedHealthPermissionsUseCase: IGetGrantedHealthPermissionsUseCase,
     private val loadExerciseRoutePermissionUseCase: ILoadExerciseRoutePermissionUseCase,
     private val healthPermissionReader: HealthPermissionReader,
-    private val permissionUtils: PermissionUtils,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
@@ -696,7 +694,7 @@ constructor(
             return true
         }
 
-        if (permissionUtils.isBodySensorSplitPermissionApp(packageName)) {
+        if (healthPermissionReader.isBodySensorSplitPermissionApp(packageName)) {
             return true
         }
 
