@@ -20,6 +20,7 @@ package com.android.healthconnect.controller.permissions.connectedapps.wear
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -28,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material3.RadioButton
 import androidx.wear.compose.material3.Text
 import com.android.healthconnect.controller.R
@@ -61,7 +63,14 @@ fun ControlSingleDataTypeForSingleAppScreen(
 
     ScrollableScreen(asScalingList = true, showTimeText = false, title = appMetadata!!.appName) {
         // Data type text.
-        item { Row(horizontalArrangement = Arrangement.Start) { Text(dataTypeStr) } }
+        item {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                horizontalArrangement = Arrangement.Start,
+            ) {
+                Text(dataTypeStr)
+            }
+        }
 
         // "Allow" radio button.
         item {
