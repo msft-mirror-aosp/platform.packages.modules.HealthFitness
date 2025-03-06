@@ -345,6 +345,7 @@ filegroup {
         ":data-screens-new-tests-srcs",
         ":data-screens-old-tests-srcs",
         ":exercise-route-tests-srcs",
+        ":export-tests-srcs",
         ":home-and-onboarding-tests-srcs",
         ":manage-data-tests-srcs",
         ":migration-tests-srcs",

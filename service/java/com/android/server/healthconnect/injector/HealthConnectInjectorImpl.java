@@ -18,6 +18,7 @@ package com.android.server.healthconnect.injector;
 
 import android.app.AppOpsManager;
 import android.content.Context;
+import android.health.HealthFitnessStatsLog;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.os.Environment;
@@ -31,6 +32,8 @@ import com.android.server.healthconnect.HealthConnectThreadScheduler;
 import com.android.server.healthconnect.backuprestore.BackupRestore;
 import com.android.server.healthconnect.exportimport.ExportImportNotificationSender;
 import com.android.server.healthconnect.exportimport.ExportManager;
+import com.android.server.healthconnect.fitness.FitnessRecordReadHelper;
+import com.android.server.healthconnect.logging.ExportImportLogger;
 import com.android.server.healthconnect.logging.UsageStatsCollector;
 import com.android.server.healthconnect.migration.MigrationBroadcastScheduler;
 import com.android.server.healthconnect.migration.MigrationCleaner;
@@ -106,6 +109,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     private final HealthConnectPermissionHelper mHealthConnectPermissionHelper;
     private final MigrationCleaner mMigrationCleaner;
     private final TimeSource mTimeSource;
+    private final FitnessRecordReadHelper mFitnessRecordReadHelper;
     private final MedicalDataSourceHelper mMedicalDataSourceHelper;
     private final MedicalResourceHelper mMedicalResourceHelper;
     private final MigrationBroadcastScheduler mMigrationBroadcastScheduler;
@@ -118,6 +122,9 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     private final HealthConnectNotificationSender mExportImportNotificationSender;
     private final AppOpsManagerLocal mAppOpsManagerLocal;
     private final HealthConnectThreadScheduler mThreadScheduler;
+    private final File mEnvironmentDataDirectory;
+    private final HealthFitnessStatsLog mHealthFitnesssStatsLog;
+    private final ExportImportLogger mExportImportLogger;
 
     public HealthConnectInjectorImpl(Context context) {
         this(new Builder(context));
@@ -131,19 +138,20 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         // Any class that is using this user below are responsible for making sure that they
         // update any reference to user when it changes.
         UserHandle userHandle = builder.mUserHandle;
-        HealthConnectContext hcContext =
-                builder.mEnvironmentDataDirectory == null
-                        ? HealthConnectContext.create(context, userHandle)
-                        : HealthConnectContext.create(
-                                context,
-                                userHandle,
-                                /* databaseDirName= */ null,
-                                builder.mEnvironmentDataDirectory);
-
-        File environmentDataDirectory =
+        mEnvironmentDataDirectory =
                 builder.mEnvironmentDataDirectory == null
                         ? Environment.getDataDirectory()
                         : builder.mEnvironmentDataDirectory;
+        mHealthFitnesssStatsLog =
+                builder.mStatsLog == null ? new HealthFitnessStatsLog() : builder.mStatsLog;
+        mExportImportLogger = new ExportImportLogger(mHealthFitnesssStatsLog);
+
+        HealthConnectContext hcContext =
+                HealthConnectContext.create(
+                        context,
+                        userHandle,
+                        /* databaseDirName= */ null,
+                        mEnvironmentDataDirectory);
 
         mDatabaseHelpers = new DatabaseHelpers();
         mInternalHealthConnectMappings = InternalHealthConnectMappings.getInstance();
@@ -212,7 +220,9 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                                 Clock.systemUTC(),
                                 mExportImportSettingsStorage,
                                 mTransactionManager,
-                                mExportImportNotificationSender)
+                                mExportImportNotificationSender,
+                                mEnvironmentDataDirectory,
+                                mExportImportLogger)
                         : builder.mExportManager;
         mMigrationBroadcastScheduler =
                 builder.mMigrationBroadcastScheduler == null
@@ -245,6 +255,11 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                                 mAppOpLogsHelper,
                                 mDatabaseHelpers)
                         : builder.mAccessLogsHelper;
+        mReadAccessLogsHelper =
+                builder.mReadAccessLogsHelper == null
+                        ? new ReadAccessLogsHelper(
+                                mAppInfoHelper, mTransactionManager, mDatabaseHelpers)
+                        : builder.mReadAccessLogsHelper;
         mActivityDateHelper =
                 builder.mActivityDateHelper == null
                         ? new ActivityDateHelper(
@@ -271,7 +286,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                                 mPermissionIntentAppsTracker,
                                 builder.mFirstGrantTimeDatastore == null
                                         ? FirstGrantTimeDatastore.createInstance(
-                                                environmentDataDirectory)
+                                                mEnvironmentDataDirectory)
                                         : builder.mFirstGrantTimeDatastore,
                                 mPackageInfoUtils,
                                 mHealthDataCategoryPriorityHelper,
@@ -306,6 +321,14 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                                 mPriorityMigrationHelper,
                                 mMigrationEntityHelper)
                         : builder.mMigrationCleaner;
+        mFitnessRecordReadHelper =
+                builder.mFitnessRecordReadHelper == null
+                        ? new FitnessRecordReadHelper(
+                                mDeviceInfoHelper,
+                                mAppInfoHelper,
+                                mAccessLogsHelper,
+                                mReadAccessLogsHelper)
+                        : builder.mFitnessRecordReadHelper;
         mMedicalDataSourceHelper =
                 builder.mMedicalDataSourceHelper == null
                         ? new MedicalDataSourceHelper(
@@ -335,19 +358,16 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                         mMigrationStateManager,
                         mPreferenceHelper,
                         mTransactionManager,
+                        mFitnessRecordReadHelper,
                         context,
                         mDeviceInfoHelper,
                         mHealthDataCategoryPriorityHelper,
-                        mThreadScheduler);
+                        mThreadScheduler,
+                        mEnvironmentDataDirectory);
         mPreferencesManager =
                 builder.mPreferencesManager == null
                         ? new PreferencesManager(mPreferenceHelper)
                         : builder.mPreferencesManager;
-        mReadAccessLogsHelper =
-                builder.mReadAccessLogsHelper == null
-                        ? new ReadAccessLogsHelper(
-                                mAppInfoHelper, mTransactionManager, mDatabaseHelpers)
-                        : builder.mReadAccessLogsHelper;
         mAppOpsManagerLocal =
                 builder.mAppOpsManagerLocal == null
                         ? LocalManagerRegistry.getManager(AppOpsManagerLocal.class)
@@ -465,6 +485,11 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     }
 
     @Override
+    public FitnessRecordReadHelper getFitnessRecordReadHelper() {
+        return mFitnessRecordReadHelper;
+    }
+
+    @Override
     public MedicalDataSourceHelper getMedicalDataSourceHelper() {
         return mMedicalDataSourceHelper;
     }
@@ -557,6 +582,20 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         return mThreadScheduler;
     }
 
+    public File getEnvironmentDataDirectory() {
+        return mEnvironmentDataDirectory;
+    }
+
+    @Override
+    public HealthFitnessStatsLog getHealthFitnessStatsLog() {
+        return mHealthFitnesssStatsLog;
+    }
+
+    @Override
+    public ExportImportLogger getExportImportLogger() {
+        return mExportImportLogger;
+    }
+
     /**
      * Returns a new Builder of Health Connect Injector
      *
@@ -603,6 +642,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         @Nullable private HealthConnectNotificationSender mExportImportNotificationSender;
         @Nullable private MigrationCleaner mMigrationCleaner;
         @Nullable private TimeSource mTimeSource;
+        @Nullable private FitnessRecordReadHelper mFitnessRecordReadHelper;
         @Nullable private MedicalDataSourceHelper mMedicalDataSourceHelper;
         @Nullable private MedicalResourceHelper mMedicalResourceHelper;
         @Nullable private MigrationBroadcastScheduler mMigrationBroadcastScheduler;
@@ -615,6 +655,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         @Nullable private File mEnvironmentDataDirectory;
         @Nullable private AppOpsManagerLocal mAppOpsManagerLocal;
         @Nullable private HealthConnectThreadScheduler mThreadScheduler;
+        @Nullable private HealthFitnessStatsLog mStatsLog;
 
         private Builder(Context context) {
             mContext = context;
@@ -787,6 +828,14 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
             return this;
         }
 
+        /** Set fake or custom {@link FitnessRecordReadHelper} */
+        public Builder setFitnessReadRequestHandler(
+                FitnessRecordReadHelper fitnessRecordReadHelper) {
+            Objects.requireNonNull(fitnessRecordReadHelper);
+            mFitnessRecordReadHelper = fitnessRecordReadHelper;
+            return this;
+        }
+
         /** Set fake or custom {@link MedicalDataSourceHelper} */
         public Builder setMedicalDataSourceHelper(MedicalDataSourceHelper medicalDataSourceHelper) {
             Objects.requireNonNull(medicalDataSourceHelper);
@@ -866,6 +915,12 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         /** Set fake or custom {@link AppOpsManagerLocal}. */
         public Builder setThreadScheduler(HealthConnectThreadScheduler threadScheduler) {
             mThreadScheduler = Objects.requireNonNull(threadScheduler);
+            return this;
+        }
+
+        /** Set fake or custom {@link AppOpsManagerLocal}. */
+        public Builder setHealthFitnessStatsLog(HealthFitnessStatsLog statsLog) {
+            mStatsLog = Objects.requireNonNull(statsLog);
             return this;
         }
 

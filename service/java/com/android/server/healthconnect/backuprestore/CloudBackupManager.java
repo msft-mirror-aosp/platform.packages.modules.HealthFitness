@@ -30,6 +30,7 @@ import android.health.connect.backuprestore.GetSettingsForBackupResponse;
 import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.util.Slog;
 
+import com.android.server.healthconnect.fitness.FitnessRecordReadHelper;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.BackupChangeTokenHelper;
@@ -58,6 +59,7 @@ public final class CloudBackupManager {
 
     public CloudBackupManager(
             TransactionManager transactionManager,
+            FitnessRecordReadHelper fitnessRecordReadHelper,
             AppInfoHelper appInfoHelper,
             DeviceInfoHelper deviceInfoHelper,
             HealthConnectMappings healthConnectMappings,
@@ -73,6 +75,7 @@ public final class CloudBackupManager {
         mDatabaseHelper =
                 new CloudBackupDatabaseHelper(
                         transactionManager,
+                        fitnessRecordReadHelper,
                         appInfoHelper,
                         deviceInfoHelper,
                         healthConnectMappings,

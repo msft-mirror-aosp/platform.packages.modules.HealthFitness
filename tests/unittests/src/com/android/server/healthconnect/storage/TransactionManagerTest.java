@@ -32,7 +32,6 @@ import static com.android.server.healthconnect.testing.storage.TransactionTestUt
 
 import static com.google.common.truth.Truth.assertThat;
 
-import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -66,6 +65,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.fitness.FitnessRecordReadHelper;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
@@ -73,10 +73,8 @@ import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTra
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppOpLogsHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
 import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
-import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
 import com.android.server.healthconnect.testing.fixtures.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.testing.storage.TransactionTestUtils;
@@ -93,6 +91,7 @@ import org.mockito.quality.Strictness;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @RunWith(AndroidJUnit4.class)
@@ -123,9 +122,9 @@ public class TransactionManagerTest {
 
     private TransactionTestUtils mTransactionTestUtils;
     private TransactionManager mTransactionManager;
+    private FitnessRecordReadHelper mFitnessRecordReadHelper;
     private AppInfoHelper mAppInfoHelper;
     private AccessLogsHelper mAccessLogsHelper;
-    private DeviceInfoHelper mDeviceInfoHelper;
     private ReadAccessLogsHelper mReadAccessLogsHelper;
     private UserHandle mUserHandle;
 
@@ -139,9 +138,9 @@ public class TransactionManagerTest {
                         .setAppOpLogsHelper(mAppOpLogsHelper)
                         .build();
         mTransactionManager = healthConnectInjector.getTransactionManager();
+        mFitnessRecordReadHelper = healthConnectInjector.getFitnessRecordReadHelper();
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
-        mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
         mReadAccessLogsHelper = spy(healthConnectInjector.getReadAccessLogsHelper());
         mUserHandle = context.getUser();
 
@@ -163,18 +162,19 @@ public class TransactionManagerTest {
                 new ReadRecordsRequestUsingIds.Builder<>(BloodPressureRecord.class)
                         .addId(uuid)
                         .build();
-        ReadTransactionRequest readTransactionRequest =
-                mTransactionTestUtils.getReadTransactionRequest(
-                        request.toReadRecordsRequestParcel());
 
         List<RecordInternal<?>> records =
-                mTransactionManager.readRecordsByIds(
-                        readTransactionRequest,
-                        mAppInfoHelper,
-                        mDeviceInfoHelper,
-                        mAccessLogsHelper,
-                        mReadAccessLogsHelper,
-                        /* shouldRecordAccessLog= */ false);
+                mFitnessRecordReadHelper.readRecords(
+                                mTransactionManager,
+                                TEST_PACKAGE_NAME,
+                                request.toReadRecordsRequestParcel(),
+                                /* startDateAccessMillis= */ 0,
+                                /* enforceSelfRead= */ false,
+                                /* grantedExtraReadPermissions */ Set.of(),
+                                /* isInForeground= */ true,
+                                /* shouldRecordAccessLogs */ false,
+                                /* packageNamesByAppIds= */ null)
+                        .first;
         assertThat(records).hasSize(1);
         assertThat(records.get(0).getUuid()).isEqualTo(UUID.fromString(uuid));
     }
@@ -195,18 +195,19 @@ public class TransactionManagerTest {
                         .addId(uuid)
                         .addId(UUID.randomUUID().toString())
                         .build();
-        ReadTransactionRequest readTransactionRequest =
-                mTransactionTestUtils.getReadTransactionRequest(
-                        request.toReadRecordsRequestParcel());
 
         List<RecordInternal<?>> records =
-                mTransactionManager.readRecordsByIds(
-                        readTransactionRequest,
-                        mAppInfoHelper,
-                        mDeviceInfoHelper,
-                        mAccessLogsHelper,
-                        mReadAccessLogsHelper,
-                        /* shouldRecordAccessLog= */ false);
+                mFitnessRecordReadHelper.readRecords(
+                                mTransactionManager,
+                                TEST_PACKAGE_NAME,
+                                request.toReadRecordsRequestParcel(),
+                                /* startDateAccessMillis= */ 0,
+                                /* enforceSelfRead= */ false,
+                                /* grantedExtraReadPermissions */ Set.of(),
+                                /* isInForeground= */ true,
+                                /* shouldRecordAccessLogs */ false,
+                                /* packageNamesByAppIds= */ null)
+                        .first;
         assertThat(records).hasSize(1);
         assertThat(records.get(0).getUuid()).isEqualTo(UUID.fromString(uuid));
     }
@@ -223,22 +224,27 @@ public class TransactionManagerTest {
 
         List<UUID> stepsUuids = ImmutableList.of(UUID.fromString(uuids.get(0)));
         List<UUID> bloodPressureUuids = ImmutableList.of(UUID.fromString(uuids.get(1)));
-        ReadTransactionRequest request =
-                mTransactionTestUtils.getReadTransactionRequest(
+        List<RecordInternal<?>> records =
+                mFitnessRecordReadHelper.readRecords(
+                        mTransactionManager,
+                        TEST_PACKAGE_NAME,
                         ImmutableMap.of(
                                 RECORD_TYPE_STEPS,
                                 stepsUuids,
                                 RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE,
-                                bloodPressureUuids));
+                                bloodPressureUuids),
+                        /* startDateAccessMillis= */ 0,
+                        /* grantedExtraReadPermissions */ Set.of(),
+                        /* isInForeground= */ true,
+                        /* shouldRecordAccessLogs */ false,
+                        /* isReadingSelfData= */ false);
+        mTransactionTestUtils.readRecordsByIds(
+                ImmutableMap.of(
+                        RECORD_TYPE_STEPS,
+                        stepsUuids,
+                        RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE,
+                        bloodPressureUuids));
 
-        List<RecordInternal<?>> records =
-                mTransactionManager.readRecordsByIds(
-                        request,
-                        mAppInfoHelper,
-                        mDeviceInfoHelper,
-                        mAccessLogsHelper,
-                        mReadAccessLogsHelper,
-                        /* shouldRecordAccessLog= */ false);
         assertThat(records).hasSize(2);
         assertThat(records.get(0).getUuid()).isEqualTo(UUID.fromString(uuids.get(0)));
         assertThat(records.get(1).getUuid()).isEqualTo(UUID.fromString(uuids.get(1)));
@@ -254,47 +260,19 @@ public class TransactionManagerTest {
                 new ReadRecordsRequestUsingIds.Builder<>(BloodPressureRecord.class)
                         .addClientRecordId("id")
                         .build();
-        ReadTransactionRequest readTransactionRequest =
-                mTransactionTestUtils.getReadTransactionRequest(
-                        request.toReadRecordsRequestParcel());
-        mTransactionManager.readRecordsByIds(
-                readTransactionRequest,
-                mAppInfoHelper,
-                mDeviceInfoHelper,
-                mAccessLogsHelper,
-                mReadAccessLogsHelper,
-                /* shouldRecordAccessLog= */ false);
+        mFitnessRecordReadHelper.readRecords(
+                mTransactionManager,
+                TEST_PACKAGE_NAME,
+                request.toReadRecordsRequestParcel(),
+                /* startDateAccessMillis= */ 0,
+                /* enforceSelfRead= */ false,
+                /* grantedExtraReadPermissions */ Set.of(),
+                /* isInForeground= */ true,
+                /* shouldRecordAccessLogs */ false,
+                /* packageNamesByAppIds= */ null);
 
         List<AccessLog> result = mAccessLogsHelper.queryAccessLogs(mUserHandle);
         assertThat(result).isEmpty();
-    }
-
-    @Test
-    public void readRecordsById_readByFilterRequest_throws() {
-        ReadRecordsRequestUsingFilters<StepsRecord> request =
-                new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
-                        .setTimeRangeFilter(
-                                new TimeInstantRangeFilter.Builder()
-                                        .setStartTime(Instant.EPOCH)
-                                        .setEndTime(Instant.ofEpochMilli(1000))
-                                        .build())
-                        .setPageSize(1)
-                        .build();
-        ReadTransactionRequest readTransactionRequest =
-                mTransactionTestUtils.getReadTransactionRequest(
-                        request.toReadRecordsRequestParcel());
-        Throwable thrown =
-                assertThrows(
-                        IllegalArgumentException.class,
-                        () ->
-                                mTransactionManager.readRecordsByIds(
-                                        readTransactionRequest,
-                                        mAppInfoHelper,
-                                        mDeviceInfoHelper,
-                                        mAccessLogsHelper,
-                                        mReadAccessLogsHelper,
-                                        /* shouldRecordAccessLog= */ false));
-        assertThat(thrown).hasMessageThat().contains("Expect read by id request");
     }
 
     @Test
@@ -318,14 +296,16 @@ public class TransactionManagerTest {
                 PageTokenWrapper.of(
                         /* isAscending= */ true, /* timeMillis= */ 500, /* offset= */ 0);
 
-        ReadTransactionRequest readTransactionRequest =
-                mTransactionTestUtils.getReadTransactionRequest(
-                        request.toReadRecordsRequestParcel());
         Pair<List<RecordInternal<?>>, PageTokenWrapper> result =
-                mTransactionManager.readRecordsAndPageTokenWithoutAccessLogs(
-                        readTransactionRequest,
-                        mAppInfoHelper,
-                        mDeviceInfoHelper,
+                mFitnessRecordReadHelper.readRecords(
+                        mTransactionManager,
+                        TEST_PACKAGE_NAME,
+                        request.toReadRecordsRequestParcel(),
+                        /* startDateAccessMillis= */ 0,
+                        /* enforceSelfRead= */ false,
+                        /* grantedExtraReadPermissions */ Set.of(),
+                        /* isInForeground= */ true,
+                        /* shouldRecordAccessLogs */ false,
                         /* packageNamesByAppIds= */ null);
         List<RecordInternal<?>> records = result.first;
         assertThat(records).hasSize(1);
@@ -339,16 +319,15 @@ public class TransactionManagerTest {
         ReadRecordsRequestUsingFilters<StepsRecord> request =
                 new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class).build();
 
-        ReadTransactionRequest readTransactionRequest =
-                mTransactionTestUtils.getReadTransactionRequest(
-                        request.toReadRecordsRequestParcel());
-        mTransactionManager.readRecordsAndPageToken(
-                readTransactionRequest,
-                mAppInfoHelper,
-                mDeviceInfoHelper,
-                /* shouldRecordAccessLog= */ true,
-                mAccessLogsHelper,
-                mReadAccessLogsHelper,
+        mFitnessRecordReadHelper.readRecords(
+                mTransactionManager,
+                TEST_PACKAGE_NAME,
+                request.toReadRecordsRequestParcel(),
+                /* startDateAccessMillis= */ 0,
+                /* enforceSelfRead= */ false,
+                /* grantedExtraReadPermissions */ Set.of(),
+                /* isInForeground= */ true,
+                /* shouldRecordAccessLogs */ true,
                 /* packageNamesByAppIds= */ null);
 
         List<AccessLog> result = mAccessLogsHelper.queryAccessLogs(mUserHandle);
@@ -367,42 +346,19 @@ public class TransactionManagerTest {
                         .addDataOrigins(getDataOrigin(TEST_PACKAGE_NAME))
                         .build();
 
-        ReadTransactionRequest readTransactionRequest =
-                mTransactionTestUtils.getReadTransactionRequest(
-                        request.toReadRecordsRequestParcel());
-        mTransactionManager.readRecordsAndPageToken(
-                readTransactionRequest,
-                mAppInfoHelper,
-                mDeviceInfoHelper,
-                /* shouldRecordAccessLog= */ true,
-                mAccessLogsHelper,
-                mReadAccessLogsHelper,
+        mFitnessRecordReadHelper.readRecords(
+                mTransactionManager,
+                TEST_PACKAGE_NAME,
+                request.toReadRecordsRequestParcel(),
+                /* startDateAccessMillis= */ 0,
+                /* enforceSelfRead= */ false,
+                /* grantedExtraReadPermissions */ Set.of(),
+                /* isInForeground= */ true,
+                /* shouldRecordAccessLogs */ true,
                 /* packageNamesByAppIds= */ null);
 
         List<AccessLog> result = mAccessLogsHelper.queryAccessLogs(mUserHandle);
         assertThat(result).isEmpty();
-    }
-
-    @Test
-    public void readRecordsAndPageToken_readByIdRequest_throws() {
-        ReadRecordsRequestUsingIds<BloodPressureRecord> request =
-                new ReadRecordsRequestUsingIds.Builder<>(BloodPressureRecord.class)
-                        .addId(UUID.randomUUID().toString())
-                        .build();
-        ReadTransactionRequest readTransactionRequest =
-                mTransactionTestUtils.getReadTransactionRequest(
-                        request.toReadRecordsRequestParcel());
-
-        Throwable thrown =
-                assertThrows(
-                        IllegalArgumentException.class,
-                        () ->
-                                mTransactionManager.readRecordsAndPageTokenWithoutAccessLogs(
-                                        readTransactionRequest,
-                                        mAppInfoHelper,
-                                        mDeviceInfoHelper,
-                                        /* packageNamesByAppIds= */ null));
-        assertThat(thrown).hasMessageThat().contains("Expect read by filter request");
     }
 
     @Test
@@ -542,19 +498,16 @@ public class TransactionManagerTest {
                                         Instant.now().toEpochMilli(),
                                         100))
                         .get(0);
-        ReadTransactionRequest readTransactionRequest =
-                mTransactionTestUtils.getReadTransactionRequest(
-                        readerPackage,
-                        ImmutableMap.of(
-                                RECORD_TYPE_STEPS, ImmutableList.of(UUID.fromString(uuid))));
 
-        mTransactionManager.readRecordsByIds(
-                readTransactionRequest,
-                mAppInfoHelper,
-                mDeviceInfoHelper,
-                mAccessLogsHelper,
-                mReadAccessLogsHelper,
-                /* shouldRecordAccessLog= */ true);
+        mFitnessRecordReadHelper.readRecords(
+                mTransactionManager,
+                readerPackage,
+                ImmutableMap.of(RECORD_TYPE_STEPS, ImmutableList.of(UUID.fromString(uuid))),
+                /* startDateAccessMillis= */ 0,
+                /* grantedExtraReadPermissions */ Set.of(),
+                /* isInForeground= */ true,
+                /* shouldRecordAccessLogs */ true,
+                /* isReadingSelfData= */ false);
 
         List<ReadAccessLogsHelper.ReadAccessLog> readAccessLogs =
                 mReadAccessLogsHelper.queryReadAccessLogs(0).getReadAccessLogs();
@@ -587,20 +540,20 @@ public class TransactionManagerTest {
         // TODO(b/366149374): Fix the read by uuid case and add is not reading self data test case
         // Read by id requests are always reading self data. Clients are not allowed to read other
         // apps' data by client id
-        ReadTransactionRequest readTransactionRequest =
-                mTransactionTestUtils.getReadTransactionRequest(
-                        new ReadRecordsRequestUsingIds.Builder<>(StepsRecord.class)
-                                .addClientRecordId("id")
-                                .build()
-                                .toReadRecordsRequestParcel());
 
-        mTransactionManager.readRecordsByIds(
-                readTransactionRequest,
-                mAppInfoHelper,
-                mDeviceInfoHelper,
-                mAccessLogsHelper,
-                mReadAccessLogsHelper,
-                /* shouldRecordAccessLog= */ true);
+        mFitnessRecordReadHelper.readRecords(
+                mTransactionManager,
+                readerPackage,
+                new ReadRecordsRequestUsingIds.Builder<>(StepsRecord.class)
+                        .addClientRecordId("id")
+                        .build()
+                        .toReadRecordsRequestParcel(),
+                /* startDateAccessMillis= */ 0,
+                /* enforceSelfRead= */ false,
+                /* grantedExtraReadPermissions */ Set.of(),
+                /* isInForeground= */ true,
+                /* shouldRecordAccessLogs */ true,
+                /* packageNamesByAppIds= */ null);
 
         verify(mReadAccessLogsHelper, times(0))
                 .recordAccessLogForNonAggregationReads(any(), any(), anyLong(), any());
@@ -629,19 +582,16 @@ public class TransactionManagerTest {
                                         Instant.now().toEpochMilli(),
                                         100))
                         .get(0);
-        ReadTransactionRequest readTransactionRequest =
-                mTransactionTestUtils.getReadTransactionRequest(
-                        readerPackage,
-                        ImmutableMap.of(
-                                RECORD_TYPE_STEPS, ImmutableList.of(UUID.fromString(uuid))));
 
-        mTransactionManager.readRecordsByIds(
-                readTransactionRequest,
-                mAppInfoHelper,
-                mDeviceInfoHelper,
-                mAccessLogsHelper,
-                mReadAccessLogsHelper,
-                /* shouldRecordAccessLog= */ false);
+        mFitnessRecordReadHelper.readRecords(
+                mTransactionManager,
+                readerPackage,
+                ImmutableMap.of(RECORD_TYPE_STEPS, ImmutableList.of(UUID.fromString(uuid))),
+                /* startDateAccessMillis= */ 0,
+                /* grantedExtraReadPermissions */ Set.of(),
+                /* isInForeground= */ true,
+                /* shouldRecordAccessLogs */ false,
+                /* isReadingSelfData= */ false);
 
         verify(mReadAccessLogsHelper, times(0))
                 .recordAccessLogForNonAggregationReads(any(), any(), anyLong(), any());
@@ -670,19 +620,16 @@ public class TransactionManagerTest {
                                         Instant.now().toEpochMilli(),
                                         100))
                         .get(0);
-        ReadTransactionRequest readTransactionRequest =
-                mTransactionTestUtils.getReadTransactionRequest(
-                        readerPackage,
-                        ImmutableMap.of(
-                                RECORD_TYPE_STEPS, ImmutableList.of(UUID.fromString(uuid))));
 
-        mTransactionManager.readRecordsByIds(
-                readTransactionRequest,
-                mAppInfoHelper,
-                mDeviceInfoHelper,
-                mAccessLogsHelper,
-                mReadAccessLogsHelper,
-                /* shouldRecordAccessLog= */ true);
+        mFitnessRecordReadHelper.readRecords(
+                mTransactionManager,
+                readerPackage,
+                ImmutableMap.of(RECORD_TYPE_STEPS, ImmutableList.of(UUID.fromString(uuid))),
+                /* startDateAccessMillis= */ 0,
+                /* grantedExtraReadPermissions */ Set.of(),
+                /* isInForeground= */ true,
+                /* shouldRecordAccessLogs */ true,
+                /* isReadingSelfData= */ false);
 
         verify(mReadAccessLogsHelper, times(0))
                 .recordAccessLogForNonAggregationReads(any(), any(), anyLong(), any());
@@ -717,17 +664,15 @@ public class TransactionManagerTest {
                                         .build())
                         .setPageSize(1)
                         .build();
-        ReadTransactionRequest readTransactionRequest =
-                mTransactionTestUtils.getReadTransactionRequest(
-                        readerPackage, request.toReadRecordsRequestParcel());
-
-        mTransactionManager.readRecordsAndPageToken(
-                readTransactionRequest,
-                mAppInfoHelper,
-                mDeviceInfoHelper,
-                /* shouldRecordAccessLog= */ true,
-                mAccessLogsHelper,
-                mReadAccessLogsHelper,
+        mFitnessRecordReadHelper.readRecords(
+                mTransactionManager,
+                readerPackage,
+                request.toReadRecordsRequestParcel(),
+                /* startDateAccessMillis= */ 0,
+                /* enforceSelfRead= */ false,
+                /* grantedExtraReadPermissions */ Set.of(),
+                /* isInForeground= */ true,
+                /* shouldRecordAccessLogs */ true,
                 /* packageNamesByAppIds= */ null);
 
         List<ReadAccessLogsHelper.ReadAccessLog> readAccessLogs =
@@ -766,14 +711,15 @@ public class TransactionManagerTest {
                                         .build())
                         .setPageSize(1)
                         .build();
-        ReadTransactionRequest readTransactionRequest =
-                mTransactionTestUtils.getReadTransactionRequest(
-                        readerPackage, request.toReadRecordsRequestParcel());
-
-        mTransactionManager.readRecordsAndPageTokenWithoutAccessLogs(
-                readTransactionRequest,
-                mAppInfoHelper,
-                mDeviceInfoHelper,
+        mFitnessRecordReadHelper.readRecords(
+                mTransactionManager,
+                readerPackage,
+                request.toReadRecordsRequestParcel(),
+                /* startDateAccessMillis= */ 0,
+                /* enforceSelfRead= */ false,
+                /* grantedExtraReadPermissions */ Set.of(),
+                /* isInForeground= */ true,
+                /* shouldRecordAccessLogs */ false,
                 /* packageNamesByAppIds= */ null);
 
         verify(mReadAccessLogsHelper, times(0))
@@ -809,17 +755,15 @@ public class TransactionManagerTest {
                                         .build())
                         .setPageSize(1)
                         .build();
-        ReadTransactionRequest readTransactionRequest =
-                mTransactionTestUtils.getReadTransactionRequest(
-                        readerPackage, request.toReadRecordsRequestParcel());
-
-        mTransactionManager.readRecordsAndPageToken(
-                readTransactionRequest,
-                mAppInfoHelper,
-                mDeviceInfoHelper,
-                /* shouldRecordAccessLog= */ true,
-                mAccessLogsHelper,
-                mReadAccessLogsHelper,
+        mFitnessRecordReadHelper.readRecords(
+                mTransactionManager,
+                readerPackage,
+                request.toReadRecordsRequestParcel(),
+                /* startDateAccessMillis= */ 0,
+                /* enforceSelfRead= */ false,
+                /* grantedExtraReadPermissions */ Set.of(),
+                /* isInForeground= */ true,
+                /* shouldRecordAccessLogs */ true,
                 /* packageNamesByAppIds= */ null);
 
         verify(mReadAccessLogsHelper, times(0))
@@ -849,17 +793,15 @@ public class TransactionManagerTest {
                 new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
                         .addDataOrigins(getDataOrigin(TEST_PACKAGE_NAME))
                         .build();
-        ReadTransactionRequest readTransactionRequest =
-                mTransactionTestUtils.getReadTransactionRequest(
-                        TEST_PACKAGE_NAME, request.toReadRecordsRequestParcel());
-
-        mTransactionManager.readRecordsAndPageToken(
-                readTransactionRequest,
-                mAppInfoHelper,
-                mDeviceInfoHelper,
-                /* shouldRecordAccessLog= */ true,
-                mAccessLogsHelper,
-                mReadAccessLogsHelper,
+        mFitnessRecordReadHelper.readRecords(
+                mTransactionManager,
+                TEST_PACKAGE_NAME,
+                request.toReadRecordsRequestParcel(),
+                /* startDateAccessMillis= */ 0,
+                /* enforceSelfRead= */ false,
+                /* grantedExtraReadPermissions */ Set.of(),
+                /* isInForeground= */ true,
+                /* shouldRecordAccessLogs */ true,
                 /* packageNamesByAppIds= */ null);
 
         verify(mReadAccessLogsHelper, times(0))

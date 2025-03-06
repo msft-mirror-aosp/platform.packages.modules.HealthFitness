@@ -154,7 +154,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SdkSuppress;
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.appop.AppOpsManagerLocal;
 import com.android.server.healthconnect.backuprestore.BackupRestore;
@@ -293,6 +292,7 @@ public class HealthConnectServiceImplTest {
     private static final long DEFAULT_PACKAGE_APP_INFO = 123L;
 
     private static final String HC_PACKAGE_NAME = "com.android.healthconnect";
+
     /** Package name where {@link HealthConnectServiceImplTest this test} runs in. */
     private static final String THIS_TEST_PACKAGE_NAME = "com.android.healthconnect.unittests";
 
@@ -301,7 +301,6 @@ public class HealthConnectServiceImplTest {
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(HealthFitnessStatsLog.class)
                     .setStrictness(Strictness.LENIENT)
                     .addStaticMockFixtures(EnvironmentFixture::new)
                     .build();
@@ -331,6 +330,7 @@ public class HealthConnectServiceImplTest {
     @Mock IEmptyResponseCallback mEmptyResponseCallback;
     @Mock IMedicalResourcesResponseCallback mMedicalResourcesResponseCallback;
     @Mock IMedicalResourceListParcelResponseCallback mMedicalResourceListParcelResponseCallback;
+    @Mock private HealthFitnessStatsLog mHealthFitnessStatsLog;
     @Captor ArgumentCaptor<HealthConnectExceptionParcel> mErrorCaptor;
     @Captor ArgumentCaptor<List<MedicalDataSource>> mMedicalDataSourcesResponseCaptor;
     private FakeTimeSource mFakeTimeSource;
@@ -387,6 +387,7 @@ public class HealthConnectServiceImplTest {
                         .setAppInfoHelper(mAppInfoHelper)
                         .setTimeSource(mFakeTimeSource)
                         .setAppOpsManagerLocal(mAppOpsManagerLocal)
+                        .setHealthFitnessStatsLog(mHealthFitnessStatsLog)
                         .build();
         mThreadScheduler = healthConnectInjector.getThreadScheduler();
         mInternalTaskScheduler = mThreadScheduler.mInternalBackgroundExecutor;
@@ -403,6 +404,7 @@ public class HealthConnectServiceImplTest {
                         healthConnectInjector.getMigrationStateManager(),
                         healthConnectInjector.getMigrationUiStateManager(),
                         healthConnectInjector.getMigrationCleaner(),
+                        healthConnectInjector.getFitnessRecordReadHelper(),
                         healthConnectInjector.getMedicalResourceHelper(),
                         healthConnectInjector.getMedicalDataSourceHelper(),
                         healthConnectInjector.getExportManager(),
@@ -423,7 +425,10 @@ public class HealthConnectServiceImplTest {
                         healthConnectInjector.getReadAccessLogsHelper(),
                         healthConnectInjector.getAppOpsManagerLocal(),
                         healthConnectInjector.getThreadScheduler(),
-                        mRateLimiter);
+                        mRateLimiter,
+                        healthConnectInjector.getEnvironmentDataDirectory(),
+                        healthConnectInjector.getExportImportLogger(),
+                        healthConnectInjector.getHealthFitnessStatsLog());
         mBackupRestore = healthConnectInjector.getBackupRestore();
     }
 
@@ -2902,23 +2907,21 @@ public class HealthConnectServiceImplTest {
 
     // Suppliers must to be used because Matchers can't be passed directly through method calls.
     // See https://stackoverflow.com/a/55297901
-    private static void assertPhrApiWestWorldWrites(
+    private void assertPhrApiWestWorldWrites(
             Supplier<Integer> apiMethodMatcherSupplier,
             Supplier<Integer> apiStatusMatcherSupplier,
             int wantedNumberOfInvocations) {
-        ExtendedMockito.verify(
-                () ->
-                        HealthFitnessStatsLog.write(
-                                eq(HEALTH_CONNECT_API_CALLED),
-                                apiMethodMatcherSupplier.get(),
-                                apiStatusMatcherSupplier.get(),
-                                anyInt(),
-                                anyLong(),
-                                anyInt(),
-                                anyInt(),
-                                anyInt(),
-                                eq(THIS_TEST_PACKAGE_NAME)),
-                times(wantedNumberOfInvocations));
+        verify(mHealthFitnessStatsLog, times(wantedNumberOfInvocations))
+                .write(
+                        eq(HEALTH_CONNECT_API_CALLED),
+                        apiMethodMatcherSupplier.get(),
+                        apiStatusMatcherSupplier.get(),
+                        anyInt(),
+                        anyLong(),
+                        anyInt(),
+                        anyInt(),
+                        anyInt(),
+                        eq(THIS_TEST_PACKAGE_NAME));
     }
 
     /**
@@ -2927,21 +2930,19 @@ public class HealthConnectServiceImplTest {
      */
     // Suppliers must to be used because Matchers can't be passed directly through method calls.
     // See https://stackoverflow.com/a/55297901
-    private static void assertPhrApiPrivateWestWorldWrites(
+    private void assertPhrApiPrivateWestWorldWrites(
             Supplier<Integer> apiMethodMatcherSupplier,
             Supplier<Integer> apiStatusMatcherSupplier,
             Collection<Integer> medicalResourceTypes,
             int wantedNumberOfInvocations) {
         for (int medicalResourceType : medicalResourceTypes) {
-            ExtendedMockito.verify(
-                    () ->
-                            HealthFitnessStatsLog.write(
-                                    eq(HEALTH_CONNECT_PHR_API_INVOKED),
-                                    apiMethodMatcherSupplier.get(),
-                                    apiStatusMatcherSupplier.get(),
-                                    eq(THIS_TEST_PACKAGE_NAME),
-                                    eq(medicalResourceType)),
-                    times(wantedNumberOfInvocations));
+            verify(mHealthFitnessStatsLog, times(wantedNumberOfInvocations))
+                    .write(
+                            eq(HEALTH_CONNECT_PHR_API_INVOKED),
+                            apiMethodMatcherSupplier.get(),
+                            apiStatusMatcherSupplier.get(),
+                            eq(THIS_TEST_PACKAGE_NAME),
+                            eq(medicalResourceType));
         }
     }
 
@@ -2951,19 +2952,17 @@ public class HealthConnectServiceImplTest {
      */
     // Suppliers must to be used because Matchers can't be passed directly through method calls.
     // See https://stackoverflow.com/a/55297901
-    private static void assertPhrApiPrivateWestWorldWrites(
+    private void assertPhrApiPrivateWestWorldWrites(
             Supplier<Integer> apiMethodMatcherSupplier,
             Supplier<Integer> apiStatusMatcherSupplier,
             int wantedNumberOfInvocations) {
-        ExtendedMockito.verify(
-                () ->
-                        HealthFitnessStatsLog.write(
-                                eq(HEALTH_CONNECT_PHR_API_INVOKED),
-                                apiMethodMatcherSupplier.get(),
-                                apiStatusMatcherSupplier.get(),
-                                eq(THIS_TEST_PACKAGE_NAME),
-                                eq(MEDICAL_RESOURCE_TYPE_NOT_ASSIGNED_DEFAULT_VALUE)),
-                times(wantedNumberOfInvocations));
+        verify(mHealthFitnessStatsLog, times(wantedNumberOfInvocations))
+                .write(
+                        eq(HEALTH_CONNECT_PHR_API_INVOKED),
+                        apiMethodMatcherSupplier.get(),
+                        apiStatusMatcherSupplier.get(),
+                        eq(THIS_TEST_PACKAGE_NAME),
+                        eq(MEDICAL_RESOURCE_TYPE_NOT_ASSIGNED_DEFAULT_VALUE));
     }
 
     private void setDataManagementPermission(int result) {
@@ -3010,8 +3009,7 @@ public class HealthConnectServiceImplTest {
         PermissionGroupInfo info = new PermissionGroupInfo();
         info.packageName = HC_PACKAGE_NAME;
         when(mPackageManager.getPermissionGroupInfo(
-                        eq(HealthPermissions.HEALTH_PERMISSION_GROUP),
-                        eq(0)))
+                        eq(HealthPermissions.HEALTH_PERMISSION_GROUP), eq(0)))
                 .thenReturn(info);
 
         PackageInfo mockPackageInfo = new PackageInfo();

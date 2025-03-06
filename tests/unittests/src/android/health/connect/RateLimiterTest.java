@@ -23,13 +23,10 @@ import android.health.connect.ratelimiter.RateLimiter.QuotaCategory;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.android.modules.utils.testing.ExtendedMockitoRule;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.mockito.quality.Strictness;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -46,11 +43,7 @@ public class RateLimiterTest {
 
     @Rule public ExpectedException exception = ExpectedException.none();
 
-    @Rule
-    public final ExtendedMockitoRule mExtendedMockitoRule =
-            new ExtendedMockitoRule.Builder(this).setStrictness(Strictness.LENIENT).build();
-
-    private RateLimiter mRateLimiter = new RateLimiter();
+    private final RateLimiter mRateLimiter = new RateLimiter();
 
     @Test
     public void testTryAcquireApiCallQuota_invalidQuotaCategory() {

@@ -70,6 +70,7 @@ public class HealthConnectManagerService extends SystemService {
                         mHealthConnectInjector.getMigrationStateManager(),
                         mHealthConnectInjector.getMigrationUiStateManager(),
                         mHealthConnectInjector.getMigrationCleaner(),
+                        mHealthConnectInjector.getFitnessRecordReadHelper(),
                         mHealthConnectInjector.getMedicalResourceHelper(),
                         mHealthConnectInjector.getMedicalDataSourceHelper(),
                         mHealthConnectInjector.getExportManager(),
@@ -90,7 +91,10 @@ public class HealthConnectManagerService extends SystemService {
                         mHealthConnectInjector.getReadAccessLogsHelper(),
                         mHealthConnectInjector.getAppOpsManagerLocal(),
                         mHealthConnectInjector.getThreadScheduler(),
-                        mRateLimiter);
+                        mRateLimiter,
+                        mHealthConnectInjector.getEnvironmentDataDirectory(),
+                        mHealthConnectInjector.getExportImportLogger(),
+                        mHealthConnectInjector.getHealthFitnessStatsLog());
     }
 
     @Override
@@ -159,7 +163,11 @@ public class HealthConnectManagerService extends SystemService {
     private void setupForCurrentForegroundUser() {
         Slog.d(TAG, "setupForCurrentForegroundUser: " + mCurrentForegroundUser);
         HealthConnectContext hcContext =
-                HealthConnectContext.create(mContext, mCurrentForegroundUser);
+                HealthConnectContext.create(
+                        mContext,
+                        mCurrentForegroundUser,
+                        /* databaseDirName= */ null,
+                        mHealthConnectInjector.getEnvironmentDataDirectory());
 
         mHealthConnectService.setupForUser(mCurrentForegroundUser);
         mHealthConnectInjector.getTransactionManager().setupForUser(hcContext);
