@@ -44,7 +44,6 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThrows;
 
 import android.content.Context;
-import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.backuprestore.BackupSettings;
 import android.health.connect.backuprestore.RestoreChange;
@@ -55,7 +54,6 @@ import android.platform.test.flag.junit.SetFlagsRule;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.fitness.FitnessRecordReadHelper;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
@@ -73,8 +71,6 @@ import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
-import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
-import com.android.server.healthconnect.testing.fixtures.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.testing.storage.TransactionTestUtils;
 
 import com.google.common.collect.ImmutableMap;
@@ -83,8 +79,11 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 import java.util.HashMap;
 import java.util.List;
@@ -112,15 +111,9 @@ public class CloudRestoreManagerTest {
                             Settings.AppInfo.newBuilder().setAppName("app name 3").build())
                     .build();
 
-    @Rule(order = 1)
-    public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
-
-    @Rule(order = 2)
-    public final ExtendedMockitoRule mExtendedMockitoRule =
-            new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(HealthConnectManager.class)
-                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
-                    .build();
+    @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+    @Rule public final MockitoRule mMockitoRule = MockitoJUnit.rule();
+    @Rule public final TemporaryFolder mEnvironmentDataDir = new TemporaryFolder();
 
     private AppInfoHelper mAppInfoHelper;
     private DeviceInfoHelper mDeviceInfoHelper;
@@ -146,6 +139,7 @@ public class CloudRestoreManagerTest {
                 HealthConnectInjectorImpl.newBuilderForTest(context)
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
+                        .setEnvironmentDataDirectory(mEnvironmentDataDir.getRoot())
                         .build();
 
         mTransactionManager = healthConnectInjector.getTransactionManager();

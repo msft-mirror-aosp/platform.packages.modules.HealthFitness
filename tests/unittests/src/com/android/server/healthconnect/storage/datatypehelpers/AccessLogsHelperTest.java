@@ -42,8 +42,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_N
 
 import static com.google.common.truth.Truth.assertThat;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 import android.content.ContentValues;
@@ -65,7 +63,6 @@ import android.util.Pair;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
@@ -74,16 +71,16 @@ import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.AlterTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.testing.fakes.FakePreferenceHelper;
-import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
-import com.android.server.healthconnect.testing.fixtures.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.testing.storage.TransactionTestUtils;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.quality.Strictness;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 import java.util.List;
 import java.util.Set;
@@ -91,15 +88,9 @@ import java.util.Set;
 @RunWith(AndroidJUnit4.class)
 public class AccessLogsHelperTest {
 
-    @Rule(order = 1)
-    public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
-
-    @Rule(order = 2)
-    public final ExtendedMockitoRule mExtendedMockitoRule =
-            new ExtendedMockitoRule.Builder(this)
-                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
-                    .setStrictness(Strictness.LENIENT)
-                    .build();
+    @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+    @Rule public final TemporaryFolder mEnvironmentDataDir = new TemporaryFolder();
+    @Rule public final MockitoRule mMockitoRule = MockitoJUnit.rule();
 
     private TransactionManager mTransactionManager;
     private AccessLogsHelper mAccessLogsHelper;
@@ -120,6 +111,7 @@ public class AccessLogsHelperTest {
                         .setFirstGrantTimeManager(mFirstGrantTimeManager)
                         .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .setAppOpLogsHelper(mAppOpLogsHelper)
+                        .setEnvironmentDataDirectory(mEnvironmentDataDir.getRoot())
                         .build();
         mTransactionManager = healthConnectInjector.getTransactionManager();
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();

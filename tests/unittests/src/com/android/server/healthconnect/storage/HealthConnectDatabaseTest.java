@@ -49,10 +49,8 @@ import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.healthfitness.flags.AconfigFlagHelper;
 import com.android.healthfitness.flags.Flags;
-import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
-import com.android.server.healthconnect.logging.ExportImportLogger;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
@@ -65,7 +63,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
-import org.mockito.quality.Strictness;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 import java.io.File;
 import java.util.List;
@@ -78,18 +77,9 @@ public class HealthConnectDatabaseTest {
 
     private Context mContext;
 
-    @Rule(order = 0)
-    public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
-
-    @Rule(order = 1)
-    public final ExtendedMockitoRule mExtendedMockitoRule =
-            new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(ExportImportLogger.class)
-                    .setStrictness(Strictness.LENIENT)
-                    .build();
-
-    @Rule(order = 2)
-    public final TemporaryFolder mEnvironmentDataDirectory = new TemporaryFolder();
+    @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+    @Rule public final MockitoRule mMockitoRule = MockitoJUnit.rule();
+    @Rule public final TemporaryFolder mEnvironmentDataDirectory = new TemporaryFolder();
 
     @Before
     public void setup() {

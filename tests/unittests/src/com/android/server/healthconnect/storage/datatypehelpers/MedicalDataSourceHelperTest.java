@@ -42,8 +42,6 @@ import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDa
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.getReadQueryForDataSourcesFilterOnIdsAndAppIdsAndResourceTypes;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.LAST_MODIFIED_TIME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
-import static com.android.server.healthconnect.testing.storage.PhrTestUtils.ACCESS_LOG_EQUIVALENCE;
-import static com.android.server.healthconnect.testing.storage.PhrTestUtils.makeUpsertRequest;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.BLOB_UNIQUE_NON_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER_NOT_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMARY;
@@ -52,6 +50,8 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getHexString;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.toUuids;
 import static com.android.server.healthconnect.testing.TestUtils.TEST_USER;
+import static com.android.server.healthconnect.testing.storage.PhrTestUtils.ACCESS_LOG_EQUIVALENCE;
+import static com.android.server.healthconnect.testing.storage.PhrTestUtils.makeUpsertRequest;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -86,7 +86,6 @@ import android.util.Pair;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.healthfitness.flags.Flags;
-import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
@@ -99,8 +98,6 @@ import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 import com.android.server.healthconnect.testing.fakes.FakePreferenceHelper;
 import com.android.server.healthconnect.testing.fakes.FakeTimeSource;
-import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
-import com.android.server.healthconnect.testing.fixtures.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.testing.storage.PhrTestUtils;
 import com.android.server.healthconnect.testing.storage.TransactionTestUtils;
 
@@ -108,9 +105,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.quality.Strictness;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -123,16 +122,9 @@ public class MedicalDataSourceHelperTest {
 
     private static final long APP_INFO_ID = 123;
 
-    // See b/344587256 for more context.
-    @Rule(order = 1)
-    public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
-
-    @Rule(order = 2)
-    public final ExtendedMockitoRule mExtendedMockitoRule =
-            new ExtendedMockitoRule.Builder(this)
-                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
-                    .setStrictness(Strictness.LENIENT)
-                    .build();
+    @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+    @Rule public final TemporaryFolder mEnvironmentDataDir = new TemporaryFolder();
+    @Rule public final MockitoRule mMockitoRule = MockitoJUnit.rule();
 
     private static final Instant INSTANT_NOW = Instant.now();
     private static final Instant INSTANT_NOW_PLUS_TEN_SEC = INSTANT_NOW.plusSeconds(10);
@@ -169,6 +161,7 @@ public class MedicalDataSourceHelperTest {
                                 mock(HealthPermissionIntentAppsTracker.class))
                         .setAppOpLogsHelper(mAppOpLogsHelper)
                         .setTimeSource(mFakeTimeSource)
+                        .setEnvironmentDataDirectory(mEnvironmentDataDir.getRoot())
                         .build();
 
         mTransactionManager = healthConnectInjector.getTransactionManager();
