@@ -59,7 +59,6 @@ import java.util.stream.Collectors;
  *
  * @hide
  */
-@FlaggedApi(FLAG_CLOUD_BACKUP_AND_RESTORE)
 public class CloudRestoreManager {
 
     private static final String TAG = "CloudRestoreManager";

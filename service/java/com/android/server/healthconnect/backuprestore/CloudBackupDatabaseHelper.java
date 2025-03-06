@@ -72,7 +72,6 @@ import java.util.stream.Stream;
  *
  * @hide
  */
-@FlaggedApi(FLAG_CLOUD_BACKUP_AND_RESTORE)
 public class CloudBackupDatabaseHelper {
     private final AppInfoHelper mAppInfoHelper;
     private final TransactionManager mTransactionManager;
