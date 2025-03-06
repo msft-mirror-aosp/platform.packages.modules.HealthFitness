@@ -47,7 +47,7 @@
     <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"នាំចេញ និងនាំចូលទិន្នន័យ"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"ការចូលប្រើថ្មីៗ"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"មិនមានកម្មវិធីណាមួយបានចូលប្រើ Health Connect ថ្មីៗនេះទេ"</string>
-    <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"មើលគ្រប់ការចូលប្រើប្រាស់ថ្មីៗនេះ"</string>
+    <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"មើលការចូលប្រើប្រាស់ថ្មីៗទាំងអស់"</string>
     <string name="recent_access_screen_description" msgid="331101209889185402">"មើលថាតើកម្មវិធីណាខ្លះបានចូលប្រើប្រាស់ទិន្នន័យរបស់អ្នកក្នុងរយៈពេល 24 ម៉ោងចុងក្រោយ"</string>
     <string name="today_header" msgid="1006837293203834373">"ថ្ងៃនេះ"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"ម្សិលមិញ"</string>
@@ -352,8 +352,8 @@
     <string name="vital_signs_uppercase_label" msgid="289862347143374640">"សញ្ញា​ជីវិត"</string>
     <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"សញ្ញាសរីរាង្គសំខាន់ៗ"</string>
     <string name="vital_signs_content_description" msgid="914944352640528612">"អានសញ្ញាសរីរាង្គសំខាន់ៗ"</string>
-    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"ការ​ចេះ​គិត​គូរ"</string>
-    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"ការ​ចេះ​គិត​គូរ"</string>
+    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"ការតាំងសតិ"</string>
+    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"ការតាំងសតិ"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"អានទិន្នន័យអំពីការ​ចេះ​គិត​គូរ"</string>
     <string name="mindfulness_write_content_description" msgid="7925112426563398421">"សរសេរទិន្នន័យអំពីការ​ចេះ​គិត​គូរ"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"អនុញ្ញាតឱ្យ “<xliff:g id="APP_NAME">%1$s</xliff:g>” អាន"</string>
@@ -1142,18 +1142,18 @@
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"លុបទិន្នន័យ <xliff:g id="APP_NAME">%s</xliff:g> ទាំងអស់ជាអចិន្ត្រៃយ៍ឬ?"</string>
     <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"លុបទិន្នន័យ <xliff:g id="APP_NAME">%s</xliff:g> ដែលបានជ្រើសរើសជាអចិន្ត្រៃយ៍ឬ?"</string>
     <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"លុបធាតុទាំងអស់ជាអចិន្ត្រៃយ៍សម្រាប់ថ្ងៃទី <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> ឬ?"</string>
-    <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"លុបធាតុទាំងអស់ជាអចិន្ត្រៃយ៍សម្រាប់សប្តាហ៍នៃ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> ឬ?"</string>
-    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"លុបធាតុទាំងអស់ជាអចិន្ត្រៃយ៍សម្រាប់ថ្ងៃទី <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> ឬ?"</string>
-    <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"លុបធាតុដែលបានជ្រើសរើសជាអចិន្ត្រៃយ៍សម្រាប់ថ្ងៃទី <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> ឬ?"</string>
-    <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"លុបធាតុដែលបានជ្រើសរើសជាអចិន្ត្រៃយ៍សម្រាប់សប្តាហ៍នៃថ្ងៃទី <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> ឬ?"</string>
-    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"លុបធាតុដែលបានជ្រើសរើសជាអចិន្ត្រៃយ៍សម្រាប់ខែ<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g> ឬ?"</string>
+    <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"លុបធាតុទាំងអស់ជាអចិន្ត្រៃយ៍សម្រាប់សប្តាហ៍នៃ <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"លុបធាតុទាំងអស់ជាអចិន្ត្រៃយ៍សម្រាប់ខែ<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"លុបធាតុដែលបានជ្រើសរើសជាអចិន្ត្រៃយ៍សម្រាប់ថ្ងៃទី <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"លុបធាតុដែលបានជ្រើសរើសជាអចិន្ត្រៃយ៍សម្រាប់សប្តាហ៍នៃថ្ងៃទី <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"លុបធាតុដែលបានជ្រើសរើសជាអចិន្ត្រៃយ៍សម្រាប់ខែ<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"លុបធាតុនេះជាអចិន្ត្រៃយ៍ឬ?"</string>
     <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"លុបធាតុ <xliff:g id="APP_NAME">%1$s</xliff:g> ទាំងអស់ជាអចិន្រ្តៃយ៍សម្រាប់ថ្ងៃទី <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ឬ?"</string>
     <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"លុបធាតុ <xliff:g id="APP_NAME">%1$s</xliff:g> ទាំងអស់ជាអចិន្រ្តៃយ៍សម្រាប់សប្តាហ៍នៃថ្ងៃទី <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ឬ?"</string>
     <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"លុបធាតុ <xliff:g id="APP_NAME">%1$s</xliff:g> ទាំងអស់ជាអចិន្រ្តៃយ៍សម្រាប់ថ្ងៃទី <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ឬ?"</string>
     <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"លុបធាតុ <xliff:g id="APP_NAME">%1$s</xliff:g> ដែលបានជ្រើសរើសជាអចិន្ត្រៃយ៍សម្រាប់ថ្ងៃទី <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ឬ?"</string>
-    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"លុបធាតុ <xliff:g id="APP_NAME">%1$s</xliff:g> ដែលបានជ្រើសរើសជាអចិន្ត្រៃយ៍សម្រាប់សប្តាហ៍នៃថ្ងៃទី <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ឬ?"</string>
-    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"លុបធាតុ <xliff:g id="APP_NAME">%1$s</xliff:g> ដែលបានជ្រើសរើសជាអចិន្ត្រៃយ៍សម្រាប់ខែ<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> ឬ?"</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"លុបធាតុ <xliff:g id="APP_NAME">%1$s</xliff:g> ដែលបានជ្រើសរើសជាអចិន្ត្រៃយ៍សម្រាប់សប្តាហ៍នៃថ្ងៃទី <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"លុបធាតុ <xliff:g id="APP_NAME">%1$s</xliff:g> ដែលបានជ្រើសរើសជាអចិន្ត្រៃយ៍សម្រាប់ខែ<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"លុបធាតុ <xliff:g id="APP_NAME">%s</xliff:g> នេះជាអចិន្ត្រៃយ៍ឬ?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"លុបទិន្នន័យ<xliff:g id="DATA_TYPE">%1$s</xliff:g>សម្រាប់ <xliff:g id="APP_NAME">%2$s</xliff:g> ជាអចិន្ត្រៃយ៍ឬ?"</string>
     <string name="on" msgid="8266542510798355807">"បើក"</string>

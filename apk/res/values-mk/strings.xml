@@ -48,11 +48,11 @@
     <string name="recent_access_header" msgid="7623497371790225888">"Најнов пристап"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Нема апликации што неодамна пристапиле до Health Connect"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Погледнете ги сите најнови пристапи"</string>
-    <string name="recent_access_screen_description" msgid="331101209889185402">"Погледнете кои апликации пристапиле до вашите податоци во изминатите 24 часа"</string>
+    <string name="recent_access_screen_description" msgid="331101209889185402">"Погледнете кои апликации пристапиле до вашите податоци во минатите 24 часа"</string>
     <string name="today_header" msgid="1006837293203834373">"Денес"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Вчера"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"Прочита: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="write_data_access_label" msgid="105976369853871061">"Внесе: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"Запиша: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Управувајте со дозволите"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Време: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
@@ -319,8 +319,8 @@
     <string name="allergies_intolerances_uppercase_label" msgid="2458552115947636884">"Алергии"</string>
     <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"алергии"</string>
     <string name="allergies_intolerances_content_description" msgid="7954532940667325068">"Читање на алергиите"</string>
-    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Услови"</string>
-    <string name="conditions_lowercase_label" msgid="2678248918552246997">"услови"</string>
+    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Здравствени состојби"</string>
+    <string name="conditions_lowercase_label" msgid="2678248918552246997">"здравствени состојби"</string>
     <string name="conditions_content_description" msgid="3230552343616193829">"Читање на условите"</string>
     <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Вакцини"</string>
     <string name="vaccines_lowercase_label" msgid="4991324441768127447">"вакцини"</string>
@@ -343,8 +343,8 @@
     <string name="procedures_uppercase_label" msgid="9176087520132593261">"Постапки"</string>
     <string name="procedures_lowercase_label" msgid="5320804313946273234">"постапки"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"Читање на постапките"</string>
-    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Историја на друштвените мрежи"</string>
-    <string name="social_history_lowercase_label" msgid="9027541979445736412">"историја на друштвените мрежи"</string>
+    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Општествени одредници за здравје"</string>
+    <string name="social_history_lowercase_label" msgid="9027541979445736412">"општествени одредници за здравје"</string>
     <string name="social_history_content_description" msgid="7187059309389849831">"Читање на историјата на друштвените мрежи"</string>
     <string name="visits_uppercase_label" msgid="8532619758336375886">"Посети"</string>
     <string name="visits_lowercase_label" msgid="2545887061364564151">"посети"</string>
@@ -367,7 +367,7 @@
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Ако ѝ дадете пристап за читање, апликацијата ќе може да ги чита новите податоци и податоците од минатите 30 дена"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Ако ѝ дадете пристап за читање, апликацијата ќе може да ги чита новите и минатите податоци"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Да се дозволи <xliff:g id="APP_NAME">%1$s</xliff:g> да пристапува до Health Connect?"</string>
-    <string name="request_permissions_with_medical_header_title" msgid="6269944931319362595">"Да се дозволи <xliff:g id="APP_NAME">%1$s</xliff:g> да пристапува до податоците за фитнес и благосостојба?"</string>
+    <string name="request_permissions_with_medical_header_title" msgid="6269944931319362595">"Да се дозволи „<xliff:g id="APP_NAME">%1$s</xliff:g>“ да пристапува до податоците за фитнес и благосостојба?"</string>
     <string name="request_permissions_rationale" msgid="2642076968583316986">"Може да дознаете како <xliff:g id="APP_NAME">%1$s</xliff:g> постапува со вашите податоци во <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"политика за приватност"</string>
     <string name="medical_request_header" msgid="2300521519021510027">"Да се дозволи <xliff:g id="APP_NAME">%1$s</xliff:g> да пристапува до вашата здравствена евиденција?"</string>
@@ -432,9 +432,9 @@
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"Неактивни апликации"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Апликацииве веќе немаат пристап, но уште имаат зачувани податоци во Health Connect"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> може да чита податоци додадени по <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
-    <string name="other_android_permissions" msgid="8051485761573324702">"За да управувате со други дозволи за Android до кои може да пристапи оваа апликација, одете во „Поставки &gt; Апликации“"</string>
+    <string name="other_android_permissions" msgid="8051485761573324702">"За да управувате со другите дозволи за Android до кои може да пристапува апликацијава, појдете во „Поставки &gt; Апликации“"</string>
     <string name="manage_permissions_rationale" msgid="2780008055185441703">"Може да дознаете како <xliff:g id="APP_NAME">%1$s</xliff:g> постапува со вашите податоци во политиката за приватност на програмерот"</string>
-    <string name="other_android_permissions_content_description" msgid="2261431010048933820">"За да управувате со други дозволи за Android до кои може да пристапи оваа апликација, одете во „Поставки“, а потоа допрете „Апликации“"</string>
+    <string name="other_android_permissions_content_description" msgid="2261431010048933820">"За да управувате со другите дозволи за Android до кои може да пристапува апликацијава, појдете во „Поставки“, а потоа допрете „Апликации“"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Прочитајте ја политиката за приватност"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Пристапено во минатите 24 часа"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Пристап на апликацијата"</string>
@@ -540,7 +540,7 @@
     <string name="onboarding_title" msgid="8550656211291180188">"Започнете со Health Connect"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect ги складира вашите податоци за здравје и фитнес, што ви овозможува едноставен начин да ги синхронизирате различните апликации на вашиот уред"</string>
     <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect ги складира и синхронизира податоците за здравје и фитнес од различни апликации.\n\n"<b>"Податоци за фитнес и благосостојба,"</b>" заедно со сесии на вежбање, чекори, исхрана, спиење и друго\n\n"<b>"Здравствена евиденција,"</b>" заедно со вакцини, лабораториски резултати и друго"</string>
-    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Со Health Connect може"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Можности на Health Connect:"</string>
     <string name="share_data" msgid="3481932156368883946">"Споделувајте податоци со вашите апликации"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Изберете ги податоците што секоја апликација може да ги чита или запишува во Health Connect"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Управувајте со поставките и приватноста"</string>
@@ -591,7 +591,7 @@
     <string name="delete_dialog_success_got_it_button" msgid="8047812840310612293">"Готово"</string>
     <string name="delete_dialog_failure_close_button" msgid="4376647579348193224">"Затвори"</string>
     <string name="delete_dialog_success_title" msgid="900884533930984889">"Податоците се избришани од Health Connect"</string>
-    <string name="delete_dialog_success_message" msgid="7454086333205881294">"Ако сакате целосно да ги избришете податоците од поврзаните апликации, проверете ја секоја апликација каде што можеби се зачувани вашите податоци."</string>
+    <string name="delete_dialog_success_message" msgid="7454086333205881294">"Ако сакате целосно да ги избришете податоците од поврзаните апликации, проверете ја секоја апликација каде што може да се зачувани вашите податоци."</string>
     <string name="delete_dialog_done_button" msgid="1371340030947835493">"Готово"</string>
     <string name="delete_dialog_see_connected_apps_button" msgid="2975631672738138716">"Прикажи ги поврзаните апликации"</string>
     <string name="delete_progress_indicator" msgid="5799502879065833417">"Се бришат податоците"</string>
@@ -637,11 +637,11 @@
     <string name="sexual_activity_protected" msgid="4259473257597274326">"Заштитно"</string>
     <string name="sexual_activity_unprotected" msgid="2250981470537379807">"Незаштитено"</string>
     <string name="spotting" msgid="1637175837078770520">"Дамки крв"</string>
-    <string name="flow_spotting" msgid="832418664953780156">"Дамки крв"</string>
-    <string name="flow_light" msgid="1937543318146228793">"Слаб проток"</string>
-    <string name="flow_medium" msgid="3783688724668943154">"Среден проток"</string>
-    <string name="flow_heavy" msgid="8672261792750634294">"Силен проток"</string>
-    <string name="flow_unknown" msgid="1634411759928572900">"Непознат менструален циклус"</string>
+    <string name="flow_spotting" msgid="832418664953780156">"Точкесто крвавење"</string>
+    <string name="flow_light" msgid="1937543318146228793">"Слабо крвавење"</string>
+    <string name="flow_medium" msgid="3783688724668943154">"Умерено крвавење"</string>
+    <string name="flow_heavy" msgid="8672261792750634294">"Обилно крвавење"</string>
+    <string name="flow_unknown" msgid="1634411759928572900">"Непознато крвавење"</string>
     <string name="period_day" msgid="3821944462093965882">"Менструација: ден <xliff:g id="DAY">%1$d</xliff:g> од <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g>"</string>
     <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{Менструација (1 ден)}one{Менструација (# ден)}other{Менструација (# дена)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"Позитивна"</string>
@@ -745,7 +745,7 @@
     <string name="tennis" msgid="6627063985750125504">"Тенис"</string>
     <string name="upper_twist" msgid="3382862516792841928">"Извртување на горниот дел од телото"</string>
     <string name="volleyball" msgid="7469885673961163729">"Одбојка"</string>
-    <string name="walking" msgid="4782496160454621769">"Пешачење"</string>
+    <string name="walking" msgid="4782496160454621769">"Одење"</string>
     <string name="water_polo" msgid="2527119748097860708">"Ватерполо"</string>
     <string name="weightlifting" msgid="7586735291662318085">"Кревање тегови"</string>
     <string name="wheelchair" msgid="2226734836271500057">"Инвалидска количка"</string>
@@ -991,7 +991,7 @@
     <string name="range_off" msgid="8178520557618184215">"Исклучено"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"Кога ќе ги промените поставкиве, Health Connect ги брише постојните податоци согласно со вашите нови поставки"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Да се постави автоматско бришење на податоците по # месец?}one{Да се постави автоматско бришење на податоците по # месец?}other{Да се постави автоматско бришење на податоците по # месеци?}}"</string>
-    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{Ова ги брише и податоците од Health Connect постари од # месец.\n\nАко сакате целосно да ги избришете податоците од поврзаните апликации, проверете ја секоја апликација каде што можеби се зачувани вашите податоци.}one{Ова ги брише и податоците од Health Connect постари од # месец.\n\nАко сакате целосно да ги избришете податоците од поврзаните апликации, проверете ја секоја апликација каде што можеби се зачувани вашите податоци.}other{Ова ги брише и податоците од Health Connect постари од # месеци.\n\nАко сакате целосно да ги избришете податоците од поврзаните апликации, проверете ја секоја апликација каде што можеби се зачувани вашите податоци.}}"</string>
+    <string name="confirming_message_x_months" msgid="986840333220382321">"{count,plural, =1{Ова ги брише и податоците од Health Connect постари од # месец.\n\nАко сакате целосно да ги избришете податоците од поврзаните апликации, проверете ја секоја апликација каде што може да се зачувани вашите податоци.}one{Ова ги брише и податоците од Health Connect постари од # месец.\n\nАко сакате целосно да ги избришете податоците од поврзаните апликации, проверете ја секоја апликација каде што може да се зачувани вашите податоци.}other{Ова ги брише и податоците од Health Connect постари од # месеци.\n\nАко сакате целосно да ги избришете податоците од поврзаните апликации, проверете ја секоја апликација каде што може да се зачувани вашите податоци.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Постави автоматско бришење"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Постојните податоци ќе се избришат"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect ќе ги избрише податоците постари од # месец. Може да помине еден ден пред промениве да се појават во поврзаните апликации.}one{Health Connect ќе ги избрише податоците постари од # месец. Може да помине еден ден пред промениве да се појават во поврзаните апликации.}other{Health Connect ќе ги избрише податоците постари од # месеци. Може да помине еден ден пред промениве да се појават во поврзаните апликации.}}"</string>
@@ -1142,17 +1142,17 @@
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Да се избришат трајно сите податоци од <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
     <string name="some_app_data_selected_deletion_confirmation_dialog" msgid="5378172524112070270">"Да се избришат трајно избраните податоци од <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
     <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"Да се избришат трајно сите записи за <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
-    <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"Да се избришат трајно сите записи за целата седмица од<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"Да се избришат трајно сите записи за целата седмица (<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>)?"</string>
     <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Да се избришат трајно сите записи за <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Да се избришат трајно избраните записи за <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
-    <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"Да се избришат трајно избраните записи за целата седмица од <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"Да се избришат трајно избраните записи за целата седмица (<xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>)?"</string>
     <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"Да се избришат трајно избраните записи за <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"Да се избришe трајно записов?"</string>
     <string name="all_app_entries_selected_day_deletion_confirmation_dialog" msgid="2342034541791960151">"Да се избришат трајно сите записи од <xliff:g id="APP_NAME">%1$s</xliff:g> за <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="all_app_entries_selected_week_deletion_confirmation_dialog" msgid="24289763841770386">"Да се избришат трајно сите записи од <xliff:g id="APP_NAME">%1$s</xliff:g> за цела седмица за <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="all_app_entries_selected_month_deletion_confirmation_dialog" msgid="3240581815583269052">"Да се избришат трајно сите записи од <xliff:g id="APP_NAME">%1$s</xliff:g> за <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="some_app_entries_selected_day_deletion_confirmation_dialog" msgid="1030347169774815676">"Да се избришат трајно избраните записи од <xliff:g id="APP_NAME">%1$s</xliff:g> за <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
-    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Да се избришат трајно избраните записи од <xliff:g id="APP_NAME">%1$s</xliff:g> за целата седмица од <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
+    <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Да се избришат трајно избраните записи од <xliff:g id="APP_NAME">%1$s</xliff:g> за целата седмица (<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>)?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Да се избришат трајно избраните записи од <xliff:g id="APP_NAME">%1$s</xliff:g> за <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Да се избришe трајно записов во <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Да се избришат трајно податоците за <xliff:g id="DATA_TYPE">%1$s</xliff:g> за <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
@@ -1165,28 +1165,28 @@
     <string name="request_permissions_allow_selected" msgid="218527615680495438">"Дозволи ги избраните"</string>
     <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Додека се користи апликацијата"</string>
     <string name="request_permissions_deny_all" msgid="4123735770293545320">"Одбиј ги сите"</string>
-    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Да се дозволи <xliff:g id="APP_NAME">%1$s</xliff:g> да пристапува до податоците за фитнес и благосостојба?"</string>
-    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> бара пристап до <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nИзберете да ги дозволите сите или да ги контролирате поединечно."</string>
-    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Да се дозволи <xliff:g id="APP_NAME">%1$s</xliff:g> да пристапува до <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Да се дозволи „<xliff:g id="APP_NAME">%1$s</xliff:g>“ да пристапува до податоците за фитнес и благосостојба?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"„<xliff:g id="APP_NAME">%1$s</xliff:g>“ бара пристап до <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nИзберете да ги дозволите сите или да ги контролирате поединечно."</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Да се дозволи „<xliff:g id="APP_NAME">%1$s</xliff:g>“ да пристапува до „<xliff:g id="DATA_TYPE">%2$s</xliff:g>“?"</string>
     <string name="fitness_and_wellness" msgid="2002316898861559748">"Фитнес и благосостојба"</string>
     <string name="view_permissions_all_the_time" msgid="6899702815770193290">"цело време"</string>
     <string name="view_permissions_while_in_use" msgid="2031627107397429473">"додека се користи"</string>
     <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Цело време"</string>
     <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Додека се користи"</string>
-    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> може да пристапува до сите ваши податоци за фитнес и благосостојба <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"„<xliff:g id="APP_NAME">%1$s</xliff:g>“ може да пристапува до сите ваши податоци за фитнес и благосостојба <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
     <string name="allowed_to_access" msgid="4179317387300812335">"Дозволено да пристапува"</string>
     <string name="allowed_to_read" msgid="2775365229411407406">"Дозволено да чита"</string>
-    <string name="give_permission_prompt" msgid="5788144216023065504">"Дозволиве овозможуваат <xliff:g id="APP_NAME">%1$s</xliff:g> да пристапува до податоците од сензорите на уредот."</string>
+    <string name="give_permission_prompt" msgid="5788144216023065504">"Дозволиве овозможуваат „<xliff:g id="APP_NAME">%1$s</xliff:g>“ да пристапува до податоците од сензорите на уредот."</string>
     <string name="allowed_apps_count" msgid="2289260267605628310">"Апликации со дозвола: <xliff:g id="NUMBER_0">%1$d</xliff:g> од <xliff:g id="OTHER_NUMBER">%2$d</xliff:g>"</string>
     <string name="no_apps_requesting" msgid="8088684445910698363">"Нема барања од апликации"</string>
     <string name="allowed" msgid="4158456017482263737">"Дозволено"</string>
     <string name="not_allowed" msgid="6092523505093372147">"Не е дозволено"</string>
-    <string name="access_sensor_note" msgid="7949933977197789634">"Апликациите со оваа дозвола може да пристапуваат до податоците за <xliff:g id="DATA_TYPE">%s</xliff:g> од сензорите на уредот."</string>
-    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Да се отстрани пристапот до <xliff:g id="DATA_TYPE">%s</xliff:g> за сите апликации на часовникот?"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Апликациите со оваа дозвола може да пристапуваат до податоците за „<xliff:g id="DATA_TYPE">%s</xliff:g>“ од сензорите на уредот."</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Да се отстрани пристапот до „<xliff:g id="DATA_TYPE">%s</xliff:g>“ за сите апликации на часовникот?"</string>
     <string name="icon_content_check_mark" msgid="358150681017987426">"Знак за штиклирање"</string>
     <string name="icon_content_cross_mark" msgid="3007762424358780248">"Знак икс"</string>
-    <string name="current_allow_mode" msgid="6716206063077569218">"Во моментов, <xliff:g id="APP_NAME">%1$s</xliff:g> може да пристапува до податоците за фитнес и благосостојба <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
-    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Да се дозволи <xliff:g id="APP_NAME">%1$s</xliff:g> да пристапува до податоците за фитнес и благосостојба цело време?"</string>
-    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> има пристап до <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
+    <string name="current_allow_mode" msgid="6716206063077569218">"Во моментов, „<xliff:g id="APP_NAME">%1$s</xliff:g>“ може да пристапува до податоците за фитнес и благосостојба <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Да се дозволи „<xliff:g id="APP_NAME">%1$s</xliff:g>“ да пристапува до податоците за фитнес и благосостојба цело време?"</string>
+    <string name="current_access" msgid="1457167070428176139">"„<xliff:g id="APP_NAME">%1$s</xliff:g>“ има пристап до <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
     <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Управувајте со дозволите за фитнес и благосостојба"</string>
 </resources>

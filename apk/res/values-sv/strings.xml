@@ -325,8 +325,8 @@
     <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Vacciner"</string>
     <string name="vaccines_lowercase_label" msgid="4991324441768127447">"vacciner"</string>
     <string name="vaccines_content_description" msgid="7152741514791951684">"Läsa vacciner"</string>
-    <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Laboratorieresultat"</string>
-    <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"laboratorieresultat"</string>
+    <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Provsvar"</string>
+    <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"provsvar"</string>
     <string name="laboratory_results_content_description" msgid="7888886103734085841">"Läsa laboratorieresultat"</string>
     <string name="medications_uppercase_label" msgid="4783281053427990225">"Läkemedel"</string>
     <string name="medications_lowercase_label" msgid="7808038774503092207">"läkemedel"</string>
@@ -371,8 +371,8 @@
     <string name="request_permissions_rationale" msgid="2642076968583316986">"Du kan läsa mer om hur <xliff:g id="APP_NAME">%1$s</xliff:g> hanterar din data i deras <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"integritetspolicy"</string>
     <string name="medical_request_header" msgid="2300521519021510027">"Vill du ge <xliff:g id="APP_NAME">%1$s</xliff:g> åtkomst till dina hälsojournaler?"</string>
-    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Om du ger åtkomst kan appen läsa och skriva data som allergier, labbresultat, vacciner med mera\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
-    <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Om du ger åtkomst kan appen läsa data som allergier, labbresultat, vacciner med mera\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Om du ger åtkomst kan appen läsa och skriva data som allergier, provsvar, vacciner med mera\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Om du ger åtkomst kan appen läsa data som allergier, provsvar, vacciner med mera\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
     <string name="medical_request_about_health_records" msgid="7204918218748362687">"Om hälsojournaler"</string>
     <string name="medical_request_data_to_share" msgid="6778034304921873317">"Data som delas omfattar"</string>
     <string name="medical_request_summary" msgid="7281321524805015510">"Om du tillåter detta kan <xliff:g id="APP_NAME">%1$s</xliff:g> dela dina hälsojournaler med Health Connect."</string>
@@ -447,7 +447,7 @@
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"Träning, sömn, näring med flera"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"Hälsojournaler"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"hälsojournaler"</string>
-    <string name="medical_permissions_summary" msgid="5526004634109548577">"Labbresultat, läkemedel, vacciner osv."</string>
+    <string name="medical_permissions_summary" msgid="5526004634109548577">"Provsvar, läkemedel, vacciner med flera"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Tog bort appbehörigheter"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect tog bort behörigheter för <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect tog bort behörigheter för <xliff:g id="APP_DATA_0">%1$s</xliff:g> och <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -539,7 +539,7 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Öppna Play Butik"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Kom igång med Health Connect"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect lagrar din hälso- och träningsdata, så att du enkelt kan synkronisera olika appar på enheten"</string>
-    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect lagrar och synkroniserar din hälso- och träningsdata från olika appar.\n\n"<b>"Tränings- och hälsodata,"</b>" inklusive träningspass, steg, kost, sömn med mera\n\n"<b>"Hälsojournaler,"</b>" inklusive vaccinationer, labbresultat med mera"</string>
+    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect lagrar och synkroniserar din hälso- och träningsdata från olika appar.\n\n"<b>"Tränings- och hälsodata,"</b>" inklusive träningspass, steg, kost, sömn med mera\n\n"<b>"Hälsojournaler,"</b>" inklusive vaccinationer, provsvar med mera"</string>
     <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Med Health Connect kan du"</string>
     <string name="share_data" msgid="3481932156368883946">"Dela data med dina appar"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Välj vilken data varje app får läs- eller skrivbehörighet till för Health Connect"</string>

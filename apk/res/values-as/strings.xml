@@ -368,7 +368,7 @@
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"যদি আপুনি পঢ়াৰ এক্সেছ দিয়ে, এই এপ্‌টোৱে নতুন আৰু পূৰ্বৰ ডেটা পঢ়িব পাৰিব"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"<xliff:g id="APP_NAME">%1$s</xliff:g>ক Health Connect এক্সেছ কৰাৰ অনুমতি দিবনে?"</string>
     <string name="request_permissions_with_medical_header_title" msgid="6269944931319362595">"<xliff:g id="APP_NAME">%1$s</xliff:g>ক পূৰ্বৰ ফিটনেছ আৰু সুস্থতাৰ ডেটা এক্সেছ কৰিবলৈ দিবনে?"</string>
-    <string name="request_permissions_rationale" msgid="2642076968583316986">"<xliff:g id="APP_NAME">%1$s</xliff:g> আপোনাৰ ডেটা কেনেকৈ পৰিচালনা কেনেকৈ কৰে সেয়া আপুনি ইয়াৰ<xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>ত জানিব পাৰে"</string>
+    <string name="request_permissions_rationale" msgid="2642076968583316986">"<xliff:g id="APP_NAME">%1$s</xliff:g>এ আপোনাৰ ডেটা কেনেকৈ পৰিচালনা কেনেকৈ কৰে সেয়া আপুনি ইয়াৰ <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>ত জানিব পাৰে"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"গোপনীয়তা নীতি"</string>
     <string name="medical_request_header" msgid="2300521519021510027">"<xliff:g id="APP_NAME">%1$s</xliff:g>ক আপোনাৰ স্বাস্থ্য সম্বন্ধীয় নথি এক্সেছ কৰিবলৈ অনুমতি দিবনে?"</string>
     <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"যদি আপুনি এক্সেছ কৰাৰ অনুমতি দিয়ে, তেন্তে এপ্‌টোৱে এলাৰ্জি, লেবৰ ফলাফল, প্ৰতিষেধকৰ দৰে ডেটা আৰু অধিক পঢ়িব আৰু লিখিব পাৰে\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
