@@ -183,6 +183,7 @@ import com.android.server.healthconnect.exportimport.ExportImportJobs;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.exportimport.ImportManager;
 import com.android.server.healthconnect.fitness.FitnessRecordReadHelper;
+import com.android.server.healthconnect.logging.BackupRestoreLogger;
 import com.android.server.healthconnect.logging.ExportImportLogger;
 import com.android.server.healthconnect.logging.HealthConnectServiceLogger;
 import com.android.server.healthconnect.migration.DataMigrationManager;
@@ -345,7 +346,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             RateLimiter rateLimiter,
             File environmentDataDirectory,
             ExportImportLogger exportImportLogger,
-            HealthFitnessStatsLog statsLog) {
+            HealthFitnessStatsLog statsLog,
+            BackupRestoreLogger backupRestoreLogger) {
         mContext = context;
         mCurrentForegroundUser = context.getUser();
         mTimeSource = timeSource;
@@ -393,7 +395,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mDataPermissionEnforcer =
                 new DataPermissionEnforcer(
                         mPermissionManager, mContext, internalHealthConnectMappings);
-        Clock clockForLogging = Flags.exportImportFastFollow() ? Clock.systemUTC() : null;
+        Clock clockForLogging = Clock.systemUTC();
         mImportManager =
                 new ImportManager(
                         mAppInfoHelper,
@@ -403,7 +405,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         mFitnessRecordReadHelper,
                         mDeviceInfoHelper,
                         mHealthDataCategoryPriorityHelper,
-                        clockForLogging,
+                        Flags.exportImportFastFollow() ? clockForLogging : null,
                         exportImportNotificationSender,
                         environmentDataDirectory,
                         exportImportLogger);
@@ -420,7 +422,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 mChangeLogsHelper,
                                 mChangeLogsRequestHelper,
                                 mHealthDataCategoryPriorityHelper,
-                                mPreferenceHelper)
+                                mPreferenceHelper,
+                                clockForLogging,
+                                backupRestoreLogger)
                         : null;
         mCloudRestoreManager =
                 isCloudBackupRestoreEnabled()
@@ -431,7 +435,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 mDeviceInfoHelper,
                                 mAppInfoHelper,
                                 mHealthDataCategoryPriorityHelper,
-                                mPreferenceHelper)
+                                mPreferenceHelper,
+                                clockForLogging,
+                                backupRestoreLogger)
                         : null;
         mStatsLog = statsLog;
     }

@@ -31,6 +31,7 @@ import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.util.Slog;
 
 import com.android.server.healthconnect.fitness.FitnessRecordReadHelper;
+import com.android.server.healthconnect.logging.BackupRestoreLogger;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.BackupChangeTokenHelper;
@@ -40,6 +41,8 @@ import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
+
+import java.time.Clock;
 
 /**
  * Manages Cloud Backup operations.
@@ -56,6 +59,8 @@ public final class CloudBackupManager {
     private final HealthDataCategoryPriorityHelper mPriorityHelper;
     private final PreferenceHelper mPreferenceHelper;
     private final AppInfoHelper mAppInfoHelper;
+    private final Clock mClock;
+    private final BackupRestoreLogger mBackupRestoreLogger;
 
     public CloudBackupManager(
             TransactionManager transactionManager,
@@ -67,7 +72,9 @@ public final class CloudBackupManager {
             ChangeLogsHelper changeLogsHelper,
             ChangeLogsRequestHelper changeLogsRequestHelper,
             HealthDataCategoryPriorityHelper priorityHelper,
-            PreferenceHelper preferenceHelper) {
+            PreferenceHelper preferenceHelper,
+            Clock clock,
+            BackupRestoreLogger backupRestoreLogger) {
         mTransactionManager = transactionManager;
         mPriorityHelper = priorityHelper;
         mPreferenceHelper = preferenceHelper;
@@ -84,6 +91,8 @@ public final class CloudBackupManager {
                         changeLogsRequestHelper,
                         priorityHelper,
                         preferenceHelper);
+        mClock = clock;
+        mBackupRestoreLogger = backupRestoreLogger;
     }
 
     /**

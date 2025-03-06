@@ -429,7 +429,8 @@ public class HealthConnectServiceImplTest {
                         mRateLimiter,
                         healthConnectInjector.getEnvironmentDataDirectory(),
                         healthConnectInjector.getExportImportLogger(),
-                        healthConnectInjector.getHealthFitnessStatsLog());
+                        healthConnectInjector.getHealthFitnessStatsLog(),
+                        healthConnectInjector.getBackupRestoreLogger());
         mBackupRestore = healthConnectInjector.getBackupRestore();
     }
 

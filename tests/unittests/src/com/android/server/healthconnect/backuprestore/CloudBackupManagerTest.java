@@ -67,6 +67,9 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,6 +97,7 @@ public class CloudBackupManagerTest {
     private TransactionManager mTransactionManager;
     private TransactionTestUtils mTransactionTestUtils;
     private CloudBackupManager mCloudBackupManager;
+    private Instant mTimeStamp;
 
     // TODO(b/373322447): Remove the mock FirstGrantTimeManager
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
@@ -126,6 +130,9 @@ public class CloudBackupManagerTest {
         ChangeLogsRequestHelper changeLogsRequestHelper =
                 healthConnectInjector.getChangeLogsRequestHelper();
 
+        mTimeStamp = Instant.parse("2024-06-04T16:39:12Z");
+        Clock fakeClock = Clock.fixed(mTimeStamp, ZoneId.of("UTC"));
+
         mCloudBackupManager =
                 new CloudBackupManager(
                         mTransactionManager,
@@ -137,7 +144,9 @@ public class CloudBackupManagerTest {
                         changeLogsHelper,
                         changeLogsRequestHelper,
                         priorityHelper,
-                        preferenceHelper);
+                        preferenceHelper,
+                        fakeClock,
+                        healthConnectInjector.getBackupRestoreLogger());
     }
 
     @Test

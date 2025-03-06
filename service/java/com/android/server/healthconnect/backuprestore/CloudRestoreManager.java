@@ -32,6 +32,7 @@ import android.health.connect.internal.datatypes.RecordInternal;
 import android.util.Slog;
 
 import com.android.server.healthconnect.fitness.FitnessRecordReadHelper;
+import com.android.server.healthconnect.logging.BackupRestoreLogger;
 import com.android.server.healthconnect.proto.backuprestore.AppInfoMap;
 import com.android.server.healthconnect.proto.backuprestore.BackupData;
 import com.android.server.healthconnect.proto.backuprestore.Record;
@@ -44,6 +45,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
+import java.time.Clock;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -73,6 +75,8 @@ public class CloudRestoreManager {
     private final HealthDataCategoryPriorityHelper mPriorityHelper;
     private final PreferenceHelper mPreferenceHelper;
     private final CloudBackupSettingsHelper mSettingsHelper;
+    private final Clock mClock;
+    private final BackupRestoreLogger mBackupRestoreLogger;
 
     public CloudRestoreManager(
             TransactionManager transactionManager,
@@ -81,7 +85,9 @@ public class CloudRestoreManager {
             DeviceInfoHelper deviceInfoHelper,
             AppInfoHelper appInfoHelper,
             HealthDataCategoryPriorityHelper priorityHelper,
-            PreferenceHelper preferenceHelper) {
+            PreferenceHelper preferenceHelper,
+            Clock clock,
+            BackupRestoreLogger backupRestoreLogger) {
         mTransactionManager = transactionManager;
         mFitnessRecordReadHelper = fitnessRecordReadHelper;
         mInternalHealthConnectMappings = internalHealthConnectMappings;
@@ -91,6 +97,8 @@ public class CloudRestoreManager {
         mPreferenceHelper = preferenceHelper;
         mSettingsHelper =
                 new CloudBackupSettingsHelper(priorityHelper, preferenceHelper, appInfoHelper);
+        mClock = clock;
+        mBackupRestoreLogger = backupRestoreLogger;
     }
 
     /** Takes the serialized user settings and overwrites existing settings. */
