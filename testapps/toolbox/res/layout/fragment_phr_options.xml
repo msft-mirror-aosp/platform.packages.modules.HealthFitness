@@ -25,7 +25,8 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
-        android:layout_marginTop="8dp">
+        android:layout_marginTop="8dp"
+        android:importantForAutofill="no">
 
         <Button
             android:id="@+id/phr_request_read_and_write_medical_data_button"
@@ -84,7 +85,27 @@
             android:layout_marginTop="38dp"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:text="@string/phr_options_ingest_title" />
+            android:text="@string/phr_options_select_data_source_title" />
+
+        <Spinner
+            android:id="@+id/phr_data_source_spinner"
+            android:layout_marginTop="18dp"
+            android:minWidth="250dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/phr_data_source_display_name_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:layout_marginLeft="18dp"
+            android:layout_marginRight="18dp"
+            android:minWidth="300dp"
+            android:gravity="start"
+            android:inputType="text"
+            android:hint="@string/phr_options_data_source_name_placeholder"
+            android:textSize="12sp" />
 
         <Button
             android:id="@+id/phr_create_data_source_button"
@@ -94,12 +115,14 @@
             android:minWidth="250dp"
             android:text="@string/phr_options_create_data_source" />
 
-        <Spinner
-            android:id="@+id/phr_data_source_spinner"
-            android:layout_marginTop="18dp"
-            android:minWidth="250dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="38dp"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:text="@string/phr_options_ingest_title" />
 
         <Button
             android:id="@+id/phr_seed_fhir_jsons_button"
