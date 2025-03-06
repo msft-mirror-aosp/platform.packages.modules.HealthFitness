@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="38dp"
-            android:minWidth="250dp"
+            android:minWidth="300dp"
             android:text="@string/phr_options_request_medical" />
 
         <TextView
@@ -50,14 +50,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
-            android:minWidth="250dp"
+            android:minWidth="300dp"
             android:text="@string/phr_options_read_by_id" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:layout_marginTop="38dp"
+            android:layout_marginTop="50dp"
             android:textSize="20sp"
             android:textStyle="bold"
             android:text="@string/phr_options_select_patient_title" />
@@ -65,7 +65,7 @@
         <Spinner
             android:id="@+id/phr_patient_spinner"
             android:layout_marginTop="18dp"
-            android:minWidth="250dp"
+            android:minWidth="300dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -82,7 +82,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:layout_marginTop="38dp"
+            android:layout_marginTop="50dp"
             android:textSize="20sp"
             android:textStyle="bold"
             android:text="@string/phr_options_select_data_source_title" />
@@ -90,7 +90,7 @@
         <Spinner
             android:id="@+id/phr_data_source_spinner"
             android:layout_marginTop="18dp"
-            android:minWidth="250dp"
+            android:minWidth="300dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -112,14 +112,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
-            android:minWidth="250dp"
+            android:minWidth="300dp"
             android:text="@string/phr_options_create_data_source" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:layout_marginTop="38dp"
+            android:layout_marginTop="50dp"
             android:textSize="20sp"
             android:textStyle="bold"
             android:text="@string/phr_options_ingest_title" />
@@ -129,13 +129,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
-            android:minWidth="250dp"
+            android:minWidth="300dp"
             android:text="@string/phr_options_seed_fhir_jsons" />
 
         <Spinner
             android:id="@+id/phr_spinner"
             android:layout_marginTop="18dp"
-            android:minWidth="250dp"
+            android:minWidth="300dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -144,7 +144,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
-            android:minWidth="250dp"
+            android:minWidth="300dp"
             android:text="@string/phr_options_insert_resource" />
 
         <EditText
@@ -163,7 +163,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:layout_marginTop="38dp"
+            android:layout_marginTop="50dp"
             android:textSize="20sp"
             android:textStyle="bold"
             android:text="@string/phr_options_bulk_ingest_title" />
@@ -172,8 +172,8 @@
             android:id="@+id/phr_number_of_inserts_id_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
             android:minWidth="40dp"
-            android:layout_marginTop="8dp"
             android:gravity="center"
             android:inputType="numberSigned"
             android:text="10000"
@@ -185,7 +185,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="300dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="18dp"
             android:visibility="gone"
             android:progress="0"/>
 
@@ -194,7 +194,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
-            android:minWidth="250dp"
+            android:layout_marginBottom="18dp"
+            android:minWidth="300dp"
             android:text="@string/phr_options_seed_x_fhir_jsons" />
 
     </LinearLayout>
