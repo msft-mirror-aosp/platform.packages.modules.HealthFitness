@@ -404,6 +404,7 @@ public class HealthConnectServiceImplTest {
                         healthConnectInjector.getMigrationUiStateManager(),
                         healthConnectInjector.getMigrationCleaner(),
                         healthConnectInjector.getFitnessRecordReadHelper(),
+                        healthConnectInjector.getFitnessRecordDeleteHelper(),
                         healthConnectInjector.getMedicalResourceHelper(),
                         healthConnectInjector.getMedicalDataSourceHelper(),
                         healthConnectInjector.getExportManager(),
