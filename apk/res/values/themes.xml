@@ -87,7 +87,7 @@
         <item name="editIcon">@drawable/ic_edit</item>
         <item name="closeIcon">@drawable/ic_close</item>
         <item name="appsIcon">@drawable/ic_apps</item>
-
+        <item name="moreVertIcon">@drawable/more_vert</item>
 
         <!-- Backup and restore -->
 
@@ -184,6 +184,7 @@
 
         <!-- Popup Menu -->
         <item name="android:itemBackground">@color/settingslib_dialog_background</item>
+        <item name="popupMenuStyle">@style/Widget.HealthConnect.PopUpMenu</item>
         <!-- END REGION -->
 
         <!-- REGION CLIPPING -->
