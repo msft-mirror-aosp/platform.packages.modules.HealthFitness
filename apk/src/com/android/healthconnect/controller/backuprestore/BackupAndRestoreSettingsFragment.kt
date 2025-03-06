@@ -258,9 +258,7 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
             }
         preference.order = PREVIOUS_EXPORT_STATUS_ORDER
         preference.key = EXPORT_STATUS_PREFERENCE
-        if (!exportLocation.isNullOrEmpty()) {
-            preference.isSelectable = false
-        }
+        preference.isSelectable = false
         return preference
     }
 

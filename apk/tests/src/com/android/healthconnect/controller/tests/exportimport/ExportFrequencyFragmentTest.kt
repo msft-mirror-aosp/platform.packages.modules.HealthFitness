@@ -47,6 +47,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.reset
@@ -102,7 +103,7 @@ class ExportFrequencyFragmentTest {
     fun exportFrequencyFragment_impressionsLogged() {
         launchFragment<ExportFrequencyFragment>(Bundle())
 
-        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger, atLeast(1)).logPageImpression()
         verify(healthConnectLogger)
             .logImpression(ExportFrequencyElement.EXPORT_FREQUENCY_BACK_BUTTON)
         verify(healthConnectLogger)

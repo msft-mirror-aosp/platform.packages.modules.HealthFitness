@@ -16,6 +16,7 @@
 package com.android.healthconnect.controller.shared.preference
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import androidx.fragment.app.FragmentManager
 import androidx.preference.PreferenceCategory
@@ -69,6 +70,8 @@ constructor(
         val title: String,
         val element: ElementName,
         val listener: SelectorWithWidgetPreference.OnClickListener,
+        val summary: String? = null,
+        val icon: Drawable? = null,
     )
 
     override fun onAttached() {
@@ -84,6 +87,8 @@ constructor(
         val selectorPreference =
             SelectorWithWidgetPreference(context).apply {
                 title = option.title
+                summary = option.summary
+                icon = option.icon
                 key = option.key
                 setOnClickListener {
                     logger.logInteraction(option.element)
@@ -106,6 +111,15 @@ constructor(
     fun updateSelectedOption(newSelectedOptionKey: String) {
         selectedKey = newSelectedOptionKey
         updateSelectedPreference()
+    }
+
+    fun updateSummary(optionKey: String, newSummary: String) {
+        for (i in 0 until preferenceCount) {
+            val preference = getPreference(i)
+            if (preference is SelectorWithWidgetPreference && preference.key == optionKey) {
+                preference.summary = newSummary
+            }
+        }
     }
 
     fun getSelectedOption(): String? = selectedKey
