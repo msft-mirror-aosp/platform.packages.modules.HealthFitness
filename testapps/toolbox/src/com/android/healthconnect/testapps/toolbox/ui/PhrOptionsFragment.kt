@@ -38,6 +38,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.SpinnerAdapter
@@ -55,8 +56,17 @@ import com.android.healthconnect.testapps.toolbox.utils.GeneralUtils.Companion.r
 import com.android.healthconnect.testapps.toolbox.utils.GeneralUtils.Companion.showMessageDialog
 import java.io.IOException
 import java.io.InputStream
+import kotlin.collections.flatten
+import kotlin.math.max
+import kotlin.text.get
+import kotlin.toString
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
+import org.json.JSONObject
 
 class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
     companion object {
@@ -64,6 +74,14 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         private const val PATIENT_B_ASSET_PATH = "patient_b"
         private const val PATIENT_C_ASSET_PATH = "patient_c"
         private const val CUSTOM_DATA_PATH_PLACE_HOLDER = "custom folder"
+
+        // Chosen to make sure we stay under the 5mb limit
+        private const val MAX_BULK_INSERT_BATCH_SIZE = 750
+
+        // HC default number of write calls allowed per 15 minutes
+        private const val HC_RATE_LIMIT_15_M = 1000
+        private const val MAX_BULK_INSERT_TOTAL_SIZE =
+            MAX_BULK_INSERT_BATCH_SIZE * HC_RATE_LIMIT_15_M
     }
 
     private lateinit var mRequestPermissionLauncher: ActivityResultLauncher<Array<String>>
@@ -80,13 +98,13 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         // Starting API Level 30 If permission is denied more than once, user doesn't see the dialog
         // asking permissions again unless they grant the permission from settings.
         mRequestPermissionLauncher =
-            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-                permissionMap: Map<String, Boolean> -> requestPermissionResultHandler(permissionMap)
+            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissionMap: Map<String, Boolean> ->
+                requestPermissionResultHandler(permissionMap)
             }
 
         mSelectJSONDirectoryLauncher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                result: ActivityResult -> selectJsonDirResultHandler(result)
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+                selectJsonDirResultHandler(result)
             }
     }
 
@@ -159,6 +177,12 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
 
         view.requireViewById<Button>(R.id.phr_seed_fhir_jsons_button).setOnClickListener {
             executeAndShowMessage { insertAllFhirResources(view) }
+        }
+
+        view.requireViewById<Button>(R.id.phr_seed_x_fhir_jsons_button).setOnClickListener {
+            executeAndShowMessage {
+                insertSelectedNumberOfFhirResources(view)
+            }
         }
 
         view.requireViewById<Button>(R.id.phr_insert_resource_button).setOnClickListener {
@@ -252,7 +276,8 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
                         // let user select directory to read from. The callback of this will then
                         // also set up the fhirResourceSpinner
                         mSelectJSONDirectoryLauncher.launch(
-                            Intent(Intent.ACTION_OPEN_DOCUMENT_TREE))
+                            Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+                        )
                         return
                     }
 
@@ -295,7 +320,7 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
     }
 
     private fun setUpFhirResourceFromSpinner(rootView: View, assetSubDir: String) {
-        val jsonFiles = listFhirJSONAssetFiles(requireContext(), assetSubDir) ?: emptyList()
+        val jsonFiles = listFhirJSONAssetFiles(requireContext(), assetSubDir)
         val spinnerOptions = listOf(getString(R.string.spinner_default_message)) + jsonFiles
 
         setUpFhirResourceSpinner(rootView, spinnerOptions, false, assetSubDir)
@@ -371,11 +396,7 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
     }
 
     private suspend fun insertAllFhirResources(view: View): String {
-        val patientContext =
-            view.findViewById<Spinner>(R.id.phr_patient_spinner).selectedItem.toString()
-        val allResources = if (patientContext == CUSTOM_DATA_PATH_PLACE_HOLDER)
-            loadAllFhirJSONsFromContentUris(mSelectedCustomDirFilesToUri?.values.orEmpty().toList())
-            else loadAllFhirJSONsFromAssets(patientContext)
+        val allResources = loadAllFhirJSONs(view)
         Log.d("INSERT_ALL", "Writing ${allResources.size} FHIR resources")
         val insertedDataSourceId = getDataSourceIdFromSpinner(view)
             ?: return "No data source selected"
@@ -395,6 +416,70 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
                     separator = "\n",
                     transform = MedicalResource::toString
                 )
+    }
+
+    private suspend fun insertSelectedNumberOfFhirResources(view: View): String {
+        val insertedDataSourceId = getDataSourceIdFromSpinner(view)
+            ?: return "No data source selected"
+        val numResourcesToInsert =
+            view.findViewById<EditText>(R.id.phr_number_of_inserts_id_text)
+                .getText()
+                .toString()
+                .toIntOrNull() ?: return "Please enter a number"
+        if (numResourcesToInsert > MAX_BULK_INSERT_TOTAL_SIZE)
+            return "Please enter a number under $MAX_BULK_INSERT_TOTAL_SIZE"
+        val numberOfBatches = Math.ceilDiv(numResourcesToInsert, MAX_BULK_INSERT_BATCH_SIZE)
+        Log.d(
+            "INSERT_MANY",
+            "Inserting $numResourcesToInsert FHIR resources in batches of "
+                    + "$MAX_BULK_INSERT_BATCH_SIZE, calculated $numberOfBatches batches"
+        )
+
+        // Disable button while insert is running
+        view.requireViewById<Button>(R.id.phr_seed_x_fhir_jsons_button).isEnabled = false
+        // Show progress bar
+        val progressBar = view.findViewById<ProgressBar>(R.id.progressBar)
+        progressBar.visibility = View.VISIBLE
+
+        var numInsertedResources = 0
+
+        try {
+            val allResources = loadAllFhirJSONs(view)
+            if (allResources.isEmpty()) return "Found no resource files to insert. Please select " +
+                    "a patient context with FHIR resources."
+
+            for (i in 0..numberOfBatches - 1) {
+                val upsertRequests: MutableList<UpsertMedicalResourceRequest> = mutableListOf()
+                val isLastBatch = i == numberOfBatches - 1
+                val numResources = if (isLastBatch)
+                    numResourcesToInsert - i * MAX_BULK_INSERT_BATCH_SIZE
+                else MAX_BULK_INSERT_BATCH_SIZE
+
+                for (j in 1..numResources) {
+                    val resourceNumber = i * MAX_BULK_INSERT_BATCH_SIZE + j
+                    var resourceJson = allResources[resourceNumber % allResources.size]
+                    resourceJson =
+                        JSONObject(resourceJson).put("id", resourceNumber.toString()).toString()
+                    upsertRequests.add(
+                        UpsertMedicalResourceRequest.Builder(
+                            insertedDataSourceId,
+                            FhirVersion.parseFhirVersion("4.0.1"),
+                            resourceJson,
+                        ).build()
+                    )
+                }
+
+                numInsertedResources += upsertMedicalResources(upsertRequests).size
+                val progress: Int = numInsertedResources * 100 / numResourcesToInsert
+                progressBar.setProgress(progress, true)
+            }
+
+            return "SUCCESSFUL DATA UPSERT \n\nUpserted $numInsertedResources resources."
+        } finally {
+            progressBar.visibility = View.GONE
+            progressBar.progress = 0
+            view.requireViewById<Button>(R.id.phr_seed_x_fhir_jsons_button).isEnabled = true
+        }
     }
 
     private suspend fun upsertMedicalResources(
@@ -430,7 +515,8 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
             }
         Log.d("CREATE_DATA_SOURCE", "Created source: $dataSource")
         updateDataSourceSpinnerOptions(
-            view, mExistingDataSourceNamesToId.keys.toList(), dataSource.displayName)
+            view, mExistingDataSourceNamesToId.keys.toList(), dataSource.displayName
+        )
         mExistingDataSourceNamesToId.put(dataSource.displayName, dataSource.id)
         return "Created data source: $displayName"
     }
@@ -455,7 +541,17 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         return resources
     }
 
-    private fun listFhirJSONAssetFiles(context: Context, path: String): List<String>? {
+    private fun loadAllFhirJSONs(view: View): List<String> {
+        val patientContext =
+            view.findViewById<Spinner>(R.id.phr_patient_spinner).selectedItem.toString()
+        val allResources = if (patientContext == CUSTOM_DATA_PATH_PLACE_HOLDER)
+            loadAllFhirJSONsFromContentUris(mSelectedCustomDirFilesToUri?.values.orEmpty().toList())
+        else loadAllFhirJSONsFromAssets(patientContext)
+
+        return allResources
+    }
+
+    private fun listFhirJSONAssetFiles(context: Context, path: String): List<String> {
         val assetManager = context.assets
         return try {
             assetManager.list(path)?.filter { it.endsWith(".json") } ?: emptyList()
@@ -467,17 +563,12 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
                 Toast.LENGTH_SHORT,
             )
                 .show()
-            null
+            emptyList()
         }
     }
 
     private fun loadAllFhirJSONsFromAssets(path: String): List<String> {
         val jsonFiles = listFhirJSONAssetFiles(requireContext(), path)
-        if (jsonFiles == null) {
-            Log.e("loadAllFhirJSONsAssets", "No JSON files were found.")
-            Toast.makeText(context, "No JSON files were found.", Toast.LENGTH_SHORT).show()
-            return emptyList()
-        }
 
         return jsonFiles
             .mapNotNull {
