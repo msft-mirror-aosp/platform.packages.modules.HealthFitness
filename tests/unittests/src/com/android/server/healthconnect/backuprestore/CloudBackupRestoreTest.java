@@ -59,6 +59,9 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
@@ -81,6 +84,7 @@ public final class CloudBackupRestoreTest {
     private CloudBackupManager mCloudBackupManager;
     private CloudRestoreManager mCloudRestoreManager;
     private RecordProtoConverter mRecordProtoConverter;
+    private Instant mTimeStamp;
 
     // TODO(b/373322447): Remove the mock FirstGrantTimeManager
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
@@ -105,6 +109,9 @@ public final class CloudBackupRestoreTest {
         mRecordProtoConverter = new RecordProtoConverter();
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
 
+        mTimeStamp = Instant.parse("2024-06-04T16:39:12Z");
+        Clock fakeClock = Clock.fixed(mTimeStamp, ZoneId.of("UTC"));
+
         mCloudBackupManager =
                 new CloudBackupManager(
                         mTransactionManager,
@@ -116,7 +123,9 @@ public final class CloudBackupRestoreTest {
                         healthConnectInjector.getChangeLogsHelper(),
                         healthConnectInjector.getChangeLogsRequestHelper(),
                         healthConnectInjector.getHealthDataCategoryPriorityHelper(),
-                        healthConnectInjector.getPreferenceHelper());
+                        healthConnectInjector.getPreferenceHelper(),
+                        fakeClock,
+                        healthConnectInjector.getBackupRestoreLogger());
         mCloudRestoreManager =
                 new CloudRestoreManager(
                         mTransactionManager,
@@ -125,7 +134,9 @@ public final class CloudBackupRestoreTest {
                         mDeviceInfoHelper,
                         mAppInfoHelper,
                         healthConnectInjector.getHealthDataCategoryPriorityHelper(),
-                        healthConnectInjector.getPreferenceHelper());
+                        healthConnectInjector.getPreferenceHelper(),
+                        fakeClock,
+                        healthConnectInjector.getBackupRestoreLogger());
     }
 
     @Test
