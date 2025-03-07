@@ -161,6 +161,7 @@ fun GrantMultipleFitnessPermissions(
                 },
                 modifier = Modifier.fillMaxWidth(),
                 labelMaxLines = Integer.MAX_VALUE,
+                materialUIVersion = materialUIVersion,
             )
         }
         // Deny all button.
@@ -174,6 +175,7 @@ fun GrantMultipleFitnessPermissions(
                 },
                 modifier = Modifier.fillMaxWidth(),
                 labelMaxLines = Integer.MAX_VALUE,
+                materialUIVersion = materialUIVersion,
             )
         }
         // Expand granular control button. User clicks this to control each data type
@@ -230,6 +232,7 @@ fun GrantSingleFitnessPermission(
                 },
                 modifier = Modifier.fillMaxWidth(),
                 labelMaxLines = Integer.MAX_VALUE,
+                materialUIVersion = materialUIVersion,
             )
         }
         // Deny button.
@@ -242,6 +245,7 @@ fun GrantSingleFitnessPermission(
                 },
                 modifier = Modifier.fillMaxWidth(),
                 labelMaxLines = Integer.MAX_VALUE,
+                materialUIVersion = materialUIVersion,
             )
         }
     }
@@ -285,6 +289,7 @@ fun GrantReadBackgroundHealthPermission(
                 },
                 modifier = Modifier.fillMaxWidth(),
                 labelMaxLines = Integer.MAX_VALUE,
+                materialUIVersion = materialUIVersion,
             )
         }
         // Allow while in use button. (Deny background read permission.)
@@ -300,6 +305,7 @@ fun GrantReadBackgroundHealthPermission(
                 },
                 modifier = Modifier.fillMaxWidth(),
                 labelMaxLines = Integer.MAX_VALUE,
+                materialUIVersion = materialUIVersion,
             )
         }
     }
