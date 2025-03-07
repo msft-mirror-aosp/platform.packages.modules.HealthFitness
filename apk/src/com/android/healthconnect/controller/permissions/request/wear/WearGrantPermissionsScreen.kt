@@ -70,7 +70,7 @@ fun WearGrantPermissionsScreen(viewModel: RequestPermissionViewModel, onButtonCl
         fitnessPermissions.value.map { permission ->
             stringResource(
                 FitnessPermissionStrings.fromPermissionType(permission.fitnessPermissionType)
-                    .uppercaseLabel
+                    .lowercaseLabel
             )
         }
     val additionalPermissions = viewModel.additionalPermissionsList.observeAsState(emptyList())
