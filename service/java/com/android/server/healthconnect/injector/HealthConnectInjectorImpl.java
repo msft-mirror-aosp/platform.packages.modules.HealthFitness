@@ -69,6 +69,8 @@ import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper
 import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.PreferencesManager;
+import com.android.server.healthconnect.tracker.TrackerManager;
+import com.android.server.healthconnect.tracker.TrackerManagerImpl;
 import com.android.server.healthconnect.utils.TimeSource;
 import com.android.server.healthconnect.utils.TimeSourceImpl;
 
@@ -125,6 +127,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     private final File mEnvironmentDataDirectory;
     private final HealthFitnessStatsLog mHealthFitnesssStatsLog;
     private final ExportImportLogger mExportImportLogger;
+    private final TrackerManager mTrackerManager;
 
     public HealthConnectInjectorImpl(Context context) {
         this(new Builder(context));
@@ -133,6 +136,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     private HealthConnectInjectorImpl(Builder builder) {
         Context context = builder.mContext;
         mBuilder = builder;
+
         // Don't store the user and make it available via the injector, as this user is always
         // the first / system user, and doesn't change after that.
         // Any class that is using this user below are responsible for making sure that they
@@ -372,6 +376,10 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                 builder.mAppOpsManagerLocal == null
                         ? LocalManagerRegistry.getManager(AppOpsManagerLocal.class)
                         : builder.mAppOpsManagerLocal;
+        mTrackerManager =
+                builder.mTrackerManager == null
+                        ? new TrackerManagerImpl()
+                        : builder.mTrackerManager;
     }
 
     @Override
@@ -582,6 +590,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         return mThreadScheduler;
     }
 
+    @Override
     public File getEnvironmentDataDirectory() {
         return mEnvironmentDataDirectory;
     }
@@ -594,6 +603,11 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     @Override
     public ExportImportLogger getExportImportLogger() {
         return mExportImportLogger;
+    }
+
+    @Override
+    public TrackerManager getTrackerManager() {
+        return mTrackerManager;
     }
 
     /**
@@ -656,6 +670,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         @Nullable private AppOpsManagerLocal mAppOpsManagerLocal;
         @Nullable private HealthConnectThreadScheduler mThreadScheduler;
         @Nullable private HealthFitnessStatsLog mStatsLog;
+        @Nullable private TrackerManager mTrackerManager;
 
         private Builder(Context context) {
             mContext = context;
@@ -921,6 +936,12 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         /** Set fake or custom {@link AppOpsManagerLocal}. */
         public Builder setHealthFitnessStatsLog(HealthFitnessStatsLog statsLog) {
             mStatsLog = Objects.requireNonNull(statsLog);
+            return this;
+        }
+
+        /** Set fake or custom {@link TrackerManager}. */
+        public Builder setTrackerManager(TrackerManager trackerManager) {
+            mTrackerManager = Objects.requireNonNull(trackerManager);
             return this;
         }
 

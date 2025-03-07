@@ -29,6 +29,7 @@ import com.android.healthconnect.controller.shared.preference.HealthSetupFragmen
 import com.android.healthconnect.controller.shared.preference.RadioButtonPreferenceCategory
 import com.android.healthconnect.controller.utils.logging.ExportFrequencyElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.settingslib.widget.SelectorWithWidgetPreference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -43,6 +44,10 @@ class ExportFrequencyFragment : Hilt_ExportFrequencyFragment() {
 
     companion object {
         const val EXPORT_FREQ_KEY = "EXPORT_FREQUENCY_GROUP"
+    }
+
+    init {
+        this.setPageName(PageName.EXPORT_FREQUENCY_PAGE)
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {

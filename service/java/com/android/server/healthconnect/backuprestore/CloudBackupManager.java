@@ -46,7 +46,6 @@ import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappi
  *
  * @hide
  */
-@FlaggedApi(FLAG_CLOUD_BACKUP_AND_RESTORE)
 public final class CloudBackupManager {
 
     private static final String TAG = "CloudBackupManager";

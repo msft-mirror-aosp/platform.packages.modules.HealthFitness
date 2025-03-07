@@ -45,7 +45,6 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.TestObserver
 import com.android.healthconnect.controller.tests.utils.di.FakeGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.tests.utils.di.FakeLoadExerciseRoute
-import com.android.healthconnect.controller.utils.PermissionUtils
 import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -87,7 +86,6 @@ class AppPermissionViewModelTest {
 
     private var appInfoReader: AppInfoReader = mock()
     private val healthPermissionReader: HealthPermissionReader = mock()
-    private val permissionUtils: PermissionUtils = mock()
     private val getGrantedHealthPermissionsUseCase = FakeGetGrantedHealthPermissionsUseCase()
     private val loadAccessDateUseCase: LoadAccessDateUseCase = mock()
     private val deleteAppDataUseCase: DeleteAppDataUseCase = mock()
@@ -143,7 +141,6 @@ class AppPermissionViewModelTest {
                 getGrantedHealthPermissionsUseCase,
                 loadExerciseRoutePermissionUseCase,
                 healthPermissionReader,
-                permissionUtils,
                 Dispatchers.Main,
             )
     }
@@ -2311,7 +2308,7 @@ class AppPermissionViewModelTest {
     @Test
     fun isPackageSupported_callsCorrectMethod() {
         assumeFalse(FeatureUtil.isWatch());
-        whenever(permissionUtils.isBodySensorSplitPermissionApp(TEST_APP_PACKAGE_NAME))
+        whenever(healthPermissionReader.isBodySensorSplitPermissionApp(TEST_APP_PACKAGE_NAME))
             .thenReturn(false)
 
         appPermissionViewModel.isPackageSupported(TEST_APP_PACKAGE_NAME)
@@ -2342,7 +2339,7 @@ class AppPermissionViewModelTest {
     @EnableFlags(Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED)
     fun isPackageSupported_notWatch_flagEnabled_splitPermissionApp_packageSupported() {
         assumeFalse(FeatureUtil.isWatch());
-        whenever(permissionUtils.isBodySensorSplitPermissionApp(TEST_APP_PACKAGE_NAME))
+        whenever(healthPermissionReader.isBodySensorSplitPermissionApp(TEST_APP_PACKAGE_NAME))
             .thenReturn(true)
 
         assertThat(appPermissionViewModel.isPackageSupported(TEST_APP_PACKAGE_NAME)).isTrue()

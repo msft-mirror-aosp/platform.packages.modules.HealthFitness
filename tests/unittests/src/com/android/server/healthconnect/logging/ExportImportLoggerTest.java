@@ -23,10 +23,9 @@ import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_IMPORT_INVOKED
 import static android.health.connect.exportimport.ImportStatus.DATA_IMPORT_ERROR_VERSION_MISMATCH;
 import static android.health.connect.exportimport.ScheduledExportStatus.DATA_EXPORT_STARTED;
 
-import static com.android.dx.mockito.inline.extended.ExtendedMockito.verify;
-
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import android.health.HealthFitnessStatsLog;
 

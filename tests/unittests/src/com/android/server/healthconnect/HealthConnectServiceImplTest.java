@@ -54,6 +54,7 @@ import static android.healthconnect.cts.utils.DataFactory.NOW;
 import static com.android.compatibility.common.util.SystemUtil.eventually;
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
 import static com.android.healthfitness.flags.Flags.FLAG_CLOUD_BACKUP_AND_RESTORE;
+import static com.android.healthfitness.flags.Flags.FLAG_IMMEDIATE_EXPORT;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY;
@@ -154,7 +155,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SdkSuppress;
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.appop.AppOpsManagerLocal;
 import com.android.server.healthconnect.backuprestore.BackupRestore;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
@@ -178,18 +178,19 @@ import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceH
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.utils.PreferencesManager;
 import com.android.server.healthconnect.testing.fakes.FakeTimeSource;
-import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.quality.Strictness;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -297,13 +298,8 @@ public class HealthConnectServiceImplTest {
     private static final String THIS_TEST_PACKAGE_NAME = "com.android.healthconnect.unittests";
 
     @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
-
-    @Rule
-    public final ExtendedMockitoRule mExtendedMockitoRule =
-            new ExtendedMockitoRule.Builder(this)
-                    .setStrictness(Strictness.LENIENT)
-                    .addStaticMockFixtures(EnvironmentFixture::new)
-                    .build();
+    @Rule public final MockitoRule mMockitoRule = MockitoJUnit.rule();
+    @Rule public final TemporaryFolder mEnvironmentDataDir = new TemporaryFolder();
 
     @Mock private TransactionManager mTransactionManager;
     @Mock private AppInfoHelper mAppInfoHelper;
@@ -388,6 +384,7 @@ public class HealthConnectServiceImplTest {
                         .setTimeSource(mFakeTimeSource)
                         .setAppOpsManagerLocal(mAppOpsManagerLocal)
                         .setHealthFitnessStatsLog(mHealthFitnessStatsLog)
+                        .setEnvironmentDataDirectory(mEnvironmentDataDir.getRoot())
                         .build();
         mThreadScheduler = healthConnectInjector.getThreadScheduler();
         mInternalTaskScheduler = mThreadScheduler.mInternalBackgroundExecutor;
@@ -672,14 +669,36 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    public void testConfigureScheduledExport_schedulesAnInternalTask() throws Exception {
+    @EnableFlags({FLAG_IMMEDIATE_EXPORT})
+    public void testConfigureScheduledExport_withPeriodZero_schedulesOneInternalTask()
+            throws Exception {
         long taskCount = mInternalTaskScheduler.getCompletedTaskCount();
         mHealthConnectService.configureScheduledExport(
-                new ScheduledExportSettings.Builder().setUri(Uri.parse(TEST_URI)).build(),
+                new ScheduledExportSettings.Builder()
+                        .setUri(Uri.parse(TEST_URI))
+                        .setPeriodInDays(0)
+                        .build(),
                 mUserHandle);
         awaitAllExecutorsIdle();
 
         assertThat(mInternalTaskScheduler.getCompletedTaskCount()).isEqualTo(taskCount + 1);
+    }
+
+    @Test
+    @EnableFlags({FLAG_IMMEDIATE_EXPORT})
+    public void testConfigureScheduledExport_withPeriodGreaterThanZero_schedulesTwoInternalTask()
+            throws Exception {
+        long taskCount = mInternalTaskScheduler.getCompletedTaskCount();
+        mHealthConnectService.configureScheduledExport(
+                new ScheduledExportSettings.Builder()
+                        .setUri(Uri.parse(TEST_URI))
+                        .setPeriodInDays(1)
+                        .build(),
+                mUserHandle);
+        awaitAllExecutorsIdle();
+
+        // 2 internal tasks are scheduled: 1 for immediate export and 1 for periodic export.
+        assertThat(mInternalTaskScheduler.getCompletedTaskCount()).isEqualTo(taskCount + 2);
     }
 
     /**

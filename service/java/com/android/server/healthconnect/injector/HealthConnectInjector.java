@@ -60,6 +60,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper
 import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.PreferencesManager;
+import com.android.server.healthconnect.tracker.TrackerManager;
 import com.android.server.healthconnect.utils.TimeSource;
 
 import java.io.File;
@@ -270,6 +271,9 @@ public abstract class HealthConnectInjector {
      * Getter for {@link ExportImportLogger} instance initialised by the Health Connect Injector.
      */
     public abstract ExportImportLogger getExportImportLogger();
+
+    /** Getter for {@link TrackerManager} instance initialised by the Health Connect Injector. */
+    public abstract TrackerManager getTrackerManager();
 
     /** Used to initialize the Injector. */
     public static void setInstance(HealthConnectInjector healthConnectInjector) {
