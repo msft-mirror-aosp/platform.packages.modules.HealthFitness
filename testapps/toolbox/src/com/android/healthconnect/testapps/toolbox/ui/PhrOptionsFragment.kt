@@ -20,6 +20,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.health.connect.CreateMedicalDataSourceRequest
+import android.health.connect.GetMedicalDataSourcesRequest
 import android.health.connect.HealthConnectException
 import android.health.connect.HealthConnectManager
 import android.health.connect.ReadMedicalResourcesInitialRequest
@@ -51,6 +52,7 @@ import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.android.healthconnect.testapps.toolbox.Constants.MEDICAL_PERMISSIONS
+import com.android.healthconnect.testapps.toolbox.Constants.WRITE_ALL_MEDICAL_DATA
 import com.android.healthconnect.testapps.toolbox.R
 import com.android.healthconnect.testapps.toolbox.utils.GeneralUtils.Companion.requireSystemService
 import com.android.healthconnect.testapps.toolbox.utils.GeneralUtils.Companion.showMessageDialog
@@ -65,6 +67,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.json.JSONObject
 
@@ -89,7 +92,7 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
     private val healthConnectManager: HealthConnectManager by lazy {
         requireContext().requireSystemService()
     }
-    private var mSelectedCustomDirFilesToUri: Map<String, Uri>? = null
+    private lateinit var mSelectedCustomDirFilesToUri: Map<String, Uri>
 
     private var mExistingDataSourceNamesToId: MutableMap<String, String> = mutableMapOf()
 
@@ -106,6 +109,9 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
                 selectJsonDirResultHandler(result)
             }
+
+        // Fetch existing data sources from DB
+        fetchDataSourcesAndPopulateSpinner()
     }
 
     private fun requestPermissionResultHandler(permissionMap: Map<String, Boolean>) {
@@ -134,6 +140,10 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
             )
                 .show()
         }
+
+        // Fetch data sources in case they could not be fetched before
+        fetchDataSourcesAndPopulateSpinner()
+
     }
 
     private fun selectJsonDirResultHandler(result: ActivityResult) {
@@ -162,12 +172,7 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
 
         view.requireViewById<Button>(R.id.phr_create_data_source_button).setOnClickListener {
             executeAndShowMessage {
-                createMedicalDataSource(
-                    view,
-                    Uri.parse("https://example.fhir.com/R4/123"),
-                    "My Hospital " + (0..1000).random(),
-                    FhirVersion.parseFhirVersion("4.0.1"),
-                )
+                createMedicalDataSource(view)
             }
         }
 
@@ -193,7 +198,7 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
             .requireViewById<Button>(R.id.phr_request_read_and_write_medical_data_button)
             .setOnClickListener { requestMedicalPermissions() }
 
-        setUpDataSourceSpinner(view)
+        setUpDataSourceSpinner(view, mExistingDataSourceNamesToId.keys.toList())
 
         setUpPatientContextSpinner(view)
     }
@@ -216,6 +221,39 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
             view.findViewById<EditText>(R.id.phr_pasted_resource_text).getText().toString()
         Log.d("INSERT_RESOURCE", "Writing resource $pastedResource")
         return insertResource(view, pastedResource)
+    }
+
+    private fun fetchDataSourcesAndPopulateSpinner() {
+        lifecycleScope.launch {
+            mExistingDataSourceNamesToId = mutableMapOf()
+            try {
+                getMedicalDataSources().forEach {
+                    mExistingDataSourceNamesToId.put(it.displayName, it.id)
+                }
+            } catch (e: HealthConnectException) {
+                Log.d("GET_DATA_SOURCE", "Error getting data sources: $e")
+                var errorMessage = "Failed to fetch data sources: "
+                if (e.errorCode == HealthConnectException.ERROR_SECURITY) {
+                    errorMessage += "Missing permissions"
+                } else {
+                    errorMessage += e.localizedMessage
+                }
+                Toast.makeText(
+                    requireContext(), errorMessage, Toast.LENGTH_LONG
+                ).show()
+            } catch (e: Exception) {
+                Log.d("GET_DATA_SOURCE", "Error getting data sources: $e")
+                Toast.makeText(
+                    requireContext(),
+                    "Failed to fetch data sources: ${e.localizedMessage}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
+            if (mExistingDataSourceNamesToId.isNotEmpty()) {
+                view?.let { setUpDataSourceSpinner(it, mExistingDataSourceNamesToId.keys.toList()) }
+            }
+        }
     }
 
     private fun setUpDataSourceSpinner(
@@ -498,16 +536,36 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         return resources
     }
 
+    private suspend fun getMedicalDataSources(): List<MedicalDataSource> {
+        val dataSources = suspendCancellableCoroutine<List<MedicalDataSource>> {
+            continuation ->
+                healthConnectManager.getMedicalDataSources(
+                    GetMedicalDataSourcesRequest.Builder()
+                        .addPackageName(requireContext().packageName)
+                        .build(),
+                    Runnable::run,
+                    continuation.asOutcomeReceiver(),
+                )
+            }
+        Log.d("GETTING_DATA_SOURCE", "Got sources: $dataSources")
+        return dataSources
+    }
+
     private suspend fun createMedicalDataSource(
-        view: View,
-        fhirBaseUri: Uri,
-        displayName: String,
-        fhirVersion: FhirVersion,
+        view: View
     ): String {
+        val userEnteredDataSourceDisplayName =
+            view.findViewById<EditText>(R.id.phr_data_source_display_name_text)
+        val displayName = userEnteredDataSourceDisplayName.text.toString().ifEmpty {
+            "My Hospital " + (0..1000).random() }
+
         val dataSource =
             suspendCancellableCoroutine<MedicalDataSource> { continuation ->
                 healthConnectManager.createMedicalDataSource(
-                    CreateMedicalDataSourceRequest.Builder(fhirBaseUri, displayName, fhirVersion)
+                    CreateMedicalDataSourceRequest.Builder(
+                        Uri.parse("https://example.fhir.com/R4/123"),
+                        displayName,
+                        FhirVersion.parseFhirVersion("4.0.1"))
                         .build(),
                     Runnable::run,
                     continuation.asOutcomeReceiver(),
@@ -518,6 +576,7 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
             view, mExistingDataSourceNamesToId.keys.toList(), dataSource.displayName
         )
         mExistingDataSourceNamesToId.put(dataSource.displayName, dataSource.id)
+        userEnteredDataSourceDisplayName.text = null
         return "Created data source: $displayName"
     }
 
