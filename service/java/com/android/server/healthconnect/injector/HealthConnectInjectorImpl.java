@@ -33,6 +33,7 @@ import com.android.server.healthconnect.backuprestore.BackupRestore;
 import com.android.server.healthconnect.exportimport.ExportImportNotificationSender;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.fitness.FitnessRecordReadHelper;
+import com.android.server.healthconnect.logging.BackupRestoreLogger;
 import com.android.server.healthconnect.logging.ExportImportLogger;
 import com.android.server.healthconnect.logging.UsageStatsCollector;
 import com.android.server.healthconnect.migration.MigrationBroadcastScheduler;
@@ -128,6 +129,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     private final HealthFitnessStatsLog mHealthFitnesssStatsLog;
     private final ExportImportLogger mExportImportLogger;
     private final TrackerManager mTrackerManager;
+    private final BackupRestoreLogger mBackupRestoreLogger;
 
     public HealthConnectInjectorImpl(Context context) {
         this(new Builder(context));
@@ -149,6 +151,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         mHealthFitnesssStatsLog =
                 builder.mStatsLog == null ? new HealthFitnessStatsLog() : builder.mStatsLog;
         mExportImportLogger = new ExportImportLogger(mHealthFitnesssStatsLog);
+        mBackupRestoreLogger = new BackupRestoreLogger(mHealthFitnesssStatsLog);
 
         HealthConnectContext hcContext =
                 HealthConnectContext.create(
@@ -603,6 +606,11 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     @Override
     public ExportImportLogger getExportImportLogger() {
         return mExportImportLogger;
+    }
+
+    @Override
+    public BackupRestoreLogger getBackupRestoreLogger() {
+        return mBackupRestoreLogger;
     }
 
     @Override
