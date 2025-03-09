@@ -19,6 +19,7 @@
 package com.android.healthconnect.controller.permissions.additionalaccess
 
 import com.android.healthconnect.controller.shared.HealthPermissionReader
+import com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -27,6 +28,10 @@ class LoadDeclaredHealthPermissionUseCase
 @Inject
 constructor(private val healthPermissionReader: HealthPermissionReader) {
     operator fun invoke(packageName: String): List<String> {
-        return healthPermissionReader.getDeclaredHealthPermissions(packageName)
+        return if (isPersonalHealthRecordEnabled()) {
+            healthPermissionReader.getValidHealthPermissions(packageName).map { it.toString() }
+        } else {
+            healthPermissionReader.getDeclaredHealthPermissions(packageName)
+        }
     }
 }

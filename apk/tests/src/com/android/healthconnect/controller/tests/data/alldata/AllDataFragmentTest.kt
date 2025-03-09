@@ -43,13 +43,13 @@ import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.alldata.AllDataFragment
 import com.android.healthconnect.controller.data.alldata.AllDataFragment.Companion.IS_BROWSE_MEDICAL_DATA_SCREEN
 import com.android.healthconnect.controller.data.alldata.AllDataViewModel
-import com.android.healthconnect.controller.data.alldata.AllDataViewModel.AllDataDeletionScreenState.DELETE
-import com.android.healthconnect.controller.data.appdata.AppDataUseCase
+import com.android.healthconnect.controller.data.appdata.AllDataUseCase
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
-import com.android.healthconnect.controller.permissions.data.MedicalPermissionType.ALLERGY_INTOLERANCE
-import com.android.healthconnect.controller.permissions.data.MedicalPermissionType.IMMUNIZATION
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType.ALLERGIES_INTOLERANCES
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType.VACCINES
 import com.android.healthconnect.controller.permissions.data.toMedicalResourceType
+import com.android.healthconnect.controller.selectabledeletion.DeletionDataViewModel.DeletionScreenState.DELETE
 import com.android.healthconnect.controller.selectabledeletion.DeletionPermissionTypesPreference
 import com.android.healthconnect.controller.selectabledeletion.SelectAllCheckboxPreference
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromFitnessPermissionType
@@ -96,11 +96,12 @@ import org.mockito.kotlin.verify
 class AllDataFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
+
     var manager: HealthConnectManager = Mockito.mock(HealthConnectManager::class.java)
 
-    private val appDataUseCase: AppDataUseCase = AppDataUseCase(manager, Dispatchers.Main)
+    private val allDataUseCase: AllDataUseCase = AllDataUseCase(manager, Dispatchers.Main)
 
-    @BindValue val allDataViewModel: AllDataViewModel = AllDataViewModel(appDataUseCase)
+    @BindValue val allDataViewModel: AllDataViewModel = AllDataViewModel(allDataUseCase)
     @BindValue val healthConnectLogger: HealthConnectLogger = mock()
     private lateinit var navHostController: TestNavHostController
     private lateinit var context: Context
@@ -143,15 +144,26 @@ class AllDataFragmentTest {
     }
 
     @Test
+    fun populatedMedicalData_pageImpressionLogged() {
+        mockData(listOf(VACCINES, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
+
+        launchMedicalAllDataFragment()
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.ALL_MEDICAL_DATA_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+    }
+
+    @Test
     fun medicalDataPresent_populatedDataTypesDisplayed() {
-        mockData(listOf(IMMUNIZATION, ALLERGY_INTOLERANCE), setOf(TEST_MEDICAL_DATA_SOURCE))
+        mockData(listOf(VACCINES, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
 
         launchMedicalAllDataFragment()
 
         onView(withText("Allergies")).check(matches(isDisplayed()))
-        onView(withText("Immunization")).check(matches(isDisplayed()))
+        onView(withText("Vaccines")).check(matches(isDisplayed()))
         onView(withText("Distance")).check(doesNotExist())
         onView(withText("No data")).check(doesNotExist())
+        onView(withText("Select all")).check(doesNotExist())
     }
 
     @Test
@@ -161,7 +173,47 @@ class AllDataFragmentTest {
         launchFragment<AllDataFragment>()
 
         onView(withText("No data")).check(matches(isDisplayed()))
-        onView(withText("Data from apps with access to Health Connect will show here"))
+        onView(withText("Data from apps with access to Health\u00A0Connect will show here"))
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "This includes all the health records synced to and added to Health\u00A0Connect. This might not be your full medical record and does not include a medical description of your health records."
+                )
+            )
+            .check(doesNotExist())
+    }
+
+    @Test
+    fun whenFitnessDataTypesDisplayed_topIntroNotShown() {
+        mockData(
+            listOf(
+                FitnessPermissionType.STEPS,
+                FitnessPermissionType.HEART_RATE,
+                FitnessPermissionType.BASAL_BODY_TEMPERATURE,
+            )
+        )
+
+        launchFragment<AllDataFragment>()
+
+        onView(
+                withText(
+                    "This includes all the health records synced to and added to Health\u00A0Connect. This might not be your full medical record and does not include a medical description of your health records."
+                )
+            )
+            .check(doesNotExist())
+    }
+
+    @Test
+    fun whenMedicalDataTypesDisplayed_topIntroShown() {
+        mockData(listOf(VACCINES, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
+
+        launchMedicalAllDataFragment()
+
+        onView(
+                withText(
+                    "This includes all the health records synced to and added to Health\u00A0Connect. This might not be your full medical record and does not include a medical description of your health records."
+                )
+            )
             .check(matches(isDisplayed()))
     }
 
@@ -184,16 +236,17 @@ class AllDataFragmentTest {
 
     @Test
     fun navigatesToMedicalAllEntries() {
-        mockData(listOf(IMMUNIZATION), setOf(TEST_MEDICAL_DATA_SOURCE))
+        mockData(listOf(VACCINES), setOf(TEST_MEDICAL_DATA_SOURCE))
 
         launchFragment<AllDataFragment>(bundleOf(IS_BROWSE_MEDICAL_DATA_SCREEN to true)) {
             navHostController.setGraph(R.navigation.medical_data_nav_graph)
             Navigation.setViewNavController(this.requireView(), navHostController)
         }
 
-        onView(withText("Immunization")).check(matches(isDisplayed()))
-        onView(withText("Immunization")).perform(click())
-        // TODO(b/342159144): Test interaction log.
+        onView(withText("Vaccines")).check(matches(isDisplayed()))
+        onView(withText("Vaccines")).perform(click())
+        verify(healthConnectLogger)
+            .logInteraction(AllDataElement.PERMISSION_TYPE_BUTTON_NO_CHECKBOX)
         assertThat(navHostController.currentDestination?.id)
             .isEqualTo(R.id.entriesAndAccessFragment)
     }
@@ -222,10 +275,10 @@ class AllDataFragmentTest {
 
     @Test
     fun triggerDeletionState_medicalData_showsCheckboxes() {
-        mockData(listOf(IMMUNIZATION, ALLERGY_INTOLERANCE), setOf(TEST_MEDICAL_DATA_SOURCE))
+        mockData(listOf(VACCINES, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
         val scenario = launchMedicalAllDataFragment()
         assertCheckboxNotShown("Allergies")
-        assertCheckboxNotShown("Immunization")
+        assertCheckboxNotShown("Vaccines")
 
         scenario.onActivity { activity ->
             val fragment = activity.supportFragmentManager.findFragmentByTag("")
@@ -233,7 +286,7 @@ class AllDataFragmentTest {
         }
 
         assertCheckboxShown("Allergies")
-        assertCheckboxShown("Immunization")
+        assertCheckboxShown("Vaccines")
         verify(healthConnectLogger).logImpression(AllDataElement.SELECT_ALL_BUTTON)
         verify(healthConnectLogger, atLeast(2))
             .logImpression(AllDataElement.PERMISSION_TYPE_BUTTON_WITH_CHECKBOX)
@@ -261,7 +314,7 @@ class AllDataFragmentTest {
 
     @Test
     fun inDeletionState_medicalData_checkedItemsAddedToDeleteSet() {
-        mockData(listOf(IMMUNIZATION, ALLERGY_INTOLERANCE), setOf(TEST_MEDICAL_DATA_SOURCE))
+        mockData(listOf(VACCINES, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
 
         val scenario = launchMedicalAllDataFragment()
         scenario.onActivity { activity ->
@@ -269,13 +322,13 @@ class AllDataFragmentTest {
             (fragment as AllDataFragment).triggerDeletionState(DELETE)
         }
 
-        onView(withText("Immunization")).perform(click())
+        onView(withText("Vaccines")).perform(click())
         onIdle()
         assertThat(allDataViewModel.setOfPermissionTypesToBeDeleted.value)
-            .containsExactlyElementsIn(setOf(IMMUNIZATION))
+            .containsExactlyElementsIn(setOf(VACCINES))
         verify(healthConnectLogger)
             .logInteraction(AllDataElement.PERMISSION_TYPE_BUTTON_WITH_CHECKBOX)
-        onView(withText("Immunization")).perform(click())
+        onView(withText("Vaccines")).perform(click())
         assertThat(allDataViewModel.setOfPermissionTypesToBeDeleted.value).isEmpty()
     }
 
@@ -339,11 +392,17 @@ class AllDataFragmentTest {
         }
 
         assertCheckboxShown("Select all")
+        onView(
+                withText(
+                    "This includes all the health records synced to and added to Health\u00A0Connect. This might not be your full medical record and does not include a medical description of your health records."
+                )
+            )
+            .check(doesNotExist())
     }
 
     @Test
     fun triggerDeletionState_medicalData_displaysSelectAllButton() {
-        mockData(listOf(IMMUNIZATION, ALLERGY_INTOLERANCE), setOf(TEST_MEDICAL_DATA_SOURCE))
+        mockData(listOf(VACCINES, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
         val scenario = launchMedicalAllDataFragment()
 
         scenario.onActivity { activity ->
@@ -377,7 +436,7 @@ class AllDataFragmentTest {
 
     @Test
     fun inDeletionState_medicalData_onSelectAllChecked_allPermissionTypesChecked() = runTest {
-        mockData(listOf(IMMUNIZATION, ALLERGY_INTOLERANCE), setOf(TEST_MEDICAL_DATA_SOURCE))
+        mockData(listOf(VACCINES, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
 
         val scenario = launchMedicalAllDataFragment()
         scenario.onActivity { activity ->
@@ -390,7 +449,7 @@ class AllDataFragmentTest {
         assertCheckboxShown("Select all")
         onView(withText("Select all")).perform(click())
         assertThat(allDataViewModel.setOfPermissionTypesToBeDeleted.value)
-            .containsExactlyElementsIn(setOf(IMMUNIZATION, ALLERGY_INTOLERANCE))
+            .containsExactlyElementsIn(setOf(VACCINES, ALLERGIES_INTOLERANCES))
         verify(healthConnectLogger).logInteraction(AllDataElement.SELECT_ALL_BUTTON)
     }
 
@@ -418,7 +477,7 @@ class AllDataFragmentTest {
 
     @Test
     fun inDeletionState_medicalData_onSelectAllUnchecked_allPermissionTypesUnChecked() = runTest {
-        mockData(listOf(IMMUNIZATION, ALLERGY_INTOLERANCE), setOf(TEST_MEDICAL_DATA_SOURCE))
+        mockData(listOf(VACCINES, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
 
         val scenario = launchMedicalAllDataFragment()
         scenario.onActivity { activity ->
@@ -431,7 +490,7 @@ class AllDataFragmentTest {
         assertCheckboxShown("Select all")
         onView(withText("Select all")).perform(click())
         assertThat(allDataViewModel.setOfPermissionTypesToBeDeleted.value)
-            .containsExactlyElementsIn(setOf(IMMUNIZATION, ALLERGY_INTOLERANCE))
+            .containsExactlyElementsIn(setOf(VACCINES, ALLERGIES_INTOLERANCES))
         onView(withText("Select all")).perform(click())
         assertThat(allDataViewModel.setOfPermissionTypesToBeDeleted.value).isEmpty()
     }
@@ -461,7 +520,7 @@ class AllDataFragmentTest {
 
     @Test
     fun inDeletionState_medicalData_allPermissionTypesChecked_selectAllShouldBeChecked() {
-        mockData(listOf(IMMUNIZATION, ALLERGY_INTOLERANCE), setOf(TEST_MEDICAL_DATA_SOURCE))
+        mockData(listOf(VACCINES, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
 
         val scenario = launchMedicalAllDataFragment()
         scenario.onActivity { activity ->
@@ -470,9 +529,9 @@ class AllDataFragmentTest {
         }
 
         assertCheckboxShown("Allergies")
-        assertCheckboxShown("Immunization")
+        assertCheckboxShown("Vaccines")
         onView(withText("Allergies")).perform(click())
-        onView(withText("Immunization")).perform(click())
+        onView(withText("Vaccines")).perform(click())
         scenario.onActivity { activity ->
             val fragment = activity.supportFragmentManager.findFragmentByTag("") as AllDataFragment
             val selectAllCheckboxPreference =
@@ -508,7 +567,7 @@ class AllDataFragmentTest {
 
     @Test
     fun inDeletionState_medicalData_selectAllChecked_oneUnchecked_selectAllUnchecked() = runTest {
-        mockData(listOf(IMMUNIZATION, ALLERGY_INTOLERANCE), setOf(TEST_MEDICAL_DATA_SOURCE))
+        mockData(listOf(VACCINES, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
 
         val scenario = launchMedicalAllDataFragment()
         scenario.onActivity { activity ->
@@ -566,6 +625,56 @@ class AllDataFragmentTest {
         }
         assertCheckboxShown("Distance")
         assertCheckboxShown("Heart rate")
+        onView(
+                withText(
+                    "This includes all the health records synced to and added to Health\u00A0Connect. This might not be your full medical record and does not include a medical description of your health records."
+                )
+            )
+            .check(doesNotExist())
+    }
+
+    @Test
+    fun inDeletionState_medicalData_checkboxesRemainOnOrientationChange() = runTest {
+        mockData(listOf(VACCINES, ALLERGIES_INTOLERANCES), setOf(TEST_MEDICAL_DATA_SOURCE))
+
+        val scenario = launchMedicalAllDataFragment()
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.findFragmentByTag("")
+            (fragment as AllDataFragment).triggerDeletionState(DELETE)
+        }
+
+        advanceUntilIdle()
+
+        assertCheckboxShown("Select all")
+        onView(withText("Select all")).perform(click())
+
+        scenario.recreate()
+
+        onView(withText("Select all")).perform(scrollTo())
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.findFragmentByTag("") as AllDataFragment
+            val selectAllCheckboxPreference =
+                fragment.preferenceScreen.findPreference("key_select_all")
+                    as SelectAllCheckboxPreference?
+            assertThat(selectAllCheckboxPreference?.getIsChecked()).isTrue()
+            fragment.preferenceScreen.children.forEach { preference ->
+                if (preference is PreferenceCategory) {
+                    preference.children.forEach { permissionTypePreference ->
+                        if (permissionTypePreference is DeletionPermissionTypesPreference) {
+                            assertThat(permissionTypePreference.getIsChecked()).isTrue()
+                        }
+                    }
+                }
+            }
+        }
+        assertCheckboxShown("Allergies")
+        assertCheckboxShown("Vaccines")
+        onView(
+                withText(
+                    "This includes all the health records synced to and added to Health\u00A0Connect. This might not be your full medical record and does not include a medical description of your health records."
+                )
+            )
+            .check(doesNotExist())
     }
 
     private fun assertCheckboxShown(title: String, tag: String = "checkbox") {

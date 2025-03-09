@@ -15,7 +15,6 @@
  */
 package com.android.healthconnect.controller.tests.data.rawfhir
 
-import android.health.connect.HealthConnectManager
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
 import androidx.test.espresso.Espresso.onView
@@ -34,33 +33,125 @@ import com.android.healthconnect.controller.data.rawfhir.RawFhirViewModel.RawFhi
 import com.android.healthconnect.controller.data.rawfhir.RawFhirViewModel.RawFhirState.WithData
 import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_RESOURCE_IMMUNIZATION
 import com.android.healthconnect.controller.tests.utils.launchFragment
+import com.android.healthconnect.controller.tests.utils.toggleAnimation
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthconnect.controller.utils.logging.RawFhirPageElement
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.Mockito
+import org.mockito.Mockito.atLeast
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.reset
+import org.mockito.Mockito.verify
+import org.mockito.kotlin.whenever
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @HiltAndroidTest
 class RawFhirFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
-    var manager: HealthConnectManager = mock(HealthConnectManager::class.java)
 
     @BindValue val viewModel: RawFhirViewModel = mock(RawFhirViewModel::class.java)
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock(HealthConnectLogger::class.java)
+
+    private val fhirResource =
+        "{\n" +
+            "    \"resourceType\": \"Immunization\",\n" +
+            "    \"id\": \"immunization_1\",\n" +
+            "    \"status\": \"completed\",\n" +
+            "    \"vaccineCode\": {\n" +
+            "        \"coding\": [\n" +
+            "            {\n" +
+            "                \"system\": \"http://hl7.org/fhir/sid/cvx\",\n" +
+            "                \"code\": \"115\"\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"system\": \"http://hl7.org/fhir/sid/ndc\",\n" +
+            "                \"code\": \"58160-842-11\"\n" +
+            "            }\n" +
+            "        ],\n" +
+            "        \"text\": \"Tdap\"\n" +
+            "    },\n" +
+            "    \"patient\": {\n" +
+            "        \"reference\": \"Patient/patient_1\",\n" +
+            "        \"display\": \"Example, Anne\"\n" +
+            "    },\n" +
+            "    \"encounter\": {\n" +
+            "        \"reference\": \"Encounter/encounter_unk\",\n" +
+            "        \"display\": \"GP Visit\"\n" +
+            "    },\n" +
+            "    \"occurrenceDateTime\": \"2018-05-21\",\n" +
+            "    \"primarySource\": true,\n" +
+            "    \"manufacturer\": {\n" +
+            "        \"display\": \"Sanofi Pasteur\"\n" +
+            "    },\n" +
+            "    \"lotNumber\": \"1\",\n" +
+            "    \"site\": {\n" +
+            "        \"coding\": [\n" +
+            "            {\n" +
+            "                \"system\": \"http://terminology.hl7.org/CodeSystem/v3-ActSite\",\n" +
+            "                \"code\": \"LA\",\n" +
+            "                \"display\": \"Left Arm\"\n" +
+            "            }\n" +
+            "        ],\n" +
+            "        \"text\": \"Left Arm\"\n" +
+            "    },\n" +
+            "    \"route\": {\n" +
+            "        \"coding\": [\n" +
+            "            {\n" +
+            "                \"system\": \"http://terminology.hl7.org/CodeSystem/v3-RouteOfAdministration\",\n" +
+            "                \"code\": \"IM\",\n" +
+            "                \"display\": \"Injection, intramuscular\"\n" +
+            "            }\n" +
+            "        ],\n" +
+            "        \"text\": \"Injection, intramuscular\"\n" +
+            "    },\n" +
+            "    \"doseQuantity\": {\n" +
+            "        \"value\": 0.5,\n" +
+            "        \"unit\": \"mL\"\n" +
+            "    },\n" +
+            "    \"performer\": [\n" +
+            "        {\n" +
+            "            \"function\": {\n" +
+            "                \"coding\": [\n" +
+            "                    {\n" +
+            "                        \"system\": \"http://terminology.hl7.org/CodeSystem/v2-0443\",\n" +
+            "                        \"code\": \"AP\",\n" +
+            "                        \"display\": \"Administering Provider\"\n" +
+            "                    }\n" +
+            "                ],\n" +
+            "                \"text\": \"Administering Provider\"\n" +
+            "            },\n" +
+            "            \"actor\": {\n" +
+            "                \"reference\": \"Practitioner/practitioner_1\",\n" +
+            "                \"type\": \"Practitioner\",\n" +
+            "                \"display\": \"Dr Maria Hernandez\"\n" +
+            "            }\n" +
+            "        }\n" +
+            "    ]\n" +
+            "}"
+    private val contentDescription =
+        "Detailed source code: Open bracket. Field resourceType Value: Immunization. Field id Value: immunization_1. Field status Value: completed. Field vaccineCode ValueDetailed source code:   Open bracket.   Field coding ValueDetailed source code:     Open bracket.     Field system Value    : http://hl7.org/fhir/sid/cvx.     Field code Value    : 115.    Closed bracket.Detailed source code:     Open bracket.     Field system Value    : http://hl7.org/fhir/sid/ndc.     Field code Value    : 58160-842-11.    Closed bracket.   Field text Value  : Tdap.  Closed bracket. Field patient ValueDetailed source code:   Open bracket.   Field reference Value  : Patient/patient_1.   Field display Value  : Example, Anne.  Closed bracket. Field encounter ValueDetailed source code:   Open bracket.   Field reference Value  : Encounter/encounter_unk.   Field display Value  : GP Visit.  Closed bracket. Field occurrenceDateTime Value: 2018-05-21. Field primarySource Value: true. Field manufacturer ValueDetailed source code:   Open bracket.   Field display Value  : Sanofi Pasteur.  Closed bracket. Field lotNumber Value: 1. Field site ValueDetailed source code:   Open bracket.   Field coding ValueDetailed source code:     Open bracket.     Field system Value    : http://terminology.hl7.org/CodeSystem/v3-ActSite.     Field code Value    : LA.     Field display Value    : Left Arm.    Closed bracket.   Field text Value  : Left Arm.  Closed bracket. Field route ValueDetailed source code:   Open bracket.   Field coding ValueDetailed source code:     Open bracket.     Field system Value    : http://terminology.hl7.org/CodeSystem/v3-RouteOfAdministration.     Field code Value    : IM.     Field display Value    : Injection, intramuscular.    Closed bracket.   Field text Value  : Injection, intramuscular.  Closed bracket. Field doseQuantity ValueDetailed source code:   Open bracket.   Field value Value  : 0.5.   Field unit Value  : mL.  Closed bracket. Field performer ValueDetailed source code:   Open bracket.   Field function ValueDetailed source code:     Open bracket.     Field coding ValueDetailed source code:       Open bracket.       Field system Value      : http://terminology.hl7.org/CodeSystem/v2-0443.       Field code Value      : AP.       Field display Value      : Administering Provider.      Closed bracket.     Field text Value    : Administering Provider.    Closed bracket.   Field actor ValueDetailed source code:     Open bracket.     Field reference Value    : Practitioner/practitioner_1.     Field type Value    : Practitioner.     Field display Value    : Dr Maria Hernandez.    Closed bracket.  Closed bracket.Closed bracket."
 
     @Before
     fun setup() {
         hiltRule.inject()
+        toggleAnimation(false)
+    }
+
+    @After
+    fun tearDown() {
+        toggleAnimation(true)
+        reset(healthConnectLogger)
     }
 
     @Test
     fun error_errorMessageDisplayed() {
-        Mockito.`when`(viewModel.rawFhir).then { MutableLiveData(Error) }
+        whenever(viewModel.rawFhir).then { MutableLiveData(Error) }
 
         launchFragment<RawFhirFragment>(
             bundleOf(
@@ -69,12 +160,11 @@ class RawFhirFragmentTest {
         )
 
         onView(withText("Something went wrong. Please try again.")).check(matches(isDisplayed()))
-        // onView(ViewMatchers.withId(R.id.loading)).check(doesNotExist())
     }
 
     @Test
     fun loading_loadingDisplayed() {
-        Mockito.`when`(viewModel.rawFhir).then { MutableLiveData(Loading) }
+        whenever(viewModel.rawFhir).then { MutableLiveData(Loading) }
 
         launchFragment<RawFhirFragment>(
             bundleOf(
@@ -83,96 +173,34 @@ class RawFhirFragmentTest {
         )
 
         onView(ViewMatchers.withId(R.id.loading)).check(matches(isDisplayed()))
-        // onView(withText("Something went wrong. Please try again.")).check(doesNotExist())
         onView(withSubstring("resourceType")).check(doesNotExist())
     }
 
     @Test
     fun fhirResourcePresent_displaysFhirResource() {
-        val fhir =
-            "{\n" +
-                "    \"resourceType\": \"Immunization\",\n" +
-                "    \"id\": \"immunization_1\",\n" +
-                "    \"status\": \"completed\",\n" +
-                "    \"vaccineCode\": {\n" +
-                "        \"coding\": [\n" +
-                "            {\n" +
-                "                \"system\": \"http://hl7.org/fhir/sid/cvx\",\n" +
-                "                \"code\": \"115\"\n" +
-                "            },\n" +
-                "            {\n" +
-                "                \"system\": \"http://hl7.org/fhir/sid/ndc\",\n" +
-                "                \"code\": \"58160-842-11\"\n" +
-                "            }\n" +
-                "        ],\n" +
-                "        \"text\": \"Tdap\"\n" +
-                "    },\n" +
-                "    \"patient\": {\n" +
-                "        \"reference\": \"Patient/patient_1\",\n" +
-                "        \"display\": \"Example, Anne\"\n" +
-                "    },\n" +
-                "    \"encounter\": {\n" +
-                "        \"reference\": \"Encounter/encounter_unk\",\n" +
-                "        \"display\": \"GP Visit\"\n" +
-                "    },\n" +
-                "    \"occurrenceDateTime\": \"2018-05-21\",\n" +
-                "    \"primarySource\": true,\n" +
-                "    \"manufacturer\": {\n" +
-                "        \"display\": \"Sanofi Pasteur\"\n" +
-                "    },\n" +
-                "    \"lotNumber\": \"1\",\n" +
-                "    \"site\": {\n" +
-                "        \"coding\": [\n" +
-                "            {\n" +
-                "                \"system\": \"http://terminology.hl7.org/CodeSystem/v3-ActSite\",\n" +
-                "                \"code\": \"LA\",\n" +
-                "                \"display\": \"Left Arm\"\n" +
-                "            }\n" +
-                "        ],\n" +
-                "        \"text\": \"Left Arm\"\n" +
-                "    },\n" +
-                "    \"route\": {\n" +
-                "        \"coding\": [\n" +
-                "            {\n" +
-                "                \"system\": \"http://terminology.hl7.org/CodeSystem/v3-RouteOfAdministration\",\n" +
-                "                \"code\": \"IM\",\n" +
-                "                \"display\": \"Injection, intramuscular\"\n" +
-                "            }\n" +
-                "        ],\n" +
-                "        \"text\": \"Injection, intramuscular\"\n" +
-                "    },\n" +
-                "    \"doseQuantity\": {\n" +
-                "        \"value\": 0.5,\n" +
-                "        \"unit\": \"mL\"\n" +
-                "    },\n" +
-                "    \"performer\": [\n" +
-                "        {\n" +
-                "            \"function\": {\n" +
-                "                \"coding\": [\n" +
-                "                    {\n" +
-                "                        \"system\": \"http://terminology.hl7.org/CodeSystem/v2-0443\",\n" +
-                "                        \"code\": \"AP\",\n" +
-                "                        \"display\": \"Administering Provider\"\n" +
-                "                    }\n" +
-                "                ],\n" +
-                "                \"text\": \"Administering Provider\"\n" +
-                "            },\n" +
-                "            \"actor\": {\n" +
-                "                \"reference\": \"Practitioner/practitioner_1\",\n" +
-                "                \"type\": \"Practitioner\",\n" +
-                "                \"display\": \"Dr Maria Hernandez\"\n" +
-                "            }\n" +
-                "        }\n" +
-                "    ]\n" +
-                "}"
-        val contentDescription =
-            "Detailed source code: Open bracket. Field resourceType Value: Immunization. Field id Value: immunization_1. Field status Value: completed. Field vaccineCode ValueDetailed source code:   Open bracket.   Field coding ValueDetailed source code:     Open bracket.     Field system Value    : http://hl7.org/fhir/sid/cvx.     Field code Value    : 115.    Closed bracket.Detailed source code:     Open bracket.     Field system Value    : http://hl7.org/fhir/sid/ndc.     Field code Value    : 58160-842-11.    Closed bracket.   Field text Value  : Tdap.  Closed bracket. Field patient ValueDetailed source code:   Open bracket.   Field reference Value  : Patient/patient_1.   Field display Value  : Example, Anne.  Closed bracket. Field encounter ValueDetailed source code:   Open bracket.   Field reference Value  : Encounter/encounter_unk.   Field display Value  : GP Visit.  Closed bracket. Field occurrenceDateTime Value: 2018-05-21. Field primarySource Value: true. Field manufacturer ValueDetailed source code:   Open bracket.   Field display Value  : Sanofi Pasteur.  Closed bracket. Field lotNumber Value: 1. Field site ValueDetailed source code:   Open bracket.   Field coding ValueDetailed source code:     Open bracket.     Field system Value    : http://terminology.hl7.org/CodeSystem/v3-ActSite.     Field code Value    : LA.     Field display Value    : Left Arm.    Closed bracket.   Field text Value  : Left Arm.  Closed bracket. Field route ValueDetailed source code:   Open bracket.   Field coding ValueDetailed source code:     Open bracket.     Field system Value    : http://terminology.hl7.org/CodeSystem/v3-RouteOfAdministration.     Field code Value    : IM.     Field display Value    : Injection, intramuscular.    Closed bracket.   Field text Value  : Injection, intramuscular.  Closed bracket. Field doseQuantity ValueDetailed source code:   Open bracket.   Field value Value  : 0.5.   Field unit Value  : mL.  Closed bracket. Field performer ValueDetailed source code:   Open bracket.   Field function ValueDetailed source code:     Open bracket.     Field coding ValueDetailed source code:       Open bracket.       Field system Value      : http://terminology.hl7.org/CodeSystem/v2-0443.       Field code Value      : AP.       Field display Value      : Administering Provider.      Closed bracket.     Field text Value    : Administering Provider.    Closed bracket.   Field actor ValueDetailed source code:     Open bracket.     Field reference Value    : Practitioner/practitioner_1.     Field type Value    : Practitioner.     Field display Value    : Dr Maria Hernandez.    Closed bracket.  Closed bracket.Closed bracket."
-        Mockito.`when`(viewModel.rawFhir).then {
+        launchFragmentWithData()
+
+        onView(withText(fhirResource)).check(matches(isDisplayed()))
+        onView(withContentDescription(contentDescription)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun logPageImpression() {
+        launchFragmentWithData()
+
+        onView(withText(fhirResource)).check(matches(isDisplayed()))
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.RAW_FHIR_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger).logImpression(RawFhirPageElement.RAW_FHIR_RESOURCE)
+    }
+
+    private fun launchFragmentWithData() {
+        whenever(viewModel.rawFhir).then {
             MutableLiveData(
                 WithData(
                     listOf(
                         RawFhirViewModel.FormattedFhir(
-                            fhir = fhir,
+                            fhir = fhirResource,
                             fhirContentDescription = contentDescription,
                         )
                     )
@@ -185,7 +213,5 @@ class RawFhirFragmentTest {
                 RawFhirFragment.MEDICAL_RESOURCE_ID_KEY to TEST_MEDICAL_RESOURCE_IMMUNIZATION.id
             )
         )
-        onView(withText(fhir)).check(matches(isDisplayed()))
-        onView(withContentDescription(contentDescription)).check(matches(isDisplayed()))
     }
 }

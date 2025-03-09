@@ -25,8 +25,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.health.connect.HealthConnectManager;
 
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,8 +45,7 @@ public class MigrationTestUtils {
             new String[] {Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA};
 
     static long getTimeoutPeriodBuffer() {
-        return HealthConnectDeviceConfigManager.getInitialisedInstance().getExecutionTimeBuffer()
-                * 2;
+        return MigrationConstants.EXECUTION_TIME_BUFFER_MINUTES.toMillis() * 2;
     }
 
     static List<ResolveInfo> createResolveInfoList(

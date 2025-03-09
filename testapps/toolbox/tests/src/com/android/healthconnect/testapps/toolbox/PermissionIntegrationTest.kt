@@ -19,7 +19,7 @@ class PermissionIntegrationTest {
         val context = InstrumentationRegistry.getInstrumentation().context
         val allPermissions =
             Constants.MEDICAL_PERMISSIONS +
-                Constants.DATA_TYPE_PERMISSIONS +
+                Constants.FITNESS_PERMISSIONS +
                 Constants.ADDITIONAL_PERMISSIONS
         Truth.assertThat(allPermissions.sorted())
             .isEqualTo(HealthConnectManager.getHealthPermissions(context).sorted())

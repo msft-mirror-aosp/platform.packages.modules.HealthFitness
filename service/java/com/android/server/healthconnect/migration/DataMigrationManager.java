@@ -32,16 +32,15 @@ import android.os.UserHandle;
 import com.android.internal.annotations.GuardedBy;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
-import com.android.server.healthconnect.storage.AutoDeleteService;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
-import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
+import com.android.server.healthconnect.storage.utils.PreferencesManager;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 
 import java.util.ArrayList;
@@ -67,7 +66,8 @@ public final class DataMigrationManager {
     private final AppInfoHelper mAppInfoHelper;
     private final PriorityMigrationHelper mPriorityMigrationHelper;
     private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
-    private final PreferenceHelper mPreferenceHelper;
+    private final MigrationEntityHelper mMigrationEntityHelper;
+    private final PreferencesManager mPreferencesManager;
 
     public DataMigrationManager(
             Context userContext,
@@ -78,7 +78,8 @@ public final class DataMigrationManager {
             AppInfoHelper appInfoHelper,
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
             PriorityMigrationHelper priorityMigrationHelper,
-            PreferenceHelper preferenceHelper) {
+            MigrationEntityHelper migrationEntityHelper,
+            PreferencesManager preferencesManager) {
         mUserContext = userContext;
         mTransactionManager = transactionManager;
         mPermissionHelper = permissionHelper;
@@ -87,7 +88,8 @@ public final class DataMigrationManager {
         mAppInfoHelper = appInfoHelper;
         mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
         mPriorityMigrationHelper = priorityMigrationHelper;
-        mPreferenceHelper = preferenceHelper;
+        mMigrationEntityHelper = migrationEntityHelper;
+        mPreferencesManager = preferencesManager;
     }
 
     /**
@@ -140,23 +142,24 @@ public final class DataMigrationManager {
 
     @GuardedBy("sLock")
     private void migrateRecord(SQLiteDatabase db, RecordMigrationPayload payload) {
-        long recordRowId = mTransactionManager.insertOrIgnore(db, parseRecord(payload));
+        long recordRowId = mTransactionManager.insertOrIgnoreOnConflict(db, parseRecord(payload));
         if (recordRowId != -1) {
-            mTransactionManager.insertOrIgnore(
+            mTransactionManager.insertOrIgnoreOnConflict(
                     db, ActivityDateHelper.getUpsertTableRequest(payload.getRecordInternal()));
         }
     }
 
     private UpsertTableRequest parseRecord(RecordMigrationPayload payload) {
         final RecordInternal<?> record = payload.getRecordInternal();
-        mAppInfoHelper.populateAppInfoId(record, mUserContext, false);
+        mAppInfoHelper.populateAppInfoId(record, /* requireAllFields */ false);
         mDeviceInfoHelper.populateDeviceInfoId(record);
 
         if (record.getUuid() == null) {
             StorageUtils.addNameBasedUUIDTo(record);
         }
 
-        return RecordHelperProvider.getRecordHelper(record.getRecordType())
+        return InternalHealthConnectMappings.getInstance()
+                .getRecordHelper(record.getRecordType())
                 .getUpsertTableRequest(record);
     }
 
@@ -202,7 +205,6 @@ public final class DataMigrationManager {
     @GuardedBy("sLock")
     private void migrateAppInfo(AppInfoMigrationPayload payload) {
         mAppInfoHelper.addOrUpdateAppInfoIfNotInstalled(
-                mUserContext,
                 payload.getPackageName(),
                 payload.getAppName(),
                 payload.getAppIcon(),
@@ -238,8 +240,8 @@ public final class DataMigrationManager {
      */
     @GuardedBy("sLock")
     private boolean insertEntityIdIfNotPresent(SQLiteDatabase db, String entityId) {
-        final UpsertTableRequest request = MigrationEntityHelper.getInsertRequest(entityId);
-        return mTransactionManager.insertOrIgnore(db, request) != -1;
+        final UpsertTableRequest request = mMigrationEntityHelper.getInsertRequest(entityId);
+        return mTransactionManager.insertOrIgnoreOnConflict(db, request) != -1;
     }
 
     /** Indicates an error during entity migration. */
@@ -306,7 +308,6 @@ public final class DataMigrationManager {
      * @param payload of type MetadataMigrationPayload having retention period.
      */
     private void migrateMetadata(MetadataMigrationPayload payload) {
-        AutoDeleteService.setRecordRetentionPeriodInDays(
-                payload.getRecordRetentionPeriodDays(), mPreferenceHelper);
+        mPreferencesManager.setRecordRetentionPeriodInDays(payload.getRecordRetentionPeriodDays());
     }
 }

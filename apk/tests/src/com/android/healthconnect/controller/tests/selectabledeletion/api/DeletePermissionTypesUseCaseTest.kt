@@ -88,7 +88,7 @@ class DeletePermissionTypesUseCaseTest {
     fun permissionTypes_deleteFitnessAndMedical_deletionInvokedCorrectly() = runTest {
         useCase.invoke(
             DeleteHealthPermissionTypes(
-                setOf(FitnessPermissionType.DISTANCE, MedicalPermissionType.IMMUNIZATION),
+                setOf(FitnessPermissionType.DISTANCE, MedicalPermissionType.VACCINES),
                 4,
             )
         )
@@ -96,7 +96,7 @@ class DeletePermissionTypesUseCaseTest {
 
         val expectedDeletionType =
             DeleteHealthPermissionTypes(
-                setOf(FitnessPermissionType.DISTANCE, MedicalPermissionType.IMMUNIZATION),
+                setOf(FitnessPermissionType.DISTANCE, MedicalPermissionType.VACCINES),
                 4,
             )
         verify(deleteFitnessPermissionTypesUseCase).invoke(expectedDeletionType)
@@ -105,11 +105,11 @@ class DeletePermissionTypesUseCaseTest {
 
     @Test
     fun permissionTypes_deleteMedical_deletionInvokedCorrectly() = runTest {
-        useCase.invoke(DeleteHealthPermissionTypes(setOf(MedicalPermissionType.IMMUNIZATION), 3))
+        useCase.invoke(DeleteHealthPermissionTypes(setOf(MedicalPermissionType.VACCINES), 3))
         advanceUntilIdle()
 
         val expectedDeletionType =
-            DeleteHealthPermissionTypes(setOf(MedicalPermissionType.IMMUNIZATION), 3)
+            DeleteHealthPermissionTypes(setOf(MedicalPermissionType.VACCINES), 3)
         verify(deleteMedicalPermissionTypesUseCase).invoke(expectedDeletionType)
         verifyZeroInteractions(deleteFitnessPermissionTypesUseCase)
     }

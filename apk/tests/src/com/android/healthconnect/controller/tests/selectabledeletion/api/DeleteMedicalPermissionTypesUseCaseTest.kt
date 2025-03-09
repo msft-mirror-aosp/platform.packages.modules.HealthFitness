@@ -16,10 +16,9 @@
 package com.android.healthconnect.controller.tests.selectabledeletion.api
 
 import android.health.connect.DeleteMedicalResourcesRequest
-import android.health.connect.DeleteUsingFiltersRequest
 import android.health.connect.HealthConnectManager
-import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE
-import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES
+import android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeleteHealthPermissionTypes
 import com.android.healthconnect.controller.selectabledeletion.api.DeleteMedicalPermissionTypesUseCase
@@ -47,7 +46,6 @@ class DeleteMedicalPermissionTypesUseCaseTest {
     private lateinit var useCase: DeleteMedicalPermissionTypesUseCase
     var manager: HealthConnectManager = Mockito.mock(HealthConnectManager::class.java)
 
-    @Captor lateinit var filtersCaptor: ArgumentCaptor<DeleteUsingFiltersRequest>
     @Captor lateinit var medicalRequestCaptor: ArgumentCaptor<DeleteMedicalResourcesRequest>
 
     @Before
@@ -65,22 +63,21 @@ class DeleteMedicalPermissionTypesUseCaseTest {
         val deletePermissionType =
             DeleteHealthPermissionTypes(
                 setOf(
-                    MedicalPermissionType.ALLERGY_INTOLERANCE,
-                    MedicalPermissionType.IMMUNIZATION,
+                    MedicalPermissionType.ALLERGIES_INTOLERANCES,
+                    MedicalPermissionType.VACCINES,
                 ),
                 8,
             )
 
         useCase.invoke(deletePermissionType)
 
-        Mockito.verify(manager, Mockito.times(1))
-            .deleteMedicalResources(medicalRequestCaptor.capture(), any(), any())
+        Mockito.verify(manager).deleteMedicalResources(medicalRequestCaptor.capture(), any(), any())
 
         assertThat(medicalRequestCaptor.value.dataSourceIds).isEmpty()
         assertThat(medicalRequestCaptor.value.medicalResourceTypes)
             .containsExactly(
-                MEDICAL_RESOURCE_TYPE_ALLERGY_INTOLERANCE,
-                MEDICAL_RESOURCE_TYPE_IMMUNIZATION,
+                MEDICAL_RESOURCE_TYPE_ALLERGIES_INTOLERANCES,
+                MEDICAL_RESOURCE_TYPE_VACCINES,
             )
     }
 

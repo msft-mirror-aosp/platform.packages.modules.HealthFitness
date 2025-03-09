@@ -16,6 +16,7 @@
 
 package com.android.server.healthconnect.migration;
 
+import java.time.Duration;
 import java.time.LocalDate;
 
 /**
@@ -41,7 +42,6 @@ public final class MigrationConstants {
     static final String MIN_DATA_MIGRATION_SDK_EXTENSION_VERSION_KEY =
             "min_data_migration_sdk_extension_version";
     static final String MIGRATION_STARTS_COUNT_KEY = "migration_starts_count";
-    static final String HAVE_CANCELED_OLD_MIGRATION_JOBS_KEY = "have_canceled_old_migration_jobs";
     static final String HAVE_RESET_MIGRATION_STATE_KEY = "have_reset_migration_state";
     static final String MIGRATION_STATE_CHANGE_NAMESPACE = MigrationStateChangeJob.class.toString();
 
@@ -49,4 +49,14 @@ public final class MigrationConstants {
     public static final String IDLE_TIMEOUT_REACHED_KEY = "idle_timeout_reached_key";
 
     static final LocalDate PREMATURE_MIGRATION_TIMEOUT_DATE = LocalDate.of(2023, 6, 15);
+
+    static final int MIGRATION_STATE_IN_PROGRESS_COUNT = 5;
+    static final int MIGRATION_STATE_ALLOWED_COUNT = 5;
+    static final int MAX_START_MIGRATION_CALLS = 6;
+    static final Duration IDLE_STATE_TIMEOUT_DAYS = Duration.ofDays(120);
+    static final Duration NON_IDLE_STATE_TIMEOUT_DAYS = Duration.ofDays(15);
+    static final Duration IN_PROGRESS_STATE_TIMEOUT_HOURS = Duration.ofHours(12);
+    static final Duration EXECUTION_TIME_BUFFER_MINUTES = Duration.ofMinutes(30);
+    static final Duration MIGRATION_COMPLETION_JOB_RUN_INTERVAL_DAYS = Duration.ofDays(1);
+    static final Duration MIGRATION_PAUSE_JOB_RUN_INTERVAL_HOURS = Duration.ofHours(4);
 }

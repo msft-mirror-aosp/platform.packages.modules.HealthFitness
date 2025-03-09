@@ -18,10 +18,9 @@ package com.android.healthconnect.controller.permissions.connectedapps
 import android.content.Context
 import android.text.TextUtils
 import androidx.preference.Preference
-import androidx.preference.PreferenceViewHolder
+import androidx.preference.Preference.OnPreferenceClickListener
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.utils.logging.ElementName
-import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
 import com.android.healthconnect.controller.utils.logging.UnknownGenericElement
@@ -32,7 +31,7 @@ class HealthAppPreference(context: Context, private val appMetadata: AppMetadata
     AppPreference(context), ComparablePreference {
 
     private var logger: HealthConnectLogger
-    var logName : ElementName = UnknownGenericElement.UNKNOWN_HEALTH_PREFERENCE
+    var logName: ElementName = UnknownGenericElement.UNKNOWN_HEALTH_PREFERENCE
 
     init {
         title = appMetadata.appName
@@ -40,7 +39,9 @@ class HealthAppPreference(context: Context, private val appMetadata: AppMetadata
 
         val hiltEntryPoint =
             EntryPointAccessors.fromApplication(
-                context.applicationContext, HealthConnectLoggerEntryPoint::class.java)
+                context.applicationContext,
+                HealthConnectLoggerEntryPoint::class.java,
+            )
         logger = hiltEntryPoint.logger()
     }
 
@@ -66,10 +67,6 @@ class HealthAppPreference(context: Context, private val appMetadata: AppMetadata
 
     override fun hasSameContents(preference: Preference): Boolean {
         return preference is HealthAppPreference && appMetadata == preference.appMetadata
-    }
-
-    override fun onBindViewHolder(view: PreferenceViewHolder) {
-        super.onBindViewHolder(view)
     }
 }
 

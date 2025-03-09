@@ -22,7 +22,8 @@
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Povolenia a údaje"</string>
     <string name="home_subtitle" msgid="2154213430054477787">"Spravujte údaje o zdraví a kondícii vo svojom zariadení a ovládajte, ktoré aplikácie k nim majú mať prístup"</string>
     <string name="data_title" msgid="4456619761533380816">"Údaje a prístup"</string>
-    <string name="browse_medical_data" msgid="6963802956096683273">"Prehliadať zdravotné záznamy"</string>
+    <string name="browse_medical_data" msgid="6963802956096683273">"Zdravotné záznamy"</string>
+    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"Zobraziť zdravotné záznamy a aplikácie, ktoré k nim majú prístup"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Všetky kategórie"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Zobraziť všetky kategórie"</string>
     <string name="no_data" msgid="1906986019249068659">"Žiadne údaje"</string>
@@ -47,12 +48,12 @@
     <string name="recent_access_header" msgid="7623497371790225888">"Nedávny prístup"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Dáta o zdraví v poslednom čase nepoužili žiadne aplikácie"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Zobraziť všetky nedávne prístupy"</string>
-    <string name="recent_access_screen_description" msgid="331101209889185402">"Zistite, ktoré aplikácie získali prístup k vašim údajom za posledných 24 hodín."</string>
+    <string name="recent_access_screen_description" msgid="331101209889185402">"Zobrazte si, ktoré aplikácie použili vaše údaje v posledných 24 hodinách."</string>
     <string name="today_header" msgid="1006837293203834373">"Dnes"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Včera"</string>
-    <string name="read_data_access_label" msgid="8968758932021241976">"Číta: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="write_data_access_label" msgid="105976369853871061">"Zapisuje: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="data_type_separator" msgid="1299848322898210658">", "</string>
+    <string name="read_data_access_label" msgid="8968758932021241976">"Čítanie: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"Zápis: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Spravovať povolenia"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Čas: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Aktivita"</string>
@@ -92,16 +93,56 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"prístup k vašim údajom o zdraví"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Čít. údajov o spál. kalóriách"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Umožňuje aplikáciám čítať údaje o spálených kalóriách"</string>
-    <string name="background_read_title" msgid="5061383169517186234">"Prístup k údajom na pozadí"</string>
-    <string name="background_read_request_title" msgid="8492898140120977977">"Chcete aplikácii <xliff:g id="APP_NAME">%1$s</xliff:g> povoliť prístup k údajom na pozadí?"</string>
+    <string name="background_read_single_request_title" msgid="4903874755139858906">"Chcete aplikácii <xliff:g id="APP_NAME">%1$s</xliff:g> povoliť prístup k údajom na pozadí?"</string>
+    <string name="background_read_medical_single_request_description_both_types_granted" msgid="7716161960428574364">"Ak povolíte, táto aplikácia bude mať prístup k údajom o kondícii a zdraví a zdravotným záznamom, keď ju nebudete používať."</string>
+    <string name="background_read_medical_single_request_description_medical_granted" msgid="5162456401369633859">"Ak povolíte, táto aplikácia bude mať prístup k zdravotným záznamom, keď ju nebudete používať."</string>
+    <string name="background_read_medical_single_request_description_fitness_granted" msgid="6850185345786666516">"Ak povolíte, táto aplikácia bude mať prístup k údajom o kondícii a zdraví, keď ju nebudete používať."</string>
+    <string name="background_read_single_request_description" msgid="2679634929322639576">"Ak povolíte, táto aplikácia bude mať prístup k údajom Dát o zdraví, keď ju nebudete používať."</string>
+    <string name="history_read_single_request_title" msgid="6848027207063414793">"Chcete aplikácii <xliff:g id="APP_NAME">%1$s</xliff:g> povoliť prístup k minulým údajom?"</string>
+    <string name="history_read_medical_single_request_description" msgid="6408051015819625330">"Ak povolíte, táto aplikácia bude mať prístup k údajom o kondícii a zdraví pridaným do <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="history_read_medical_single_request_description_fallback" msgid="6685832866184737207">"Ak povolíte, táto aplikácia bude mať prístup k všetkým minulým údajom o kondícii a zdraví."</string>
+    <string name="history_read_single_request_description" msgid="9140843675330318112">"Ak povolíte, táto aplikácia bude mať prístup k údajom Dát o zdraví pridaným do <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="history_read_single_request_description_fallback" msgid="7685531357676523654">"Ak povolíte, táto aplikácia bude mať prístup k všetkým minulým údajom Dát o zdraví."</string>
+    <string name="additional_permissions_combined_request_title" msgid="5509177449679251301">"Chcete aplikácii <xliff:g id="APP_NAME">%1$s</xliff:g> povoliť ďalší prístup?"</string>
+    <string name="additional_permissions_combined_request_description" msgid="7136418603696342323">"<xliff:g id="APP_NAME">%1$s</xliff:g> vyžaduje aj prístup k týmto nastaveniam Dát o zdraví"</string>
+    <string name="background_read_medical_combined_request_title_both_types_granted" msgid="4225111383019900451">"Prístup k všetkým údajom na pozadí"</string>
+    <string name="background_read_medical_combined_request_title_medical_granted" msgid="7245376864667067106">"Prístup k zdravotným záznamom na pozadí"</string>
+    <string name="background_read_medical_combined_request_title_fitness_granted" msgid="2639416977416876229">"Prístup k údajom o kondícii a zdraví na pozadí"</string>
+    <string name="background_read_medical_combined_request_description_both_types_granted" msgid="8812552783934180223">"Povoľte tejto aplikácii prístup k údajom o kondícii a zdraví a zdravotným záznamom, keď ju nebudete používať"</string>
+    <string name="background_read_medical_combined_request_description_medical_granted" msgid="5140647084504657934">"Povoľte tejto aplikácii prístup k týmto údajom, keď ju nebudete používať"</string>
+    <string name="background_read_medical_combined_request_description_fitness_granted" msgid="919785628751851996">"Povoľte tejto aplikácii prístup k týmto údajom, keď ju nebudete používať"</string>
+    <string name="background_read_combined_request_title" msgid="4184649296697480520">"Prístup k údajom na pozadí"</string>
+    <string name="background_read_combined_request_description" msgid="2423480522986545286">"Povoľte tejto aplikácii prístup k údajom Dát o zdraví, keď ju nebudete používať"</string>
+    <string name="history_read_medical_combined_request_title" msgid="1262267962861942478">"Prístup k minulým údajom o kondícii a zdraví"</string>
+    <string name="history_read_medical_combined_request_description" msgid="7550922315652791771">"Povoľte tejto aplikácii prístup k údajom pridaným do <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_medical_combined_request_description_fallback" msgid="3567968660826834911">"Povoľte tejto aplikácii prístup k všetkým minulým údajom"</string>
+    <string name="history_read_combined_request_title" msgid="9023811767370482028">"Prístup k minulým údajom"</string>
+    <string name="history_read_combined_request_description" msgid="1437787086896636484">"Povoľte tejto aplikácii prístup k údajom Dát o zdraví pridaným do <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_combined_request_description_fallback" msgid="4974756796396067521">"Povoľte tejto aplikácii prístup k všetkým minulým údajom Dát o zdraví"</string>
+    <string name="history_read_medical_combined_request_footer" msgid="5301940225768076844">"<xliff:g id="APP_NAME">%1$s</xliff:g> už má prístup k minulým údajom vo vašich zdravotných záznamoch"</string>
+    <string name="history_read_medical_combined_request_footer_link" msgid="355676489585738987">"Ďalšie informácie o povoleniach"</string>
+    <string name="background_read_medical_access_title_both_types_granted" msgid="4475972082863444603">"Prístup k všetkým údajom na pozadí"</string>
+    <string name="background_read_medical_access_title_medical_granted" msgid="7852915238347056139">"Prístup k zdravotným záznamom na pozadí"</string>
+    <string name="background_read_medical_access_title_fitness_granted" msgid="8691675952190647227">"Prístup k údajom o kondícii a zdraví na pozadí"</string>
+    <string name="background_read_medical_access_description_both_types_granted" msgid="7193350031798606366">"Povoľte tejto aplikácii prístup k údajom o kondícii a kvalite života a ku zdravotným záznamom, keď ju nebudete používať"</string>
+    <string name="background_read_medical_access_description_medical_granted" msgid="8570683510275055450">"Povoľte tejto aplikácii prístup k týmto údajom, keď ju nebudete používať"</string>
+    <string name="background_read_medical_access_description_fitness_granted" msgid="2584567718805499407">"Povoľte tejto aplikácii prístup k týmto údajom, keď ju nebudete používať"</string>
+    <string name="background_read_access_title" msgid="4184498185599147117">"Prístup k údajom na pozadí"</string>
+    <string name="background_read_access_description" msgid="2360433029368320323">"Povoľte tejto aplikácii prístup k údajom Dát o zdraví, keď ju nebudete používať"</string>
+    <string name="history_read_medical_access_title" msgid="1375462150672418692">"Prístup k minulým údajom o kondícii a zdraví"</string>
+    <string name="history_read_medical_access_description" msgid="5615959269427106141">"Povoľte tejto aplikácii prístup k údajom pridaným do <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_medical_access_description_fallback" msgid="3888547064992673535">"Povoľte tejto aplikácii prístup k všetkým minulým údajom"</string>
+    <string name="history_read_access_title" msgid="870048398702887144">"Prístup k minulým údajom"</string>
+    <string name="history_read_access_description" msgid="800722432229526128">"Povoľte tejto aplikácii prístup k údajom Dát o zdraví pridaným do <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="history_read_access_description_fallback" msgid="4151538305657852010">"Povoľte tejto aplikácii prístup k všetkým minulým údajom Dát o zdraví"</string>
+    <string name="history_read_medical_access_read_warning" msgid="8878271647163400440">"Momentálne sa nečítajú žiadne údaje o kondícii, pretože <xliff:g id="APP_NAME">%1$s</xliff:g> nemá povolenia na čítanie"</string>
+    <string name="additional_access_medical_read_footer" msgid="4640796038121080343">"<xliff:g id="APP_NAME">%1$s</xliff:g> už má prístup k predchádzajúcim údajom vo vašich zdravotných záznamoch. Ak to chcete zmeniť, vypnite tejto aplikácii prístup ku zdravotným záznamom."</string>
+    <string name="additional_access_medical_read_footer_link" msgid="2797623091827504856">"Spravovať prístup k zdravotným záznamom"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Zadajte aspoň jedno povolenie na čítanie, aby mohol byť zapnutý prístup na pozadí alebo prístup k minulým údajom pre túto aplikáciu"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"Zadajte aspoň jedno povolenie na čítanie, aby mohol byť zapnutý prístup na pozadí pre túto aplikáciu"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"Zadajte aspoň jedno povolenie na čítanie, aby mohol byť zapnutý prístup k minulým údajom pre túto aplikáciu"</string>
+    <string name="historic_access_description" msgid="3309195636349468633">"Povoľte tejto aplikácii prístup k všetkým minulým údajom Dát o zdraví"</string>
     <string name="background_read_description" msgid="3203594555849969283">"Povoliť tejto aplikácii prístup k údajom Dát o zdraví, keď ju nebudete používať"</string>
-    <string name="background_read_request_description" msgid="1664402237648709581">"Ak ho povolíte, táto aplikácia bude mať prístup k údajom Dát o zdraví, keď ju nebudete používať."</string>
-    <string name="historic_access_title" msgid="3584594624937737030">"Prístup k minulým údajom"</string>
-    <string name="historic_access_request_title" msgid="4645920231853414742">"Chcete aplikácii <xliff:g id="APP_NAME">%1$s</xliff:g> povoliť prístup k minulým údajom?"</string>
-    <string name="historic_access_description" msgid="2616669701088141765">"Povoliť tejto aplikácii prístup k údajom Dát o zdraví pridaným pred <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
-    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Povoliť tejto aplikácii prístup k všetkým minulým údajom Dát o zdraví"</string>
-    <string name="historic_access_request_description" msgid="136335743939253358">"Ak ho povolíte, táto aplikácia bude mať prístup k údajom Dát o zdraví pridaným pred <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
-    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Ak ho povolíte, táto aplikácia bude mať prístup k všetkým minulým údajom Dát o zdraví."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Kalórie spálené počas aktivity"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"kalórie spálené počas aktivity"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Čítanie údajov o kalóriách spálených počas aktivity"</string>
@@ -155,6 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"potlačenia invalidného vozíka"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"Čítanie údajov o potlačeniach invalidného vozíka"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"Zapisovanie údajov o potlačeniach invalidného vozíka"</string>
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"Intenzita aktivity"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"intenzita aktivity"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"Čítať intenzitu aktivity"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"Zapisovať intenzitu aktivity"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"Bazálny metabolizmus"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"bazálny metabolizmus"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"Čítanie údajov o bazálnom metabolizme"</string>
@@ -263,56 +308,75 @@
     <string name="resting_heart_rate_lowercase_label" msgid="4533866739695973169">"pokojový pulz"</string>
     <string name="resting_heart_rate_read_content_description" msgid="1068160055773401020">"Čítanie údajov o pokojovom pulze"</string>
     <string name="resting_heart_rate_write_content_description" msgid="8848198128082739995">"Zapisovanie údajov o pokojovom pulze"</string>
-    <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Teplota pokožky"</string>
-    <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"teplota pokožky"</string>
+    <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Teplota kože"</string>
+    <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"teplota kože"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Čítať teplotu pokožky"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Zapisovať teplotu pokožky"</string>
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"Sem patria všetky zdravotné záznamy synchronizované a pridané do aplikácie Dáta o zdraví. Nejde o vaše kompletné lekárske záznamy vrátane odborného opisu."</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"Všetky zdravotné záznamy"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"všetky zdravotné záznamy"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"Zapisovať všetky zdravotné záznamy"</string>
-    <string name="allergy_intolerance_uppercase_label" msgid="962905760867412783">"Alergie"</string>
-    <string name="allergy_intolerance_lowercase_label" msgid="8705895234297776508">"alergie"</string>
-    <string name="allergy_intolerance_content_description" msgid="5938549394285540206">"Čítanie alergií"</string>
-    <string name="immunization_uppercase_label" msgid="1467176749064014020">"Imunizácia"</string>
-    <string name="immunization_lowercase_label" msgid="6464922369026887687">"imunizácia"</string>
-    <string name="immunization_content_description" msgid="2910674919337229803">"Čítať imunizáciu"</string>
-    <string name="laboratory_results_uppercase_label" msgid="2521886562709901654">"Laboratórne výsledky"</string>
-    <string name="laboratory_results_lowercase_label" msgid="6437932041744631964">"laboratórne výsledky"</string>
-    <string name="laboratory_results_content_description" msgid="5882338877203692484">"Čítať laboratórne výsledky"</string>
+    <string name="allergies_intolerances_uppercase_label" msgid="2458552115947636884">"Alergie"</string>
+    <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"alergie"</string>
+    <string name="allergies_intolerances_content_description" msgid="7954532940667325068">"Čítať údaje o alergiách"</string>
+    <string name="conditions_uppercase_label" msgid="5260404343402770877">"Zdravotné ťažkosti"</string>
+    <string name="conditions_lowercase_label" msgid="2678248918552246997">"zdravotné ťažkosti"</string>
+    <string name="conditions_content_description" msgid="3230552343616193829">"Čítať zdravotné ťažkosti"</string>
+    <string name="vaccines_uppercase_label" msgid="1101176371071123187">"Očkovania"</string>
+    <string name="vaccines_lowercase_label" msgid="4991324441768127447">"očkovania"</string>
+    <string name="vaccines_content_description" msgid="7152741514791951684">"Čítať údaje o očkovaniach"</string>
+    <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"Výsledky testov"</string>
+    <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"výsledky testov"</string>
+    <string name="laboratory_results_content_description" msgid="7888886103734085841">"Čítať laboratórne výsledky"</string>
     <string name="medications_uppercase_label" msgid="4783281053427990225">"Lieky"</string>
     <string name="medications_lowercase_label" msgid="7808038774503092207">"lieky"</string>
     <string name="medications_content_description" msgid="6165382876281780190">"Čítanie údajov o liekoch"</string>
+    <string name="personal_details_uppercase_label" msgid="7241635933310394120">"Osobné informácie"</string>
+    <string name="personal_details_lowercase_label" msgid="1907848447611775151">"osobné informácie"</string>
+    <string name="personal_details_content_description" msgid="3191211304673909831">"Čítať osobné informácie"</string>
+    <string name="practitioner_details_uppercase_label" msgid="2940667649808082510">"Informácie o lekárovi"</string>
+    <string name="practitioner_details_lowercase_label" msgid="8195591077717971542">"informácie o lekárovi"</string>
+    <string name="practitioner_details_content_description" msgid="8775396516928504185">"Čítať informácie o lekárovi"</string>
     <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"Tehotenstvo"</string>
     <string name="pregnancy_lowercase_label" msgid="810439290131044517">"tehotenstvo"</string>
     <string name="pregnancy_content_description" msgid="3436773729243586287">"Čítať údaje o tehotenstve"</string>
-    <string name="problems_uppercase_label" msgid="4047882613795113715">"Problémy"</string>
-    <string name="problems_lowercase_label" msgid="6934298611508910866">"problémy"</string>
-    <string name="problems_content_description" msgid="1549418294742668962">"Čítať problémy"</string>
-    <string name="procedures_uppercase_label" msgid="9176087520132593261">"Procedúry"</string>
-    <string name="procedures_lowercase_label" msgid="5320804313946273234">"procedúry"</string>
+    <string name="procedures_uppercase_label" msgid="9176087520132593261">"Zákroky"</string>
+    <string name="procedures_lowercase_label" msgid="5320804313946273234">"zákroky"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"Čítať údaje o procedúrach"</string>
-    <string name="social_history_uppercase_label" msgid="1731364502071035544">"Sociálna história"</string>
-    <string name="social_history_lowercase_label" msgid="9027541979445736412">"sociálna história"</string>
+    <string name="social_history_uppercase_label" msgid="4119611299449533999">"Sociálna anamnéza"</string>
+    <string name="social_history_lowercase_label" msgid="9027541979445736412">"sociálna anamnéza"</string>
     <string name="social_history_content_description" msgid="7187059309389849831">"Čítať sociálnu históriu"</string>
-    <string name="vital_signs_uppercase_label" msgid="214938594708280346">"Životné funkcie"</string>
+    <string name="visits_uppercase_label" msgid="8532619758336375886">"Údaje o návštevách"</string>
+    <string name="visits_lowercase_label" msgid="2545887061364564151">"údaje o návštevách"</string>
+    <string name="visits_content_description" msgid="6336796415049565697">"Čítať údaje o návštevách"</string>
+    <string name="vital_signs_uppercase_label" msgid="289862347143374640">"Životné funkcie"</string>
     <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"životné funkcie"</string>
     <string name="vital_signs_content_description" msgid="914944352640528612">"Čítať údaje o životných funkciách"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Bdelá pozornosť"</string>
     <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"bdelá pozornosť"</string>
     <string name="mindfulness_read_content_description" msgid="739187536826062524">"Čítať údaje bdelej pozornosti"</string>
     <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Zapisovať údaje bdelej pozornosti"</string>
-    <string name="read_permission_category" msgid="6002099618259628632">"Povolenie aplikácii <xliff:g id="APP_NAME">%1$s</xliff:g> čítať"</string>
-    <string name="write_permission_category" msgid="1529702804865008111">"Povolenie aplikácii <xliff:g id="APP_NAME">%1$s</xliff:g> zapisovať"</string>
-    <string name="request_permissions_cancel" msgid="1787483997235365393">"Zrušiť"</string>
+    <string name="read_permission_category" msgid="6002099618259628632">"Povoliť aplikácii <xliff:g id="APP_NAME">%1$s</xliff:g> čítať"</string>
+    <string name="write_permission_category" msgid="1529702804865008111">"Povoliť aplikácii <xliff:g id="APP_NAME">%1$s</xliff:g> zapisovať"</string>
     <string name="request_permissions_allow" msgid="4201324235711040631">"Povoliť"</string>
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Povoliť všetko"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Nepovoliť"</string>
-    <string name="request_permissions_header_desc" msgid="5561173070722750153">"Vyberte údaje, ktoré chcete povoliť tejto aplikácii čítať alebo zapisovať do Dát o zdraví"</string>
+    <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"Vyberte údaje, ktoré má táto aplikácia čítať z Dát o zdraví alebo do nich zapisovať"</string>
+    <string name="request_permissions_data_access_type_read" msgid="6005792244220381045">"Vyberte údaje, ktoré má táto aplikácia čítať z Dát o zdraví"</string>
+    <string name="request_permissions_data_access_type_write" msgid="6369810467678676337">"Vyberte údaje, ktoré má táto aplikácia zapisovať do Dát o zdraví"</string>
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Ak udelíte prístup na čítanie, aplikácia bude môcť čítať nové údaje aj údaje z posledných 30 dní"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Ak udelíte prístup na čítanie, aplikácia bude môcť čítať nové aj minulé údaje"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Chcete povoliť aplikácii <xliff:g id="APP_NAME">%1$s</xliff:g> prístup k Dátam o zdraví?"</string>
-    <string name="request_permissions_rationale" msgid="6154280355215802538">"Spôsob, akým <xliff:g id="APP_NAME">%1$s</xliff:g> spracúva vaše údaje, zistíte v <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> príslušného vývojára"</string>
+    <string name="request_permissions_with_medical_header_title" msgid="6269944931319362595">"Chcete aplikácii <xliff:g id="APP_NAME">%1$s</xliff:g> povoliť prístup k údajom o kondícii a zdraví?"</string>
+    <string name="request_permissions_rationale" msgid="2642076968583316986">"Spôsob, akým aplikácia <xliff:g id="APP_NAME">%1$s</xliff:g> spracúva vaše údaje, zistíte v jej <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"pravidlách ochrany súkromia"</string>
+    <string name="medical_request_header" msgid="2300521519021510027">"Chcete povoliť aplikácii <xliff:g id="APP_NAME">%1$s</xliff:g> prístup k vašim zdravotným záznamom?"</string>
+    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"Ak udelíte prístup, aplikácia bude môcť čítať a zapisovať údaje, ako sú alergie, výsledky laboratórnych vyšetrení, očkovania a ďalšie\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"Ak udelíte prístup, aplikácia bude môcť čítať údaje, ako sú alergie, výsledky laboratórnych vyšetrení, očkovania a ďalšie\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_about_health_records" msgid="7204918218748362687">"O zdravotných záznamoch"</string>
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"Údaje na zdieľanie zahŕňajú"</string>
+    <string name="medical_request_summary" msgid="7281321524805015510">"Ak povolíte, <xliff:g id="APP_NAME">%1$s</xliff:g> bude môcť zdieľať vaše zdravotné záznamy s Dátami o zdraví."</string>
+    <string name="medical_request_footer" msgid="6533749932770903089">"Synchronizujte svoje zdravotné záznamy z rôznych aplikácií a zdrojov, aby ste ich mali na jednom mieste"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Chcete odstrániť všetky povolenia?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Odstrániť všetky"</string>
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> už nebude môcť čítať údaje z Dát o zdraví ani ich do nich zapisovať.\n\nNeovplyvní to ďalšie povolenia, ktoré táto aplikácia môže mať, ako sú kamera, mikrofón alebo poloha."</string>
@@ -320,20 +384,28 @@
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> už nebude môcť čítať údaje z Dát o zdraví ani ich do nich zapisovať. Týka sa to aj minulých údajov.\n\nNeovplyvní to ďalšie povolenia, ktoré táto aplikácia môže mať, ako je poloha, kamera alebo mikrofón."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> už nebude môcť čítať údaje z Dát o zdraví ani ich do nich zapisovať. Týka sa to aj dát na pozadí a minulých údajov.\n\nNeovplyvní to ďalšie povolenia, ktoré táto aplikácia môže mať, ako je poloha, kamera alebo mikrofón."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Odstrániť z Dát o zdraví aj údaje aplikácie <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
-    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"Chcete odstrániť všetky povolenia?"</string>
-    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"Odstrániť všetky povolenia týkajúce sa zdravotných záznamov?"</string>
     <string name="disconnect_all_fitness_permissions_title" msgid="7612364222525900592">"Odstrániť všetky povolenia týkajúce sa kondície a zdravia?"</string>
+    <string name="disconnect_all_fitness_permissions_dialog_checkbox" msgid="8808559689899914478">"Odstrániť z Dát o zdraví aj údaje o kondícii z aplikácie <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"Odstrániť všetky povolenia týkajúce sa zdravotných záznamov?"</string>
+    <string name="disconnect_all_medical_permissions_dialog_checkbox" msgid="7782158941871987263">"Odstrániť z Dát o zdraví aj zdravotné záznamy z aplikácie <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="disconnect_all_fitness_or_medical_no_additional_permissions_dialog_message" msgid="6610810945930258582">"<xliff:g id="APP_NAME">%1$s</xliff:g> už nebude môcť čítať tieto údaje z Dát o zdraví ani do nich zapisovať.\n\nNeovplyvní to ďalšie povolenia, ktoré táto aplikácia môže mať, ako sú kamera, mikrofón či poloha."</string>
+    <string name="disconnect_all_fitness_or_medical_and_background_permissions_dialog_message" msgid="7138878481421234556">"<xliff:g id="APP_NAME">%1$s</xliff:g> už nebude môcť čítať tieto údaje z Dát o zdraví ani do nich zapisovať. Týka sa to aj dát na pozadí.\n\nNeovplyvní to ďalšie povolenia, ktoré táto aplikácia môže mať, ako sú kamera, mikrofón či poloha."</string>
+    <string name="disconnect_all_fitness_or_medical_and_historical_permissions_dialog_message" msgid="1519496566456028625">"<xliff:g id="APP_NAME">%1$s</xliff:g> už nebude môcť čítať tieto údaje z Dát o zdraví ani do nich zapisovať. Týka sa to aj minulých údajov.\n\nNeovplyvní to ďalšie povolenia, ktoré táto aplikácia môže mať, ako sú kamera, mikrofón či poloha."</string>
+    <string name="disconnect_all_fitness_or_medical_and_additional_permissions_dialog_message" msgid="5147728456578218902">"<xliff:g id="APP_NAME">%1$s</xliff:g> už nebude môcť čítať tieto údaje z Dát o zdraví ani do nich zapisovať. Týka sa to aj dát na pozadí a minulých údajov.\n\nNeovplyvní to ďalšie povolenia, ktoré táto aplikácia môže mať, ako sú kamera, mikrofón či poloha."</string>
+    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"Chcete odstrániť všetky povolenia?"</string>
     <string name="disconnect_all_health_no_additional_permissions_dialog_message" msgid="211728516196974197">"Aplikácia <xliff:g id="APP_NAME">%1$s</xliff:g> už nebude môcť čítať údaje z Dát o zdraví ani do nich zapisovať.\n\nNeovplyvní to ďalšie povolenia, ktoré táto aplikácia môže mať, ako sú kamera, mikrofón či poloha."</string>
     <string name="disconnect_all_health_and_background_permissions_dialog_message" msgid="654533675296670869">"Aplikácia <xliff:g id="APP_NAME">%1$s</xliff:g> už nebude môcť čítať údaje z Dát o zdraví ani do nich zapisovať. Týka sa to aj dát na pozadí.\n\nNeovplyvní to ďalšie povolenia, ktoré táto aplikácia môže mať, ako sú kamera, mikrofón či poloha."</string>
     <string name="disconnect_all_health_and_historical_permissions_dialog_message" msgid="6743215620789357899">"Aplikácia <xliff:g id="APP_NAME">%1$s</xliff:g> už nebude môcť čítať údaje z Dát o zdraví ani do nich zapisovať. Týka sa to aj minulých údajov.\n\nNeovplyvní to ďalšie povolenia, ktoré táto aplikácia môže mať, ako sú kamera, mikrofón či poloha."</string>
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"Aplikácia <xliff:g id="APP_NAME">%1$s</xliff:g> už nebude môcť čítať údaje z Dát o zdraví ani do nich zapisovať. Týka sa to aj dát na pozadí a minulých údajov.\n\nNeovplyvní to ďalšie povolenia, ktoré táto aplikácia môže mať, ako sú kamera, mikrofón či poloha."</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"Odstrániť z Dát o zdraví aj údaje o kondícii a zdravotné záznamy pochádzajúce z aplikácie <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"Povolenia pre túto aplikáciu boli odstránené"</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"Odstrániť aj všetky údaje Dát o zdraví"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Nasledujúci deň"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Vybraný deň"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Predchádzajúci deň"</string>
     <string name="default_error" msgid="7966868260616403475">"Niečo sa pokazilo. Skúste to znova."</string>
     <string name="unkwown_resource" msgid="7932225227431922125">"Neznámy zdroj"</string>
+    <string name="raw_fhir_title" msgid="1295744907036066319">"Zdrojové údaje"</string>
     <string name="raw_fhir_open_bracket" msgid="7974657451368655325">"<xliff:g id="PREFIX">%1$s</xliff:g>Ľavá zátvorka."</string>
     <string name="raw_fhir_closed_bracket" msgid="9084379463440675078">"<xliff:g id="PREFIX">%1$s</xliff:g>Pravá zátvorka."</string>
     <string name="raw_fhir_field_value" msgid="369633095565031835">"<xliff:g id="PREFIX">%1$s</xliff:g> Hodnota poľa <xliff:g id="FIELD">%2$s</xliff:g>"</string>
@@ -359,22 +431,23 @@
     <string name="delete_app_data" msgid="6890357774873859952">"Odstrániť údaje aplikácie"</string>
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"Neaktívne aplikácie"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Tieto aplikácie už nemajú prístup, ale stále majú údaje uložené v Dátach o zdraví"</string>
-    <string name="manage_permissions_time_frame" msgid="1299483940842401923">"Aplikácia <xliff:g id="APP_NAME">%1$s</xliff:g> môže čítať údaje pridané po <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
-    <string name="other_android_permissions" msgid="8051485761573324702">"Ak chcete spravovať ďalšie povolenia pre Android pre túto aplikáciu, prejdite do sekcie Nastavenia &gt; Aplikácie"</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"Údaje, ktoré zdieľate s aplikáciou <xliff:g id="APP_NAME">%1$s</xliff:g>, sa riadia vlastnými pravidlami ochrany súkromia"</string>
+    <string name="manage_permissions_time_frame" msgid="1299483940842401923">"Aplikácia <xliff:g id="APP_NAME">%1$s</xliff:g> môže čítať údaje pridané od <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>."</string>
+    <string name="other_android_permissions" msgid="8051485761573324702">"Ak chcete spravovať ďalšie povolenia pre Android pre túto aplikáciu, prejdite do sekcie Nastavenia &gt; Aplikácie."</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"V pravidlách ochrany súkromia príslušného vývojára zistíte, ako aplikácia <xliff:g id="APP_NAME">%1$s</xliff:g> narába s vašimi údajmi."</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Ak chcete spravovať ďalšie povolenia pre Android, ku ktorým má táto aplikácia prístup, prejdite do sekcie Nastavenia a potom Aplikácie"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Zobraziť pravidlá ochrany súkromia"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Použité v posledných 24 hodinách"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Prístup aplikácie"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Momentálne nemáte nainštalované žiadne kompatibilné aplikácie"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Dodatočný prístup"</string>
+    <string name="additional_access_summary" msgid="1076197455435130191">"Minulé dáta, dáta na pozadí"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Tejto aplikácii boli odstránené ďalšie povolenia"</string>
     <string name="permissions_header" msgid="6519976063360071569">"Povolenia"</string>
-    <string name="fitness_permissions" msgid="586264186537460254">"Kondícia a kvalita života"</string>
+    <string name="fitness_permissions" msgid="586264186537460254">"Kondícia a zdravie"</string>
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"Cvičenie, spánok, výživa a podobne"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"Zdravotné záznamy"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"zdravotné záznamy"</string>
-    <string name="medical_permissions_summary" msgid="5553982055903211592">"Lab. výsledky, lieky, imunizácie a pod."</string>
+    <string name="medical_permissions_summary" msgid="5526004634109548577">"Výsledky testov, lieky, očkovania a podobne"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Odstránené povolenia aplikácií"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Dáta o zdraví odstránili povolenia pre aplikáciu <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Dáta o zdraví odstránili povolenia pre aplikácie <xliff:g id="APP_DATA_0">%1$s</xliff:g> a <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -464,8 +537,10 @@
     <string name="export_import_no_apps_text" msgid="6403119325024893690">"Nie sú k dispozícii žiadne aplikácie. Nainštalujte si aplikácie cloudového priestoru, budú sa zobrazovať tu."</string>
     <string name="export_import_install_apps_text" msgid="5026922993254770904">"Ak chcete získať ďalšie možnosti, nainštalujte si aplikácie cloudového priestoru, aby sa tu zobrazovali"</string>
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Prejsť do Obchodu Play"</string>
-    <string name="onboarding_title" msgid="8550656211291180188">"Začíname s Dátami o zdraví"</string>
+    <string name="onboarding_title" msgid="8550656211291180188">"Začíname s aplikáciou Dáta o zdraví"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Dáta o zdraví uchovávajú vaše údaje o zdraví a kondícii a umožňujú vám jednoducho synchronizovať rôzne aplikácie v zariadení"</string>
+    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Dáta o zdraví uchovávajú vaše údaje o zdraví a kondícii z rôznych aplikácií a synchronizujú ich v týchto aplikáciách.\n\n"<b>"Údaje o kondícii a kvalite života"</b>" vrátane cvičení, krokov, výživy, spánku a ďalších\n\n"<b>"Zdravotné záznamy"</b>" vrátane údajov o očkovaniach, výsledkov testov a ďalších"</string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Možnosti aplikácie Dáta o zdraví"</string>
     <string name="share_data" msgid="3481932156368883946">"Zdieľanie údajov s aplikáciami"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Vyberte, ktoré údaje budú môcť jednotlivé aplikácie v Dátach o zdraví čítať alebo zapisovať"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Správa nastavení a ochrany súkromia"</string>
@@ -566,7 +641,9 @@
     <string name="flow_light" msgid="1937543318146228793">"Slabá menštruácia"</string>
     <string name="flow_medium" msgid="3783688724668943154">"Stredne silná menštruácia"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"Silná menštruácia"</string>
+    <string name="flow_unknown" msgid="1634411759928572900">"Neznáme krvácanie"</string>
     <string name="period_day" msgid="3821944462093965882">"Deň menštruácie: <xliff:g id="DAY">%1$d</xliff:g> z <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g>"</string>
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{Menštruácia (1 deň)}few{Menštruácia (# dni)}many{Menštruácia (# dňa)}other{Menštruácia (# dní)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"Pozitívny"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"Negatívny"</string>
     <string name="ovulation_high" msgid="205362931427158291">"Vysoká"</string>
@@ -713,6 +790,8 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"Hudba"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"Iné"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"Bez sprievodcu"</string>
+    <string name="activity_intensity_type_moderate" msgid="7974792315871109564">"Stredná"</string>
+    <string name="activity_intensity_type_vigorous" msgid="5651020560923780330">"Intenzívna"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> min"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> h <xliff:g id="MIN">%2$s</xliff:g> min"</string>
     <string name="hour_duration" msgid="3472489613837138711">"<xliff:g id="HOUR">%1$s</xliff:g> h"</string>
@@ -918,7 +997,7 @@
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Dáta o zdraví odstránia všetky údaje staršie ako # mesiac. Môže trvať deň, kým sa tieto zmeny zobrazia v pripojených aplikáciách.}few{Dáta o zdraví odstránia všetky údaje staršie ako # mesiace. Môže trvať deň, kým sa tieto zmeny zobrazia v pripojených aplikáciách.}many{Dáta o zdraví odstránia všetky údaje staršie ako # mesiaca. Môže trvať deň, kým sa tieto zmeny zobrazia v pripojených aplikáciách.}other{Dáta o zdraví odstránia všetky údaje staršie ako # mesiacov. Môže trvať deň, kým sa tieto zmeny zobrazia v pripojených aplikáciách.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Údaje na odstránenie z týchto kategórií"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Hotovo"</string>
-    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Automatické odstraňovanie je zapnuté. Údaje staršie ako # mesiac budú odstránené.}few{Automatické odstraňovanie je zapnuté. Údaje staršie ako # mesiace budú odstránené.}many{Automatické odstraňovanie je zapnuté. Údaje staršie ako # mesiaca budú odstránené.}other{Automatické odstraňovanie je zapnuté. Údaje staršie ako # mesiacov budú odstránené.}}"</string>
+    <string name="auto_delete_confirmation_toast" msgid="7161651426400701306">"{count,plural, =1{Autom. odstraňovanie zapnuté. Údaje staršie ako # mesiac budú odstránené.}few{Autom. odstraňovanie zapnuté. Údaje staršie ako # mesiace budú odstránené.}many{Autom. odstraňovanie zapnuté. Údaje staršie ako # mesiaca budú odstránené.}other{Autom. odstraňovanie zapnuté. Údaje staršie ako # mesiacov budú odstránené.}}"</string>
     <string name="auto_delete_off_toast" msgid="6530926709108821768">"Automatické odstraňovanie je vypnuté"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Nastavenie priority aplikácií"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"Ak údaje typu <xliff:g id="DATA_TYPE">%s</xliff:g> pridá viacero aplikácií, Dáta o zdraví uprednostnia aplikáciu, ktorá je v tomto zozname najvyššie. Poradie aplikácií zmeníte presunutím."</string>
@@ -965,23 +1044,18 @@
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Integruje sa"</string>
     <string name="migration_in_progress_screen_integration_details" msgid="5916989113111973466">"Dáta o zdraví sa integrujú so systémom Android.\n\nPrenos vašich údajov a povolení môže chvíľu trvať."</string>
     <string name="migration_in_progress_screen_integration_dont_close" msgid="2095732208438772444">"Nezatvárajte aplikáciu, kým nedostanete upozornenie, že proces je dokončený."</string>
-    <string name="migration_in_progress_notification_title" msgid="8873411008158407737">"Dáta o zdraví sa integrujú"</string>
     <string name="migration_update_needed_screen_title" msgid="3260466598312877429">"Vyžaduje sa aktualizácia"</string>
     <string name="migration_update_needed_screen_details" msgid="7984745102006782603">"Dáta o zdraví sa integrujú so systémom Android, aby ste k nim mali prístup priamo z nastavení."</string>
     <string name="update_button" msgid="4544529019832009496">"Aktualizovať"</string>
     <string name="migration_update_needed_notification_content" msgid="478899618719297517">"Spustite túto aktualizáciu, aby mohla pokračovať integrácia Dát o zdraví s nastaveniami systému"</string>
-    <string name="migration_update_needed_notification_action" msgid="1219223694165492000">"Aktualizovať"</string>
     <string name="migration_module_update_needed_notification_title" msgid="5428523284357105379">"Vyžaduje sa aktualizácia systému"</string>
     <string name="migration_module_update_needed_action" msgid="7211167950758064289">"Než budete pokračovať, aktualizujte systém telefónu."</string>
     <string name="migration_module_update_needed_restart" msgid="1246884613546321798">"Ak ste systém telefónu už aktualizovali, skúste telefón reštartovať a pokračujte v integrácii"</string>
-    <string name="migration_app_update_needed_notification_title" msgid="8971076370900025444">"Vyžaduje sa aktualizácia Dát o zdraví"</string>
     <string name="migration_app_update_needed_action" msgid="3289432528592774601">"Než budete pokračovať, aktualizujte aplikáciu Dáta o zdraví na najnovšiu verziu."</string>
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"Vyžaduje sa viac priestoru"</string>
     <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"Dáta o zdraví vyžadujú, aby bolo v telefóne <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> priestoru, inak nebude možné v integrácii pokračovať.\n\nUvoľnite v telefóne priestor a skúste to znova."</string>
     <string name="try_again_button" msgid="8745496819992160789">"Skúsiť znova"</string>
     <string name="free_up_space_button" msgid="4141013808635654695">"Uvoľniť priestor"</string>
-    <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"Vyžaduje sa viac priestoru"</string>
-    <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"Dáta o zdraví vyžadujú, aby bolo v telefóne <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> priestoru, inak nebude možné v integrácii pokračovať."</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"Integrácia bola pozastavená"</string>
     <string name="migration_paused_screen_details" msgid="5898311710030340187">"Aplikácia Dáta o zdraví sa počas integrácie so systémom Android zavrela.\n\nKliknutím na Obnoviť ju znova otvorte a pokračujte v prenose svojich údajov a povolení."</string>
     <string name="migration_paused_screen_details_timeout" msgid="353768000785837394">"Ak si chcete svoje údaje Dát o zdraví ponechať, vykonajte tento krok do <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
@@ -992,11 +1066,9 @@
     <string name="resume_migration_banner_description" msgid="6236230413670826036">"Klepnutím pokračujte v integrácii Dát o zdraví so systémom Android. Ak si chcete svoje údaje ponechať, vykonajte tento krok do <xliff:g id="TIME_NEEDED">%1$s</xliff:g>."</string>
     <string name="resume_migration_banner_description_fallback" msgid="6060444898839211883">"Klepnutím pokračujte v integrácii Dát o zdraví so systémom Android."</string>
     <string name="resume_migration_banner_button" msgid="2112318760107756469">"Pokračovať"</string>
-    <string name="resume_migration_notification_title" msgid="8859575633668908327">"Obnovte integráciu Dát o zdraví"</string>
-    <string name="resume_migration_notification_content" msgid="46172108837648715">"Ak si chcete svoje údaje ponechať, vykonajte tento krok do <xliff:g id="TIME_NEEDED">%1$s</xliff:g>."</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Vyžaduje sa aktualizácia aplikácie"</string>
-    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"Ak chcete, aby sa údaje s Dátami o zdraví naďalej synchronizovali, musíte aktualizovať aplikáciu <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Ak chcete, aby sa údaje s Dátami o zdraví naďalej synchronizovali, musíte niektoré aplikácie aktualizovať"</string>
+    <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"Ak chcete, aby sa údaje s Dátami o zdraví naďalej synchronizovali, musíte aktualizovať aplikáciu <xliff:g id="APP_NAME">%1$s</xliff:g>. Aktualizácie nemusia byť k dispozícii pre všetky aplikácie."</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"Ak chcete, aby sa údaje s Dátami o zdraví naďalej synchronizovali, musíte niektoré aplikácie aktualizovať. Aktualizácie nemusia byť k dispozícii pre všetky aplikácie."</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Skontrolovať dostupnosť aktualizácií"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Ďalšie informácie"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Integrácia Dát o zdraví"</string>
@@ -1011,10 +1083,6 @@
     <string name="migration_not_complete_dialog_title" msgid="3725576338159027149">"Integrácia Dát o zdraví nebola dokončená"</string>
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"Keď bude znova k dispozícii, dostanete upozornenie."</string>
     <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"Dobre"</string>
-    <string name="migration_not_complete_notification_title" msgid="7392885522310227293">"Integrácia Dát o zdraví nebola dokončená"</string>
-    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"Ďalšie informácie"</string>
-    <string name="migration_complete_notification_title" msgid="4988631739109332404">"Integrácia Dát o zdraví je dokončená"</string>
-    <string name="migration_complete_notification_action" msgid="5350322865206331186">"Otvoriť"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Novinky"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Teraz máte prístup k Dátam o zdraví priamo v nastaveniach. Aplikáciu Dáta o zdraví môžete kedykoľvek aktualizovať a uvoľniť tak priestor."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"Dobre"</string>
@@ -1035,7 +1103,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"Upraviť zdroje aplikácií"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Predvolená aplikácia zariadenia"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Dáta aplikácie"</string>
-    <string name="no_data_footer" msgid="4777297654713673100">"Údaje z aplikácií s prístupom k Dátam o zdraví sa budú zobrazovať tu"</string>
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"Tu sa budú zobrazovať údaje z aplikácie <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Tu sa budú zobrazovať údaje z aplikácií s prístupom k Dátam o zdraví"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"Deň"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"Týždeň"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"Mesiac"</string>
@@ -1043,13 +1112,8 @@
     <string name="last_week_header" msgid="5194448963146719382">"Minulý týždeň"</string>
     <string name="this_month_header" msgid="2452395268894677189">"Tento mesiac"</string>
     <string name="last_month_header" msgid="1359164797239191253">"Minulý mesiac"</string>
-    <string name="tab_entries" msgid="3402700951602029493">"Vstupy"</string>
+    <string name="tab_entries" msgid="3402700951602029493">"Záznamy"</string>
     <string name="tab_access" msgid="7818197975407243701">"Prístup"</string>
-    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Chcete aplikácii <xliff:g id="APP_NAME">%1$s</xliff:g> povoliť ďalší prístup?"</string>
-    <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> vyžaduje aj prístup k týmto nastaveniam Dát o zdraví"</string>
-    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Zadajte aspoň jedno povolenie na čítanie, aby mohol byť zapnutý prístup na pozadí alebo prístup k minulým údajom pre túto aplikáciu"</string>
-    <string name="additional_access_background_footer" msgid="1638739578431818525">"Zadajte aspoň jedno povolenie na čítanie, aby mohol byť zapnutý prístup na pozadí pre túto aplikáciu"</string>
-    <string name="additional_access_history_footer" msgid="5326814559930548467">"Zadajte aspoň jedno povolenie na čítanie, aby mohol byť zapnutý prístup k minulým údajom pre túto aplikáciu"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Začnite používať Dáta o zdraví"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"Synchronizujte svoje prvé aplikácie a zdieľajte medzi nimi údaje o zdraví a kondícii"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"Nastaviť"</string>
@@ -1059,8 +1123,20 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"Zobrazenie kompatibilných aplikácií"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Nájdite ďalšie aplikácie na synchronizáciu s aplikáciou <xliff:g id="APP_NAME">%s</xliff:g> prostredníctvom Dát o zdraví"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"Zobraziť v obchode s aplikáciami"</string>
+    <string name="lock_screen_banner_title" msgid="5384381892985739755">"Nastavte zámku obrazovky"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"Zvýšte zabezpečenie svojich zdravotných dát nastavením kódu PIN, vzoru alebo hesla pre toto zariadenie"</string>
+    <string name="lock_screen_banner_button" msgid="2537090011380728122">"Nastaviť zámku obrazovky"</string>
     <string name="select_all" msgid="837499881590001166">"Vybrať všetko"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"Pripojené aplikácie už nebudú môcť čítať tieto údaje z Dát o zdraví"</string>
+    <string name="a11y_checked" msgid="3685413382346589880">"Začiarknuté"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"Nezačiarknuté"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"Mapa trasy cvičenia je k dispozícii"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"Ďalší deň"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"Ďalší týždeň"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"Ďalší mesiac"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"Predchádzajúci deň"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"Predchádzajúci týždeň"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"Predchádzajúci mesiac"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"Chcete natrvalo odstrániť všetky údaje?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"Chcete natrvalo odstrániť vybrané údaje?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"Chcete natrvalo odstrániť všetky údaje aplikácie <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
@@ -1068,7 +1144,7 @@
     <string name="all_entries_selected_day_deletion_confirmation_dialog" msgid="2887646600541520444">"Chcete natrvalo odstrániť všetky záznamy z dňa <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="all_entries_selected_week_deletion_confirmation_dialog" msgid="6759608395185369048">"Chcete natrvalo odstrániť všetky záznamy z týždňa <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="all_entries_selected_month_deletion_confirmation_dialog" msgid="6030161837387559132">"Chcete natrvalo odstrániť všetky záznamy z mesiaca <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
-    <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Chcete natrvalo odstrániť vybrané záznamy z dňa <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
+    <string name="some_entries_selected_day_deletion_confirmation_dialog" msgid="3481363886097542565">"Chcete natrvalo odstrániť vybrané záznamy z <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_week_deletion_confirmation_dialog" msgid="7150217982297131340">"Chcete natrvalo odstrániť vybrané záznamy z týždňa <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="some_entries_selected_month_deletion_confirmation_dialog" msgid="3712014725077445591">"Chcete natrvalo odstrániť vybrané záznamy z mesiaca <xliff:g id="SELECTED_DATE_RANGE">%1$s</xliff:g>?"</string>
     <string name="one_entry_selected_deletion_confirmation_dialog" msgid="4642573082594021789">"Chcete tento záznam natrvalo odstrániť?"</string>
@@ -1079,4 +1155,38 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"Chcete natrvalo odstrániť vybrané záznamy aplikácie <xliff:g id="APP_NAME">%1$s</xliff:g> z týždňa <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Chcete natrvalo odstrániť vybrané záznamy aplikácie <xliff:g id="APP_NAME">%1$s</xliff:g> z mesiaca <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"Chcete tento záznam aplikácie <xliff:g id="APP_NAME">%s</xliff:g> natrvalo odstrániť?"</string>
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"Chcete natrvalo odstrániť údaje (<xliff:g id="DATA_TYPE">%1$s</xliff:g>) aplikácie <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
+    <string name="on" msgid="8266542510798355807">"Zapnuté"</string>
+    <string name="off" msgid="6996623844428550649">"Vypnuté"</string>
+    <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Posledný prístup: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
+    <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"Otvorené včera <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
+    <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"Otvorené <xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"Povoliť vždy"</string>
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"Povoliť vybrané"</string>
+    <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"Počas používania aplikácie"</string>
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"Odmietnuť všetko"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"Chcete aplikácii <xliff:g id="APP_NAME">%1$s</xliff:g> povoliť prístup k údajom o kondícii a zdraví?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> žiada o prístup k údajom typu <xliff:g id="DATA_TYPES">%2$s</xliff:g>.\n\nUdeľte všetky povolenia alebo ich ovládajte individuálne."</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"Chcete povoliť aplikácii <xliff:g id="APP_NAME">%1$s</xliff:g> prístup k údajom typu <xliff:g id="DATA_TYPE">%2$s</xliff:g>?"</string>
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"Kondícia a zdravie"</string>
+    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"po celý čas"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"počas používania"</string>
+    <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"Po celý čas"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"Počas používania"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> má prístup k všetkým vašim údajom o kondícii a zdraví <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allowed_to_access" msgid="4179317387300812335">"Má povolený prístup"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"Má povolené čítať"</string>
+    <string name="give_permission_prompt" msgid="5788144216023065504">"Tieto povolenia poskytujú aplikácii <xliff:g id="APP_NAME">%1$s</xliff:g> prístup k údajom zo senzorov vášho zariadenia."</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"Povolené aplikácie: <xliff:g id="NUMBER_0">%1$d</xliff:g> z <xliff:g id="OTHER_NUMBER">%2$d</xliff:g>"</string>
+    <string name="no_apps_requesting" msgid="8088684445910698363">"Žiadne žiadajúce aplikácie"</string>
+    <string name="allowed" msgid="4158456017482263737">"Povolené"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"Nepovolené"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"Aplikácie s týmto povolením majú prístup k údajom typu <xliff:g id="DATA_TYPE">%s</xliff:g> zo senzorov vášho zariadenia."</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"Chcete odstrániť prístup k údajom typu <xliff:g id="DATA_TYPE">%s</xliff:g> všetkým aplikáciám v hodinkách?"</string>
+    <string name="icon_content_check_mark" msgid="358150681017987426">"Značka začiarknutia"</string>
+    <string name="icon_content_cross_mark" msgid="3007762424358780248">"Krížik"</string>
+    <string name="current_allow_mode" msgid="6716206063077569218">"Momentálne má aplikácia <xliff:g id="APP_NAME">%1$s</xliff:g> prístup k údajom o kondícii a zdraví <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"Chcete aplikácii <xliff:g id="APP_NAME">%1$s</xliff:g> povoliť nepretržitý prístup k údajom o kondícii a zdraví?"</string>
+    <string name="current_access" msgid="1457167070428176139">"Aplikácia <xliff:g id="APP_NAME">%1$s</xliff:g> má prístup k údajom typu <xliff:g id="DATA_TYPES">%2$s</xliff:g>."</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"Spravovať povolenia týkajúce sa kondície a zdravia"</string>
 </resources>

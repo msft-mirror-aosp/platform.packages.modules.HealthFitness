@@ -19,8 +19,6 @@ package com.android.server.healthconnect.migration;
 import static android.health.connect.HealthConnectDataState.MIGRATION_STATE_ALLOWED;
 import static android.health.connect.HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS;
 
-import static com.android.server.healthconnect.HealthConnectDeviceConfigManager.MIGRATION_STATE_ALLOWED_COUNT_DEFAULT_FLAG_VALUE;
-import static com.android.server.healthconnect.HealthConnectDeviceConfigManager.MIGRATION_STATE_IN_PROGRESS_COUNT_DEFAULT_FLAG_VALUE;
 import static com.android.server.healthconnect.migration.MigrationBroadcastScheduler.MIGRATION_BROADCAST_NAMESPACE;
 import static com.android.server.healthconnect.migration.MigrationConstants.MIGRATION_STATE_CHANGE_NAMESPACE;
 
@@ -35,12 +33,12 @@ import static org.mockito.Mockito.when;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.Context;
+import android.os.UserHandle;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.HealthConnectThreadScheduler;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
@@ -54,7 +52,6 @@ import org.mockito.quality.Strictness;
 import org.mockito.stubbing.Answer;
 import org.mockito.verification.VerificationMode;
 
-import java.time.Duration;
 import java.util.Objects;
 
 /** Unit tests for broadcast scheduling logic in {@link MigrationBroadcastScheduler} */
@@ -67,7 +64,6 @@ public class MigrationBroadcastSchedulingTest {
                     .spyStatic(MigrationStateManager.class)
                     .mockStatic(PreferenceHelper.class)
                     .mockStatic(HealthConnectThreadScheduler.class)
-                    .mockStatic(HealthConnectDeviceConfigManager.class)
                     .setStrictness(Strictness.LENIENT)
                     .build();
 
@@ -75,19 +71,8 @@ public class MigrationBroadcastSchedulingTest {
     @Mock private JobScheduler mJobScheduler;
     @Mock private MigrationStateManager mMigrationStateManager;
     @Mock private PreferenceHelper mPreferenceHelper;
-    @Mock private HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
 
     private MigrationBroadcastScheduler mMigrationBroadcastScheduler;
-
-    private static final int MIGRATION_STATE_ALLOWED_COUNT_MOCK_VALUE =
-            MIGRATION_STATE_ALLOWED_COUNT_DEFAULT_FLAG_VALUE;
-    private static final int MIGRATION_STATE_IN_PROGRESS_COUNT_MOCK_VALUE =
-            MIGRATION_STATE_IN_PROGRESS_COUNT_DEFAULT_FLAG_VALUE;
-
-    private static final Duration NON_IDLE_STATE_TIMEOUT_MOCK_VALUE =
-            Duration.ofDays(
-                    HealthConnectDeviceConfigManager
-                            .NON_IDLE_STATE_TIMEOUT_DAYS_DEFAULT_FLAG_VALUE);
 
     private final long mMinPeriodMillis = JobInfo.getMinPeriodMillis();
     private final long mIntervalGreaterThanMinPeriod = mMinPeriodMillis + 1000;
@@ -98,21 +83,9 @@ public class MigrationBroadcastSchedulingTest {
         when(mContext.getSystemService(JobScheduler.class)).thenReturn(mJobScheduler);
         when(mContext.getPackageName()).thenReturn("packageName");
         when(mJobScheduler.forNamespace(MIGRATION_BROADCAST_NAMESPACE)).thenReturn(mJobScheduler);
-        when(HealthConnectDeviceConfigManager.getInitialisedInstance())
-                .thenReturn(mHealthConnectDeviceConfigManager);
-        when(mHealthConnectDeviceConfigManager.getMigrationStateAllowedCount())
-                .thenReturn(MIGRATION_STATE_ALLOWED_COUNT_MOCK_VALUE);
-        when(mHealthConnectDeviceConfigManager.getMigrationStateInProgressCount())
-                .thenReturn(MIGRATION_STATE_IN_PROGRESS_COUNT_MOCK_VALUE);
-        when(mHealthConnectDeviceConfigManager.getNonIdleStateTimeoutPeriod())
-                .thenReturn(NON_IDLE_STATE_TIMEOUT_MOCK_VALUE);
-        ExtendedMockito.doReturn(mMigrationStateManager)
-                .when(MigrationStateManager::getInitialisedInstance);
 
         mMigrationBroadcastScheduler =
-                Mockito.spy(
-                        new MigrationBroadcastScheduler(
-                                0, mHealthConnectDeviceConfigManager, mMigrationStateManager));
+                Mockito.spy(new MigrationBroadcastScheduler(UserHandle.getUserHandleForUid(0)));
     }
 
     @Test
@@ -128,14 +101,14 @@ public class MigrationBroadcastSchedulingTest {
                                 })
                 .when(() -> HealthConnectThreadScheduler.scheduleInternalTask(any()));
 
-        MigrationStateManager.resetInitializedInstanceForTest();
         MigrationStateManager migrationStateManager =
-                MigrationStateManager.initializeInstance(
-                        0, mHealthConnectDeviceConfigManager, mPreferenceHelper);
-        migrationStateManager.setMigrationBroadcastScheduler(mMigrationBroadcastScheduler);
+                new MigrationStateManager(
+                        UserHandle.getUserHandleForUid(0),
+                        mPreferenceHelper,
+                        mMigrationBroadcastScheduler);
         migrationStateManager.updateMigrationState(mContext, MIGRATION_STATE_IN_PROGRESS);
 
-        verify(mMigrationBroadcastScheduler, times(1)).scheduleNewJobs(any());
+        verify(mMigrationBroadcastScheduler, times(1)).scheduleNewJobs(any(), any());
     }
 
     @Test
@@ -145,7 +118,7 @@ public class MigrationBroadcastSchedulingTest {
         when(mMigrationBroadcastScheduler.getRequiredInterval(eq(MIGRATION_STATE_IN_PROGRESS)))
                 .thenReturn(mIntervalGreaterThanMinPeriod);
 
-        mMigrationBroadcastScheduler.scheduleNewJobs(mContext);
+        mMigrationBroadcastScheduler.scheduleNewJobs(mContext, mMigrationStateManager);
 
         verifyPeriodicJobSchedulerInvocation(mIntervalGreaterThanMinPeriod, times(1));
     }
@@ -156,7 +129,7 @@ public class MigrationBroadcastSchedulingTest {
         when(mMigrationBroadcastScheduler.getRequiredInterval(eq(MIGRATION_STATE_IN_PROGRESS)))
                 .thenReturn(mMinPeriodMillis);
 
-        mMigrationBroadcastScheduler.scheduleNewJobs(mContext);
+        mMigrationBroadcastScheduler.scheduleNewJobs(mContext, mMigrationStateManager);
 
         verifyPeriodicJobSchedulerInvocation(mMinPeriodMillis, times(1));
     }
@@ -168,7 +141,7 @@ public class MigrationBroadcastSchedulingTest {
                 .thenReturn(mIntervalLessThanMinPeriod);
         when(mJobScheduler.schedule(any(JobInfo.class))).thenReturn(JobScheduler.RESULT_SUCCESS);
 
-        mMigrationBroadcastScheduler.scheduleNewJobs(mContext);
+        mMigrationBroadcastScheduler.scheduleNewJobs(mContext, mMigrationStateManager);
 
         verifyPeriodicJobSchedulerInvocation(mMinPeriodMillis, times(1));
     }
@@ -179,7 +152,7 @@ public class MigrationBroadcastSchedulingTest {
         when(mMigrationBroadcastScheduler.getRequiredInterval(eq(MIGRATION_STATE_ALLOWED)))
                 .thenReturn(mIntervalGreaterThanMinPeriod);
 
-        mMigrationBroadcastScheduler.scheduleNewJobs(mContext);
+        mMigrationBroadcastScheduler.scheduleNewJobs(mContext, mMigrationStateManager);
 
         verifyPeriodicJobSchedulerInvocation(mIntervalGreaterThanMinPeriod, times(1));
     }
@@ -192,7 +165,7 @@ public class MigrationBroadcastSchedulingTest {
         when(mMigrationBroadcastScheduler.getRequiredInterval(eq(MIGRATION_STATE_ALLOWED)))
                 .thenReturn(mIntervalGreaterThanMinPeriod);
 
-        mMigrationBroadcastScheduler.scheduleNewJobs(mContext);
+        mMigrationBroadcastScheduler.scheduleNewJobs(mContext, mMigrationStateManager);
 
         verifyPeriodicJobSchedulerInvocation(mIntervalGreaterThanMinPeriod, times(0));
     }
@@ -203,21 +176,19 @@ public class MigrationBroadcastSchedulingTest {
         when(mMigrationBroadcastScheduler.getRequiredInterval(eq(MIGRATION_STATE_ALLOWED)))
                 .thenReturn(mMinPeriodMillis);
 
-        mMigrationBroadcastScheduler.scheduleNewJobs(mContext);
+        mMigrationBroadcastScheduler.scheduleNewJobs(mContext, mMigrationStateManager);
 
         verifyPeriodicJobSchedulerInvocation(mMinPeriodMillis, times(1));
     }
 
     @Test
     public void testScheduling_migrationAllowedIntervalLessThanMinimum_periodicJobScheduled() {
-        ExtendedMockito.doReturn(mMigrationStateManager)
-                .when(MigrationStateManager::getInitialisedInstance);
         when(mMigrationStateManager.getMigrationState()).thenReturn(MIGRATION_STATE_ALLOWED);
         when(mMigrationBroadcastScheduler.getRequiredInterval(eq(MIGRATION_STATE_ALLOWED)))
                 .thenReturn(mIntervalLessThanMinPeriod);
         when(mJobScheduler.schedule(any(JobInfo.class))).thenReturn(JobScheduler.RESULT_SUCCESS);
 
-        mMigrationBroadcastScheduler.scheduleNewJobs(mContext);
+        mMigrationBroadcastScheduler.scheduleNewJobs(mContext, mMigrationStateManager);
 
         verifyPeriodicJobSchedulerInvocation(mMinPeriodMillis, times(1));
     }
@@ -230,10 +201,10 @@ public class MigrationBroadcastSchedulingTest {
                 .thenReturn(mIntervalGreaterThanMinPeriod);
         when(mJobScheduler.schedule(any(JobInfo.class))).thenReturn(JobScheduler.RESULT_SUCCESS);
 
-        mMigrationBroadcastScheduler.scheduleNewJobs(mContext);
+        mMigrationBroadcastScheduler.scheduleNewJobs(mContext, mMigrationStateManager);
         verify(mJobScheduler, times(1)).cancelAll();
         verifyPeriodicJobSchedulerInvocation(mIntervalGreaterThanMinPeriod, times(1));
-        mMigrationBroadcastScheduler.scheduleNewJobs(mContext);
+        mMigrationBroadcastScheduler.scheduleNewJobs(mContext, mMigrationStateManager);
         verify(mJobScheduler, times(2)).cancelAll();
         verifyPeriodicJobSchedulerInvocation(mIntervalGreaterThanMinPeriod, times(2));
     }
@@ -246,10 +217,10 @@ public class MigrationBroadcastSchedulingTest {
                 .thenReturn(mMinPeriodMillis);
         when(mJobScheduler.schedule(any(JobInfo.class))).thenReturn(JobScheduler.RESULT_SUCCESS);
 
-        mMigrationBroadcastScheduler.scheduleNewJobs(mContext);
+        mMigrationBroadcastScheduler.scheduleNewJobs(mContext, mMigrationStateManager);
         verify(mJobScheduler, times(1)).cancelAll();
         verifyPeriodicJobSchedulerInvocation(mMinPeriodMillis, times(1));
-        mMigrationBroadcastScheduler.scheduleNewJobs(mContext);
+        mMigrationBroadcastScheduler.scheduleNewJobs(mContext, mMigrationStateManager);
         verify(mJobScheduler, times(2)).cancelAll();
         verifyPeriodicJobSchedulerInvocation(mMinPeriodMillis, times(2));
     }
@@ -260,12 +231,12 @@ public class MigrationBroadcastSchedulingTest {
         when(mMigrationBroadcastScheduler.getRequiredInterval(eq(MIGRATION_STATE_ALLOWED)))
                 .thenReturn(mIntervalGreaterThanMinPeriod);
         when(mJobScheduler.schedule(any(JobInfo.class))).thenReturn(JobScheduler.RESULT_SUCCESS);
-        mMigrationBroadcastScheduler.scheduleNewJobs(mContext);
+        mMigrationBroadcastScheduler.scheduleNewJobs(mContext, mMigrationStateManager);
         verify(mJobScheduler, times(1)).cancelAll();
         verifyPeriodicJobSchedulerInvocation(mIntervalGreaterThanMinPeriod, times(1));
         when(mMigrationBroadcastScheduler.getRequiredInterval(eq(MIGRATION_STATE_ALLOWED)))
                 .thenReturn(mMinPeriodMillis);
-        mMigrationBroadcastScheduler.scheduleNewJobs(mContext);
+        mMigrationBroadcastScheduler.scheduleNewJobs(mContext, mMigrationStateManager);
         verify(mJobScheduler, times(2)).cancelAll();
         verifyPeriodicJobSchedulerInvocation(mMinPeriodMillis, times(1));
     }
@@ -275,7 +246,7 @@ public class MigrationBroadcastSchedulingTest {
         when(mMigrationStateManager.getMigrationState()).thenReturn(MIGRATION_STATE_ALLOWED);
         when(mJobScheduler.schedule(any(JobInfo.class))).thenReturn(JobScheduler.RESULT_FAILURE);
 
-        mMigrationBroadcastScheduler.scheduleNewJobs(mContext);
+        mMigrationBroadcastScheduler.scheduleNewJobs(mContext, mMigrationStateManager);
 
         verify(mJobScheduler, atMost(1))
                 .schedule(

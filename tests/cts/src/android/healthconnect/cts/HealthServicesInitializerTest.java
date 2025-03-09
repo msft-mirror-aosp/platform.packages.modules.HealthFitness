@@ -16,16 +16,23 @@
 
 package android.healthconnect.cts;
 
-import static android.healthconnect.cts.utils.TestUtils.isHardwareSupported;
+import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
 
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeTrue;
 
 import android.content.Context;
+import android.health.connect.HealthPermissions;
 import android.health.connect.HealthServicesInitializer;
+import android.healthconnect.cts.utils.TestUtils;
 
 import androidx.test.platform.app.InstrumentationRegistry;
+
+import com.android.compatibility.common.util.FeatureUtil;
+import com.android.healthfitness.flags.Flags;
 
 import org.junit.Test;
 
@@ -37,27 +44,65 @@ public class HealthServicesInitializerTest {
      */
     @Test
     public void testRegisterServiceThrowsException() {
-        Context context = InstrumentationRegistry.getInstrumentation().getContext();
-        // skip the test if the hardware not supported
-        if (!isHardwareSupported(context)) {
-            return;
-        }
+        assumeTrue(TestUtils.isHealthConnectFullySupported());
         assertThrows(
                 IllegalStateException.class, HealthServicesInitializer::registerServiceWrappers);
     }
 
     /**
-     * context.getSystemService(Context.HEALTHCONNECT_SERVICE) returns the services on supported
-     * devices.
+     * context.getSystemService(Context.HEALTHCONNECT_SERVICE) returns null on
+     * unsupported devices.
      */
     @Test
-    public void testHealthServiceRegistered() {
+    public void testHealthServiceRegisteredUnsupportedHardwareReturnsNull() {
+        assumeFalse(TestUtils.isHealthConnectFullySupported());
         Context context = InstrumentationRegistry.getInstrumentation().getContext();
         Object service = context.getSystemService(Context.HEALTHCONNECT_SERVICE);
-        if (isHardwareSupported(context)) {
-            assertThat(service).isNotNull();
-        } else {
-            assertThat(service).isNull();
-        }
+        assertThat(service).isNull();
+    }
+
+    /**
+     * context.getSystemService(Context.HEALTHCONNECT_SERVICE) returns the
+     * service on supported (non-watch) devices.
+     */
+    @Test
+    public void testHealthServiceRegisteredNonWatchSupportedHardwareReturnsNonNull() {
+        assumeTrue(TestUtils.isHealthConnectFullySupported());
+        assumeFalse(FeatureUtil.isWatch());
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
+        Object service = context.getSystemService(Context.HEALTHCONNECT_SERVICE);
+        assertThat(service).isNotNull();
+    }
+
+    /**
+     * context.getSystemService(Context.HEALTHCONNECT_SERVICE) returns null on
+     * watches when the package is not allowed (because it doesn't have the
+     * MANAGE_HEALTH_PERMISSIONS permission).
+     */
+    @Test
+    public void testHealthServiceRegisteredWatchUnsupportedPackageReturnsNull() {
+        assumeTrue(TestUtils.isHealthConnectFullySupported());
+        assumeTrue(FeatureUtil.isWatch());
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
+        Object service = context.getSystemService(Context.HEALTHCONNECT_SERVICE);
+        assertThat(service).isNull();
+    }
+
+    /**
+     * context.getSystemService(Context.HEALTHCONNECT_SERVICE) returns the services on watches to
+     * apps with the MANAGE_HEALTH_PERMISSIONS permission.
+     */
+    @Test
+    public void testHealthServiceRegisteredWatchPackageWithPermissionReturnsNonNull()
+            throws Exception {
+        assumeTrue(TestUtils.isHealthConnectFullySupported());
+        assumeTrue(FeatureUtil.isWatch());
+        runWithShellPermissionIdentity(
+                () -> {
+                    Context context = InstrumentationRegistry.getInstrumentation().getContext();
+                    Object service = context.getSystemService(Context.HEALTHCONNECT_SERVICE);
+                    assertThat(service).isNotNull();
+                },
+                HealthPermissions.MANAGE_HEALTH_PERMISSIONS);
     }
 }

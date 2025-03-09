@@ -26,7 +26,7 @@ import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
-/** Use case to delete all records from the given permission type (e.g. Steps). */
+/** Use case to delete all fitness records from the given permission type (e.g. Steps). */
 @Singleton
 class DeleteFitnessPermissionTypesUseCase
 @Inject

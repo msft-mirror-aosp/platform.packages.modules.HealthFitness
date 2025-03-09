@@ -18,23 +18,25 @@ package android.healthconnect.cts.ui.permissions
 
 import android.content.pm.PackageManager
 import android.health.connect.HealthPermissions.READ_HEIGHT
+import android.health.connect.HealthPermissions.READ_MINDFULNESS
 import android.health.connect.HealthPermissions.WRITE_BODY_FAT
 import android.health.connect.HealthPermissions.WRITE_HEIGHT
+import android.health.connect.HealthPermissions.WRITE_STEPS
 import android.healthconnect.cts.lib.ActivityLauncher.launchMainActivity
 import android.healthconnect.cts.lib.UiTestUtils.TEST_APP_PACKAGE_NAME
-import android.healthconnect.cts.lib.UiTestUtils.clickOnContentDescription
+import android.healthconnect.cts.lib.UiTestUtils.clickOnDescAndWaitForNewWindow
 import android.healthconnect.cts.lib.UiTestUtils.clickOnText
+import android.healthconnect.cts.lib.UiTestUtils.clickOnTextAndWaitForNewWindow
+import android.healthconnect.cts.lib.UiTestUtils.findText
+import android.healthconnect.cts.lib.UiTestUtils.findTextAndClick
 import android.healthconnect.cts.lib.UiTestUtils.grantPermissionViaPackageManager
 import android.healthconnect.cts.lib.UiTestUtils.navigateBackToHomeScreen
 import android.healthconnect.cts.lib.UiTestUtils.revokePermissionViaPackageManager
-import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
-import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
+import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndFindText
 import android.healthconnect.cts.ui.HealthConnectBaseTest
 import android.platform.test.annotations.RequiresFlagsDisabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
-import androidx.test.uiautomator.By
-import com.android.healthfitness.flags.Flags.FLAG_NEW_INFORMATION_ARCHITECTURE
 import com.google.common.truth.Truth.assertThat
 import org.junit.After
 import org.junit.Rule
@@ -49,23 +51,7 @@ class ManageAppHealthPermissionUITest : HealthConnectBaseTest() {
         context.launchMainActivity {
             navigateToManageAppPermissions()
 
-            waitDisplayed(By.text("Height"))
-        }
-    }
-
-    @Test
-    @RequiresFlagsDisabled(FLAG_NEW_INFORMATION_ARCHITECTURE)
-    fun showsAdditionalPermissions() {
-        context.launchMainActivity {
-            navigateToManageAppPermissions()
-
-            scrollDownTo(By.text("Delete app data"))
-            waitDisplayed(By.text("Delete app data"))
-            scrollDownTo(By.text("Additional access"))
-            waitDisplayed(By.text("Additional access"))
-            clickOnText("Additional access")
-            waitDisplayed(By.text("Access past data"))
-            waitDisplayed(By.text("Access data in the background"))
+            scrollDownToAndFindText("Height")
         }
     }
 
@@ -75,8 +61,9 @@ class ManageAppHealthPermissionUITest : HealthConnectBaseTest() {
         context.launchMainActivity {
             navigateToManageAppPermissions()
 
-            clickOnText("Body fat")
-            clickOnContentDescription("Navigate up")
+            scrollDownToAndFindText("Body fat")
+            findTextAndClick("Body fat")
+            clickOnDescAndWaitForNewWindow("Navigate up")
 
             assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, WRITE_BODY_FAT)
         }
@@ -89,8 +76,9 @@ class ManageAppHealthPermissionUITest : HealthConnectBaseTest() {
             navigateToManageAppPermissions()
             assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, WRITE_BODY_FAT)
 
-            clickOnText("Body fat")
-            clickOnContentDescription("Navigate up")
+            scrollDownToAndFindText("Body fat")
+            findTextAndClick("Body fat")
+            clickOnDescAndWaitForNewWindow("Navigate up")
 
             assertPermNotGrantedForApp(TEST_APP_PACKAGE_NAME, WRITE_BODY_FAT)
         }
@@ -99,33 +87,25 @@ class ManageAppHealthPermissionUITest : HealthConnectBaseTest() {
     @Test
     fun revokeAllPermissions_revokesAllAppPermissions() {
         grantPermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, READ_HEIGHT)
+        grantPermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, READ_MINDFULNESS)
         grantPermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, WRITE_HEIGHT)
         grantPermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, WRITE_BODY_FAT)
+        grantPermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, WRITE_STEPS)
 
         context.launchMainActivity {
             navigateToManageAppPermissions()
-            clickOnText("Allow all")
-            waitDisplayed(By.text("Remove all permissions?"))
+            scrollDownToAndFindText("Allow all")
+            findTextAndClick("Allow all")
+            findText("Remove all permissions?")
+            findText("Also delete Health Connect cts test app data from Health Connect")
             clickOnText("Remove all")
-            clickOnContentDescription("Navigate up")
+            clickOnDescAndWaitForNewWindow("Navigate up")
 
             assertPermNotGrantedForApp(TEST_APP_PACKAGE_NAME, READ_HEIGHT)
+            assertPermNotGrantedForApp(TEST_APP_PACKAGE_NAME, READ_MINDFULNESS)
             assertPermNotGrantedForApp(TEST_APP_PACKAGE_NAME, WRITE_HEIGHT)
-        }
-    }
-
-    @Test
-    fun revokeAllPermissions_allowsUserToDeleteAppData() {
-        grantPermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, READ_HEIGHT)
-        grantPermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, WRITE_HEIGHT)
-        grantPermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, WRITE_BODY_FAT)
-        context.launchMainActivity {
-            navigateToManageAppPermissions()
-            clickOnText("Allow all")
-            waitDisplayed(By.text("Remove all permissions?"))
-            waitDisplayed(
-                By.text("Also delete Health Connect cts test app data from Health Connect")
-            )
+            assertPermNotGrantedForApp(TEST_APP_PACKAGE_NAME, WRITE_BODY_FAT)
+            assertPermNotGrantedForApp(TEST_APP_PACKAGE_NAME, WRITE_STEPS)
         }
     }
 
@@ -142,10 +122,12 @@ class ManageAppHealthPermissionUITest : HealthConnectBaseTest() {
     }
 
     private fun navigateToManageAppPermissions() {
-        clickOnText("App permissions")
-        clickOnText("Health Connect cts test app")
-        waitDisplayed(By.text("Health Connect cts test app"))
-        waitDisplayed(By.text("Allowed to read"))
+        scrollDownToAndFindText("App permissions")
+        clickOnTextAndWaitForNewWindow("App permissions")
+        scrollDownToAndFindText("Health Connect cts test app")
+        clickOnTextAndWaitForNewWindow("Health Connect cts test app")
+        scrollDownToAndFindText("Health Connect cts test app")
+        scrollDownToAndFindText("Allowed to read")
     }
 
     @After

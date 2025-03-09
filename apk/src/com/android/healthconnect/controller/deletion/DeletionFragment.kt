@@ -108,7 +108,7 @@ class DeletionFragment : Hilt_DeletionFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         return inflater.inflate(R.layout.fragment_deletion, container, false)
     }
@@ -145,8 +145,10 @@ class DeletionFragment : Hilt_DeletionFragment() {
     }
 
     private fun showConfirmationDialog() {
-        if (viewModel.deletionParameters.value?.deletionType is DeletionType.DeletionTypeAppData &&
-            viewModel.deletionParameters.value?.chosenRange == ChosenRange.DELETE_RANGE_ALL_DATA) {
+        if (
+            viewModel.deletionParameters.value?.deletionType is DeletionType.DeletionTypeAppData &&
+                viewModel.deletionParameters.value?.chosenRange == ChosenRange.DELETE_RANGE_ALL_DATA
+        ) {
             showAppDeleteConfirmationDialog()
         } else {
             DeletionConfirmationDialogFragment()

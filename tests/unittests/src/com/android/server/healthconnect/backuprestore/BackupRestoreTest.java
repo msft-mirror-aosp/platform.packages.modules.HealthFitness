@@ -24,6 +24,7 @@ import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_FAILED;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_RETRY;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_STARTED;
 
+import static com.android.compatibility.common.util.SystemUtil.eventually;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.BackupRestoreJobService.BACKUP_RESTORE_JOBS_NAMESPACE;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.BackupRestoreJobService.EXTRA_JOB_NAME_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.DATA_DOWNLOAD_STATE_KEY;
@@ -56,7 +57,6 @@ import static com.google.common.truth.Truth.assertWithMessage;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.timeout;
@@ -71,23 +71,27 @@ import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.restore.BackupFileNamesSet;
 import android.health.connect.restore.StageRemoteDataRequest;
-import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.os.PersistableBundle;
 import android.os.UserHandle;
+import android.platform.test.annotations.DisableFlags;
+import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.ArrayMap;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
+import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.EnvironmentFixture;
 import com.android.server.healthconnect.FakePreferenceHelper;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.GrantTimeXmlHelper;
+import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.permission.UserGrantTimeState;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
@@ -117,10 +121,14 @@ public class BackupRestoreTest {
     private static final String DATABASE_NAME = "healthconnect.db";
     private static final String GRANT_TIME_FILE_NAME = "health-permissions-first-grant-times.xml";
 
-    @Rule
+    @Rule(order = 1)
+    public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+
+    private final EnvironmentFixture mEnvironmentFixture = new EnvironmentFixture();
+
+    @Rule(order = 2)
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(Environment.class)
                     .mockStatic(PreferenceHelper.class)
                     .mockStatic(TransactionManager.class)
                     .mockStatic(BackupRestore.BackupRestoreJobService.class)
@@ -128,12 +136,14 @@ public class BackupRestoreTest {
                     .mockStatic(SQLiteDatabase.class)
                     .spyStatic(GrantTimeXmlHelper.class)
                     .setStrictness(Strictness.LENIENT)
+                    .addStaticMockFixtures(() -> mEnvironmentFixture)
                     .build();
 
     @Mock Context mServiceContext;
     @Mock private TransactionManager mTransactionManager;
-    @Mock private AppInfoHelper mAppInfoHelper;
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
+    // TODO(b/373322447): Remove the mock HealthPermissionIntentAppsTracker
+    @Mock private HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
     @Mock private MigrationStateManager mMockMigrationStateManager;
     @Mock private Context mContext;
     @Mock private JobScheduler mJobScheduler;
@@ -141,17 +151,14 @@ public class BackupRestoreTest {
     private BackupRestore mBackupRestore;
     private final PreferenceHelper mFakePreferenceHelper = new FakePreferenceHelper();
     private UserHandle mUserHandle = UserHandle.of(UserHandle.myUserId());
-    private File mMockDataDirectory;
     private File mMockBackedDataDirectory;
     private File mMockStagedDataDirectory;
 
     @Before
     public void setUp() throws Exception {
         mContext = InstrumentationRegistry.getInstrumentation().getContext();
-        mMockDataDirectory = mContext.getDir("mock_data", Context.MODE_PRIVATE);
         mMockBackedDataDirectory = mContext.getDir("mock_backed_data", Context.MODE_PRIVATE);
         mMockStagedDataDirectory = mContext.getDir("mock_staged_data", Context.MODE_PRIVATE);
-        when(Environment.getDataDirectory()).thenReturn(mMockDataDirectory);
 
         when(mJobScheduler.forNamespace(BACKUP_RESTORE_JOBS_NAMESPACE)).thenReturn(mJobScheduler);
         when(mServiceContext.getUser()).thenReturn(mUserHandle);
@@ -162,8 +169,9 @@ public class BackupRestoreTest {
                 HealthConnectInjectorImpl.newBuilderForTest(mContext)
                         .setPreferenceHelper(mFakePreferenceHelper)
                         .setMigrationStateManager(mMockMigrationStateManager)
+                        .setFirstGrantTimeManager(mFirstGrantTimeManager)
+                        .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .setTransactionManager(mTransactionManager)
-                        .setAppInfoHelper(mAppInfoHelper)
                         .build();
 
         mBackupRestore =
@@ -180,11 +188,9 @@ public class BackupRestoreTest {
 
     @After
     public void tearDown() {
-        FilesUtil.deleteDir(mMockDataDirectory);
         FilesUtil.deleteDir(mMockBackedDataDirectory);
         FilesUtil.deleteDir(mMockStagedDataDirectory);
         mFakePreferenceHelper.clearCache();
-        clearInvocations(mTransactionManager);
     }
 
     @Test
@@ -208,8 +214,10 @@ public class BackupRestoreTest {
     }
 
     @Test
+    @DisableFlags({Flags.FLAG_PERSONAL_HEALTH_RECORD_DISABLE_D2D})
     public void testGetAllBackupData_forDeviceToDevice_copiesAllData() throws Exception {
-        File dbFileToBackup = createAndGetNonEmptyFile(mMockDataDirectory, DATABASE_NAME);
+        File dbFileToBackup =
+                createAndGetNonEmptyFile(mEnvironmentFixture.getDataDirectory(), DATABASE_NAME);
         File dbFileBacked = createAndGetEmptyFile(mMockBackedDataDirectory, STAGED_DATABASE_NAME);
         File grantTimeFileBacked =
                 createAndGetEmptyFile(mMockBackedDataDirectory, GRANT_TIME_FILE_NAME);
@@ -530,9 +538,11 @@ public class BackupRestoreTest {
         when(SQLiteDatabase.openDatabase(any(), any())).thenReturn(mockDb);
 
         mBackupRestore.scheduleAllJobs();
-        Thread.sleep(2000);
-        assertThat(mFakePreferenceHelper.getPreference(DATA_RESTORE_STATE_KEY))
-                .isEqualTo(String.valueOf(INTERNAL_RESTORE_STATE_MERGING_DONE));
+
+        eventually(
+                () ->
+                        assertThat(mFakePreferenceHelper.getPreference(DATA_RESTORE_STATE_KEY))
+                                .isEqualTo(String.valueOf(INTERNAL_RESTORE_STATE_MERGING_DONE)));
     }
 
     @Test

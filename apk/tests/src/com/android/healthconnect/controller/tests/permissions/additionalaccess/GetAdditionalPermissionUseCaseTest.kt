@@ -22,8 +22,6 @@ import android.health.connect.HealthPermissions.READ_EXERCISE_ROUTES
 import com.android.healthconnect.controller.permissions.additionalaccess.GetAdditionalPermissionUseCase
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
-import com.android.healthconnect.controller.tests.utils.safeEq
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -33,7 +31,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class GetAdditionalPermissionUseCaseTest {
@@ -56,7 +56,7 @@ class GetAdditionalPermissionUseCaseTest {
     fun execute_callsGetHealthPermissions() {
         useCase.invoke(TEST_APP_PACKAGE_NAME)
 
-        verify(healthPermissionReader).getAdditionalPermissions(safeEq(TEST_APP_PACKAGE_NAME))
+        verify(healthPermissionReader).getAdditionalPermissions(eq(TEST_APP_PACKAGE_NAME))
     }
 
     @Test

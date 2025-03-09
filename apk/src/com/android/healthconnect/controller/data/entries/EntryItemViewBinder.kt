@@ -23,7 +23,7 @@ import androidx.core.view.isVisible
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedDataEntry
 import com.android.healthconnect.controller.shared.recyclerview.DeletionViewBinder
-import com.android.healthconnect.controller.utils.logging.DataEntriesElement
+import com.android.healthconnect.controller.utils.logging.AllEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
 import dagger.hilt.android.EntryPointAccessors
@@ -56,20 +56,20 @@ class EntryItemViewBinder(private val onSelectEntryListener: OnSelectEntryListen
         val container = view.findViewById<LinearLayout>(R.id.item_data_entry_container)
         val header = view.findViewById<TextView>(R.id.item_data_entry_header)
         val title = view.findViewById<TextView>(R.id.item_data_entry_title)
-        logger.logImpression(DataEntriesElement.DATA_ENTRY_VIEW)
-        logger.logImpression(DataEntriesElement.DATA_ENTRY_DELETE_BUTTON)
+        logger.logImpression(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
         val checkBox = view.findViewById<CheckBox>(R.id.item_checkbox_button)
-
-        title.text = data.title
-        title.contentDescription = data.titleA11y
-
-        header.text = data.header
-        header.contentDescription = data.headerA11y
 
         if (isDeletionState) {
             container.setOnClickListener {
                 onSelectEntryListener?.onSelectEntry(data.uuid, data.dataType, index)
                 checkBox.toggle()
+                title.contentDescription =
+                    getUpdatedContentDescription(
+                        title.resources,
+                        data.titleA11y,
+                        isDeletionState,
+                        checkBox.isChecked,
+                    )
             }
         }
 
@@ -77,7 +77,26 @@ class EntryItemViewBinder(private val onSelectEntryListener: OnSelectEntryListen
         checkBox.isChecked = isChecked
         checkBox.setOnClickListener {
             onSelectEntryListener?.onSelectEntry(data.uuid, data.dataType, index)
+            title.contentDescription =
+                getUpdatedContentDescription(
+                    title.resources,
+                    data.titleA11y,
+                    isDeletionState,
+                    checkBox.isChecked,
+                )
         }
         checkBox.tag = if (isDeletionState) "checkbox" else ""
+
+        title.text = data.title
+        title.contentDescription =
+            getUpdatedContentDescription(
+                title.resources,
+                data.titleA11y,
+                isDeletionState,
+                isChecked,
+            )
+
+        header.text = data.header
+        header.contentDescription = data.headerA11y
     }
 }

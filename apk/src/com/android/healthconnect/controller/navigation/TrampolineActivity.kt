@@ -29,6 +29,8 @@ import com.android.healthconnect.controller.MainActivity
 import com.android.healthconnect.controller.data.DataManagementActivity
 import com.android.healthconnect.controller.onboarding.OnboardingActivity
 import com.android.healthconnect.controller.onboarding.OnboardingActivity.Companion.shouldRedirectToOnboardingActivity
+import com.android.healthconnect.controller.permissions.app.wear.WearViewAppInfoPermissionsActivity
+import com.android.healthconnect.controller.permissions.connectedapps.wear.WearSettingsPermissionActivity
 import com.android.healthconnect.controller.permissions.shared.SettingsActivity
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.activity.EmbeddingUtils.maybeRedirectIntoTwoPaneSettings
@@ -52,24 +54,32 @@ class TrampolineActivity : Hilt_TrampolineActivity() {
         super.onCreate(savedInstanceState)
         // This flag ensures a non system app cannot show an overlay on Health Connect. b/313425281
         window.addSystemFlags(
-            WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
+            WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS
+        )
         // Handles unsupported devices and user profiles.
         if (!deviceInfoUtils.isHealthConnectAvailable(this)) {
             Log.e(TAG, "Health connect is not available for this user or hardware, finishing!")
             finish()
             return
         }
+        val isOnWatch = deviceInfoUtils.isOnWatch(this)
 
         // Handles large screen support in settings.
-        if (maybeRedirectIntoTwoPaneSettings(this)) {
+        if (!isOnWatch && maybeRedirectIntoTwoPaneSettings(this)) {
             finish()
             return
         }
 
-        val targetIntent = getTargetIntent()
+        val targetIntent =
+            if (isOnWatch) {
+                getWearTargetIntent()
+            } else {
+                getHandheldTargetIntent()
+            }
 
         // Handles showing Health Connect Onboarding.
-        if (shouldRedirectToOnboardingActivity(this)) {
+        // Do not show onboarding UI on watch.
+        if (!isOnWatch && shouldRedirectToOnboardingActivity(this)) {
             startActivity(OnboardingActivity.createIntent(this, targetIntent))
             finish()
             return
@@ -79,7 +89,7 @@ class TrampolineActivity : Hilt_TrampolineActivity() {
         finish()
     }
 
-    private fun getTargetIntent(): Intent {
+    private fun getHandheldTargetIntent(): Intent {
         return when (intent.action) {
             HealthConnectManager.ACTION_HEALTH_HOME_SETTINGS -> {
                 Intent(this, MainActivity::class.java)
@@ -100,6 +110,25 @@ class TrampolineActivity : Hilt_TrampolineActivity() {
                 // Default to open Health Connect MainActivity
                 Intent(this, MainActivity::class.java)
             }
+        }
+    }
+
+    // Returns an intent to handle Wear request.
+    private fun getWearTargetIntent(): Intent {
+        if (intent.action != HealthConnectManager.ACTION_MANAGE_HEALTH_PERMISSIONS) {
+            Log.e(TAG, "getWearTargetIntent() has unexpected intent action: " + intent.action)
+            // If unexpected intent, fall default to WearPermissionManagerActivity.
+        }
+        val extraPackageName: String? = intent.getStringExtra(EXTRA_PACKAGE_NAME)
+
+        return if (extraPackageName != null) {
+            // AppInfo page.
+            Intent(this, WearViewAppInfoPermissionsActivity::class.java).apply {
+                putExtra(EXTRA_PACKAGE_NAME, extraPackageName)
+            }
+        } else {
+            // PermissionManager page.
+            Intent(this, WearSettingsPermissionActivity::class.java)
         }
     }
 }

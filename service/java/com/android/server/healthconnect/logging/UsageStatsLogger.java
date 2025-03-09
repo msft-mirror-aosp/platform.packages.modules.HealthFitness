@@ -16,14 +16,16 @@
 
 package com.android.server.healthconnect.logging;
 
-import android.content.Context;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PERMISSION_STATS;
+
+import static com.android.healthfitness.flags.Flags.personalHealthRecordTelemetry;
+
 import android.health.HealthFitnessStatsLog;
-import android.os.UserHandle;
 
-import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
+import com.android.healthfitness.flags.Flags;
 
-import java.util.Objects;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Logs Health Connect usage stats.
@@ -33,18 +35,11 @@ import java.util.Objects;
 final class UsageStatsLogger {
 
     /** Write Health Connect usage stats to statsd. */
-    static void log(
-            Context context,
-            UserHandle userHandle,
-            PreferenceHelper preferenceHelper,
-            AccessLogsHelper accessLogsHelper) {
-        Objects.requireNonNull(userHandle);
-        Objects.requireNonNull(context);
-
-        UsageStatsCollector usageStatsCollector =
-                new UsageStatsCollector(context, userHandle, preferenceHelper, accessLogsHelper);
+    static void log(UsageStatsCollector usageStatsCollector) {
         usageStatsCollector.upsertLastAccessLogTimeStamp();
-        int numberOfConnectedApps = usageStatsCollector.getPackagesHoldingHealthPermissions();
+        Map<String, List<String>> packageNameToPermissionsGranted =
+                usageStatsCollector.getPackagesHoldingHealthPermissions();
+        int numberOfConnectedApps = packageNameToPermissionsGranted.size();
         int numberOfAvailableApps =
                 usageStatsCollector.getNumberOfAppsCompatibleWithHealthConnect();
         boolean isUserMonthlyActive = usageStatsCollector.isUserMonthlyActive();
@@ -57,6 +52,8 @@ final class UsageStatsLogger {
         }
 
         logExportImportStats(usageStatsCollector);
+        logPermissionStats(packageNameToPermissionsGranted);
+        logPhrStats(usageStatsCollector);
 
         HealthFitnessStatsLog.write(
                 HealthFitnessStatsLog.HEALTH_CONNECT_USAGE_STATS,
@@ -65,9 +62,53 @@ final class UsageStatsLogger {
                 isUserMonthlyActive);
     }
 
+    private static void logPhrStats(UsageStatsCollector usageStatsCollector) {
+        if (!personalHealthRecordTelemetry()) {
+            return;
+        }
+
+        int medicalDataSourcesCount = usageStatsCollector.getMedicalDataSourcesCount();
+        int medicalResourcesCount = usageStatsCollector.getMedicalResourcesCount();
+        HealthFitnessStatsLog.write(
+                HealthFitnessStatsLog.HEALTH_CONNECT_PHR_USAGE_STATS,
+                medicalDataSourcesCount,
+                medicalResourcesCount,
+                usageStatsCollector.isPhrMonthlyActiveUser(),
+                (int) usageStatsCollector.getGrantedPhrAppsCount());
+    }
+
     static void logExportImportStats(UsageStatsCollector usageStatsCollector) {
         int exportFrequency = usageStatsCollector.getExportFrequency();
         HealthFitnessStatsLog.write(
                 HealthFitnessStatsLog.HEALTH_CONNECT_EXPORT_IMPORT_STATS_REPORTED, exportFrequency);
+    }
+
+    static void logPermissionStats(Map<String, List<String>> packageNameToPermissionsGranted) {
+
+        if (!Flags.permissionMetrics()) {
+            return;
+        }
+
+        for (Map.Entry<String, List<String>> connectedAppToPermissionsGranted :
+                packageNameToPermissionsGranted.entrySet()) {
+
+            List<String> grantedPermissions = connectedAppToPermissionsGranted.getValue();
+
+            // This is done to remove the common prefix android.permission.health from all
+            // permissions
+            String[] grantedPermissionsShortened = new String[grantedPermissions.size()];
+            for (int permissionIndex = 0;
+                    permissionIndex < grantedPermissions.size();
+                    permissionIndex++) {
+                String grantedPermission = grantedPermissions.get(permissionIndex);
+                grantedPermissionsShortened[permissionIndex] =
+                        grantedPermission.substring(grantedPermission.lastIndexOf('.') + 1);
+            }
+
+            HealthFitnessStatsLog.write(
+                    HEALTH_CONNECT_PERMISSION_STATS,
+                    connectedAppToPermissionsGranted.getKey(),
+                    grantedPermissionsShortened);
+        }
     }
 }

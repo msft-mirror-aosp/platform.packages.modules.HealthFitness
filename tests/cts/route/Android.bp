@@ -40,9 +40,12 @@ android_test {
     test_suites: [
         "cts",
         "general-tests",
+        "mts-healthfitness",
+        "mcts-healthfitness",
     ],
-    sdk_version: "test_current",
     min_sdk_version: "34",
+    target_sdk_version: "34",
+    sdk_version: "module_current",
     libs: [
         "android.test.base.stubs.test",
         "android.test.mock.stubs.test",
@@ -62,8 +65,9 @@ android_test_helper_app {
         "cts-healthconnect-lib",
         "cts-healthconnect-test-helper",
     ],
-    sdk_version: "test_current",
     min_sdk_version: "34",
+    target_sdk_version: "34",
+    sdk_version: "module_current",
 }
 
 android_test_helper_app {
@@ -73,6 +77,7 @@ android_test_helper_app {
         "cts-healthconnect-lib",
         "cts-healthconnect-test-helper",
     ],
-    sdk_version: "test_current",
     min_sdk_version: "34",
+    target_sdk_version: "34",
+    sdk_version: "module_current",
 }
