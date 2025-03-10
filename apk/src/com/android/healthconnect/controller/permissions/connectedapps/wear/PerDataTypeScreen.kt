@@ -31,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material3.Text
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission.Companion.fromPermissionString
 import com.android.permissioncontroller.wear.permission.components.ScrollableScreen
@@ -51,7 +52,15 @@ fun PerDataTypeScreen(
     onAppChipClick: (String, String, String) -> Unit,
     onRemoveAllAppAccessButtonClick: (String, String) -> Unit,
 ) {
+    // TODO: b/401597500 - The HealthPermission should be passed into these composables.
     val healthPermission = fromPermissionString(permissionStr)
+    val lowercaseDataTypetSr =
+        stringResource(
+            FitnessPermissionStrings.fromPermissionType(
+                    (healthPermission as HealthPermission.FitnessPermission).fitnessPermissionType
+                )
+                .lowercaseLabel
+        )
     ScrollableScreen(asScalingList = true, showTimeText = false, title = dataTypeStr) {
         // Allowed apps.
         item {
@@ -68,7 +77,7 @@ fun PerDataTypeScreen(
         // Notes on what this permission is about.
         item {
             Row(horizontalArrangement = Arrangement.Start) {
-                Text(stringResource(R.string.access_sensor_note, dataTypeStr))
+                Text(stringResource(R.string.access_sensor_note, lowercaseDataTypetSr))
             }
         }
 
