@@ -43,7 +43,6 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.SystemService;
 import com.android.server.appop.AppOpsManagerLocal;
-import com.android.server.healthconnect.backuprestore.BackupRestore;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.migration.MigrationStateChangeJob;
 import com.android.server.healthconnect.testing.fixtures.EnvironmentFixture;
@@ -66,10 +65,9 @@ public class HealthConnectManagerServiceTest {
             "HEALTH_CONNECT_IMPORT_EXPORT_JOBS";
     private static final String ANDROID_SERVER_PACKAGE_NAME = "com.android.server";
 
-    @Rule(order = 1)
+    @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(BackupRestore.BackupRestoreJobService.class)
                     .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();
