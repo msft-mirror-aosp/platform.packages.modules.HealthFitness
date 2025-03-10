@@ -65,13 +65,13 @@ import com.android.healthconnect.testapps.toolbox.data.ExerciseRoutesTestData.Co
 import com.android.healthconnect.testapps.toolbox.data.ExerciseRoutesTestData.Companion.routeDataMap
 import com.android.healthconnect.testapps.toolbox.utils.GeneralUtils.Companion.getMetaData
 import com.android.healthconnect.testapps.toolbox.utils.GeneralUtils.Companion.insertRecords
+import kotlinx.coroutines.runBlocking
 import java.time.Duration.ofDays
 import java.time.Duration.ofMinutes
 import java.time.Duration.ofSeconds
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import kotlin.random.Random
-import kotlinx.coroutines.runBlocking
 
 class SeedActivityData(private val context: Context, private val manager: HealthConnectManager) {
 
