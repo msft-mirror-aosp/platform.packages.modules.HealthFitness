@@ -61,7 +61,7 @@ import static java.util.stream.Collectors.toSet;
 
 import android.Manifest;
 import android.annotation.Nullable;
-import android.annotation.TargetApi;
+import android.annotation.RequiresApi;
 import android.content.AttributionSource;
 import android.content.Context;
 import android.content.Intent;
@@ -3267,7 +3267,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     @Override
-    @TargetApi(Build.VERSION_CODES.BAKLAVA)
+    @RequiresApi(Build.VERSION_CODES.BAKLAVA)
     public void getChangesForBackup(
             @Nullable String changeToken, IGetChangesForBackupResponseCallback callback) {
         final int uid = Binder.getCallingUid();
@@ -3302,7 +3302,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     @Override
-    @TargetApi(Build.VERSION_CODES.BAKLAVA)
+    @RequiresApi(Build.VERSION_CODES.BAKLAVA)
     public void getSettingsForBackup(IGetSettingsForBackupResponseCallback callback) {
         checkParamsNonNull(callback);
         final int uid = Binder.getCallingUid();
@@ -3335,7 +3335,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     @Override
-    @TargetApi(Build.VERSION_CODES.BAKLAVA)
+    @RequiresApi(Build.VERSION_CODES.BAKLAVA)
     public void restoreSettings(BackupSettings backupSettings, IEmptyResponseCallback callback) {
         checkParamsNonNull(backupSettings);
         checkParamsNonNull(callback);
@@ -3372,7 +3372,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     @Override
-    @TargetApi(Build.VERSION_CODES.BAKLAVA)
+    @RequiresApi(Build.VERSION_CODES.BAKLAVA)
     public void canRestore(int dataVersion, ICanRestoreResponseCallback callback) {
         checkParamsNonNull(dataVersion);
         final int uid = Binder.getCallingUid();
@@ -3403,7 +3403,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     @Override
-    @TargetApi(Build.VERSION_CODES.BAKLAVA)
+    @RequiresApi(Build.VERSION_CODES.BAKLAVA)
     public void restoreChanges(
             List<RestoreChange> changes, byte[] appInfoMap, IEmptyResponseCallback callback) {
         checkParamsNonNull(changes);
