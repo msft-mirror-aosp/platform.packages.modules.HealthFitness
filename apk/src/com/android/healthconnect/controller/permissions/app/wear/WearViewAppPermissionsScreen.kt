@@ -34,15 +34,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.wear.compose.material3.RadioButton
-import androidx.wear.compose.material3.SwitchButton
-import androidx.wear.compose.material3.Text
+import androidx.wear.compose.material.Text
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings
 import com.android.healthconnect.controller.permissions.data.HealthPermission.AdditionalPermission
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.permissioncontroller.wear.permission.components.ScrollableScreen
+import com.android.permissioncontroller.wear.permission.components.material2.ToggleChip
+import com.android.permissioncontroller.wear.permission.components.material3.WearPermissionToggleControlType
 
 /**
  * Wear View App Permissions Screen. This screen includes: Allow/Deny foreground and background
@@ -108,11 +108,9 @@ fun WearViewAppPermissionsScreen(viewModel: AppPermissionViewModel) {
             LaunchedEffect(allFitnessPermissionsGranted) {
                 isAllowAllChecked = allFitnessPermissionsGranted
             }
-            SwitchButton(
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text(res.getString(R.string.request_permissions_allow_all)) },
+            ToggleChip(
                 checked = isAllowAllChecked,
-                onCheckedChange = { isChecked ->
+                onCheckedChanged = { isChecked ->
                     isAllowAllChecked = isChecked
                     for (i in checkedStates.indices) {
                         checkedStates[i] = isChecked
@@ -123,6 +121,9 @@ fun WearViewAppPermissionsScreen(viewModel: AppPermissionViewModel) {
                         viewModel.revokeAllFitnessAndMaybeAdditionalPermissions(packageName)
                     }
                 },
+                label = res.getString(R.string.request_permissions_allow_all),
+                toggleControl = WearPermissionToggleControlType.Switch,
+                modifier = Modifier.fillMaxWidth(),
                 enabled = true,
             )
         }
@@ -136,11 +137,9 @@ fun WearViewAppPermissionsScreen(viewModel: AppPermissionViewModel) {
         items(allDataTypes.size) { index ->
             val dataType = allDataTypes[index]
             val isChecked = checkedStates[index]
-            SwitchButton(
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text(dataType) },
+            ToggleChip(
                 checked = isChecked,
-                onCheckedChange = { newCheckedValue ->
+                onCheckedChanged = { newCheckedValue ->
                     checkedStates[index] = newCheckedValue
                     viewModel.updatePermission(
                         packageName,
@@ -148,6 +147,9 @@ fun WearViewAppPermissionsScreen(viewModel: AppPermissionViewModel) {
                         newCheckedValue as Boolean,
                     )
                 },
+                label = dataType,
+                toggleControl = WearPermissionToggleControlType.Switch,
+                modifier = Modifier.fillMaxWidth(),
                 enabled = true,
             )
         }
@@ -167,34 +169,40 @@ fun WearViewAppPermissionsScreen(viewModel: AppPermissionViewModel) {
                 }
             }
             item {
-                RadioButton(
+                ToggleChip(
+                    checked = allowAllTheTimeGranted,
+                    onCheckedChanged = { checked ->
+                        if (checked) {
+                            viewModel.updateAdditionalPermission(
+                                packageName,
+                                AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND,
+                                true,
+                            )
+                        }
+                    },
+                    label = res.getString(R.string.view_permissions_all_the_time_cap),
+                    toggleControl = WearPermissionToggleControlType.Radio,
                     modifier = Modifier.fillMaxWidth(),
                     enabled = true,
-                    selected = allowAllTheTimeGranted,
-                    onSelect = {
-                        viewModel.updateAdditionalPermission(
-                            packageName,
-                            AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND,
-                            true,
-                        )
-                    },
-                    label = { Text(res.getString(R.string.view_permissions_all_the_time_cap)) },
                 )
             }
             // Allow while in use. (Deny background read permission.)
             item {
-                RadioButton(
+                ToggleChip(
+                    checked = !allowAllTheTimeGranted,
+                    onCheckedChanged = { checked ->
+                        if (checked) {
+                            viewModel.updateAdditionalPermission(
+                                packageName,
+                                AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND,
+                                false,
+                            )
+                        }
+                    },
+                    label = res.getString(R.string.view_permissions_while_in_use_cap),
+                    toggleControl = WearPermissionToggleControlType.Radio,
                     modifier = Modifier.fillMaxWidth(),
                     enabled = true,
-                    selected = !allowAllTheTimeGranted,
-                    onSelect = {
-                        viewModel.updateAdditionalPermission(
-                            packageName,
-                            AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND,
-                            false,
-                        )
-                    },
-                    label = { Text(res.getString(R.string.view_permissions_while_in_use_cap)) },
                 )
             }
 
