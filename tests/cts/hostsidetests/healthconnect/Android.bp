@@ -61,6 +61,7 @@ java_test_host {
         "androidx.annotation_annotation",
         "flag-junit-host",
         "healthfitness-exported-aconfig-flags-lib-host",
+        "platformprotos",
     ],
     java_resource_dirs: ["host/res"],
     device_common_data: [
