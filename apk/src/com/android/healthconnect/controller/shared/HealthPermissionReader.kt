@@ -262,121 +262,42 @@ constructor(
      * body-sensor permission).
      */
     public fun isBodySensorSplitPermissionApp(packageName: String): Boolean {
-        if (!Flags.replaceBodySensorPermissionEnabled()) {
-            return false
-        }
-
-        try {
-            val appInfo =
+        if (!Flags.replaceBodySensorPermissionEnabled()) return false
+        return try {
+            val packageInfo =
                 context.packageManager.getPackageInfo(
                     packageName,
-                    PackageInfoFlags.of(PACKAGE_INFO_PERMISSIONS_FLAG),
+                    PackageInfoFlags.of(PackageManager.GET_PERMISSIONS.toLong()),
                 )
+            val requestedPermissions = packageInfo.requestedPermissions?.toList() ?: return false
             val healthPermissions = getHealthPermissions()
-            val splitPermissionAppClassification =
-                getSplitPermissionAppClassification(appInfo, healthPermissions)
-            return splitPermissionAppClassification !=
-                SplitPermissionAppClassification.NOT_SPLIT_PERMISSION_APP
+            val filteredPermissions = requestedPermissions.filter { it in healthPermissions }
+
+            if (filteredPermissions.isEmpty()) {
+                return false
+            }
+
+            val canPotentiallyBeSplitPermissions =
+                when (filteredPermissions.size) {
+                    1 -> filteredPermissions.contains(HealthPermissions.READ_HEART_RATE)
+                    2 ->
+                        filteredPermissions.contains(HealthPermissions.READ_HEART_RATE) &&
+                            filteredPermissions.contains(
+                                HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND
+                            )
+                    else -> false
+                }
+
+            if (!canPotentiallyBeSplitPermissions) {
+                return false
+            }
+
+            getHealthPermissionsFlagsUseCase(packageName, filteredPermissions).values.all { flags ->
+                flags?.and(PackageManager.FLAG_PERMISSION_REVOKE_WHEN_REQUESTED) ==
+                    PackageManager.FLAG_PERMISSION_REVOKE_WHEN_REQUESTED
+            }
         } catch (e: NameNotFoundException) {
-            return false
-        }
-    }
-
-    enum class SplitPermissionAppClassification {
-        NOT_SPLIT_PERMISSION_APP,
-        SPLIT_PERMISSION_SYSTEM_APP,
-        SPLIT_PERMISSION_NON_SYSTEM_APP,
-    }
-
-    /** Returns the split-permission classification of the app. */
-    private fun getSplitPermissionAppClassification(
-        info: PackageInfo,
-        healthPermissions: List<String>,
-    ): SplitPermissionAppClassification {
-        val packageName = info.packageName
-        val requestedPermissions =
-            info.requestedPermissions
-                ?: return SplitPermissionAppClassification.NOT_SPLIT_PERMISSION_APP
-        val requestedHealthPermissions = requestedPermissions.filter { it in healthPermissions }
-
-        val indexOfReadHr = requestedPermissions.indexOf(HealthPermissions.READ_HEART_RATE)
-        // Split permission only applies to READ_HEART_RATE.
-        if (indexOfReadHr < 0) {
-            return SplitPermissionAppClassification.NOT_SPLIT_PERMISSION_APP
-        }
-
-        // If there are other health permissions (other than READ_HEALTH_DATA_IN_BACKGROUND)
-        // don't consider this a pure split-permission request.
-        if (requestedHealthPermissions.size > 2) {
-            return SplitPermissionAppClassification.NOT_SPLIT_PERMISSION_APP
-        }
-
-        val indexOfReadBackground =
-            requestedPermissions.indexOf(HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND)
-        val declaresBackgroundPermission = indexOfReadBackground >= 0
-        // If there are two health permissions declared, make sure the other is
-        // READ_HEALTH_DATA_IN_BACKGROUND.
-        if (requestedHealthPermissions.size == 2 && !declaresBackgroundPermission) {
-            return SplitPermissionAppClassification.NOT_SPLIT_PERMISSION_APP
-        }
-
-        val permissionsToCheck =
-            if (declaresBackgroundPermission) {
-                listOf(
-                    HealthPermissions.READ_HEART_RATE,
-                    HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND,
-                )
-            } else {
-                listOf(HealthPermissions.READ_HEART_RATE)
-            }
-
-        // Check the READ_HEART_RATE permission flag to see if it's a split-permission.
-        val permissionToFlags = getHealthPermissionsFlagsUseCase(packageName, permissionsToCheck)
-
-        if (declaresBackgroundPermission) {
-            // READ_HEALTH_DATA_IN_BACKGROUND is not due to split-permission.
-            if (
-                permissionToFlags.get(HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND)?.let { flags
-                    ->
-                    (flags and PackageManager.FLAG_PERMISSION_REVOKE_WHEN_REQUESTED) == 0
-                } ?: true
-            ) {
-                return SplitPermissionAppClassification.NOT_SPLIT_PERMISSION_APP
-            }
-        }
-
-        // READ_HEART_RATE is not due to split-permission.
-        if (
-            permissionToFlags.get(HealthPermissions.READ_HEART_RATE)?.let { flags ->
-                (flags and PackageManager.FLAG_PERMISSION_REVOKE_WHEN_REQUESTED) == 0
-            } ?: true
-        ) {
-            return SplitPermissionAppClassification.NOT_SPLIT_PERMISSION_APP
-        }
-
-        // Filter out system apps.
-        val backgroundPermissionUserSensitive =
-            if (declaresBackgroundPermission) {
-                isUserSensitive(
-                    permissionToFlags[HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND],
-                    info.requestedPermissionsFlags?.getOrNull(indexOfReadBackground),
-                )
-            } else {
-                false
-            }
-
-        val heartRatePermissionUserSensitive =
-            isUserSensitive(
-                permissionToFlags[HealthPermissions.READ_HEART_RATE],
-                info.requestedPermissionsFlags?.getOrNull(indexOfReadHr),
-            )
-        val isSystemApp = !heartRatePermissionUserSensitive && !backgroundPermissionUserSensitive
-
-        // Made it through the gauntlet! This is a split-permission app.
-        return if (isSystemApp) {
-            SplitPermissionAppClassification.SPLIT_PERMISSION_SYSTEM_APP
-        } else {
-            SplitPermissionAppClassification.SPLIT_PERMISSION_NON_SYSTEM_APP
+            false
         }
     }
 
