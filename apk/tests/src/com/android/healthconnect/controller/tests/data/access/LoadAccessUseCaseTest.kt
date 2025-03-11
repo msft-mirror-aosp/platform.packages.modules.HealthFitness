@@ -15,12 +15,15 @@
  */
 package com.android.healthconnect.controller.tests.data.access
 
+import android.platform.test.annotations.DisableFlags
+import android.platform.test.annotations.EnableFlags
+import android.platform.test.flag.junit.SetFlagsRule
 import com.android.healthconnect.controller.data.access.AppAccessState
 import com.android.healthconnect.controller.data.access.ILoadAccessUseCase
 import com.android.healthconnect.controller.data.access.LoadAccessUseCase
-import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.shared.HealthPermissionReader
@@ -28,21 +31,16 @@ import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.AppPermissionsType.COMBINED_PERMISSIONS
 import com.android.healthconnect.controller.shared.app.AppPermissionsType.FITNESS_PERMISSIONS_ONLY
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
-import com.android.healthconnect.controller.tests.utils.MEDICAL_PERMISSIONS_TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP
 import com.android.healthconnect.controller.tests.utils.TEST_APP_2
-import com.android.healthconnect.controller.tests.utils.TEST_APP_3
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME_2
-import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME_3
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME_2
-import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME_3
-import com.android.healthconnect.controller.tests.utils.di.FakeFeatureUtils
 import com.android.healthconnect.controller.tests.utils.di.FakeGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.tests.utils.di.FakeLoadFitnessTypeContributorAppsUseCase
 import com.android.healthconnect.controller.tests.utils.di.FakeLoadMedicalTypeContributorAppsUseCase
-import com.android.healthconnect.controller.utils.FeatureUtils
+import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -60,17 +58,17 @@ import org.mockito.MockitoAnnotations
 class LoadAccessUseCaseTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
+    @get:Rule val setFlagsRule = SetFlagsRule()
+
     private lateinit var useCase: ILoadAccessUseCase
     private val fakeLoadFitnessTypeContributorAppsUseCase =
         FakeLoadFitnessTypeContributorAppsUseCase()
     private val fakeLoadMedicalTypeContributorAppsUseCase =
-            FakeLoadMedicalTypeContributorAppsUseCase()
-    private val fakeGetGrantedHealthPermissionsUseCase =
-        FakeGetGrantedHealthPermissionsUseCase()
+        FakeLoadMedicalTypeContributorAppsUseCase()
+    private val fakeGetGrantedHealthPermissionsUseCase = FakeGetGrantedHealthPermissionsUseCase()
 
     @Inject lateinit var appInfoReader: AppInfoReader
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
-    @Inject lateinit var fakeFeatureUtils: FeatureUtils
 
     @Before
     fun setup() {
@@ -83,7 +81,8 @@ class LoadAccessUseCaseTest {
                 fakeGetGrantedHealthPermissionsUseCase,
                 healthPermissionReader,
                 appInfoReader,
-                Dispatchers.Main)
+                Dispatchers.Main,
+            )
     }
 
     @Test
@@ -96,36 +95,39 @@ class LoadAccessUseCaseTest {
     }
 
     @Test
-    fun fitnessContributingApps_writeSteps_returnsCorrectApps() = runTest {
+    @DisableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    fun fitnessContributingApps_noMedical_writeSteps_returnsCorrectApps() = runTest {
         fakeLoadFitnessTypeContributorAppsUseCase.updateList(listOf(TEST_APP, TEST_APP_2))
         val writeSteps =
             FitnessPermission(FitnessPermissionType.STEPS, PermissionsAccessType.WRITE).toString()
-        fakeGetGrantedHealthPermissionsUseCase.updateData(
-            TEST_APP_PACKAGE_NAME, listOf(writeSteps))
+        fakeGetGrantedHealthPermissionsUseCase.updateData(TEST_APP_PACKAGE_NAME, listOf(writeSteps))
 
         val actual = (useCase.invoke(FitnessPermissionType.STEPS) as UseCaseResults.Success).data
 
         assertThat(actual[AppAccessState.Write]).isNotNull()
         assertThat(actual[AppAccessState.Write]!!.size).isEqualTo(1)
-        assertThat(actual[AppAccessState.Write]!![0].appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME)
+        assertThat(actual[AppAccessState.Write]!![0].appMetadata.packageName)
+            .isEqualTo(TEST_APP_PACKAGE_NAME)
         assertThat(actual[AppAccessState.Write]!![0].appMetadata.appName).isEqualTo(TEST_APP_NAME)
-        assertThat(actual[AppAccessState.Write]!![0].appPermissionsType).isEqualTo(FITNESS_PERMISSIONS_ONLY)
+        assertThat(actual[AppAccessState.Write]!![0].appPermissionsType)
+            .isEqualTo(FITNESS_PERMISSIONS_ONLY)
         assertThat(actual[AppAccessState.Read]).isNotNull()
         assertThat(actual[AppAccessState.Read]!!.size).isEqualTo(0)
         assertThat(actual[AppAccessState.Inactive]).isNotNull()
         assertThat(actual[AppAccessState.Inactive]!!.size).isEqualTo(1)
         assertThat(actual[AppAccessState.Inactive]!![0].appMetadata.packageName)
             .isEqualTo(TEST_APP_PACKAGE_NAME_2)
-        assertThat(actual[AppAccessState.Inactive]!![0].appMetadata.appName).isEqualTo(TEST_APP_NAME_2)
+        assertThat(actual[AppAccessState.Inactive]!![0].appMetadata.appName)
+            .isEqualTo(TEST_APP_NAME_2)
     }
 
     @Test
-    fun fitnessContributingApps_readSteps_returnsCorrectApps() = runTest {
+    @DisableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
+    fun fitnessContributingApps_no_medical_readSteps_returnsCorrectApps() = runTest {
         fakeLoadFitnessTypeContributorAppsUseCase.updateList(listOf(TEST_APP, TEST_APP_2))
         val writeSteps =
-                FitnessPermission(FitnessPermissionType.STEPS, PermissionsAccessType.READ).toString()
-        fakeGetGrantedHealthPermissionsUseCase.updateData(
-                TEST_APP_PACKAGE_NAME, listOf(writeSteps))
+            FitnessPermission(FitnessPermissionType.STEPS, PermissionsAccessType.READ).toString()
+        fakeGetGrantedHealthPermissionsUseCase.updateData(TEST_APP_PACKAGE_NAME, listOf(writeSteps))
 
         val actual = (useCase.invoke(FitnessPermissionType.STEPS) as UseCaseResults.Success).data
 
@@ -133,116 +135,137 @@ class LoadAccessUseCaseTest {
         assertThat(actual[AppAccessState.Write]!!.size).isEqualTo(0)
         assertThat(actual[AppAccessState.Read]).isNotNull()
         assertThat(actual[AppAccessState.Read]!!.size).isEqualTo(1)
-        assertThat(actual[AppAccessState.Read]!![0].appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME)
+        assertThat(actual[AppAccessState.Read]!![0].appMetadata.packageName)
+            .isEqualTo(TEST_APP_PACKAGE_NAME)
         assertThat(actual[AppAccessState.Read]!![0].appMetadata.appName).isEqualTo(TEST_APP_NAME)
-        assertThat(actual[AppAccessState.Read]!![0].appPermissionsType).isEqualTo(FITNESS_PERMISSIONS_ONLY)
+        assertThat(actual[AppAccessState.Read]!![0].appPermissionsType)
+            .isEqualTo(FITNESS_PERMISSIONS_ONLY)
         assertThat(actual[AppAccessState.Inactive]).isNotNull()
         assertThat(actual[AppAccessState.Inactive]!!.size).isEqualTo(1)
         assertThat(actual[AppAccessState.Inactive]!![0].appMetadata.packageName)
-                .isEqualTo(TEST_APP_PACKAGE_NAME_2)
-        assertThat(actual[AppAccessState.Inactive]!![0].appMetadata.appName).isEqualTo(TEST_APP_NAME_2)
+            .isEqualTo(TEST_APP_PACKAGE_NAME_2)
+        assertThat(actual[AppAccessState.Inactive]!![0].appMetadata.appName)
+            .isEqualTo(TEST_APP_NAME_2)
     }
 
     @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun medicalPermissionsEnabled_returnsCorrectApps() = runTest {
-        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)
-
         fakeLoadFitnessTypeContributorAppsUseCase.updateList(listOf(TEST_APP, TEST_APP_2))
         val writeSteps =
             FitnessPermission(FitnessPermissionType.STEPS, PermissionsAccessType.WRITE).toString()
-        fakeGetGrantedHealthPermissionsUseCase.updateData(
-            TEST_APP_PACKAGE_NAME, listOf(writeSteps))
+        fakeGetGrantedHealthPermissionsUseCase.updateData(TEST_APP_PACKAGE_NAME, listOf(writeSteps))
 
         val actual = (useCase.invoke(FitnessPermissionType.STEPS) as UseCaseResults.Success).data
 
         assertThat(actual[AppAccessState.Write]).isNotNull()
         assertThat(actual[AppAccessState.Write]!!.size).isEqualTo(1)
-        assertThat(actual[AppAccessState.Write]!![0].appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME)
+        assertThat(actual[AppAccessState.Write]!![0].appMetadata.packageName)
+            .isEqualTo(TEST_APP_PACKAGE_NAME)
         assertThat(actual[AppAccessState.Write]!![0].appMetadata.appName).isEqualTo(TEST_APP_NAME)
-        assertThat(actual[AppAccessState.Write]!![0].appPermissionsType).isEqualTo(COMBINED_PERMISSIONS)
+        assertThat(actual[AppAccessState.Write]!![0].appPermissionsType)
+            .isEqualTo(COMBINED_PERMISSIONS)
         assertThat(actual[AppAccessState.Read]).isNotNull()
         assertThat(actual[AppAccessState.Read]!!.size).isEqualTo(0)
         assertThat(actual[AppAccessState.Inactive]).isNotNull()
         assertThat(actual[AppAccessState.Inactive]!!.size).isEqualTo(1)
         assertThat(actual[AppAccessState.Inactive]!![0].appMetadata.packageName)
             .isEqualTo(TEST_APP_PACKAGE_NAME_2)
-        assertThat(actual[AppAccessState.Inactive]!![0].appMetadata.appName).isEqualTo(TEST_APP_NAME_2)
+        assertThat(actual[AppAccessState.Inactive]!![0].appMetadata.appName)
+            .isEqualTo(TEST_APP_NAME_2)
     }
 
     @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun medicalData_readImmunization_returnsCorrectApps() = runTest {
-        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)
         fakeLoadFitnessTypeContributorAppsUseCase.updateList(listOf(TEST_APP_2))
         fakeLoadMedicalTypeContributorAppsUseCase.updateList(listOf(TEST_APP))
         val steps =
-                FitnessPermission(FitnessPermissionType.STEPS, PermissionsAccessType.WRITE).toString()
+            FitnessPermission(FitnessPermissionType.STEPS, PermissionsAccessType.WRITE).toString()
         val immunization =
-                HealthPermission.MedicalPermission(MedicalPermissionType.IMMUNIZATION).toString()
+            HealthPermission.MedicalPermission(MedicalPermissionType.VACCINES).toString()
         fakeGetGrantedHealthPermissionsUseCase.updateData(
-                TEST_APP_PACKAGE_NAME, listOf(steps, immunization))
+            TEST_APP_PACKAGE_NAME,
+            listOf(steps, immunization),
+        )
 
-        val actual = (useCase.invoke(MedicalPermissionType.IMMUNIZATION) as UseCaseResults.Success).data
+        val actual =
+            (useCase.invoke(MedicalPermissionType.VACCINES) as UseCaseResults.Success).data
 
         assertThat(actual[AppAccessState.Write]).isNotNull()
         assertThat(actual[AppAccessState.Write]!!.size).isEqualTo(0)
         assertThat(actual[AppAccessState.Read]).isNotNull()
         assertThat(actual[AppAccessState.Read]!!.size).isEqualTo(1)
-        assertThat(actual[AppAccessState.Read]!![0].appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME)
+        assertThat(actual[AppAccessState.Read]!![0].appMetadata.packageName)
+            .isEqualTo(TEST_APP_PACKAGE_NAME)
         assertThat(actual[AppAccessState.Read]!![0].appMetadata.appName).isEqualTo(TEST_APP_NAME)
-        assertThat(actual[AppAccessState.Read]!![0].appPermissionsType).isEqualTo(COMBINED_PERMISSIONS)
+        assertThat(actual[AppAccessState.Read]!![0].appPermissionsType)
+            .isEqualTo(COMBINED_PERMISSIONS)
         assertThat(actual[AppAccessState.Inactive]).isNotNull()
         assertThat(actual[AppAccessState.Inactive]!!.size).isEqualTo(0)
     }
 
     @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun medicalData_immunizationAndAllMedicalData_returnsCorrectApps() = runTest {
-        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)
         fakeLoadFitnessTypeContributorAppsUseCase.updateList(listOf(TEST_APP_2))
         fakeLoadMedicalTypeContributorAppsUseCase.updateList(listOf(TEST_APP))
         val steps =
-                FitnessPermission(FitnessPermissionType.STEPS, PermissionsAccessType.WRITE).toString()
+            FitnessPermission(FitnessPermissionType.STEPS, PermissionsAccessType.WRITE).toString()
         val immunization =
-                HealthPermission.MedicalPermission(MedicalPermissionType.IMMUNIZATION).toString()
+            HealthPermission.MedicalPermission(MedicalPermissionType.VACCINES).toString()
         val allMedicalData =
-                HealthPermission.MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA).toString()
+            HealthPermission.MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA).toString()
         fakeGetGrantedHealthPermissionsUseCase.updateData(
-                TEST_APP_PACKAGE_NAME, listOf(steps, immunization, allMedicalData))
+            TEST_APP_PACKAGE_NAME,
+            listOf(steps, immunization, allMedicalData),
+        )
 
-        val actual = (useCase.invoke(MedicalPermissionType.IMMUNIZATION) as UseCaseResults.Success).data
+        val actual =
+            (useCase.invoke(MedicalPermissionType.VACCINES) as UseCaseResults.Success).data
 
         assertThat(actual[AppAccessState.Write]).isNotNull()
         assertThat(actual[AppAccessState.Write]!!.size).isEqualTo(1)
-        assertThat(actual[AppAccessState.Write]!![0].appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME)
+        assertThat(actual[AppAccessState.Write]!![0].appMetadata.packageName)
+            .isEqualTo(TEST_APP_PACKAGE_NAME)
         assertThat(actual[AppAccessState.Write]!![0].appMetadata.appName).isEqualTo(TEST_APP_NAME)
-        assertThat(actual[AppAccessState.Write]!![0].appPermissionsType).isEqualTo(COMBINED_PERMISSIONS)
+        assertThat(actual[AppAccessState.Write]!![0].appPermissionsType)
+            .isEqualTo(COMBINED_PERMISSIONS)
         assertThat(actual[AppAccessState.Read]).isNotNull()
         assertThat(actual[AppAccessState.Read]!!.size).isEqualTo(1)
-        assertThat(actual[AppAccessState.Read]!![0].appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME)
+        assertThat(actual[AppAccessState.Read]!![0].appMetadata.packageName)
+            .isEqualTo(TEST_APP_PACKAGE_NAME)
         assertThat(actual[AppAccessState.Read]!![0].appMetadata.appName).isEqualTo(TEST_APP_NAME)
-        assertThat(actual[AppAccessState.Read]!![0].appPermissionsType).isEqualTo(COMBINED_PERMISSIONS)
+        assertThat(actual[AppAccessState.Read]!![0].appPermissionsType)
+            .isEqualTo(COMBINED_PERMISSIONS)
         assertThat(actual[AppAccessState.Inactive]).isNotNull()
         assertThat(actual[AppAccessState.Inactive]!!.size).isEqualTo(0)
     }
 
     @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun medicalData_writeAllMedicalData_returnsCorrectApps() = runTest {
-        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)
         fakeLoadFitnessTypeContributorAppsUseCase.updateList(listOf(TEST_APP_2))
         fakeLoadMedicalTypeContributorAppsUseCase.updateList(listOf(TEST_APP))
         val steps =
-                FitnessPermission(FitnessPermissionType.STEPS, PermissionsAccessType.WRITE).toString()
+            FitnessPermission(FitnessPermissionType.STEPS, PermissionsAccessType.WRITE).toString()
         val allMedicalData =
-                HealthPermission.MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA).toString()
+            HealthPermission.MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA).toString()
         fakeGetGrantedHealthPermissionsUseCase.updateData(
-                TEST_APP_PACKAGE_NAME, listOf(steps, allMedicalData))
+            TEST_APP_PACKAGE_NAME,
+            listOf(steps, allMedicalData),
+        )
 
-        val actual = (useCase.invoke(MedicalPermissionType.ALL_MEDICAL_DATA) as UseCaseResults.Success).data
+        val actual =
+            (useCase.invoke(MedicalPermissionType.ALL_MEDICAL_DATA) as UseCaseResults.Success).data
 
         assertThat(actual[AppAccessState.Write]).isNotNull()
         assertThat(actual[AppAccessState.Write]!!.size).isEqualTo(1)
-        assertThat(actual[AppAccessState.Write]!![0].appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME)
+        assertThat(actual[AppAccessState.Write]!![0].appMetadata.packageName)
+            .isEqualTo(TEST_APP_PACKAGE_NAME)
         assertThat(actual[AppAccessState.Write]!![0].appMetadata.appName).isEqualTo(TEST_APP_NAME)
-        assertThat(actual[AppAccessState.Write]!![0].appPermissionsType).isEqualTo(COMBINED_PERMISSIONS)
+        assertThat(actual[AppAccessState.Write]!![0].appPermissionsType)
+            .isEqualTo(COMBINED_PERMISSIONS)
         assertThat(actual[AppAccessState.Read]).isNotNull()
         assertThat(actual[AppAccessState.Read]!!.size).isEqualTo(0)
         assertThat(actual[AppAccessState.Inactive]).isNotNull()
@@ -250,12 +273,13 @@ class LoadAccessUseCaseTest {
     }
 
     @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD, Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     fun medicalData_immunizationInactive_returnsCorrectApps() = runTest {
-        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)
         fakeLoadFitnessTypeContributorAppsUseCase.updateList(listOf(TEST_APP_2))
         fakeLoadMedicalTypeContributorAppsUseCase.updateList(listOf(TEST_APP))
 
-        val actual = (useCase.invoke(MedicalPermissionType.IMMUNIZATION) as UseCaseResults.Success).data
+        val actual =
+            (useCase.invoke(MedicalPermissionType.VACCINES) as UseCaseResults.Success).data
 
         assertThat(actual[AppAccessState.Write]).isNotNull()
         assertThat(actual[AppAccessState.Write]!!.size).isEqualTo(0)
@@ -263,7 +287,9 @@ class LoadAccessUseCaseTest {
         assertThat(actual[AppAccessState.Read]!!.size).isEqualTo(0)
         assertThat(actual[AppAccessState.Inactive]).isNotNull()
         assertThat(actual[AppAccessState.Inactive]!!.size).isEqualTo(1)
-        assertThat(actual[AppAccessState.Inactive]!![0].appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME)
-        assertThat(actual[AppAccessState.Inactive]!![0].appMetadata.appName).isEqualTo(TEST_APP_NAME)
+        assertThat(actual[AppAccessState.Inactive]!![0].appMetadata.packageName)
+            .isEqualTo(TEST_APP_PACKAGE_NAME)
+        assertThat(actual[AppAccessState.Inactive]!![0].appMetadata.appName)
+            .isEqualTo(TEST_APP_NAME)
     }
 }

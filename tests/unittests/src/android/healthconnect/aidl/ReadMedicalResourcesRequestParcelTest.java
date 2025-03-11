@@ -17,11 +17,10 @@ package android.healthconnect.aidl;
 
 import static android.health.connect.Constants.MAXIMUM_PAGE_SIZE;
 import static android.health.connect.Constants.MINIMUM_PAGE_SIZE;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
-import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
-import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
-import static android.healthconnect.cts.utils.PhrDataFactory.PAGE_TOKEN;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_ID;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.PAGE_TOKEN;
 import static android.healthconnect.cts.utils.TestUtils.setFieldValueUsingReflection;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -42,7 +41,7 @@ public class ReadMedicalResourcesRequestParcelTest {
     @Test
     public void testWriteInitialRequestToParcelThenRestore_propertiesAreIdentical() {
         ReadMedicalResourcesInitialRequest original =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .addDataSourceId(DATA_SOURCE_ID)
                         .addDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                         .setPageSize(100)
@@ -55,7 +54,7 @@ public class ReadMedicalResourcesRequestParcelTest {
                 ReadMedicalResourcesRequestParcel.CREATOR.createFromParcel(parcel);
 
         assertThat(restoredParcel.getMedicalResourceType())
-                .isEqualTo(MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
+                .isEqualTo(MEDICAL_RESOURCE_TYPE_VACCINES);
         assertThat(restoredParcel.getDataSourceIds())
                 .containsExactly(DATA_SOURCE_ID, DIFFERENT_DATA_SOURCE_ID);
         assertThat(restoredParcel.getPageToken()).isNull();
@@ -74,18 +73,33 @@ public class ReadMedicalResourcesRequestParcelTest {
         ReadMedicalResourcesRequestParcel restoredParcel =
                 ReadMedicalResourcesRequestParcel.CREATOR.createFromParcel(parcel);
 
-        assertThat(restoredParcel.getMedicalResourceType())
-                .isEqualTo(MEDICAL_RESOURCE_TYPE_UNKNOWN);
+        assertThat(restoredParcel.getMedicalResourceType()).isEqualTo(0);
         assertThat(restoredParcel.getDataSourceIds()).isEmpty();
         assertThat(restoredParcel.getPageToken()).isEqualTo(PAGE_TOKEN);
         assertThat(restoredParcel.getPageSize()).isEqualTo(100);
     }
 
     @Test
+    public void testRestoreInvalidPageRequestFromParcel_nullPageToken_expectException()
+            throws NoSuchFieldException, IllegalAccessException {
+        ReadMedicalResourcesPageRequest original =
+                new ReadMedicalResourcesPageRequest.Builder(PAGE_TOKEN).setPageSize(100).build();
+        setFieldValueUsingReflection(original, "mPageToken", null);
+
+        Parcel parcel = Parcel.obtain();
+        original.toParcel().writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> ReadMedicalResourcesRequestParcel.CREATOR.createFromParcel(parcel));
+    }
+
+    @Test
     public void testRestoreInvalidMedicalResourceTypeFromParcel_expectException()
             throws NoSuchFieldException, IllegalAccessException {
         ReadMedicalResourcesRequestParcel original =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .addDataSourceId(DATA_SOURCE_ID)
                         .addDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                         .setPageSize(100)
@@ -106,7 +120,7 @@ public class ReadMedicalResourcesRequestParcelTest {
     public void testRestoreInvalidDataSourceIdFromParcel_expectException()
             throws NoSuchFieldException, IllegalAccessException {
         ReadMedicalResourcesRequestParcel original =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .addDataSourceId(DATA_SOURCE_ID)
                         .addDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                         .setPageSize(100)
@@ -127,7 +141,7 @@ public class ReadMedicalResourcesRequestParcelTest {
     public void testRestoreTooSmallPageSizeFromParcel_expectException()
             throws NoSuchFieldException, IllegalAccessException {
         ReadMedicalResourcesRequestParcel original =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .addDataSourceId(DATA_SOURCE_ID)
                         .addDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                         .setPageSize(100)
@@ -148,7 +162,7 @@ public class ReadMedicalResourcesRequestParcelTest {
     public void testRestoreTooLargePageSizeFromParcel_expectException()
             throws NoSuchFieldException, IllegalAccessException {
         ReadMedicalResourcesRequestParcel original =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .addDataSourceId(DATA_SOURCE_ID)
                         .addDataSourceId(DIFFERENT_DATA_SOURCE_ID)
                         .setPageSize(100)

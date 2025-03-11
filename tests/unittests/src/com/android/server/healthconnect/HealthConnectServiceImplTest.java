@@ -19,38 +19,60 @@ package com.android.server.healthconnect;
 import static android.Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA;
 import static android.content.pm.PackageManager.PERMISSION_DENIED;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_CALLED;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED;
+import static android.health.HealthFitnessStatsLog.HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_VACCINES;
+import static android.health.connect.HealthConnectException.ERROR_INVALID_ARGUMENT;
 import static android.health.connect.HealthConnectException.ERROR_SECURITY;
 import static android.health.connect.HealthConnectException.ERROR_UNSUPPORTED_OPERATION;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_STARTED;
 import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
 import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
-import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_VACCINES;
 import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.HealthPermissions.getAllMedicalPermissions;
 import static android.health.connect.datatypes.FhirResource.FHIR_RESOURCE_TYPE_IMMUNIZATION;
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_VACCINES;
+import static android.health.connect.ratelimiter.RateLimiter.QuotaCategory.QUOTA_CATEGORY_READ;
 import static android.health.connect.ratelimiter.RateLimiter.QuotaCategory.QUOTA_CATEGORY_WRITE;
-import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME;
-import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
-import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
-import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_PACKAGE_NAME;
-import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_UUID;
-import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_PACKAGE_NAME;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_IMMUNIZATION;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_VERSION_R4;
-import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
-import static android.healthconnect.cts.utils.PhrDataFactory.getGetMedicalDataSourceRequest;
-import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalDataSourceRequiredFieldsOnly;
-import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceId;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_FHIR_VERSION;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_ID;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_PACKAGE_NAME;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.DATA_SOURCE_UUID;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_PACKAGE_NAME;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_RESOURCE_ID_IMMUNIZATION;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.FHIR_VERSION_R4;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getGetMedicalDataSourceRequest;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getMedicalDataSourceRequiredFieldsOnly;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getMedicalResourceId;
+import static android.healthconnect.cts.utils.DataFactory.MAXIMUM_PAGE_SIZE;
+import static android.healthconnect.cts.utils.DataFactory.NOW;
 
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY;
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW;
 import static com.android.server.healthconnect.TestUtils.waitForAllScheduledTasksToComplete;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.DATA_DOWNLOAD_STATE_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.DATA_RESTORE_STATE_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.INTERNAL_RESTORE_STATE_STAGING_DONE;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.INTERNAL_RESTORE_STATE_STAGING_IN_PROGRESS;
+import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.CREATE_MEDICAL_DATA_SOURCE;
+import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_MEDICAL_DATA_SOURCE_WITH_DATA;
+import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_MEDICAL_RESOURCES_BY_IDS;
+import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_MEDICAL_RESOURCES_BY_REQUESTS;
+import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.GET_MEDICAL_DATA_SOURCES_BY_IDS;
+import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.GET_MEDICAL_DATA_SOURCES_BY_REQUESTS;
+import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.READ_MEDICAL_RESOURCES_BY_IDS;
+import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.READ_MEDICAL_RESOURCES_BY_REQUESTS;
+import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.UPSERT_MEDICAL_RESOURCES;
+import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.MEDICAL_RESOURCE_TYPE_NOT_ASSIGNED_DEFAULT_VALUE;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
@@ -80,6 +102,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.sqlite.SQLiteException;
+import android.health.HealthFitnessStatsLog;
 import android.health.connect.DeleteMedicalResourcesRequest;
 import android.health.connect.GetMedicalDataSourcesRequest;
 import android.health.connect.HealthConnectException;
@@ -93,10 +116,12 @@ import android.health.connect.aidl.IEmptyResponseCallback;
 import android.health.connect.aidl.IHealthConnectService;
 import android.health.connect.aidl.IMedicalDataSourceResponseCallback;
 import android.health.connect.aidl.IMedicalDataSourcesResponseCallback;
+import android.health.connect.aidl.IMedicalResourceListParcelResponseCallback;
 import android.health.connect.aidl.IMedicalResourceTypeInfosCallback;
 import android.health.connect.aidl.IMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IMigrationCallback;
 import android.health.connect.aidl.IReadMedicalResourcesResponseCallback;
+import android.health.connect.aidl.UpsertMedicalResourceRequestsParcel;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.migration.MigrationEntityParcel;
@@ -105,8 +130,8 @@ import android.health.connect.ratelimiter.RateLimiter;
 import android.health.connect.restore.StageRemoteDataRequest;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.net.Uri;
-import android.os.Environment;
 import android.os.ParcelFileDescriptor;
+import android.os.Process;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.permission.PermissionManager;
@@ -122,6 +147,7 @@ import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.LocalManagerRegistry;
 import com.android.server.appop.AppOpsManagerLocal;
+import com.android.server.healthconnect.backuprestore.BackupRestore;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.migration.MigrationCleaner;
@@ -130,14 +156,17 @@ import com.android.server.healthconnect.migration.MigrationTestUtils;
 import com.android.server.healthconnect.migration.MigrationUiStateManager;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
+import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.phr.PhrPageTokenWrapper;
 import com.android.server.healthconnect.phr.ReadMedicalResourcesInternalResponse;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.FakeTimeSource;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
+import com.android.server.healthconnect.storage.utils.PreferencesManager;
 
 import org.junit.After;
 import org.junit.Before;
@@ -145,6 +174,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.quality.Strictness;
@@ -154,13 +184,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Supplier;
 
 /** Unit test class for {@link HealthConnectServiceImpl} */
 @RunWith(AndroidJUnit4.class)
@@ -215,10 +246,15 @@ public class HealthConnectServiceImplTest {
                     "getMedicalDataSourcesByRequest",
                     "deleteMedicalResourcesByIds",
                     "deleteMedicalResourcesByRequest",
+                    "upsertMedicalResourcesFromRequestsParcel",
                     "upsertMedicalResources",
                     "readMedicalResourcesByIds",
                     "readMedicalResourcesByRequest",
-                    "queryAllMedicalResourceTypeInfos");
+                    "queryAllMedicalResourceTypeInfos",
+                    "runImmediateExport",
+                    "getChangesForBackup",
+                    "getSettingsForBackup",
+                    "pushSettingsForRestore");
 
     /** Health connect service APIs that do not block calls when data sync is in progress. */
     public static final Set<String> DO_NOT_BLOCK_CALLS_DURING_DATA_SYNC_LIST =
@@ -241,25 +277,23 @@ public class HealthConnectServiceImplTest {
     private static final String TEST_URI = "content://com.android.server.healthconnect/testuri";
     private static final long DEFAULT_PACKAGE_APP_INFO = 123L;
 
+    /** Package name where {@link HealthConnectServiceImplTest this test} runs in. */
+    private static final String THIS_TEST_PACKAGE_NAME = "com.android.healthconnect.unittests";
+
     @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
-                    .mockStatic(AppInfoHelper.class)
-                    .mockStatic(Environment.class)
-                    .mockStatic(PreferenceHelper.class)
                     .mockStatic(LocalManagerRegistry.class)
-                    .mockStatic(UserHandle.class)
-                    .mockStatic(TransactionManager.class)
-                    .mockStatic(HealthDataCategoryPriorityHelper.class)
+                    .mockStatic(HealthFitnessStatsLog.class)
                     .spyStatic(RateLimiter.class)
                     .setStrictness(Strictness.LENIENT)
+                    .addStaticMockFixtures(EnvironmentFixture::new)
                     .build();
 
     @Mock private TransactionManager mTransactionManager;
     @Mock private AppInfoHelper mAppInfoHelper;
-    @Mock private HealthConnectDeviceConfigManager mDeviceConfigManager;
     @Mock private HealthConnectPermissionHelper mHealthConnectPermissionHelper;
     @Mock private MigrationCleaner mMigrationCleaner;
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
@@ -267,90 +301,115 @@ public class HealthConnectServiceImplTest {
     @Mock private MigrationUiStateManager mMigrationUiStateManager;
     @Mock private Context mServiceContext;
     @Mock private PreferenceHelper mPreferenceHelper;
+    @Mock private PreferencesManager mPreferencesManager;
     @Mock private AppOpsManagerLocal mAppOpsManagerLocal;
     @Mock private PackageManager mPackageManager;
     @Mock private PermissionManager mPermissionManager;
     @Mock private MedicalDataSourceHelper mMedicalDataSourceHelper;
     @Mock private MedicalResourceHelper mMedicalResourceHelper;
     @Mock private HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
+    @Mock private HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
     @Mock IMigrationCallback mMigrationCallback;
     @Mock IMedicalDataSourceResponseCallback mMedicalDataSourceCallback;
     @Mock IMedicalDataSourcesResponseCallback mMedicalDataSourcesResponseCallback;
     @Mock IReadMedicalResourcesResponseCallback mReadMedicalResourcesResponseCallback;
+    @Mock IEmptyResponseCallback mEmptyResponseCallback;
+    @Mock IMedicalResourcesResponseCallback mMedicalResourcesResponseCallback;
+    @Mock IMedicalResourceListParcelResponseCallback mMedicalResourceListParcelResponseCallback;
     @Captor ArgumentCaptor<HealthConnectExceptionParcel> mErrorCaptor;
     @Captor ArgumentCaptor<List<MedicalDataSource>> mMedicalDataSourcesResponseCaptor;
+    private FakeTimeSource mFakeTimeSource;
     private Context mContext;
     private AttributionSource mAttributionSource;
     private HealthConnectServiceImpl mHealthConnectService;
     private UserHandle mUserHandle;
-    private File mMockDataDirectory;
+    private BackupRestore mBackupRestore;
     private ThreadPoolExecutor mInternalTaskScheduler;
     private String mTestPackageName;
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
-                    android.healthconnect.cts.utils.TestUtils::isHardwareSupported,
+                    android.healthconnect.cts.utils.TestUtils::isHealthConnectFullySupported,
                     "Tests should run on supported hardware only.");
 
     @Before
     public void setUp() throws Exception {
-        when(TransactionManager.getInitialisedInstance()).thenReturn(mTransactionManager);
-        when(AppInfoHelper.getInstance()).thenReturn(mAppInfoHelper);
-        when(UserHandle.of(anyInt())).thenCallRealMethod();
-        when(UserHandle.getUserHandleForUid(anyInt())).thenCallRealMethod();
-        mUserHandle = UserHandle.of(UserHandle.myUserId());
+        mContext = InstrumentationRegistry.getInstrumentation().getContext();
+        mUserHandle = mContext.getUser();
+
+        when(mPackageManager.getPackageUid(anyString(), anyInt())).thenReturn(Process.myUid());
         when(mServiceContext.getPackageManager()).thenReturn(mPackageManager);
         when(mServiceContext.getUser()).thenReturn(mUserHandle);
-        mInternalTaskScheduler = HealthConnectThreadScheduler.sInternalBackgroundExecutor;
-
-        mContext =
-                new HealthConnectUserContext(
-                        InstrumentationRegistry.getInstrumentation().getContext(), mUserHandle);
-        HealthConnectDeviceConfigManager.initializeInstance(mContext);
-        mAttributionSource = mContext.getAttributionSource();
-        mTestPackageName = mAttributionSource.getPackageName();
-        when(mServiceContext.createContextAsUser(mUserHandle, 0)).thenReturn(mContext);
+        when(mServiceContext.createContextAsUser(mUserHandle, 0)).thenReturn(mServiceContext);
         when(mServiceContext.getSystemService(ActivityManager.class))
                 .thenReturn(mContext.getSystemService(ActivityManager.class));
-        mMockDataDirectory = mContext.getDir("mock_data", Context.MODE_PRIVATE);
-        when(Environment.getDataDirectory()).thenReturn(mMockDataDirectory);
-        when(PreferenceHelper.getInstance()).thenReturn(mPreferenceHelper);
-        when(LocalManagerRegistry.getManager(AppOpsManagerLocal.class))
-                .thenReturn(mAppOpsManagerLocal);
         when(mServiceContext.getSystemService(PermissionManager.class))
                 .thenReturn(mPermissionManager);
+
+        mInternalTaskScheduler = HealthConnectThreadScheduler.sInternalBackgroundExecutor;
+        mFakeTimeSource = new FakeTimeSource(NOW);
+        mAttributionSource = mContext.getAttributionSource();
+        mTestPackageName = mAttributionSource.getPackageName();
+        when(LocalManagerRegistry.getManager(AppOpsManagerLocal.class))
+                .thenReturn(mAppOpsManagerLocal);
         setUpAllMedicalPermissionChecksHardDenied();
 
         HealthConnectInjector healthConnectInjector =
-                HealthConnectInjectorImpl.newBuilderForTest(mContext)
+                HealthConnectInjectorImpl.newBuilderForTest(mServiceContext)
                         .setPreferenceHelper(mPreferenceHelper)
+                        .setPreferencesManager(mPreferencesManager)
+                        .setTransactionManager(mTransactionManager)
                         .setHealthDataCategoryPriorityHelper(mHealthDataCategoryPriorityHelper)
+                        .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
+                        .setHealthConnectPermissionHelper(mHealthConnectPermissionHelper)
+                        .setFirstGrantTimeManager(mFirstGrantTimeManager)
+                        .setMigrationCleaner(mMigrationCleaner)
+                        .setMedicalDataSourceHelper(mMedicalDataSourceHelper)
+                        .setMedicalResourceHelper(mMedicalResourceHelper)
+                        .setMigrationStateManager(mMigrationStateManager)
+                        .setMigrationUiStateManager(mMigrationUiStateManager)
+                        .setAppInfoHelper(mAppInfoHelper)
+                        .setAppInfoHelper(mAppInfoHelper)
+                        .setTimeSource(mFakeTimeSource)
                         .build();
 
         mHealthConnectService =
                 new HealthConnectServiceImpl(
-                        mTransactionManager,
-                        mDeviceConfigManager,
-                        mHealthConnectPermissionHelper,
-                        mMigrationCleaner,
-                        mFirstGrantTimeManager,
-                        mMigrationStateManager,
-                        mMigrationUiStateManager,
                         mServiceContext,
-                        mMedicalResourceHelper,
-                        mMedicalDataSourceHelper,
+                        healthConnectInjector.getTimeSource(),
+                        healthConnectInjector.getInternalHealthConnectMappings(),
+                        healthConnectInjector.getTransactionManager(),
+                        healthConnectInjector.getHealthConnectPermissionHelper(),
+                        healthConnectInjector.getFirstGrantTimeManager(),
+                        healthConnectInjector.getMigrationEntityHelper(),
+                        healthConnectInjector.getMigrationStateManager(),
+                        healthConnectInjector.getMigrationUiStateManager(),
+                        healthConnectInjector.getMigrationCleaner(),
+                        healthConnectInjector.getMedicalResourceHelper(),
+                        healthConnectInjector.getMedicalDataSourceHelper(),
                         healthConnectInjector.getExportManager(),
                         healthConnectInjector.getExportImportSettingsStorage(),
+                        healthConnectInjector.getBackupRestore(),
                         healthConnectInjector.getAccessLogsHelper(),
-                        healthConnectInjector.getHealthDataCategoryPriorityHelper());
+                        healthConnectInjector.getHealthDataCategoryPriorityHelper(),
+                        healthConnectInjector.getActivityDateHelper(),
+                        healthConnectInjector.getChangeLogsHelper(),
+                        healthConnectInjector.getChangeLogsRequestHelper(),
+                        healthConnectInjector.getPriorityMigrationHelper(),
+                        healthConnectInjector.getAppInfoHelper(),
+                        healthConnectInjector.getDeviceInfoHelper(),
+                        healthConnectInjector.getPreferenceHelper(),
+                        healthConnectInjector.getDatabaseHelpers(),
+                        healthConnectInjector.getPreferencesManager());
+        mBackupRestore = healthConnectInjector.getBackupRestore();
     }
 
     @After
     public void tearDown() throws TimeoutException {
-        TestUtils.waitForAllScheduledTasksToComplete();
-        deleteDir(mMockDataDirectory);
+        waitForAllScheduledTasksToComplete();
         clearInvocations(mPreferenceHelper);
+        clearInvocations(mPreferencesManager);
     }
 
     @Test
@@ -380,7 +439,7 @@ public class HealthConnectServiceImplTest {
                 new StageRemoteDataRequest(pfdsByFileName), mUserHandle, callback);
 
         verify(callback, timeout(5000).times(1)).onResult();
-        var stagedFileNames = mHealthConnectService.getStagedRemoteFileNames(mUserHandle);
+        var stagedFileNames = mBackupRestore.getStagedRemoteFileNames(mUserHandle);
         assertThat(stagedFileNames.size()).isEqualTo(2);
         assertThat(stagedFileNames.contains(testRestoreFile1.getName())).isTrue();
         assertThat(stagedFileNames.contains(testRestoreFile2.getName())).isTrue();
@@ -408,7 +467,7 @@ public class HealthConnectServiceImplTest {
                 new StageRemoteDataRequest(pfdsByFileName), mUserHandle, callback);
 
         verify(callback, timeout(5000).times(1)).onError(any());
-        var stagedFileNames = mHealthConnectService.getStagedRemoteFileNames(mUserHandle);
+        var stagedFileNames = mBackupRestore.getStagedRemoteFileNames(mUserHandle);
         assertThat(stagedFileNames.size()).isEqualTo(1);
         assertThat(stagedFileNames.contains(testRestoreFile2.getName())).isTrue();
     }
@@ -440,7 +499,7 @@ public class HealthConnectServiceImplTest {
                 new StageRemoteDataRequest(pfdsByFileName), mUserHandle, callback);
 
         verify(callback, timeout(5000)).onResult();
-        var stagedFileNames = mHealthConnectService.getStagedRemoteFileNames(mUserHandle);
+        var stagedFileNames = mBackupRestore.getStagedRemoteFileNames(mUserHandle);
         assertThat(stagedFileNames.size()).isEqualTo(2);
         assertThat(stagedFileNames.contains(testRestoreFile1.getName())).isTrue();
         assertThat(stagedFileNames.contains(testRestoreFile2.getName())).isTrue();
@@ -471,7 +530,7 @@ public class HealthConnectServiceImplTest {
                 new StageRemoteDataRequest(pfdsByFileName), mUserHandle, callback);
 
         verify(callback, timeout(5000)).onResult();
-        var stagedFileNames = mHealthConnectService.getStagedRemoteFileNames(mUserHandle);
+        var stagedFileNames = mBackupRestore.getStagedRemoteFileNames(mUserHandle);
         assertThat(stagedFileNames.size()).isEqualTo(0);
     }
 
@@ -489,7 +548,7 @@ public class HealthConnectServiceImplTest {
         setUpPassingPermissionCheckFor(MIGRATE_HEALTH_CONNECT_DATA);
         mHealthConnectService.startMigration(
                 MigrationTestUtils.MOCK_CONFIGURED_PACKAGE, mMigrationCallback);
-        Thread.sleep(500);
+        awaitAllExecutorsIdle();
         verifyZeroInteractions(mMigrationStateManager);
         verify(mMigrationCallback).onError(any(MigrationException.class));
     }
@@ -503,7 +562,7 @@ public class HealthConnectServiceImplTest {
         MigrationTestUtils.setResolveActivityResult(new ResolveInfo(), mPackageManager);
         mHealthConnectService.startMigration(
                 MigrationTestUtils.MOCK_CONFIGURED_PACKAGE, mMigrationCallback);
-        Thread.sleep(500);
+        awaitAllExecutorsIdle();
         verify(mMigrationStateManager).startMigration(mServiceContext);
     }
 
@@ -513,7 +572,7 @@ public class HealthConnectServiceImplTest {
         setUpPassingPermissionCheckFor(MIGRATE_HEALTH_CONNECT_DATA);
         mHealthConnectService.finishMigration(
                 MigrationTestUtils.MOCK_CONFIGURED_PACKAGE, mMigrationCallback);
-        Thread.sleep(500);
+        awaitAllExecutorsIdle();
         verifyZeroInteractions(mMigrationStateManager);
         verify(mMigrationCallback).onError(any(MigrationException.class));
     }
@@ -527,7 +586,7 @@ public class HealthConnectServiceImplTest {
         MigrationTestUtils.setResolveActivityResult(new ResolveInfo(), mPackageManager);
         mHealthConnectService.finishMigration(
                 MigrationTestUtils.MOCK_CONFIGURED_PACKAGE, mMigrationCallback);
-        Thread.sleep(500);
+        awaitAllExecutorsIdle();
         verify(mMigrationStateManager).finishMigration(mServiceContext);
     }
 
@@ -539,7 +598,7 @@ public class HealthConnectServiceImplTest {
                 MigrationTestUtils.MOCK_CONFIGURED_PACKAGE,
                 mock(MigrationEntityParcel.class),
                 mMigrationCallback);
-        Thread.sleep(500);
+        awaitAllExecutorsIdle();
         verifyZeroInteractions(mMigrationStateManager);
         verify(mMigrationCallback).onError(any(MigrationException.class));
     }
@@ -555,7 +614,7 @@ public class HealthConnectServiceImplTest {
                 MigrationTestUtils.MOCK_CONFIGURED_PACKAGE,
                 mock(MigrationEntityParcel.class),
                 mMigrationCallback);
-        Thread.sleep(500);
+        awaitAllExecutorsIdle();
         verify(mMigrationStateManager).validateWriteMigrationData();
         verify(mMigrationCallback).onSuccess();
     }
@@ -566,7 +625,7 @@ public class HealthConnectServiceImplTest {
         setUpPassingPermissionCheckFor(MIGRATE_HEALTH_CONNECT_DATA);
         mHealthConnectService.insertMinDataMigrationSdkExtensionVersion(
                 MigrationTestUtils.MOCK_CONFIGURED_PACKAGE, 0, mMigrationCallback);
-        Thread.sleep(500);
+        awaitAllExecutorsIdle();
         verifyZeroInteractions(mMigrationStateManager);
         verify(mMigrationCallback).onError(any(MigrationException.class));
     }
@@ -580,7 +639,7 @@ public class HealthConnectServiceImplTest {
         MigrationTestUtils.setResolveActivityResult(new ResolveInfo(), mPackageManager);
         mHealthConnectService.insertMinDataMigrationSdkExtensionVersion(
                 MigrationTestUtils.MOCK_CONFIGURED_PACKAGE, 0, mMigrationCallback);
-        Thread.sleep(500);
+        awaitAllExecutorsIdle();
         verify(mMigrationStateManager).validateSetMinSdkVersion();
         verify(mMigrationCallback).onSuccess();
     }
@@ -591,7 +650,7 @@ public class HealthConnectServiceImplTest {
         mHealthConnectService.configureScheduledExport(
                 new ScheduledExportSettings.Builder().setUri(Uri.parse(TEST_URI)).build(),
                 mUserHandle);
-        Thread.sleep(500);
+        awaitAllExecutorsIdle();
 
         assertThat(mInternalTaskScheduler.getCompletedTaskCount()).isEqualTo(taskCount + 1);
     }
@@ -611,13 +670,14 @@ public class HealthConnectServiceImplTest {
         for (Method m : allMethods) {
             assertWithMessage(
                             "Method '%s' does not belong to either"
-                                + " BLOCK_CALLS_DURING_DATA_SYNC_LIST or"
-                                + " DO_NOT_BLOCK_CALLS_DURING_DATA_SYNC_LIST. Make sure the method"
-                                + " implementation includes a section blocking calls during data"
-                                + " sync, then add the method to BLOCK_CALLS_DURING_DATA_SYNC_LIST"
-                                + " (check the Javadoc for this constant for more details). If the"
-                                + " method must allow calls during data sync, add it to"
-                                + " DO_NOT_BLOCK_CALLS_DURING_DATA_SYNC_LIST.",
+                                    + " BLOCK_CALLS_DURING_DATA_SYNC_LIST or"
+                                    + " DO_NOT_BLOCK_CALLS_DURING_DATA_SYNC_LIST. Make sure the"
+                                    + " method implementation includes a section blocking calls"
+                                    + " during data sync, then add the method to"
+                                    + " BLOCK_CALLS_DURING_DATA_SYNC_LIST (check the Javadoc for"
+                                    + " this constant for more details). If the method must allow"
+                                    + " calls during data sync, add it to"
+                                    + " DO_NOT_BLOCK_CALLS_DURING_DATA_SYNC_LIST.",
                             m.getName())
                     .that(
                             DO_NOT_BLOCK_CALLS_DURING_DATA_SYNC_LIST.contains(m.getName())
@@ -649,6 +709,53 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    @DisableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
+    public void testGetMedicalDataSourcesByIds_telemetryFlagOff_expectNoLogs()
+            throws InterruptedException {
+        setUpSuccessfulMocksForPhrTelemetry();
+
+        mHealthConnectService.getMedicalDataSourcesByIds(
+                mAttributionSource,
+                List.of(UUID.randomUUID().toString()),
+                mMedicalDataSourcesResponseCallback);
+
+        awaitAllExecutorsIdle();
+        assertPhrApiWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
+        assertPhrApiPrivateWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
+    }
+
+    @Test
+    @EnableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
+    public void testGetMedicalDataSourcesByIds_telemetryFlagOn_expectCorrectLogs()
+            throws InterruptedException {
+        setUpSuccessfulMocksForPhrTelemetry();
+
+        mHealthConnectService.getMedicalDataSourcesByIds(
+                mAttributionSource,
+                List.of(UUID.randomUUID().toString()),
+                mMedicalDataSourcesResponseCallback);
+
+        awaitAllExecutorsIdle();
+        assertPhrApiWestWorldWrites(
+                () -> eq(GET_MEDICAL_DATA_SOURCES_BY_IDS),
+                () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
+                1);
+        assertPhrApiPrivateWestWorldWrites(
+                () -> eq(GET_MEDICAL_DATA_SOURCES_BY_IDS),
+                () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
+                1);
+    }
+
+    @Test
     @DisableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalDataSources_byIds_flagOff_throws() throws Exception {
         mHealthConnectService.getMedicalDataSourcesByIds(
@@ -661,11 +768,11 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byIds_hasDataManagementPermission_callsHelper()
             throws RemoteException {
         setUpPhrMocksWithIrrelevantResponses();
-        setDataManagementPermission(PERMISSION_GRANTED);
+        setDataManagementPermission(PackageManager.PERMISSION_GRANTED);
 
         mHealthConnectService.getMedicalDataSourcesByIds(
                 mAttributionSource, List.of(DATA_SOURCE_ID), mMedicalDataSourcesResponseCallback);
@@ -677,7 +784,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byIds_noReadWritePermissions_throws() throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
 
@@ -691,7 +798,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byIds_onlyWritePermission_callsHelper()
             throws RemoteException {
         setUpPhrMocksWithIrrelevantResponses();
@@ -714,12 +821,12 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byIds_bothReadWritePermissions_callsHelper()
             throws Exception {
         setUpPhrMocksWithIrrelevantResponses();
         setDataManagementPermission(PERMISSION_DENIED);
-        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_IMMUNIZATION);
+        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_VACCINES);
         setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
 
         mHealthConnectService.getMedicalDataSourcesByIds(
@@ -731,7 +838,7 @@ public class HealthConnectServiceImplTest {
                 .getMedicalDataSourcesByIdsWithPermissionChecks(
                         eq(List.of(DATA_SOURCE_UUID)),
                         /* GrantedReadMedicalResourceTypes= */ eq(
-                                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)),
+                                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES)),
                         eq(mTestPackageName),
                         /* hasWritePermission= */ eq(true),
                         anyBoolean(),
@@ -739,11 +846,11 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byIds_onlyReadPermissions_callsHelper() throws Exception {
         setUpPhrMocksWithIrrelevantResponses();
         setDataManagementPermission(PERMISSION_DENIED);
-        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_IMMUNIZATION);
+        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_VACCINES);
 
         mHealthConnectService.getMedicalDataSourcesByIds(
                 mAttributionSource, List.of(DATA_SOURCE_ID), mMedicalDataSourcesResponseCallback);
@@ -754,7 +861,7 @@ public class HealthConnectServiceImplTest {
                 .getMedicalDataSourcesByIdsWithPermissionChecks(
                         eq(List.of(DATA_SOURCE_UUID)),
                         /* GrantedReadMedicalResourceTypes= */ eq(
-                                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)),
+                                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES)),
                         eq(mTestPackageName),
                         /* hasWritePermission= */ eq(false),
                         anyBoolean(),
@@ -762,11 +869,11 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byIds_fromForeground_callsHelper() throws Exception {
         setUpPhrMocksWithIrrelevantResponses();
         setDataManagementPermission(PERMISSION_DENIED);
-        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_IMMUNIZATION);
+        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_VACCINES);
         setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
         when(mAppOpsManagerLocal.isUidInForeground(anyInt())).thenReturn(true);
 
@@ -786,40 +893,14 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testGetMedicalDataSources_byIds_fromBgNoBgRead_callsHelper() throws Exception {
-        setUpPhrMocksWithIrrelevantResponses();
-        setDataManagementPermission(PERMISSION_DENIED);
-        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_IMMUNIZATION);
-        setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
-        when(mAppOpsManagerLocal.isUidInForeground(anyInt())).thenReturn(false);
-        when(mDeviceConfigManager.isBackgroundReadFeatureEnabled()).thenReturn(false);
-
-        mHealthConnectService.getMedicalDataSourcesByIds(
-                mAttributionSource, List.of(DATA_SOURCE_ID), mMedicalDataSourcesResponseCallback);
-
-        verify(mMedicalDataSourcesResponseCallback, timeout(5000)).onResult(any());
-        verify(mMedicalDataSourcesResponseCallback, never()).onError(any());
-        verify(mMedicalDataSourceHelper, times(1))
-                .getMedicalDataSourcesByIdsWithPermissionChecks(
-                        eq(List.of(DATA_SOURCE_UUID)),
-                        any(),
-                        eq(mTestPackageName),
-                        anyBoolean(),
-                        /* isCalledFromBgWithoutBgRead= */ eq(true),
-                        eq(mAppInfoHelper));
-    }
-
-    @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byIds_fromBgNoBgReadPerm_callsHelper() throws Exception {
         setUpPhrMocksWithIrrelevantResponses();
         setDataManagementPermission(PERMISSION_DENIED);
-        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_IMMUNIZATION);
+        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_VACCINES);
         setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
         when(mAppOpsManagerLocal.isUidInForeground(anyInt())).thenReturn(false);
-        when(mDeviceConfigManager.isBackgroundReadFeatureEnabled()).thenReturn(true);
-        setBackendReadPermission(PERMISSION_DENIED);
+        setBackgroundReadPermission(PERMISSION_DENIED);
 
         mHealthConnectService.getMedicalDataSourcesByIds(
                 mAttributionSource, List.of(DATA_SOURCE_ID), mMedicalDataSourcesResponseCallback);
@@ -837,16 +918,15 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byIds_fromBgWithBgReadPerm_callsHelper()
             throws Exception {
         setUpPhrMocksWithIrrelevantResponses();
         setDataManagementPermission(PERMISSION_DENIED);
-        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_IMMUNIZATION);
+        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_VACCINES);
         setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
         when(mAppOpsManagerLocal.isUidInForeground(anyInt())).thenReturn(false);
-        when(mDeviceConfigManager.isBackgroundReadFeatureEnabled()).thenReturn(true);
-        setBackendReadPermission(PERMISSION_GRANTED);
+        setBackgroundReadPermission(PackageManager.PERMISSION_GRANTED);
 
         mHealthConnectService.getMedicalDataSourcesByIds(
                 mAttributionSource, List.of(DATA_SOURCE_ID), mMedicalDataSourcesResponseCallback);
@@ -864,6 +944,71 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testGetMedicalDataSourcesByIds_maxPageSizeExceeded_throws() throws RemoteException {
+        List<String> ids = new ArrayList<>(MAXIMUM_PAGE_SIZE + 1);
+        for (int i = 0; i < MAXIMUM_PAGE_SIZE + 1; i++) {
+            ids.add(UUID.randomUUID().toString());
+        }
+
+        mHealthConnectService.getMedicalDataSourcesByIds(
+                mAttributionSource, ids, mMedicalDataSourcesResponseCallback);
+
+        verify(mMedicalDataSourcesResponseCallback, timeout(5000).times(1))
+                .onError(mErrorCaptor.capture());
+        HealthConnectException exception = mErrorCaptor.getValue().getHealthConnectException();
+        assertThat(exception.getErrorCode()).isEqualTo(ERROR_INVALID_ARGUMENT);
+        assertThat(exception.getMessage()).contains("The number of requested IDs must be <= 5000");
+    }
+
+    @Test
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    @DisableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
+    public void testGetMedicalDataSourcesByRequests_telemetryFlagOff_expectNoLogs()
+            throws InterruptedException {
+        setUpSuccessfulMocksForPhrTelemetry();
+
+        mHealthConnectService.getMedicalDataSourcesByRequest(
+                mAttributionSource,
+                getGetMedicalDataSourceRequest(Set.of("com.abc")),
+                mMedicalDataSourcesResponseCallback);
+
+        awaitAllExecutorsIdle();
+        assertPhrApiWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
+        assertPhrApiPrivateWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
+    }
+
+    @Test
+    @EnableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
+    public void testGetMedicalDataSourcesByRequests_telemetryFlagOn_expectCorrectLogs()
+            throws InterruptedException {
+        setUpSuccessfulMocksForPhrTelemetry();
+
+        mHealthConnectService.getMedicalDataSourcesByRequest(
+                mAttributionSource,
+                getGetMedicalDataSourceRequest(Set.of("com.abc")),
+                mMedicalDataSourcesResponseCallback);
+
+        awaitAllExecutorsIdle();
+        assertPhrApiWestWorldWrites(
+                () -> eq(GET_MEDICAL_DATA_SOURCES_BY_REQUESTS),
+                () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
+                1);
+        assertPhrApiPrivateWestWorldWrites(
+                () -> eq(GET_MEDICAL_DATA_SOURCES_BY_REQUESTS),
+                () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
+                1);
+    }
+
+    @Test
     @DisableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalDataSource_byRequest_flagOff_throws() throws Exception {
         mHealthConnectService.getMedicalDataSourcesByRequest(
@@ -878,11 +1023,11 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byRequest_hasDataManagementPermission_callsHelper()
             throws RemoteException {
         setUpPhrMocksWithIrrelevantResponses();
-        setDataManagementPermission(PERMISSION_GRANTED);
+        setDataManagementPermission(PackageManager.PERMISSION_GRANTED);
         Set<String> packageNames = Set.of("com.foo", "com.bar");
 
         mHealthConnectService.getMedicalDataSourcesByRequest(
@@ -897,7 +1042,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byRequest_noReadWritePermissions_throws()
             throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
@@ -914,7 +1059,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byRequest_onlyWritePermission_callsHelper()
             throws RemoteException {
         setUpPhrMocksWithIrrelevantResponses();
@@ -939,12 +1084,12 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byRequest_bothReadWritePermissions_callsHelper()
             throws Exception {
         setUpPhrMocksWithIrrelevantResponses();
         setDataManagementPermission(PERMISSION_DENIED);
-        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_IMMUNIZATION);
+        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_VACCINES);
         setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
         Set<String> packageNames = Set.of("com.foo", "com.bar");
 
@@ -959,19 +1104,19 @@ public class HealthConnectServiceImplTest {
                 .getMedicalDataSourcesByPackageWithPermissionChecks(
                         eq(packageNames),
                         /* GrantedReadMedicalResourceTypes= */ eq(
-                                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)),
+                                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES)),
                         eq(mTestPackageName),
                         /* hasWritePermission= */ eq(true),
                         anyBoolean());
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byRequest_onlyReadPermissions_callsHelper()
             throws Exception {
         setUpPhrMocksWithIrrelevantResponses();
         setDataManagementPermission(PERMISSION_DENIED);
-        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_IMMUNIZATION);
+        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_VACCINES);
         Set<String> packageNames = Set.of("com.foo", "com.bar");
 
         mHealthConnectService.getMedicalDataSourcesByRequest(
@@ -985,18 +1130,18 @@ public class HealthConnectServiceImplTest {
                 .getMedicalDataSourcesByPackageWithPermissionChecks(
                         eq(packageNames),
                         /* GrantedReadMedicalResourceTypes= */ eq(
-                                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)),
+                                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES)),
                         eq(mTestPackageName),
                         /* hasWritePermission= */ eq(false),
                         anyBoolean());
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byRequest_fromForeground_callsHelper() throws Exception {
         setUpPhrMocksWithIrrelevantResponses();
         setDataManagementPermission(PERMISSION_DENIED);
-        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_IMMUNIZATION);
+        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_VACCINES);
         setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
         when(mAppOpsManagerLocal.isUidInForeground(anyInt())).thenReturn(true);
         Set<String> packageNames = Set.of("com.foo", "com.bar");
@@ -1018,43 +1163,15 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testGetMedicalDataSources_byRequest_fromBgNoBgRead_callsHelper() throws Exception {
-        setUpPhrMocksWithIrrelevantResponses();
-        setDataManagementPermission(PERMISSION_DENIED);
-        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_IMMUNIZATION);
-        setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
-        when(mAppOpsManagerLocal.isUidInForeground(anyInt())).thenReturn(false);
-        when(mDeviceConfigManager.isBackgroundReadFeatureEnabled()).thenReturn(false);
-        Set<String> packageNames = Set.of("com.foo", "com.bar");
-
-        mHealthConnectService.getMedicalDataSourcesByRequest(
-                mAttributionSource,
-                getGetMedicalDataSourceRequest(packageNames),
-                mMedicalDataSourcesResponseCallback);
-
-        verify(mMedicalDataSourcesResponseCallback, timeout(5000)).onResult(any());
-        verify(mMedicalDataSourcesResponseCallback, never()).onError(any());
-        verify(mMedicalDataSourceHelper, times(1))
-                .getMedicalDataSourcesByPackageWithPermissionChecks(
-                        eq(packageNames),
-                        any(),
-                        eq(mTestPackageName),
-                        anyBoolean(),
-                        /* isCalledFromBgWithoutBgRead= */ eq(true));
-    }
-
-    @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byRequest_fromBgNoBgReadPerm_callsHelper()
             throws Exception {
         setUpPhrMocksWithIrrelevantResponses();
         setDataManagementPermission(PERMISSION_DENIED);
-        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_IMMUNIZATION);
+        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_VACCINES);
         setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
         when(mAppOpsManagerLocal.isUidInForeground(anyInt())).thenReturn(false);
-        when(mDeviceConfigManager.isBackgroundReadFeatureEnabled()).thenReturn(true);
-        setBackendReadPermission(PERMISSION_DENIED);
+        setBackgroundReadPermission(PERMISSION_DENIED);
         Set<String> packageNames = Set.of("com.foo", "com.bar");
 
         mHealthConnectService.getMedicalDataSourcesByRequest(
@@ -1074,16 +1191,15 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetMedicalDataSources_byRequest_fromBgWithBgReadPerm_callsHelper()
             throws Exception {
         setUpPhrMocksWithIrrelevantResponses();
         setDataManagementPermission(PERMISSION_DENIED);
-        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_IMMUNIZATION);
+        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_VACCINES);
         setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
         when(mAppOpsManagerLocal.isUidInForeground(anyInt())).thenReturn(false);
-        when(mDeviceConfigManager.isBackgroundReadFeatureEnabled()).thenReturn(true);
-        setBackendReadPermission(PERMISSION_GRANTED);
+        setBackgroundReadPermission(PackageManager.PERMISSION_GRANTED);
         Set<String> packageNames = Set.of("com.foo", "com.bar");
 
         mHealthConnectService.getMedicalDataSourcesByRequest(
@@ -1114,6 +1230,118 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    @DisableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
+    public void testUpsertMedicalResources_telemetryFlagOff_expectNoLogs()
+            throws InterruptedException {
+        setUpSuccessfulMocksForPhrTelemetry();
+
+        mHealthConnectService.upsertMedicalResources(
+                mAttributionSource,
+                List.of(
+                        new UpsertMedicalResourceRequest.Builder(
+                                        DATA_SOURCE_ID, FHIR_VERSION_R4, FHIR_DATA_IMMUNIZATION)
+                                .build()),
+                mMedicalResourcesResponseCallback);
+
+        awaitAllExecutorsIdle();
+        assertPhrApiWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
+        assertPhrApiPrivateWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
+    }
+
+    @Test
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    @DisableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
+    public void testUpsertMedicalResourcesFromRequestsParcel_telemetryFlagOff_expectNoLogs()
+            throws InterruptedException {
+        setUpSuccessfulMocksForPhrTelemetry();
+
+        mHealthConnectService.upsertMedicalResourcesFromRequestsParcel(
+                mAttributionSource,
+                new UpsertMedicalResourceRequestsParcel(
+                        List.of(
+                                new UpsertMedicalResourceRequest.Builder(
+                                                DATA_SOURCE_ID,
+                                                FHIR_VERSION_R4,
+                                                FHIR_DATA_IMMUNIZATION)
+                                        .build())),
+                mMedicalResourceListParcelResponseCallback);
+
+        awaitAllExecutorsIdle();
+        assertPhrApiWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
+        assertPhrApiPrivateWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
+    }
+
+    @Test
+    @EnableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
+    public void testUpsertMedicalResources_telemetryFlagOn_expectCorrectLogs()
+            throws InterruptedException {
+        setUpSuccessfulMocksForPhrTelemetry();
+
+        mHealthConnectService.upsertMedicalResources(
+                mAttributionSource,
+                List.of(
+                        new UpsertMedicalResourceRequest.Builder(
+                                        DATA_SOURCE_ID, FHIR_VERSION_R4, FHIR_DATA_IMMUNIZATION)
+                                .build()),
+                mMedicalResourcesResponseCallback);
+
+        awaitAllExecutorsIdle();
+        assertPhrApiWestWorldWrites(
+                () -> eq(UPSERT_MEDICAL_RESOURCES),
+                () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
+                1);
+        assertPhrApiPrivateWestWorldWrites(
+                () -> eq(UPSERT_MEDICAL_RESOURCES),
+                () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
+                1);
+    }
+
+    @Test
+    @EnableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
+    public void testUpsertMedicalResourcesFromRequestsParcel_telemetryFlagOn_expectCorrectLogs()
+            throws InterruptedException {
+        setUpSuccessfulMocksForPhrTelemetry();
+
+        mHealthConnectService.upsertMedicalResourcesFromRequestsParcel(
+                mAttributionSource,
+                new UpsertMedicalResourceRequestsParcel(
+                        List.of(
+                                new UpsertMedicalResourceRequest.Builder(
+                                                DATA_SOURCE_ID,
+                                                FHIR_VERSION_R4,
+                                                FHIR_DATA_IMMUNIZATION)
+                                        .build())),
+                mMedicalResourceListParcelResponseCallback);
+
+        awaitAllExecutorsIdle();
+        assertPhrApiWestWorldWrites(
+                () -> eq(UPSERT_MEDICAL_RESOURCES),
+                () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
+                1);
+        assertPhrApiPrivateWestWorldWrites(
+                () -> eq(UPSERT_MEDICAL_RESOURCES),
+                () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
+                1);
+    }
+
+    @Test
     @DisableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testUpsertMedicalResources_flagOff_throws() throws Exception {
         IMedicalResourcesResponseCallback callback = mock(IMedicalResourcesResponseCallback.class);
@@ -1133,6 +1361,184 @@ public class HealthConnectServiceImplTest {
 
     @Test
     @DisableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testUpsertMedicalResourcesFromRequestsParcel_flagOff_throws() throws Exception {
+
+        mHealthConnectService.upsertMedicalResourcesFromRequestsParcel(
+                mAttributionSource,
+                new UpsertMedicalResourceRequestsParcel(
+                        List.of(
+                                new UpsertMedicalResourceRequest.Builder(
+                                                DATA_SOURCE_ID,
+                                                FHIR_VERSION_R4,
+                                                FHIR_DATA_IMMUNIZATION)
+                                        .build())),
+                mMedicalResourceListParcelResponseCallback);
+
+        verify(mMedicalResourceListParcelResponseCallback, timeout(5000).times(1))
+                .onError(mErrorCaptor.capture());
+        assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
+                .isEqualTo(ERROR_UNSUPPORTED_OPERATION);
+    }
+
+    @Test
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    @DisableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
+    public void testReadMedicalResourcesByRequests_telemetryFlagOff_expectNoLogs()
+            throws InterruptedException {
+        setUpSuccessfulMocksForPhrTelemetry();
+        mFakeTimeSource.setInstant(NOW);
+
+        mHealthConnectService.readMedicalResourcesByRequest(
+                mAttributionSource,
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
+                        .build()
+                        .toParcel(),
+                mReadMedicalResourcesResponseCallback);
+
+        awaitAllExecutorsIdle();
+        assertPhrApiWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
+        assertPhrApiPrivateWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
+        verify(mPreferencesManager, never()).setLastPhrReadMedicalResourcesApiTimeStamp(any());
+    }
+
+    @Test
+    @EnableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
+    public void testReadMedicalResourcesByRequests_telemetryFlagOn_expectCorrectLogs()
+            throws InterruptedException {
+        setUpSuccessfulMocksForPhrTelemetry();
+        mFakeTimeSource.setInstant(NOW);
+
+        mHealthConnectService.readMedicalResourcesByRequest(
+                mAttributionSource,
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
+                        .build()
+                        .toParcel(),
+                mReadMedicalResourcesResponseCallback);
+
+        awaitAllExecutorsIdle();
+        assertPhrApiWestWorldWrites(
+                () -> eq(READ_MEDICAL_RESOURCES_BY_REQUESTS),
+                () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
+                1);
+        assertPhrApiPrivateWestWorldWrites(
+                () -> eq(READ_MEDICAL_RESOURCES_BY_REQUESTS),
+                () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
+                List.of(
+                        HEALTH_CONNECT_PHR_API_INVOKED__MEDICAL_RESOURCE_TYPE__MEDICAL_RESOURCE_TYPE_VACCINES),
+                1);
+        verify(mPreferencesManager, times(1)).setLastPhrReadMedicalResourcesApiTimeStamp(eq(NOW));
+    }
+
+    @Test
+    @EnableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
+    public void
+            testReadMedicalResourcesByRequests_telemetryFlagOnAndHasDataManagementPermission_expectMonthlyTimeStamp()
+                    throws InterruptedException {
+        setUpSuccessfulMocksForPhrTelemetry();
+        mFakeTimeSource.setInstant(NOW);
+        setDataManagementPermission(PERMISSION_GRANTED);
+
+        mHealthConnectService.readMedicalResourcesByRequest(
+                mAttributionSource,
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
+                        .build()
+                        .toParcel(),
+                mReadMedicalResourcesResponseCallback);
+
+        awaitAllExecutorsIdle();
+        assertThat(mPreferencesManager.getPhrLastReadMedicalResourcesApiTimeStamp()).isNull();
+        verify(mPreferencesManager, times(1)).setLastPhrReadMedicalResourcesApiTimeStamp(eq(NOW));
+    }
+
+    @Test
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    @DisableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
+    public void testReadMedicalResourcesByIds_telemetryFlagOff_expectNoLogs()
+            throws InterruptedException {
+        setUpSuccessfulMocksForPhrTelemetry();
+        mFakeTimeSource.setInstant(NOW);
+
+        mHealthConnectService.readMedicalResourcesByIds(
+                mAttributionSource,
+                List.of(getMedicalResourceId()),
+                mReadMedicalResourcesResponseCallback);
+
+        awaitAllExecutorsIdle();
+        assertPhrApiWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
+        assertPhrApiPrivateWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
+        verify(mPreferencesManager, never()).setLastPhrReadMedicalResourcesApiTimeStamp(any());
+    }
+
+    @Test
+    @EnableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
+    public void testReadMedicalResourcesByIds_telemetryFlagOn_expectCorrectLogs()
+            throws InterruptedException {
+        setUpSuccessfulMocksForPhrTelemetry();
+        mFakeTimeSource.setInstant(NOW);
+
+        mHealthConnectService.readMedicalResourcesByIds(
+                mAttributionSource,
+                List.of(getMedicalResourceId()),
+                mReadMedicalResourcesResponseCallback);
+
+        awaitAllExecutorsIdle();
+        assertPhrApiWestWorldWrites(
+                () -> eq(READ_MEDICAL_RESOURCES_BY_IDS),
+                () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
+                1);
+        assertPhrApiPrivateWestWorldWrites(
+                () -> eq(READ_MEDICAL_RESOURCES_BY_IDS),
+                () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
+                1);
+        verify(mPreferencesManager, times(1)).setLastPhrReadMedicalResourcesApiTimeStamp(eq(NOW));
+    }
+
+    @Test
+    @EnableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
+    public void
+            testReadMedicalResourcesByIds_telemetryFlagOnAndHasDataManagementPermission_expectMonthlyTimeStamp()
+                    throws TimeoutException {
+        setUpSuccessfulMocksForPhrTelemetry();
+        mFakeTimeSource.setInstant(NOW);
+        setDataManagementPermission(PERMISSION_GRANTED);
+
+        mHealthConnectService.readMedicalResourcesByIds(
+                mAttributionSource,
+                List.of(getMedicalResourceId()),
+                mReadMedicalResourcesResponseCallback);
+
+        waitForAllScheduledTasksToComplete();
+        verify(mPreferencesManager, times(1)).setLastPhrReadMedicalResourcesApiTimeStamp(eq(NOW));
+    }
+
+    @Test
+    @DisableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testReadMedicalResources_byIds_flagOff_throws() throws Exception {
         mHealthConnectService.readMedicalResourcesByIds(
                 mAttributionSource,
@@ -1146,10 +1552,10 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byIds_hasDataManagementPermission_callsHelper()
             throws RemoteException {
-        setDataManagementPermission(PERMISSION_GRANTED);
+        setDataManagementPermission(PackageManager.PERMISSION_GRANTED);
         setUpPhrMocksWithIrrelevantResponses();
         List<MedicalResourceId> ids = List.of(getMedicalResourceId());
 
@@ -1163,7 +1569,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byIds_noReadWritePermissions_throws() throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
 
@@ -1179,7 +1585,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byIds_onlyWritePermission_callsHelper()
             throws RemoteException {
         setDataManagementPermission(PERMISSION_DENIED);
@@ -1202,7 +1608,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byIds_numberOfIdsTooLarge_expectException()
             throws RemoteException {
         setDataManagementPermission(PERMISSION_DENIED);
@@ -1219,15 +1625,15 @@ public class HealthConnectServiceImplTest {
         verify(mReadMedicalResourcesResponseCallback, timeout(5000).times(1))
                 .onError(mErrorCaptor.capture());
         assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
-                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+                .isEqualTo(ERROR_INVALID_ARGUMENT);
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byIds_bothReadWritePermissions_callsHelper()
             throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
-        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_IMMUNIZATION);
+        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_VACCINES);
         setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
         setUpPhrMocksWithIrrelevantResponses();
         List<MedicalResourceId> ids = List.of(getMedicalResourceId());
@@ -1241,17 +1647,17 @@ public class HealthConnectServiceImplTest {
                 .readMedicalResourcesByIdsWithPermissionChecks(
                         eq(ids),
                         /* grantedReadMedicalResourceTypes= */ eq(
-                                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)),
+                                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES)),
                         eq(mTestPackageName),
                         /* hasWritePermission= */ eq(true),
                         anyBoolean());
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byIds_onlyReadPermissions_callsHelper() throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
-        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_IMMUNIZATION);
+        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_VACCINES);
         setUpPhrMocksWithIrrelevantResponses();
         List<MedicalResourceId> ids = List.of(getMedicalResourceId());
 
@@ -1264,17 +1670,17 @@ public class HealthConnectServiceImplTest {
                 .readMedicalResourcesByIdsWithPermissionChecks(
                         eq(ids),
                         /* grantedReadMedicalResourceTypes= */ eq(
-                                Set.of(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)),
+                                Set.of(MEDICAL_RESOURCE_TYPE_VACCINES)),
                         eq(mTestPackageName),
                         /* hasWritePermission= */ eq(false),
                         anyBoolean());
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byIds_fromForeground_callsHelper() throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
-        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_IMMUNIZATION);
+        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_VACCINES);
         setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
         setUpPhrMocksWithIrrelevantResponses();
         when(mAppOpsManagerLocal.isUidInForeground(anyInt())).thenReturn(true);
@@ -1295,40 +1701,14 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testReadMedicalResources_byIds_fromBgNoBgRead_callsHelper() throws Exception {
-        setDataManagementPermission(PERMISSION_DENIED);
-        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_IMMUNIZATION);
-        setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
-        setUpPhrMocksWithIrrelevantResponses();
-        when(mAppOpsManagerLocal.isUidInForeground(anyInt())).thenReturn(false);
-        when(mDeviceConfigManager.isBackgroundReadFeatureEnabled()).thenReturn(false);
-        List<MedicalResourceId> ids = List.of(getMedicalResourceId());
-
-        mHealthConnectService.readMedicalResourcesByIds(
-                mAttributionSource, ids, mReadMedicalResourcesResponseCallback);
-
-        verify(mReadMedicalResourcesResponseCallback, timeout(5000)).onResult(any());
-        verify(mReadMedicalResourcesResponseCallback, never()).onError(any());
-        verify(mMedicalResourceHelper, times(1))
-                .readMedicalResourcesByIdsWithPermissionChecks(
-                        eq(ids),
-                        any(),
-                        eq(mTestPackageName),
-                        anyBoolean(),
-                        /* isCalledFromBgWithoutBgRead= */ eq(true));
-    }
-
-    @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byIds_fromBgNoBgReadPerm_callsHelper() throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
-        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_IMMUNIZATION);
+        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_VACCINES);
         setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
         setUpPhrMocksWithIrrelevantResponses();
         when(mAppOpsManagerLocal.isUidInForeground(anyInt())).thenReturn(false);
-        when(mDeviceConfigManager.isBackgroundReadFeatureEnabled()).thenReturn(true);
-        setBackendReadPermission(PERMISSION_DENIED);
+        setBackgroundReadPermission(PERMISSION_DENIED);
         List<MedicalResourceId> ids = List.of(getMedicalResourceId());
 
         mHealthConnectService.readMedicalResourcesByIds(
@@ -1346,15 +1726,14 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byIds_fromBgWithBgReadPerm_callsHelper() throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
-        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_IMMUNIZATION);
+        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_VACCINES);
         setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
         setUpPhrMocksWithIrrelevantResponses();
         when(mAppOpsManagerLocal.isUidInForeground(anyInt())).thenReturn(false);
-        when(mDeviceConfigManager.isBackgroundReadFeatureEnabled()).thenReturn(true);
-        setBackendReadPermission(PERMISSION_GRANTED);
+        setBackgroundReadPermission(PackageManager.PERMISSION_GRANTED);
         List<MedicalResourceId> ids = List.of(getMedicalResourceId());
 
         mHealthConnectService.readMedicalResourcesByIds(
@@ -1376,7 +1755,7 @@ public class HealthConnectServiceImplTest {
     public void testReadMedicalResources_byRequest_flagOff_throws() throws Exception {
         mHealthConnectService.readMedicalResourcesByRequest(
                 mAttributionSource,
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build()
                         .toParcel(),
                 mReadMedicalResourcesResponseCallback);
@@ -1388,14 +1767,14 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byRequest_hasDataManagementPermission_callsHelper()
             throws RemoteException {
-        setDataManagementPermission(PERMISSION_GRANTED);
+        setDataManagementPermission(PackageManager.PERMISSION_GRANTED);
         setUpPhrMocksWithIrrelevantResponses();
 
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
         mHealthConnectService.readMedicalResourcesByRequest(
                 mAttributionSource, request.toParcel(), mReadMedicalResourcesResponseCallback);
@@ -1409,14 +1788,14 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byRequest_noReadWritePermissions_throws()
             throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
 
         mHealthConnectService.readMedicalResourcesByRequest(
                 mAttributionSource,
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build()
                         .toParcel(),
                 mReadMedicalResourcesResponseCallback);
@@ -1428,14 +1807,14 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byRequest_onlyWritePermission_selfReads()
             throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
         setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
         setUpPhrMocksWithIrrelevantResponses();
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
 
         mHealthConnectService.readMedicalResourcesByRequest(
@@ -1452,15 +1831,16 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byRequest_bothReadWritePermissions_selfReads()
             throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
-        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_IMMUNIZATION);
+        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_VACCINES);
         setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
         setUpPhrMocksWithIrrelevantResponses();
+        setBackgroundReadPermission(PERMISSION_DENIED);
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
 
         mHealthConnectService.readMedicalResourcesByRequest(
@@ -1477,15 +1857,15 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byRequest_onlyReadPermission_foreground_noSelfReads()
             throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
-        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_IMMUNIZATION);
+        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_VACCINES);
         setUpPhrMocksWithIrrelevantResponses();
         when(mAppOpsManagerLocal.isUidInForeground(anyInt())).thenReturn(true);
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
 
         mHealthConnectService.readMedicalResourcesByRequest(
@@ -1502,44 +1882,16 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testReadMedicalResources_byRequest_onlyReadPermission_bgNoReadFeature_selfReads()
-            throws Exception {
-        setDataManagementPermission(PERMISSION_DENIED);
-        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_IMMUNIZATION);
-        setUpPhrMocksWithIrrelevantResponses();
-        when(mAppOpsManagerLocal.isUidInForeground(anyInt())).thenReturn(false);
-        when(mDeviceConfigManager.isBackgroundReadFeatureEnabled()).thenReturn(false);
-        setBackendReadPermission(PERMISSION_DENIED);
-        ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
-                        .build();
-
-        mHealthConnectService.readMedicalResourcesByRequest(
-                mAttributionSource, request.toParcel(), mReadMedicalResourcesResponseCallback);
-
-        verify(mReadMedicalResourcesResponseCallback, timeout(5000)).onResult(any());
-        verify(mReadMedicalResourcesResponseCallback, never()).onError(any());
-        verify(mMedicalResourceHelper, times(1))
-                .readMedicalResourcesByRequestWithPermissionChecks(
-                        eq(PhrPageTokenWrapper.from(request.toParcel())),
-                        eq(request.getPageSize()),
-                        eq(mTestPackageName),
-                        /* enforceSelfRead= */ eq(true));
-    }
-
-    @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byRequest_onlyReadPermission_bgNoReadPerm_selfReads()
             throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
-        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_IMMUNIZATION);
+        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_VACCINES);
         setUpPhrMocksWithIrrelevantResponses();
         when(mAppOpsManagerLocal.isUidInForeground(anyInt())).thenReturn(false);
-        when(mDeviceConfigManager.isBackgroundReadFeatureEnabled()).thenReturn(true);
-        setBackendReadPermission(PERMISSION_DENIED);
+        setBackgroundReadPermission(PERMISSION_DENIED);
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
 
         mHealthConnectService.readMedicalResourcesByRequest(
@@ -1556,17 +1908,16 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byRequest_onlyReadPermission_withBgRead_noSelfReads()
             throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
-        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_IMMUNIZATION);
+        setDataReadWritePermissionGranted(READ_MEDICAL_DATA_VACCINES);
         setUpPhrMocksWithIrrelevantResponses();
         when(mAppOpsManagerLocal.isUidInForeground(anyInt())).thenReturn(false);
-        when(mDeviceConfigManager.isBackgroundReadFeatureEnabled()).thenReturn(true);
-        setBackendReadPermission(PERMISSION_GRANTED);
+        setBackgroundReadPermission(PackageManager.PERMISSION_GRANTED);
         ReadMedicalResourcesInitialRequest request =
-                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                new ReadMedicalResourcesInitialRequest.Builder(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
 
         mHealthConnectService.readMedicalResourcesByRequest(
@@ -1583,12 +1934,10 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testUpsertMedicalResources_hasDataManagementPermission_throws()
             throws RemoteException {
-        setDataManagementPermission(PERMISSION_GRANTED);
-
-        IMedicalResourcesResponseCallback callback = mock(IMedicalResourcesResponseCallback.class);
+        setDataManagementPermission(PackageManager.PERMISSION_GRANTED);
 
         mHealthConnectService.upsertMedicalResources(
                 mAttributionSource,
@@ -1596,15 +1945,39 @@ public class HealthConnectServiceImplTest {
                         new UpsertMedicalResourceRequest.Builder(
                                         DATA_SOURCE_ID, FHIR_VERSION_R4, FHIR_DATA_IMMUNIZATION)
                                 .build()),
-                callback);
+                mMedicalResourcesResponseCallback);
 
-        verify(callback, timeout(5000).times(1)).onError(mErrorCaptor.capture());
+        verify(mMedicalResourcesResponseCallback, timeout(5000).times(1))
+                .onError(mErrorCaptor.capture());
         assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
                 .isEqualTo(HealthConnectException.ERROR_SECURITY);
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testUpsertMedicalResourcesFromRequestsParcel_hasDataManagementPermission_throws()
+            throws RemoteException {
+        setDataManagementPermission(PackageManager.PERMISSION_GRANTED);
+
+        mHealthConnectService.upsertMedicalResourcesFromRequestsParcel(
+                mAttributionSource,
+                new UpsertMedicalResourceRequestsParcel(
+                        List.of(
+                                new UpsertMedicalResourceRequest.Builder(
+                                                DATA_SOURCE_ID,
+                                                FHIR_VERSION_R4,
+                                                FHIR_DATA_IMMUNIZATION)
+                                        .build())),
+                mMedicalResourceListParcelResponseCallback);
+
+        verify(mMedicalResourceListParcelResponseCallback, timeout(5000).times(1))
+                .onError(mErrorCaptor.capture());
+        assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_SECURITY);
+    }
+
+    @Test
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testUpsertMedicalResources_noWriteMedicalDataPermission_throws() throws Exception {
         IMedicalResourcesResponseCallback callback = mock(IMedicalResourcesResponseCallback.class);
 
@@ -1622,11 +1995,32 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testUpsertMedicalResourcesFromRequestsParcel_noWriteMedicalDataPermission_throws()
+            throws Exception {
+        mHealthConnectService.upsertMedicalResourcesFromRequestsParcel(
+                mAttributionSource,
+                new UpsertMedicalResourceRequestsParcel(
+                        List.of(
+                                new UpsertMedicalResourceRequest.Builder(
+                                                DATA_SOURCE_ID,
+                                                FHIR_VERSION_R4,
+                                                FHIR_DATA_IMMUNIZATION)
+                                        .build())),
+                mMedicalResourceListParcelResponseCallback);
+
+        verify(mMedicalResourceListParcelResponseCallback, timeout(5000).times(1))
+                .onError(mErrorCaptor.capture());
+        assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_SECURITY);
+    }
+
+    @Test
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testCreateMedicalDataSource_hasDataManagementPermission_throws()
             throws RemoteException {
         setUpCreateMedicalDataSourceDefaultMocks();
-        setDataManagementPermission(PERMISSION_GRANTED);
+        setDataManagementPermission(PackageManager.PERMISSION_GRANTED);
 
         mHealthConnectService.createMedicalDataSource(
                 mAttributionSource,
@@ -1639,7 +2033,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testCreateMedicalDataSource_transactionManagerSqlLiteException_throws()
             throws RemoteException {
         setUpCreateMedicalDataSourceDefaultMocks();
@@ -1659,7 +2053,54 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    @DisableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
+    public void testCreateMedicalDataSource_telemetryFlagOff_expectNoLogs()
+            throws InterruptedException {
+        setUpSuccessfulMocksForPhrTelemetry();
+
+        mHealthConnectService.createMedicalDataSource(
+                mAttributionSource,
+                getCreateMedicalDataSourceRequest(),
+                mMedicalDataSourceCallback);
+
+        awaitAllExecutorsIdle();
+        assertPhrApiWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
+        assertPhrApiPrivateWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
+    }
+
+    @Test
+    @EnableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
+    public void testCreateMedicalDataSource_telemetryFlagOn_expectCorrectLogs()
+            throws InterruptedException {
+        setUpSuccessfulMocksForPhrTelemetry();
+
+        mHealthConnectService.createMedicalDataSource(
+                mAttributionSource,
+                getCreateMedicalDataSourceRequest(),
+                mMedicalDataSourceCallback);
+
+        awaitAllExecutorsIdle();
+        assertPhrApiWestWorldWrites(
+                () -> eq(CREATE_MEDICAL_DATA_SOURCE),
+                () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
+                1);
+        assertPhrApiPrivateWestWorldWrites(
+                () -> eq(CREATE_MEDICAL_DATA_SOURCE),
+                () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
+                1);
+    }
+
+    @Test
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testCreateMedicalDataSource_noWriteMedicalDataPermission_throws()
             throws RemoteException {
         setUpCreateMedicalDataSourceDefaultMocks();
@@ -1675,25 +2116,67 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    @DisableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
+    public void testDeleteMedicalDataSourceWithData_telemetryFlagOff_expectNoLogs()
+            throws InterruptedException {
+        setUpSuccessfulMocksForPhrTelemetry();
+
+        mHealthConnectService.deleteMedicalDataSourceWithData(
+                mAttributionSource, UUID.randomUUID().toString(), mEmptyResponseCallback);
+
+        awaitAllExecutorsIdle();
+        assertPhrApiWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
+        assertPhrApiPrivateWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
+    }
+
+    @Test
+    @EnableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
+    public void testDeleteMedicalDataSourceWithData_telemetryFlagOn_expectCorrectLogs()
+            throws InterruptedException {
+        setUpSuccessfulMocksForPhrTelemetry();
+
+        mHealthConnectService.deleteMedicalDataSourceWithData(
+                mAttributionSource, UUID.randomUUID().toString(), mEmptyResponseCallback);
+
+        awaitAllExecutorsIdle();
+        assertPhrApiWestWorldWrites(
+                () -> eq(DELETE_MEDICAL_DATA_SOURCE_WITH_DATA),
+                () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
+                1);
+        assertPhrApiPrivateWestWorldWrites(
+                () -> eq(DELETE_MEDICAL_DATA_SOURCE_WITH_DATA),
+                () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
+                1);
+    }
+
+    @Test
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalDataSourceWithData_badId_fails() throws RemoteException {
-        setDataManagementPermission(PERMISSION_GRANTED);
+        setDataManagementPermission(PackageManager.PERMISSION_GRANTED);
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
         doThrow(new IllegalArgumentException())
                 .when(mMedicalDataSourceHelper)
-                .deleteMedicalDataSource(any(), any());
+                .deleteMedicalDataSourceWithoutPermissionChecks(any());
 
         mHealthConnectService.deleteMedicalDataSourceWithData(mAttributionSource, "foo", callback);
 
         verify(callback, timeout(5000)).onError(mErrorCaptor.capture());
         HealthConnectException exception = mErrorCaptor.getValue().getHealthConnectException();
-        assertThat(exception.getErrorCode())
-                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+        assertThat(exception.getErrorCode()).isEqualTo(ERROR_INVALID_ARGUMENT);
         verifyNoMoreInteractions(callback);
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalDataSourceWithData_noPermission_fails() throws RemoteException {
         setDataManagementPermission(PERMISSION_DENIED);
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
@@ -1703,7 +2186,8 @@ public class HealthConnectServiceImplTest {
                                 id.toString(),
                                 DATA_SOURCE_PACKAGE_NAME,
                                 DATA_SOURCE_FHIR_BASE_URI,
-                                DATA_SOURCE_DISPLAY_NAME)
+                                DATA_SOURCE_DISPLAY_NAME,
+                                DATA_SOURCE_FHIR_VERSION)
                         .build();
         when(mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
                         List.of(id)))
@@ -1719,7 +2203,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalDataSourceWithData_wrongPackage_fails() throws RemoteException {
         setDataManagementPermission(PERMISSION_DENIED);
         setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
@@ -1730,14 +2214,15 @@ public class HealthConnectServiceImplTest {
                                 id.toString(),
                                 DIFFERENT_DATA_SOURCE_PACKAGE_NAME,
                                 DATA_SOURCE_FHIR_BASE_URI,
-                                DATA_SOURCE_DISPLAY_NAME)
+                                DATA_SOURCE_DISPLAY_NAME,
+                                DATA_SOURCE_FHIR_VERSION)
                         .build();
         when(mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
                         List.of(id)))
                 .thenReturn(List.of(datasource));
         doThrow(new IllegalArgumentException())
                 .when(mMedicalDataSourceHelper)
-                .deleteMedicalDataSource(any(), any());
+                .deleteMedicalDataSourceWithPermissionChecks(any(), any());
 
         mHealthConnectService.deleteMedicalDataSourceWithData(
                 mAttributionSource, id.toString(), callback);
@@ -1745,14 +2230,13 @@ public class HealthConnectServiceImplTest {
         verify(callback, timeout(5000)).onError(mErrorCaptor.capture());
         verifyNoMoreInteractions(callback);
         HealthConnectException exception = mErrorCaptor.getValue().getHealthConnectException();
-        assertThat(exception.getErrorCode())
-                .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+        assertThat(exception.getErrorCode()).isEqualTo(ERROR_INVALID_ARGUMENT);
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalDataSourceWithData_existingId_succeeds() throws RemoteException {
-        setDataManagementPermission(PERMISSION_GRANTED);
+        setDataManagementPermission(PackageManager.PERMISSION_GRANTED);
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
         UUID id = UUID.randomUUID();
         MedicalDataSource datasource =
@@ -1760,7 +2244,8 @@ public class HealthConnectServiceImplTest {
                                 id.toString(),
                                 DATA_SOURCE_PACKAGE_NAME,
                                 DATA_SOURCE_FHIR_BASE_URI,
-                                DATA_SOURCE_DISPLAY_NAME)
+                                DATA_SOURCE_DISPLAY_NAME,
+                                DATA_SOURCE_FHIR_VERSION)
                         .build();
         when(mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(
                         List.of(id)))
@@ -1793,7 +2278,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalResources_noIds_returns() throws RemoteException {
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
 
@@ -1804,7 +2289,50 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    @DisableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
+    public void testDeleteMedicalResourcesByIds_telemetryFlagOff_expectNoLogs()
+            throws InterruptedException {
+        setUpSuccessfulMocksForPhrTelemetry();
+
+        mHealthConnectService.deleteMedicalResourcesByIds(
+                mAttributionSource, List.of(getMedicalResourceId()), mEmptyResponseCallback);
+
+        awaitAllExecutorsIdle();
+        assertPhrApiWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
+        assertPhrApiPrivateWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
+    }
+
+    @Test
+    @EnableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
+    public void testDeleteMedicalResourcesByIds_telemetryFlagOn_expectCorrectLogs()
+            throws InterruptedException {
+        setUpSuccessfulMocksForPhrTelemetry();
+
+        mHealthConnectService.deleteMedicalResourcesByIds(
+                mAttributionSource, List.of(getMedicalResourceId()), mEmptyResponseCallback);
+
+        awaitAllExecutorsIdle();
+        assertPhrApiWestWorldWrites(
+                () -> eq(DELETE_MEDICAL_RESOURCES_BY_IDS),
+                () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
+                1);
+        assertPhrApiPrivateWestWorldWrites(
+                () -> eq(DELETE_MEDICAL_RESOURCES_BY_IDS),
+                () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
+                1);
+    }
+
+    @Test
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalResources_someIds_success() throws RemoteException {
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
 
@@ -1822,7 +2350,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalResources_noWriteMedicalDataPermission_throws() throws Exception {
         setDataManagementPermission(PERMISSION_DENIED);
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
@@ -1842,10 +2370,10 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalResources_dataManagementPermissionNothingThere_success()
             throws Exception {
-        setDataManagementPermission(PERMISSION_GRANTED);
+        setDataManagementPermission(PackageManager.PERMISSION_GRANTED);
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
 
         mHealthConnectService.deleteMedicalResourcesByIds(
@@ -1859,6 +2387,57 @@ public class HealthConnectServiceImplTest {
 
         verify(callback, timeout(5000).times(1)).onResult();
         verifyNoMoreInteractions(callback);
+    }
+
+    @Test
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    @DisableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
+    public void testDeleteMedicalResourcesByRequests_telemetryFlagOff_expectNoLogs()
+            throws InterruptedException {
+        setUpSuccessfulMocksForPhrTelemetry();
+        DeleteMedicalResourcesRequest request =
+                new DeleteMedicalResourcesRequest.Builder()
+                        .addDataSourceId(UUID.randomUUID().toString())
+                        .build();
+
+        mHealthConnectService.deleteMedicalResourcesByRequest(
+                mAttributionSource, request, mEmptyResponseCallback);
+
+        awaitAllExecutorsIdle();
+        assertPhrApiWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
+        assertPhrApiPrivateWestWorldWrites(ArgumentMatchers::anyInt, ArgumentMatchers::anyInt, 0);
+    }
+
+    @Test
+    @EnableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY,
+        FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW
+    })
+    public void testDeleteMedicalResourcesByRequests_telemetryFlagOn_expectCorrectLogs()
+            throws InterruptedException {
+        setUpSuccessfulMocksForPhrTelemetry();
+        DeleteMedicalResourcesRequest request =
+                new DeleteMedicalResourcesRequest.Builder()
+                        .addDataSourceId(UUID.randomUUID().toString())
+                        .build();
+
+        mHealthConnectService.deleteMedicalResourcesByRequest(
+                mAttributionSource, request, mEmptyResponseCallback);
+
+        awaitAllExecutorsIdle();
+        assertPhrApiWestWorldWrites(
+                () -> eq(DELETE_MEDICAL_RESOURCES_BY_REQUESTS),
+                () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
+                1);
+        assertPhrApiPrivateWestWorldWrites(
+                () -> eq(DELETE_MEDICAL_RESOURCES_BY_REQUESTS),
+                () -> eq(HEALTH_CONNECT_API_CALLED__API_STATUS__SUCCESS),
+                1);
     }
 
     @Test
@@ -1879,7 +2458,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalResourcesByRequest_noPermission_securityError()
             throws RemoteException {
         setDataManagementPermission(PERMISSION_DENIED);
@@ -1899,7 +2478,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalResourcesByRequest_nonExistentRequest_success()
             throws RemoteException {
         when(mAppInfoHelper.getAppInfoId(any())).thenReturn(DEFAULT_PACKAGE_APP_INFO);
@@ -1922,10 +2501,10 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalResourcesByRequest_nonExistentRequestHasManagement_success()
             throws RemoteException {
-        setDataManagementPermission(PERMISSION_GRANTED);
+        setDataManagementPermission(PackageManager.PERMISSION_GRANTED);
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
         DeleteMedicalResourcesRequest request =
                 new DeleteMedicalResourcesRequest.Builder()
@@ -1940,14 +2519,14 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testDeleteMedicalResourcesByRequest_requestWithFhirType_success()
             throws RemoteException {
-        setDataManagementPermission(PERMISSION_GRANTED);
+        setDataManagementPermission(PackageManager.PERMISSION_GRANTED);
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
         DeleteMedicalResourcesRequest request =
                 new DeleteMedicalResourcesRequest.Builder()
-                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_IMMUNIZATION)
+                        .addMedicalResourceType(MEDICAL_RESOURCE_TYPE_VACCINES)
                         .build();
 
         mHealthConnectService.deleteMedicalResourcesByRequest(
@@ -1970,23 +2549,7 @@ public class HealthConnectServiceImplTest {
     }
 
     @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
-    public void testQueryAllMedicalResourceTypeInfos_noDataManagementPermission_throws()
-            throws Exception {
-        doThrow(SecurityException.class)
-                .when(mServiceContext)
-                .enforcePermission(eq(MANAGE_HEALTH_DATA_PERMISSION), anyInt(), anyInt(), isNull());
-        IMedicalResourceTypeInfosCallback callback = mock(IMedicalResourceTypeInfosCallback.class);
-
-        mHealthConnectService.queryAllMedicalResourceTypeInfos(callback);
-
-        verify(callback, timeout(5000).times(1)).onError(mErrorCaptor.capture());
-        assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
-                .isEqualTo(HealthConnectException.ERROR_SECURITY);
-    }
-
-    @Test
-    @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    @EnableFlags({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testGetAllContributorAppInfoIds_noDataManagementPermission_throws()
             throws Exception {
         doThrow(SecurityException.class)
@@ -2003,14 +2566,42 @@ public class HealthConnectServiceImplTest {
 
     @Test
     public void testUserSwitching() throws TimeoutException {
-        doNothing()
-                .when(mHealthDataCategoryPriorityHelper)
-                .maybeAddContributingAppsToPriorityList(mContext);
-
         mHealthConnectService.onUserSwitching(mUserHandle);
 
         waitForAllScheduledTasksToComplete();
-        verify(mHealthDataCategoryPriorityHelper).maybeAddContributingAppsToPriorityList(any());
+    }
+
+    /**
+     * Sets up the mocks so all checks are bypassed and all PHR API calls are successful. Although,
+     * notably data management permission is denied so the logs are logged in {@link
+     * com.android.server.healthconnect.logging.HealthConnectServiceLogger}.
+     */
+    private void setUpSuccessfulMocksForPhrTelemetry() {
+        setDataManagementPermission(PERMISSION_DENIED);
+        when(mPermissionManager.checkPermissionForPreflight(any(), any()))
+                .thenReturn(PermissionManager.PERMISSION_GRANTED);
+        when(mPermissionManager.checkPermissionForDataDelivery(any(), any(), any()))
+                .thenReturn(PermissionManager.PERMISSION_GRANTED);
+        when(mAppOpsManagerLocal.isUidInForeground(anyInt())).thenReturn(true);
+        ExtendedMockito.doNothing()
+                .when(
+                        () ->
+                                RateLimiter.tryAcquireApiCallQuota(
+                                        anyInt(),
+                                        eq(QUOTA_CATEGORY_WRITE),
+                                        anyBoolean(),
+                                        anyLong()));
+        ExtendedMockito.doNothing()
+                .when(
+                        () ->
+                                RateLimiter.tryAcquireApiCallQuota(
+                                        anyInt(),
+                                        eq(QUOTA_CATEGORY_READ),
+                                        anyBoolean(),
+                                        anyLong()));
+        ExtendedMockito.doNothing().when(() -> RateLimiter.checkMaxChunkMemoryUsage(anyLong()));
+        ExtendedMockito.doNothing().when(() -> RateLimiter.checkMaxRecordMemoryUsage(anyLong()));
+        setUpPhrMocksWithIrrelevantResponses();
     }
 
     private void setUpCreateMedicalDataSourceDefaultMocks() {
@@ -2039,10 +2630,26 @@ public class HealthConnectServiceImplTest {
                 .thenReturn(List.of());
         when(mMedicalResourceHelper.readMedicalResourcesByRequestWithoutPermissionChecks(
                         any(), anyInt()))
-                .thenReturn(new ReadMedicalResourcesInternalResponse(List.of(), null));
+                .thenReturn(new ReadMedicalResourcesInternalResponse(List.of(), null, 0));
         when(mMedicalResourceHelper.readMedicalResourcesByRequestWithPermissionChecks(
                         any(), anyInt(), anyString(), anyBoolean()))
-                .thenReturn(new ReadMedicalResourcesInternalResponse(List.of(), null));
+                .thenReturn(new ReadMedicalResourcesInternalResponse(List.of(), null, 0));
+        when(mMedicalResourceHelper.upsertMedicalResources(any(), any())).thenReturn(List.of());
+        doNothing()
+                .when(mMedicalResourceHelper)
+                .deleteMedicalResourcesByIdsWithoutPermissionChecks(any());
+        doNothing()
+                .when(mMedicalResourceHelper)
+                .deleteMedicalResourcesByIdsWithPermissionChecks(any(), any());
+        doNothing()
+                .when(mMedicalResourceHelper)
+                .deleteMedicalResourcesByRequestWithoutPermissionChecks(any());
+        doNothing()
+                .when(mMedicalResourceHelper)
+                .deleteMedicalResourcesByRequestWithPermissionChecks(any(), any());
+
+        when(mMedicalDataSourceHelper.createMedicalDataSource(any(), any(), any()))
+                .thenReturn(getMedicalDataSourceRequiredFieldsOnly());
         when(mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithoutPermissionChecks(any()))
                 .thenReturn(List.of());
         when(mMedicalDataSourceHelper.getMedicalDataSourcesByIdsWithPermissionChecks(
@@ -2055,12 +2662,78 @@ public class HealthConnectServiceImplTest {
                 .thenReturn(List.of());
     }
 
+    // Suppliers must to be used because Matchers can't be passed directly through method calls.
+    // See https://stackoverflow.com/a/55297901
+    private static void assertPhrApiWestWorldWrites(
+            Supplier<Integer> apiMethodMatcherSupplier,
+            Supplier<Integer> apiStatusMatcherSupplier,
+            int wantedNumberOfInvocations) {
+        ExtendedMockito.verify(
+                () ->
+                        HealthFitnessStatsLog.write(
+                                eq(HEALTH_CONNECT_API_CALLED),
+                                apiMethodMatcherSupplier.get(),
+                                apiStatusMatcherSupplier.get(),
+                                anyInt(),
+                                anyLong(),
+                                anyInt(),
+                                anyInt(),
+                                anyInt(),
+                                eq(THIS_TEST_PACKAGE_NAME)),
+                times(wantedNumberOfInvocations));
+    }
+
+    /**
+     * {@code wantedNumberOfInvocations} indicates the wanted number of invocations for <b>each
+     * item</b> in {@code medicalResourceTypes}.
+     */
+    // Suppliers must to be used because Matchers can't be passed directly through method calls.
+    // See https://stackoverflow.com/a/55297901
+    private static void assertPhrApiPrivateWestWorldWrites(
+            Supplier<Integer> apiMethodMatcherSupplier,
+            Supplier<Integer> apiStatusMatcherSupplier,
+            Collection<Integer> medicalResourceTypes,
+            int wantedNumberOfInvocations) {
+        for (int medicalResourceType : medicalResourceTypes) {
+            ExtendedMockito.verify(
+                    () ->
+                            HealthFitnessStatsLog.write(
+                                    eq(HEALTH_CONNECT_PHR_API_INVOKED),
+                                    apiMethodMatcherSupplier.get(),
+                                    apiStatusMatcherSupplier.get(),
+                                    eq(THIS_TEST_PACKAGE_NAME),
+                                    eq(medicalResourceType)),
+                    times(wantedNumberOfInvocations));
+        }
+    }
+
+    /**
+     * This method should be used instead of {@link #assertPhrApiPrivateWestWorldWrites(Supplier,
+     * Supplier, Collection, int)} when medical resource type is irrelevant.
+     */
+    // Suppliers must to be used because Matchers can't be passed directly through method calls.
+    // See https://stackoverflow.com/a/55297901
+    private static void assertPhrApiPrivateWestWorldWrites(
+            Supplier<Integer> apiMethodMatcherSupplier,
+            Supplier<Integer> apiStatusMatcherSupplier,
+            int wantedNumberOfInvocations) {
+        ExtendedMockito.verify(
+                () ->
+                        HealthFitnessStatsLog.write(
+                                eq(HEALTH_CONNECT_PHR_API_INVOKED),
+                                apiMethodMatcherSupplier.get(),
+                                apiStatusMatcherSupplier.get(),
+                                eq(THIS_TEST_PACKAGE_NAME),
+                                eq(MEDICAL_RESOURCE_TYPE_NOT_ASSIGNED_DEFAULT_VALUE)),
+                times(wantedNumberOfInvocations));
+    }
+
     private void setDataManagementPermission(int result) {
         when(mServiceContext.checkPermission(eq(MANAGE_HEALTH_DATA_PERMISSION), anyInt(), anyInt()))
                 .thenReturn(result);
     }
 
-    private void setBackendReadPermission(int result) {
+    private void setBackgroundReadPermission(int result) {
         when(mServiceContext.checkPermission(
                         eq(READ_HEALTH_DATA_IN_BACKGROUND), anyInt(), anyInt()))
                 .thenReturn(result);
@@ -2109,23 +2782,11 @@ public class HealthConnectServiceImplTest {
         return file;
     }
 
-    private static void deleteDir(File dir) {
-        File[] files = dir.listFiles();
-        if (files != null) {
-            for (var file : files) {
-                if (file.isDirectory()) {
-                    deleteDir(file);
-                } else {
-                    assertThat(file.delete()).isTrue();
-                }
-            }
-        }
-        assertWithMessage(
-                        "Directory "
-                                + dir.getAbsolutePath()
-                                + " is not empty, Files present = "
-                                + Arrays.toString(dir.list()))
-                .that(dir.delete())
-                .isTrue();
+    /**
+     * Waits until all executors in {@link HealthConnectServiceImpl} idle. For now this just waits
+     * for a fixed duration with {@link Thread#sleep(long)}, this could be improved later.
+     */
+    private static void awaitAllExecutorsIdle() throws InterruptedException {
+        Thread.sleep(500);
     }
 }

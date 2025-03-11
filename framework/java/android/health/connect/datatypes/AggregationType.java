@@ -194,6 +194,10 @@ public final class AggregationType<T> {
         int SKIN_TEMPERATURE_RECORD_DELTA_MIN = 85;
         int SKIN_TEMPERATURE_RECORD_DELTA_MAX = 86;
         int MINDFULNESS_SESSION_DURATION_TOTAL = 87;
+        int ACTIVITY_INTENSITY_MODERATE_DURATION_TOTAL = 88;
+        int ACTIVITY_INTENSITY_VIGOROUS_DURATION_TOTAL = 89;
+        int ACTIVITY_INTENSITY_DURATION_TOTAL = 90;
+        int ACTIVITY_INTENSITY_MINUTES_TOTAL = 91;
 
         /**
          * Valid set of values for this IntDef. Update this set when add new type or deprecate
@@ -290,7 +294,11 @@ public final class AggregationType<T> {
                         SKIN_TEMPERATURE_RECORD_DELTA_AVG,
                         SKIN_TEMPERATURE_RECORD_DELTA_MIN,
                         SKIN_TEMPERATURE_RECORD_DELTA_MAX,
-                        MINDFULNESS_SESSION_DURATION_TOTAL);
+                        MINDFULNESS_SESSION_DURATION_TOTAL,
+                        ACTIVITY_INTENSITY_MODERATE_DURATION_TOTAL,
+                        ACTIVITY_INTENSITY_VIGOROUS_DURATION_TOTAL,
+                        ACTIVITY_INTENSITY_DURATION_TOTAL,
+                        ACTIVITY_INTENSITY_MINUTES_TOTAL);
 
         /** @hide */
         @IntDef({
@@ -381,7 +389,11 @@ public final class AggregationType<T> {
             SKIN_TEMPERATURE_RECORD_DELTA_AVG,
             SKIN_TEMPERATURE_RECORD_DELTA_MIN,
             SKIN_TEMPERATURE_RECORD_DELTA_MAX,
-            MINDFULNESS_SESSION_DURATION_TOTAL
+            MINDFULNESS_SESSION_DURATION_TOTAL,
+            ACTIVITY_INTENSITY_MODERATE_DURATION_TOTAL,
+            ACTIVITY_INTENSITY_VIGOROUS_DURATION_TOTAL,
+            ACTIVITY_INTENSITY_DURATION_TOTAL,
+            ACTIVITY_INTENSITY_MINUTES_TOTAL
         })
         @Retention(RetentionPolicy.SOURCE)
         @interface Id {}

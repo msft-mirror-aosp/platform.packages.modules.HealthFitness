@@ -37,10 +37,18 @@ public final class FhirResourceTypeStringToIntMapper {
     private static final String FHIR_RESOURCE_TYPE_MEDICATION_STR = "MEDICATION";
     private static final String FHIR_RESOURCE_TYPE_MEDICATION_REQUEST_STR = "MEDICATIONREQUEST";
     private static final String FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT_STR = "MEDICATIONSTATEMENT";
+    private static final String FHIR_RESOURCE_TYPE_PATIENT_STR = "PATIENT";
+    private static final String FHIR_RESOURCE_TYPE_PRACTITIONER_STR = "PRACTITIONER";
+    private static final String FHIR_RESOURCE_TYPE_PRACTITIONER_ROLE_STR = "PRACTITIONERROLE";
+    private static final String FHIR_RESOURCE_TYPE_ENCOUNTER_STR = "ENCOUNTER";
+    private static final String FHIR_RESOURCE_TYPE_LOCATION_STR = "LOCATION";
+    private static final String FHIR_RESOURCE_TYPE_ORGANIZATION_STR = "ORGANIZATION";
 
     /**
      * Returns the corresponding {@code IntDef} {@link FhirResourceType} from a {@code String}
      * {@code fhirResourceType}.
+     *
+     * @throws IllegalArgumentException if the type is not supported.
      */
     @FhirResourceType
     public static int getFhirResourceTypeInt(@NonNull String fhirResourceType) {
@@ -50,8 +58,14 @@ public final class FhirResourceTypeStringToIntMapper {
 
         populateFhirResourceTypeStringToIntMap();
 
-        return sFhirResourceTypeStringToIntMap.getOrDefault(
-                fhirResourceType.toUpperCase(Locale.ROOT), FhirResource.FHIR_RESOURCE_TYPE_UNKNOWN);
+        Integer fhirResourceTypeInt =
+                sFhirResourceTypeStringToIntMap.get(fhirResourceType.toUpperCase(Locale.ROOT));
+        if (fhirResourceTypeInt == null) {
+            throw new IllegalArgumentException(
+                    "Unsupported FHIR resource type: " + fhirResourceType);
+        }
+
+        return fhirResourceTypeInt;
     }
 
     @SuppressWarnings("FlaggedApi") // Initial if statement checks flag, but lint can't know that
@@ -84,5 +98,18 @@ public final class FhirResourceTypeStringToIntMapper {
         sFhirResourceTypeStringToIntMap.put(
                 FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT_STR,
                 FhirResource.FHIR_RESOURCE_TYPE_MEDICATION_STATEMENT);
+        sFhirResourceTypeStringToIntMap.put(
+                FHIR_RESOURCE_TYPE_PATIENT_STR, FhirResource.FHIR_RESOURCE_TYPE_PATIENT);
+        sFhirResourceTypeStringToIntMap.put(
+                FHIR_RESOURCE_TYPE_PRACTITIONER_STR, FhirResource.FHIR_RESOURCE_TYPE_PRACTITIONER);
+        sFhirResourceTypeStringToIntMap.put(
+                FHIR_RESOURCE_TYPE_PRACTITIONER_ROLE_STR,
+                FhirResource.FHIR_RESOURCE_TYPE_PRACTITIONER_ROLE);
+        sFhirResourceTypeStringToIntMap.put(
+                FHIR_RESOURCE_TYPE_ENCOUNTER_STR, FhirResource.FHIR_RESOURCE_TYPE_ENCOUNTER);
+        sFhirResourceTypeStringToIntMap.put(
+                FHIR_RESOURCE_TYPE_LOCATION_STR, FhirResource.FHIR_RESOURCE_TYPE_LOCATION);
+        sFhirResourceTypeStringToIntMap.put(
+                FHIR_RESOURCE_TYPE_ORGANIZATION_STR, FhirResource.FHIR_RESOURCE_TYPE_ORGANIZATION);
     }
 }

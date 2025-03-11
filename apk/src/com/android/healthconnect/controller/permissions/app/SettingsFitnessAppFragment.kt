@@ -70,7 +70,7 @@ import javax.inject.Inject
 class SettingsFitnessAppFragment : Hilt_SettingsFitnessAppFragment() {
 
     init {
-        this.setPageName(PageName.MANAGE_PERMISSIONS_PAGE)
+        setPageName(PageName.MANAGE_PERMISSIONS_PAGE)
     }
 
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
@@ -192,7 +192,7 @@ class SettingsFitnessAppFragment : Hilt_SettingsFitnessAppFragment() {
             DisconnectHealthPermissionsDialogFragment.DISCONNECT_ALL_EVENT,
             this,
         ) { _, bundle ->
-            if (!viewModel.revokeAllHealthPermissions(packageName)) {
+            if (!viewModel.revokeAllFitnessAndMaybeAdditionalPermissions(packageName)) {
                 Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT).show()
             }
 
@@ -238,9 +238,9 @@ class SettingsFitnessAppFragment : Hilt_SettingsFitnessAppFragment() {
             return
         }
         additionalAccessViewModel.additionalAccessState.observe(viewLifecycleOwner) { state ->
-            manageAppCategory.isVisible = state.isValid()
+            manageAppCategory.isVisible = state.isAvailable()
             manageAppCategory.removeAll()
-            if (state.isValid()) {
+            if (state.isAvailable()) {
                 val additionalAccessPref =
                     HealthPreference(requireContext()).also {
                         it.key = KEY_ADDITIONAL_ACCESS
@@ -271,7 +271,11 @@ class SettingsFitnessAppFragment : Hilt_SettingsFitnessAppFragment() {
     }
 
     private fun showRevokeAllPermissions() {
-        DisconnectHealthPermissionsDialogFragment(appName = appName, enableDeleteData = false)
+        DisconnectHealthPermissionsDialogFragment(
+                appName = appName,
+                enableDeleteData = false,
+                DisconnectHealthPermissionsDialogFragment.DisconnectType.FITNESS,
+            )
             .show(childFragmentManager, DisconnectHealthPermissionsDialogFragment.TAG)
     }
 

@@ -16,14 +16,10 @@
 
 package com.android.server.healthconnect;
 
-import static android.health.connect.Constants.DEFAULT_INT;
-
 import static com.android.server.healthconnect.HealthConnectDailyService.EXTRA_JOB_NAME_KEY;
 import static com.android.server.healthconnect.HealthConnectDailyService.EXTRA_USER_ID;
 
-import android.annotation.UserIdInt;
 import android.app.job.JobInfo;
-import android.app.job.JobParameters;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
@@ -31,12 +27,9 @@ import android.os.PersistableBundle;
 import android.os.UserHandle;
 
 import com.android.server.healthconnect.logging.DailyLoggingService;
-import com.android.server.healthconnect.storage.AutoDeleteService;
-import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
+import com.android.server.healthconnect.logging.UsageStatsCollector;
+import com.android.server.healthconnect.storage.DailyCleanupJob;
+import com.android.server.healthconnect.storage.datatypehelpers.DatabaseStatsCollector;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -48,13 +41,14 @@ public class HealthConnectDailyJobs {
     private static final long JOB_RUN_INTERVAL = TimeUnit.DAYS.toMillis(1);
     private static final String HEALTH_CONNECT_NAMESPACE = "HEALTH_CONNECT_DAILY_JOB";
 
-    public static void schedule(Context context, @UserIdInt int userId) {
+    /** Schedule the daily job */
+    public static void schedule(Context context, UserHandle userHandle) {
         ComponentName componentName = new ComponentName(context, HealthConnectDailyService.class);
         final PersistableBundle extras = new PersistableBundle();
-        extras.putInt(EXTRA_USER_ID, userId);
+        extras.putInt(EXTRA_USER_ID, userHandle.getIdentifier());
         extras.putString(EXTRA_JOB_NAME_KEY, HC_DAILY_JOB);
         JobInfo.Builder builder =
-                new JobInfo.Builder(MIN_JOB_ID + userId, componentName)
+                new JobInfo.Builder(MIN_JOB_ID + userHandle.getIdentifier(), componentName)
                         .setExtras(extras)
                         .setRequiresCharging(true)
                         .setRequiresDeviceIdle(true)
@@ -63,7 +57,7 @@ public class HealthConnectDailyJobs {
         HealthConnectDailyService.schedule(
                 Objects.requireNonNull(context.getSystemService(JobScheduler.class))
                         .forNamespace(HEALTH_CONNECT_NAMESPACE),
-                userId,
+                userHandle,
                 builder.build());
     }
 
@@ -75,26 +69,10 @@ public class HealthConnectDailyJobs {
 
     /** Auto deletes the data and uploads critical daily metrics. */
     public static void execute(
-            Context context,
-            JobParameters params,
-            HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
-            PreferenceHelper preferenceHelper,
-            AppInfoHelper appInfoHelper,
-            AccessLogsHelper accessLogsHelper,
-            TransactionManager transactionManager) {
-        int userId = params.getExtras().getInt(EXTRA_USER_ID, /* defaultValue= */ DEFAULT_INT);
-
-        AutoDeleteService.startAutoDelete(
-                context,
-                healthDataCategoryPriorityHelper,
-                preferenceHelper,
-                appInfoHelper,
-                transactionManager,
-                accessLogsHelper);
-        DailyLoggingService.logDailyMetrics(
-                context,
-                UserHandle.getUserHandleForUid(userId),
-                preferenceHelper,
-                accessLogsHelper);
+            UsageStatsCollector usageStatsCollector,
+            DatabaseStatsCollector databaseStatsCollector,
+            DailyCleanupJob dailyCleanupJob) {
+        dailyCleanupJob.startDailyCleanup();
+        DailyLoggingService.logDailyMetrics(usageStatsCollector, databaseStatsCollector);
     }
 }

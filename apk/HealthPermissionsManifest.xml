@@ -41,6 +41,13 @@
         android:permissionGroup="android.permission-group.HEALTH" />
 
     <permission
+        android:name="android.permission.health.READ_ACTIVITY_INTENSITY"
+        android:label="@string/activity_intensity_read_content_description"
+        android:protectionLevel="dangerous"
+        android:permissionGroup="android.permission-group.HEALTH"
+    />
+
+    <permission
         android:name="android.permission.health.READ_DISTANCE"
         android:label="@string/distance_read_content_description"
         android:protectionLevel="dangerous"
@@ -234,6 +241,8 @@
         android:name="android.permission.health.READ_HEART_RATE"
         android:label="@string/heart_rate_read_content_description"
         android:protectionLevel="dangerous"
+        android:backgroundPermission=
+            "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND"
         android:permissionGroup="android.permission-group.HEALTH" />
 
     <permission
@@ -246,6 +255,8 @@
         android:name="android.permission.health.READ_OXYGEN_SATURATION"
         android:label="@string/oxygen_saturation_read_content_description"
         android:protectionLevel="dangerous"
+        android:backgroundPermission=
+            "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND"
         android:permissionGroup="android.permission-group.HEALTH" />
 
     <permission
@@ -264,6 +275,8 @@
         android:name="android.permission.health.READ_SKIN_TEMPERATURE"
         android:label="@string/skin_temperature_read_content_description"
         android:protectionLevel="dangerous"
+        android:backgroundPermission=
+            "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND"
         android:permissionGroup="android.permission-group.HEALTH" />
 
     <permission
@@ -274,13 +287,13 @@
 
     <!-- Read permissions for personal health records -->
     <permission
-        android:name="android.permission.health.READ_MEDICAL_DATA_ALLERGY_INTOLERANCE"
-        android:label="@string/allergy_intolerance_content_description"
+        android:name="android.permission.health.READ_MEDICAL_DATA_ALLERGIES_INTOLERANCES"
+        android:label="@string/allergies_intolerances_content_description"
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
     <permission
-        android:name="android.permission.health.READ_MEDICAL_DATA_IMMUNIZATION"
-        android:label="@string/immunization_content_description"
+        android:name="android.permission.health.READ_MEDICAL_DATA_CONDITIONS"
+        android:label="@string/conditions_content_description"
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
     <permission
@@ -294,18 +307,23 @@
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
     <permission
+        android:name="android.permission.health.READ_MEDICAL_DATA_PERSONAL_DETAILS"
+        android:label="@string/personal_details_content_description"
+        android:protectionLevel="dangerous"
+        android:permissionGroup="android.permission-group.HEALTH" />
+    <permission
+        android:name="android.permission.health.READ_MEDICAL_DATA_PRACTITIONER_DETAILS"
+        android:label="@string/practitioner_details_content_description"
+        android:protectionLevel="dangerous"
+        android:permissionGroup="android.permission-group.HEALTH" />
+    <permission
         android:name="android.permission.health.READ_MEDICAL_DATA_PREGNANCY"
         android:label="@string/pregnancy_content_description"
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
     <permission
-        android:name="android.permission.health.READ_MEDICAL_DATA_PROBLEMS"
-        android:label="@string/pregnancy_content_description"
-        android:protectionLevel="dangerous"
-        android:permissionGroup="android.permission-group.HEALTH" />
-    <permission
         android:name="android.permission.health.READ_MEDICAL_DATA_PROCEDURES"
-        android:label="@string/pregnancy_content_description"
+        android:label="@string/procedures_content_description"
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
     <permission
@@ -313,7 +331,16 @@
         android:label="@string/social_history_content_description"
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
-
+    <permission
+        android:name="android.permission.health.READ_MEDICAL_DATA_VACCINES"
+        android:label="@string/vaccines_content_description"
+        android:protectionLevel="dangerous"
+        android:permissionGroup="android.permission-group.HEALTH" />
+    <permission
+        android:name="android.permission.health.READ_MEDICAL_DATA_VISITS"
+        android:label="@string/visits_content_description"
+        android:protectionLevel="dangerous"
+        android:permissionGroup="android.permission-group.HEALTH" />
     <permission
         android:name="android.permission.health.READ_MEDICAL_DATA_VITAL_SIGNS"
         android:label="@string/vital_signs_content_description"
@@ -334,6 +361,13 @@
         android:label="@string/active_calories_burned_write_content_description"
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
+
+    <permission
+        android:name="android.permission.health.WRITE_ACTIVITY_INTENSITY"
+        android:label="@string/activity_intensity_write_content_description"
+        android:protectionLevel="dangerous"
+        android:permissionGroup="android.permission-group.HEALTH"
+    />
 
     <permission
         android:name="android.permission.health.WRITE_DISTANCE"

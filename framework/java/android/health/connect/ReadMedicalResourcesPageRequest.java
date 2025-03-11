@@ -31,7 +31,7 @@ import android.annotation.NonNull;
 import android.health.connect.aidl.ReadMedicalResourcesRequestParcel;
 
 /**
- * Class to represent a page read request with specified {@code pageToken} for {@link
+ * A page read request with specified {@code pageToken} for {@link
  * HealthConnectManager#readMedicalResources}.
  *
  * <p>When making a new initial request with new filters, use {@link
@@ -57,11 +57,8 @@ public final class ReadMedicalResourcesPageRequest extends ReadMedicalResourcesR
     @NonNull private final String mPageToken;
 
     /**
-     * @param pageToken The page token to read the requested page of the result.
-     * @param pageSize The maximum number of {@code MedicalResource}s to be returned by the read
-     *     operation.
-     * @throws IllegalArgumentException if {@code pageSize} is less than 1 or more than 5000.
-     * @throws NullPointerException if {@code pageToken} is null.
+     * Creates a new instance of {@link ReadMedicalResourcesPageRequest}. Please see {@link
+     * ReadMedicalResourcesPageRequest.Builder} for more detailed parameters information.
      */
     private ReadMedicalResourcesPageRequest(
             @NonNull String pageToken,
@@ -77,7 +74,6 @@ public final class ReadMedicalResourcesPageRequest extends ReadMedicalResourcesR
         return mPageToken;
     }
 
-    /** Indicates whether some other object is "equal to" this one. */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -85,13 +81,11 @@ public final class ReadMedicalResourcesPageRequest extends ReadMedicalResourcesR
         return getPageToken().equals(that.getPageToken()) && getPageSize() == that.getPageSize();
     }
 
-    /** Returns a hash code value for the object. */
     @Override
     public int hashCode() {
         return hash(getPageToken(), getPageSize());
     }
 
-    /** Returns a string representation of this {@link ReadMedicalResourcesPageRequest}. */
     @Override
     public String toString() {
         return this.getClass().getSimpleName()
@@ -112,44 +106,37 @@ public final class ReadMedicalResourcesPageRequest extends ReadMedicalResourcesR
         return new ReadMedicalResourcesRequestParcel(this);
     }
 
-    /** Builder class for {@link ReadMedicalResourcesPageRequest} */
+    /** Builder class for {@link ReadMedicalResourcesPageRequest}. */
     public static final class Builder {
         @NonNull private String mPageToken;
         private int mPageSize = DEFAULT_PAGE_SIZE;
 
         /**
+         * Constructs a new {@link ReadMedicalResourcesPageRequest} instance.
+         *
          * @param pageToken The page token to read the requested page of the result, from the
          *     previous {@link ReadMedicalResourcesResponse#getNextPageToken()}.
-         * @throws IllegalArgumentException if the provided {@code pageToken} is null.
          */
         public Builder(@NonNull String pageToken) {
             requireNonNull(pageToken);
             mPageToken = pageToken;
         }
 
-        /**
-         * @param original The other {@link Builder} to provide data to construct this new instance
-         *     from.
-         */
-        public Builder(@NonNull Builder original) {
-            mPageToken = original.mPageToken;
-            mPageSize = original.mPageSize;
+        /** Constructs a clone of the other {@link ReadMedicalResourcesPageRequest.Builder}. */
+        public Builder(@NonNull Builder other) {
+            mPageToken = other.mPageToken;
+            mPageSize = other.mPageSize;
         }
 
-        /**
-         * @param original The other {@link ReadMedicalResourcesPageRequest} instance to provide
-         *     data to construct this new instance from.
-         */
-        public Builder(@NonNull ReadMedicalResourcesPageRequest original) {
-            mPageToken = original.getPageToken();
-            mPageSize = original.getPageSize();
+        /** Constructs a clone of the other {@link ReadMedicalResourcesPageRequest} instance. */
+        public Builder(@NonNull ReadMedicalResourcesPageRequest other) {
+            mPageToken = other.getPageToken();
+            mPageSize = other.getPageSize();
         }
 
         /**
          * Sets page token to read the requested page of the result, from the previous {@link
          * ReadMedicalResourcesResponse#getNextPageToken()}.
-         *
-         * @throws NullPointerException if {@code pageToken} is null.
          */
         @NonNull
         public Builder setPageToken(@NonNull String pageToken) {

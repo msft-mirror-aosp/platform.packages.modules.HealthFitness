@@ -43,7 +43,6 @@ import com.android.healthconnect.controller.categories.HealthDataCategoryViewMod
 import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel.CategoriesFragmentState.Loading
 import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel.CategoriesFragmentState.WithData
 import com.android.healthconnect.controller.tests.utils.launchFragment
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.logging.CategoriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
@@ -62,6 +61,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 /** List of all Health data categories. */
 private val HEALTH_DATA_ALL_CATEGORIES =
@@ -140,7 +140,10 @@ class HealthDataAllCategoriesFragmentTest {
                 WithData(
                     listOf(
                         HealthCategoryUiState(category = ACTIVITY, hasData = false),
-                        HealthCategoryUiState(category = BODY_MEASUREMENTS, hasData = true))))
+                        HealthCategoryUiState(category = BODY_MEASUREMENTS, hasData = true),
+                    )
+                )
+            )
         }
         launchFragment<HealthDataAllCategoriesFragment>(Bundle())
 

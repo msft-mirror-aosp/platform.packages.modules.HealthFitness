@@ -16,6 +16,7 @@
 
 package android.healthconnect.cts.utils;
 
+import static android.Manifest.permission.REVOKE_RUNTIME_PERMISSIONS;
 import static android.content.pm.PackageManager.GET_PERMISSIONS;
 import static android.healthconnect.cts.utils.TestUtils.getHealthConnectManager;
 
@@ -23,6 +24,7 @@ import static com.android.compatibility.common.util.SystemUtil.runWithShellPermi
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import android.annotation.SuppressLint;
 import android.app.UiAutomation;
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -32,6 +34,7 @@ import android.health.connect.HealthPermissions;
 import android.os.UserHandle;
 
 import androidx.annotation.Nullable;
+import androidx.test.core.app.ApplicationProvider;
 
 import com.android.compatibility.common.util.SystemUtil;
 import com.android.compatibility.common.util.ThrowingRunnable;
@@ -56,53 +59,55 @@ public final class PermissionHelper {
             "android.permission.health.READ_EXERCISE_ROUTES";
     private static final String MANAGE_HEALTH_PERMISSIONS =
             HealthPermissions.MANAGE_HEALTH_PERMISSIONS;
-    private static final String HEALTH_PERMISSION_PREFIX = "android.permission.health.";
 
-    /** Returns permissions declared in the Manifest of the given package. */
-    public static List<String> getDeclaredHealthPermissions(String pkgName) {
-        final PackageInfo pi = getAppPackageInfo(pkgName);
-        final String[] requestedPermissions = pi.requestedPermissions;
+    /** Returns valid Health permissions declared in the Manifest of the given package. */
+    public static List<String> getDeclaredHealthPermissions(String packageName) {
+        Context context = ApplicationProvider.getApplicationContext();
+        PackageInfo packageInfo = getAppPackageInfo(context, packageName);
+        String[] requestedPermissions = packageInfo.requestedPermissions;
 
         if (requestedPermissions == null) {
             return List.of();
         }
 
         return Arrays.stream(requestedPermissions)
-                .filter(permission -> permission.startsWith(HEALTH_PERMISSION_PREFIX))
+                .filter(permission -> HealthConnectManager.isHealthPermission(context, permission))
                 .toList();
     }
 
-    public static List<String> getGrantedHealthPermissions(String pkgName) {
-        final PackageInfo pi = getAppPackageInfo(pkgName);
-        final String[] requestedPermissions = pi.requestedPermissions;
-        final int[] requestedPermissionsFlags = pi.requestedPermissionsFlags;
+    /** Returns all Health permissions that are granted to the specified package. */
+    public static List<String> getGrantedHealthPermissions(String packageName) {
+        Context context = ApplicationProvider.getApplicationContext();
+        PackageInfo packageInfo = getAppPackageInfo(context, packageName);
+        String[] requestedPermissions = packageInfo.requestedPermissions;
+        int[] requestedPermissionsFlags = packageInfo.requestedPermissionsFlags;
 
-        if (requestedPermissions == null) {
+        if (requestedPermissions == null || requestedPermissionsFlags == null) {
             return List.of();
         }
 
         final List<String> permissions = new ArrayList<>();
 
         for (int i = 0; i < requestedPermissions.length; i++) {
-            if ((requestedPermissionsFlags[i] & PackageInfo.REQUESTED_PERMISSION_GRANTED) != 0) {
-                if (requestedPermissions[i].startsWith(HEALTH_PERMISSION_PREFIX)) {
-                    permissions.add(requestedPermissions[i]);
-                }
+            if ((requestedPermissionsFlags[i] & PackageInfo.REQUESTED_PERMISSION_GRANTED) != 0
+                    && HealthConnectManager.isHealthPermission(context, requestedPermissions[i])) {
+                permissions.add(requestedPermissions[i]);
             }
         }
 
         return permissions;
     }
 
-    private static PackageInfo getAppPackageInfo(String pkgName) {
-        final Context targetContext = androidx.test.InstrumentationRegistry.getTargetContext();
+    private static PackageInfo getAppPackageInfo(Context context, String packageName) {
+        return getAppPackageInfo(context.getPackageManager(), packageName);
+    }
+
+    private static PackageInfo getAppPackageInfo(
+            PackageManager packageManager, String packageName) {
         return runWithShellPermissionIdentity(
                 () ->
-                        targetContext
-                                .getPackageManager()
-                                .getPackageInfo(
-                                        pkgName,
-                                        PackageManager.PackageInfoFlags.of(GET_PERMISSIONS)));
+                        packageManager.getPackageInfo(
+                                packageName, PackageManager.PackageInfoFlags.of(GET_PERMISSIONS)));
     }
 
     public static void grantPermission(String pkgName, String permission) {
@@ -171,31 +176,28 @@ public final class PermissionHelper {
         }
     }
 
+    /** Revokes all granted Health permissions from the specified package. */
+    @SuppressLint("MissingPermission")
     public static void revokeHealthPermissions(String packageName) {
-        runWithShellPermissionIdentity(() -> revokeHealthPermissionsPrivileged(packageName));
-    }
+        Context context = ApplicationProvider.getApplicationContext();
+        PackageManager packageManager = context.getPackageManager();
+        UserHandle user = context.getUser();
 
-    private static void revokeHealthPermissionsPrivileged(String packageName)
-            throws PackageManager.NameNotFoundException {
-        final Context targetContext = androidx.test.InstrumentationRegistry.getTargetContext();
-        final PackageManager packageManager = targetContext.getPackageManager();
-        final UserHandle user = targetContext.getUser();
-
-        final PackageInfo packageInfo =
-                packageManager.getPackageInfo(
-                        packageName,
-                        PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS));
-
-        final String[] permissions = packageInfo.requestedPermissions;
+        PackageInfo packageInfo = getAppPackageInfo(packageManager, packageName);
+        String[] permissions = packageInfo.requestedPermissions;
         if (permissions == null) {
             return;
         }
 
-        for (String permission : permissions) {
-            if (permission.startsWith(HEALTH_PERMISSION_PREFIX)) {
-                packageManager.revokeRuntimePermission(packageName, permission, user);
-            }
-        }
+        runWithShellPermissionIdentity(
+                () -> {
+                    for (String permission : permissions) {
+                        if (HealthConnectManager.isHealthPermission(context, permission)) {
+                            packageManager.revokeRuntimePermission(packageName, permission, user);
+                        }
+                    }
+                },
+                REVOKE_RUNTIME_PERMISSIONS);
     }
 
     /**
@@ -238,7 +240,7 @@ public final class PermissionHelper {
     public static <T> T runWithRevokedPermissions(
             ThrowingSupplier<T> supplier, String packageName, String... permissions)
             throws Exception {
-        Context context = androidx.test.InstrumentationRegistry.getTargetContext();
+        Context context = ApplicationProvider.getApplicationContext();
         checkArgument(
                 !context.getPackageName().equals(packageName),
                 "Can not be called on self, only on other apps");
@@ -273,33 +275,5 @@ public final class PermissionHelper {
                     String.format(
                             "pm clear-permission-flags %s %s user-fixed", packageName, permission));
         }
-    }
-
-    /**
-     * Sets the device config value for the duration of the supplier.
-     *
-     * <p>Kills the HC controller after each device config update as the most reliable way of making
-     * sure the controller picks up the updated value. Otherwise the callback which the controller
-     * uses to listen to device config changes might arrive late (and usually does).
-     */
-    public static <T> T runWithDeviceConfigForController(
-            String key, String value, ThrowingSupplier<T> supplier) throws Exception {
-        DeviceConfigRule rule = new DeviceConfigRule(key, value);
-        try {
-            rule.before();
-            killHealthConnectController();
-            return supplier.get();
-        } catch (Throwable e) {
-            throw new Exception(e);
-        } finally {
-            rule.after();
-            killHealthConnectController();
-        }
-    }
-
-    /** Kills Health Connect controller. */
-    private static void killHealthConnectController() {
-        SystemUtil.runShellCommandOrThrow(
-                "am force-stop com.google.android.healthconnect.controller");
     }
 }

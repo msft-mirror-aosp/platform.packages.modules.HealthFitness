@@ -25,7 +25,7 @@ import androidx.preference.PreferenceViewHolder
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 
- /** Custom preference that displays a checkbox and allows the user to select all items */
+/** Custom preference that displays a checkbox and allows the user to select all items */
 class SelectAllCheckboxPreference
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null) : HealthPreference(context, attrs) {
@@ -33,20 +33,19 @@ constructor(context: Context, attrs: AttributeSet? = null) : HealthPreference(co
     private var widgetFrame: ViewGroup? = null
     private var checkBox: CheckBox? = null
     private var checkboxButtonListener: OnClickListener? = null
-    private var onPreferenceClickListener : OnPreferenceClickListener? = null
+    private var onPreferenceClickListener: OnPreferenceClickListener? = null
     private var isChecked: Boolean = false
-
 
     init {
         widgetLayoutResource = R.layout.widget_checkbox
         isSelectable = true
-
     }
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
         widgetFrame = holder.findViewById(android.R.id.widget_frame) as ViewGroup?
         widgetFrame?.tag = "checkbox"
+        widgetFrame?.contentDescription = getUpdatedContentDescription(isChecked)
 
         checkBox = holder.findViewById(R.id.checkbox_button) as CheckBox
 
@@ -56,30 +55,29 @@ constructor(context: Context, attrs: AttributeSet? = null) : HealthPreference(co
 
         val widgetFrameParent: ViewGroup? = widgetFrame?.parent as ViewGroup?
         widgetFrameParent?.setPaddingRelative(
-                widgetFrameParent.paddingStart,
-                widgetFrameParent.paddingTop,
-                /* end = */ 0,
-                widgetFrameParent.paddingBottom)
-
+            widgetFrameParent.paddingStart,
+            widgetFrameParent.paddingTop,
+            /* end = */ 0,
+            widgetFrameParent.paddingBottom,
+        )
     }
 
-    fun setOnPreferenceClickListenerWithCheckbox(
-            method: () -> Unit
-    ) {
+    fun setOnPreferenceClickListenerWithCheckbox(method: () -> Unit) {
         val clickListener = OnPreferenceClickListener {
-
             checkBox?.toggle()
             setIsChecked(checkBox?.isChecked ?: false)
+            widgetFrame?.contentDescription = getUpdatedContentDescription(isChecked)
             method()
             true
         }
 
         checkboxButtonListener = OnClickListener {
             setIsChecked(checkBox?.isChecked ?: false)
+            widgetFrame?.contentDescription = getUpdatedContentDescription(isChecked)
             method()
         }
 
-        if(onPreferenceClickListener == null){
+        if (onPreferenceClickListener == null) {
             onPreferenceClickListener = clickListener
         }
 
@@ -87,22 +85,29 @@ constructor(context: Context, attrs: AttributeSet? = null) : HealthPreference(co
         notifyChanged()
     }
 
-    fun removeOnPreferenceClickListener(){
-        if(checkboxButtonListener != null){
+    fun removeOnPreferenceClickListener() {
+        if (checkboxButtonListener != null) {
             checkboxButtonListener = null
         }
 
-        if(onPreferenceClickListener != null){
+        if (onPreferenceClickListener != null) {
             onPreferenceClickListener = null
         }
     }
 
-    fun setIsChecked(checked: Boolean){
+    fun setIsChecked(checked: Boolean) {
         isChecked = checked
     }
 
-    fun getIsChecked():Boolean {
+    fun getIsChecked(): Boolean {
         return isChecked
     }
 
+    private fun getUpdatedContentDescription(isChecked: Boolean): String {
+        return if (isChecked) {
+            context.getString(R.string.a11y_checked)
+        } else {
+            context.getString(R.string.a11y_unchecked)
+        }
+    }
 }

@@ -22,7 +22,7 @@ import static com.android.server.healthconnect.storage.datatypehelpers.Transacti
 
 import static com.google.common.truth.Truth.assertThat;
 
-import android.Manifest;
+import android.content.Context;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthPermissions;
 import android.health.connect.ReadRecordsRequestUsingFilters;
@@ -31,20 +31,20 @@ import android.health.connect.datatypes.ExerciseSessionRecord;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.ExerciseSessionRecordInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
-import android.os.Environment;
 
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
-import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.EnvironmentFixture;
+import com.android.server.healthconnect.SQLiteDatabaseFixture;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
+import com.android.server.healthconnect.permission.FirstGrantTimeManager;
+import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 
@@ -54,6 +54,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.quality.Strictness;
 
 import java.time.Instant;
@@ -76,12 +77,14 @@ public class TransactionManagerExerciseRoutesTest {
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this)
                     .mockStatic(HealthConnectManager.class)
-                    .mockStatic(Environment.class)
+                    .addStaticMockFixtures(EnvironmentFixture::new, SQLiteDatabaseFixture::new)
                     .setStrictness(Strictness.LENIENT)
                     .build();
 
-    @Rule(order = 2)
-    public final HealthConnectDatabaseTestRule testRule = new HealthConnectDatabaseTestRule();
+    // TODO(b/373322447): Remove the mock FirstGrantTimeManager
+    @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
+    // TODO(b/373322447): Remove the mock HealthPermissionIntentAppsTracker
+    @Mock private HealthPermissionIntentAppsTracker mPermissionIntentAppsTracker;
 
     private TransactionTestUtils mTransactionTestUtils;
     private TransactionManager mTransactionManager;
@@ -91,27 +94,21 @@ public class TransactionManagerExerciseRoutesTest {
 
     @Before
     public void setup() {
-        InstrumentationRegistry.getInstrumentation()
-                .getUiAutomation()
-                .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG);
-        HealthConnectUserContext context = testRule.getUserContext();
-        mTransactionManager = testRule.getTransactionManager();
-        mTransactionTestUtils = new TransactionTestUtils(context, mTransactionManager);
-        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
-        mTransactionTestUtils.insertApp(FOO_PACKAGE_NAME);
-        mTransactionTestUtils.insertApp(BAR_PACKAGE_NAME);
-        HealthConnectDeviceConfigManager.initializeInstance(context);
-
-        DeviceInfoHelper.resetInstanceForTest();
-        AppInfoHelper.resetInstanceForTest();
-        AccessLogsHelper.resetInstanceForTest();
+        Context context = ApplicationProvider.getApplicationContext();
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(context)
-                        .setTransactionManager(mTransactionManager)
+                        .setFirstGrantTimeManager(mFirstGrantTimeManager)
+                        .setHealthPermissionIntentAppsTracker(mPermissionIntentAppsTracker)
                         .build();
+        mTransactionManager = healthConnectInjector.getTransactionManager();
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
         mDeviceInfoHelper = healthConnectInjector.getDeviceInfoHelper();
+
+        mTransactionTestUtils = new TransactionTestUtils(healthConnectInjector);
+        mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
+        mTransactionTestUtils.insertApp(FOO_PACKAGE_NAME);
+        mTransactionTestUtils.insertApp(BAR_PACKAGE_NAME);
     }
 
     @Test
@@ -139,7 +136,11 @@ public class TransactionManagerExerciseRoutesTest {
 
         List<RecordInternal<?>> returnedRecords =
                 mTransactionManager.readRecordsByIds(
-                        request, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper);
+                        request,
+                        mAppInfoHelper,
+                        mAccessLogsHelper,
+                        mDeviceInfoHelper,
+                        /* shouldRecordAccessLog= */ false);
 
         Map<String, ExerciseSessionRecordInternal> idToSessionMap =
                 returnedRecords.stream()
@@ -175,7 +176,11 @@ public class TransactionManagerExerciseRoutesTest {
 
         List<RecordInternal<?>> returnedRecords =
                 mTransactionManager.readRecordsByIds(
-                        request, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper);
+                        request,
+                        mAppInfoHelper,
+                        mAccessLogsHelper,
+                        mDeviceInfoHelper,
+                        /* shouldRecordAccessLog= */ false);
 
         assertThat(returnedRecords).hasSize(1);
         ExerciseSessionRecordInternal returnedRecord =
@@ -204,7 +209,11 @@ public class TransactionManagerExerciseRoutesTest {
 
         List<RecordInternal<?>> returnedRecords =
                 mTransactionManager.readRecordsByIds(
-                        request, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper);
+                        request,
+                        mAppInfoHelper,
+                        mAccessLogsHelper,
+                        mDeviceInfoHelper,
+                        /* shouldRecordAccessLog= */ false);
 
         assertThat(returnedRecords).hasSize(1);
         ExerciseSessionRecordInternal returnedRecord =
@@ -233,7 +242,11 @@ public class TransactionManagerExerciseRoutesTest {
 
         List<RecordInternal<?>> returnedRecords =
                 mTransactionManager.readRecordsByIds(
-                        request, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper);
+                        request,
+                        mAppInfoHelper,
+                        mAccessLogsHelper,
+                        mDeviceInfoHelper,
+                        /* shouldRecordAccessLog= */ false);
 
         assertThat(returnedRecords).hasSize(1);
         ExerciseSessionRecordInternal returnedRecord =
@@ -272,7 +285,11 @@ public class TransactionManagerExerciseRoutesTest {
 
         List<RecordInternal<?>> returnedRecords =
                 mTransactionManager.readRecordsAndPageToken(
-                                request, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper)
+                                request,
+                                mAppInfoHelper,
+                                mAccessLogsHelper,
+                                mDeviceInfoHelper,
+                                /* shouldRecordAccessLog= */ false)
                         .first;
 
         Map<String, ExerciseSessionRecordInternal> idToSessionMap =
@@ -314,7 +331,11 @@ public class TransactionManagerExerciseRoutesTest {
 
         List<RecordInternal<?>> returnedRecords =
                 mTransactionManager.readRecordsAndPageToken(
-                                request, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper)
+                                request,
+                                mAppInfoHelper,
+                                mAccessLogsHelper,
+                                mDeviceInfoHelper,
+                                /* shouldRecordAccessLog= */ false)
                         .first;
 
         assertThat(returnedRecords).hasSize(1);
@@ -348,7 +369,11 @@ public class TransactionManagerExerciseRoutesTest {
 
         List<RecordInternal<?>> returnedRecords =
                 mTransactionManager.readRecordsAndPageToken(
-                                request, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper)
+                                request,
+                                mAppInfoHelper,
+                                mAccessLogsHelper,
+                                mDeviceInfoHelper,
+                                /* shouldRecordAccessLog= */ false)
                         .first;
 
         assertThat(returnedRecords).hasSize(1);
@@ -382,7 +407,11 @@ public class TransactionManagerExerciseRoutesTest {
 
         List<RecordInternal<?>> returnedRecords =
                 mTransactionManager.readRecordsAndPageToken(
-                                request, mAppInfoHelper, mAccessLogsHelper, mDeviceInfoHelper)
+                                request,
+                                mAppInfoHelper,
+                                mAccessLogsHelper,
+                                mDeviceInfoHelper,
+                                /* shouldRecordAccessLog= */ false)
                         .first;
 
         assertThat(returnedRecords).hasSize(1);

@@ -19,6 +19,8 @@ package android.healthconnect.cts;
 import static android.health.connect.HealthPermissions.READ_STEPS;
 import static android.health.connect.HealthPermissions.WRITE_DISTANCE;
 import static android.health.connect.HealthPermissions.WRITE_HEART_RATE;
+import static android.health.connect.HealthPermissions.WRITE_SKIN_TEMPERATURE;
+import static android.health.connect.HealthPermissions.WRITE_STEPS;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_DELETE;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_READ;
 import static android.health.connect.accesslog.AccessLog.OperationType.OPERATION_TYPE_UPSERT;
@@ -31,14 +33,17 @@ import static android.healthconnect.cts.utils.DataFactory.getStepsRecord;
 import static android.healthconnect.cts.utils.DataFactory.getTestRecords;
 import static android.healthconnect.cts.utils.DataFactory.getUpdatedStepsRecord;
 import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
+import static android.healthconnect.cts.utils.PermissionHelper.grantPermissions;
 import static android.healthconnect.cts.utils.TestUtils.deleteRecordsByIdFilter;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponse;
+import static android.healthconnect.cts.utils.TestUtils.getAggregateResponseWithManagePermission;
 import static android.healthconnect.cts.utils.TestUtils.getChangeLogToken;
 import static android.healthconnect.cts.utils.TestUtils.getChangeLogs;
 import static android.healthconnect.cts.utils.TestUtils.insertRecord;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
 import static android.healthconnect.cts.utils.TestUtils.queryAccessLogs;
 import static android.healthconnect.cts.utils.TestUtils.readRecords;
+import static android.healthconnect.cts.utils.TestUtils.readRecordsWithManagePermission;
 import static android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords;
 
 import static com.android.healthfitness.flags.Flags.FLAG_ADD_MISSING_ACCESS_LOGS;
@@ -66,6 +71,7 @@ import android.health.connect.datatypes.DistanceRecord;
 import android.health.connect.datatypes.ExerciseSessionRecord;
 import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.Record;
+import android.health.connect.datatypes.SkinTemperatureRecord;
 import android.health.connect.datatypes.StepsRecord;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
@@ -88,6 +94,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 /** CTS test for {@link HealthConnectManager#queryAccessLogs} API. */
@@ -102,7 +109,8 @@ public class HealthConnectAccessLogsTest {
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
-                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+                    TestUtils::isHealthConnectFullySupported,
+                    "Tests should run on supported hardware only.");
 
     @Before
     public void setup() {
@@ -271,6 +279,20 @@ public class HealthConnectAccessLogsTest {
     }
 
     @Test
+    public void testAccessLogs_readWithManageHealthDataPermission_noAccessLog() throws Exception {
+        insertRecords(getDistanceRecord());
+        List<AccessLog> insertAccessLogs = queryAccessLogs();
+        assertThat(insertAccessLogs).hasSize((1));
+        assertThat(insertAccessLogs.get(0).getOperationType()).isEqualTo(OPERATION_TYPE_UPSERT);
+
+        readRecordsWithManagePermission(
+                new ReadRecordsRequestUsingFilters.Builder<>(DistanceRecord.class).build());
+
+        List<AccessLog> accessLogs = queryAccessLogs();
+        assertThat(accessLogs).hasSize((1));
+    }
+
+    @Test
     @RequiresFlagsEnabled({FLAG_ADD_MISSING_ACCESS_LOGS})
     public void testAccessLogs_aggregate_expectReadLogs() throws Exception {
         insertRecords(getStepsRecord());
@@ -297,6 +319,30 @@ public class HealthConnectAccessLogsTest {
         assertThat(readAccessLog.getPackageName()).isEqualTo(SELF_PACKAGE_NAME);
         assertThat(readAccessLog.getRecordTypes()).containsExactly(StepsRecord.class);
         assertThat(readAccessLog.getOperationType()).isEqualTo(OPERATION_TYPE_READ);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_ADD_MISSING_ACCESS_LOGS})
+    public void testAccessLogs_aggregateWithManageHealthDataPermission_noAccessLog()
+            throws Exception {
+        insertRecords(getStepsRecord());
+        List<AccessLog> insertAccessLogs = queryAccessLogs();
+        assertThat(insertAccessLogs).hasSize((1));
+        assertThat(insertAccessLogs.get(0).getOperationType()).isEqualTo(OPERATION_TYPE_UPSERT);
+
+        AggregateRecordsRequest<Long> request =
+                new AggregateRecordsRequest.Builder<Long>(
+                                new TimeInstantRangeFilter.Builder()
+                                        .setStartTime(EPOCH)
+                                        .setEndTime(Instant.now())
+                                        .build())
+                        .addAggregationType(STEPS_COUNT_TOTAL)
+                        .build();
+
+        getAggregateResponseWithManagePermission(request);
+
+        List<AccessLog> accessLogs = queryAccessLogs();
+        assertThat(accessLogs).hasSize((1));
     }
 
     @Test
@@ -342,49 +388,85 @@ public class HealthConnectAccessLogsTest {
 
     @Test
     @RequiresFlagsEnabled({FLAG_ADD_MISSING_ACCESS_LOGS})
-    public void testAccessLogs_delete_expectDeleteLogs() throws Exception {
-        List<Record> records =
-                insertRecords(
-                        getHeartRateRecord(), getDistanceRecord(), getBasalMetabolicRateRecord());
+    public void testAccessLogs_deleteById_expectDeleteLogs() throws Exception {
+        List<Record> records = insertRecords(getHeartRateRecord(), getBasalMetabolicRateRecord());
         List<AccessLog> insertLog = queryAccessLogs();
         assertThat(insertLog).hasSize((1));
         assertThat(insertLog.get(0).getOperationType()).isEqualTo(OPERATION_TYPE_UPSERT);
 
-        List<RecordIdFilter> recordIdFilters =
+        deleteRecordsByIdFilter(
                 List.of(
                         RecordIdFilter.fromId(
                                 HeartRateRecord.class, records.get(0).getMetadata().getId()),
                         RecordIdFilter.fromId(
                                 BasalMetabolicRateRecord.class,
-                                records.get(2).getMetadata().getId()));
-        TimeInstantRangeFilter timeFilter =
-                new TimeInstantRangeFilter.Builder()
-                        .setStartTime(EPOCH)
-                        .setEndTime(Instant.now())
-                        .build();
-        // delete by id
-        deleteRecordsByIdFilter(recordIdFilters);
-        // delete by filter, generating access log even if no step data is deleted
-        verifyDeleteRecords(StepsRecord.class, timeFilter);
-
-        DeleteUsingFiltersRequest deleteRequest =
-                new DeleteUsingFiltersRequest.Builder().addRecordType(DistanceRecord.class).build();
-        // delete by system, not generating access log
-        verifyDeleteRecords(deleteRequest);
+                                records.get(1).getMetadata().getId())));
 
         List<AccessLog> insertAndDeleteLogs = queryAccessLogs();
-        assertThat(insertAndDeleteLogs).hasSize((3));
+        assertThat(insertAndDeleteLogs).hasSize((2));
 
         AccessLog deleteByIdLog = insertAndDeleteLogs.get(1);
         assertThat(deleteByIdLog.getOperationType()).isEqualTo(OPERATION_TYPE_DELETE);
         assertThat(deleteByIdLog.getRecordTypes())
                 .containsExactly(HeartRateRecord.class, BasalMetabolicRateRecord.class);
         assertThat(deleteByIdLog.getPackageName()).isEqualTo(SELF_PACKAGE_NAME);
+    }
 
-        AccessLog deleteByFilterLog = insertAndDeleteLogs.get(2);
-        assertThat(deleteByFilterLog.getOperationType()).isEqualTo(OPERATION_TYPE_DELETE);
-        assertThat(deleteByFilterLog.getRecordTypes()).containsExactly(StepsRecord.class);
-        assertThat(deleteByFilterLog.getPackageName()).isEqualTo(SELF_PACKAGE_NAME);
+    @Test
+    @RequiresFlagsEnabled({FLAG_ADD_MISSING_ACCESS_LOGS})
+    public void testAccessLogs_deleteByInvalidId_expectDeleteLogs() throws Exception {
+        grantPermissions(SELF_PACKAGE_NAME, List.of(WRITE_HEART_RATE, WRITE_SKIN_TEMPERATURE));
+        deleteRecordsByIdFilter(
+                List.of(
+                        RecordIdFilter.fromId(HeartRateRecord.class, UUID.randomUUID().toString()),
+                        RecordIdFilter.fromId(
+                                SkinTemperatureRecord.class, UUID.randomUUID().toString())));
+
+        List<AccessLog> insertAndDeleteLogs = queryAccessLogs();
+        assertThat(insertAndDeleteLogs).hasSize((1));
+
+        AccessLog log = insertAndDeleteLogs.get(0);
+        assertThat(log.getOperationType()).isEqualTo(OPERATION_TYPE_DELETE);
+        assertThat(log.getRecordTypes())
+                .containsExactly(HeartRateRecord.class, SkinTemperatureRecord.class);
+        assertThat(log.getPackageName()).isEqualTo(SELF_PACKAGE_NAME);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_ADD_MISSING_ACCESS_LOGS})
+    public void testAccessLogs_deleteByFilter_expectDeleteLogs() throws Exception {
+        grantPermission(SELF_PACKAGE_NAME, WRITE_STEPS);
+        TimeInstantRangeFilter timeFilter =
+                new TimeInstantRangeFilter.Builder()
+                        .setStartTime(EPOCH)
+                        .setEndTime(Instant.now())
+                        .build();
+        // delete by filter, generating access log even if no step data is deleted
+        verifyDeleteRecords(StepsRecord.class, timeFilter);
+
+        List<AccessLog> accessLogs = queryAccessLogs();
+        assertThat(accessLogs).hasSize(1);
+        AccessLog log = accessLogs.get(0);
+        assertThat(log.getOperationType()).isEqualTo(OPERATION_TYPE_DELETE);
+        assertThat(log.getRecordTypes()).containsExactly(StepsRecord.class);
+        assertThat(log.getPackageName()).isEqualTo(SELF_PACKAGE_NAME);
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_ADD_MISSING_ACCESS_LOGS})
+    public void testAccessLogs_deleteWithManageHealthDataPermission_noLog() throws Exception {
+        insertRecord(getDistanceRecord());
+        List<AccessLog> insertLog = queryAccessLogs();
+        assertThat(insertLog).hasSize((1));
+        assertThat(insertLog.get(0).getOperationType()).isEqualTo(OPERATION_TYPE_UPSERT);
+
+        DeleteUsingFiltersRequest deleteRequest =
+                new DeleteUsingFiltersRequest.Builder().addRecordType(DistanceRecord.class).build();
+        // delete by system, not generating access log
+        verifyDeleteRecords(deleteRequest);
+
+        List<AccessLog> accessLogs = queryAccessLogs();
+        assertThat(accessLogs).hasSize(1);
     }
 
     @Test

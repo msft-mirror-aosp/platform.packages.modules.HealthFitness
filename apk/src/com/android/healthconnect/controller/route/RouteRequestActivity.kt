@@ -22,8 +22,6 @@ import android.health.connect.HealthConnectManager.EXTRA_SESSION_ID
 import android.health.connect.datatypes.ExerciseRoute
 import android.os.Bundle
 import android.util.Log
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.LinearLayout
@@ -46,7 +44,6 @@ import com.android.healthconnect.controller.route.ExerciseRouteViewModel.Session
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
 import com.android.healthconnect.controller.shared.map.MapView
-import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.boldAppName
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -64,8 +61,6 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
     }
 
     @Inject lateinit var appInfoReader: AppInfoReader
-
-    @Inject lateinit var featureUtils: FeatureUtils
 
     @VisibleForTesting var dialog: AlertDialog? = null
 
@@ -87,7 +82,8 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
         super.onCreate(savedInstanceState)
         // This flag ensures a non system app cannot show an overlay on Health Connect. b/313425281
         window.addSystemFlags(
-            WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
+            WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS
+        )
         if (sessionIdExtra == null || callingPackage == null) {
             Log.e(TAG, "Invalid Intent Extras, finishing.")
             finishCancelled()
@@ -124,9 +120,11 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
     }
 
     private fun setupRequestDialog(data: SessionWithAttribution?, callingPackage: String) {
-        if (data == null ||
-            data.session.route == null ||
-            data.session.route?.routeLocations.isNullOrEmpty()) {
+        if (
+            data == null ||
+                data.session.route == null ||
+                data.session.route?.routeLocations.isNullOrEmpty()
+        ) {
             Log.e(TAG, "No route or empty route, finishing.")
             finishCancelled()
             return
@@ -135,8 +133,10 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
         val session = data.session
         val route = session.route!!
 
-        if (session.metadata.dataOrigin.packageName == callingPackage &&
-            viewModel.isRouteReadOrWritePermissionGranted(callingPackage)) {
+        if (
+            session.metadata.dataOrigin.packageName == callingPackage &&
+                viewModel.isRouteReadOrWritePermissionGranted(callingPackage)
+        ) {
             finishWithResult(route)
             return
         }
@@ -161,11 +161,14 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
             applicationContext.getString(
                 R.string.date_owner_format,
                 LocalDateTimeFormatter(applicationContext).formatLongDate(session.startTime),
-                data.appInfo.appName)
+                data.appInfo.appName,
+            )
         val sessionTitle =
             if (session.title.isNullOrBlank())
                 ExerciseSessionFormatter.Companion.getExerciseType(
-                    applicationContext, session.exerciseType)
+                    applicationContext,
+                    session.exerciseType,
+                )
             else session.title
 
         val view = layoutInflater.inflate(R.layout.route_request_dialog, null)
@@ -178,7 +181,8 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
 
         view.findViewById<LinearLayout>(R.id.more_info).setOnClickListener {
             healthConnectLogger.logInteraction(
-                RouteRequestElement.EXERCISE_ROUTE_DIALOG_INFORMATION_BUTTON)
+                RouteRequestElement.EXERCISE_ROUTE_DIALOG_INFORMATION_BUTTON
+            )
             dialog?.hide()
             setupInfoDialog()
             infoDialog.show()
@@ -186,7 +190,8 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
 
         view.findViewById<Button>(R.id.route_dont_allow_button).setOnClickListener {
             healthConnectLogger.logInteraction(
-                RouteRequestElement.EXERCISE_ROUTE_DIALOG_DONT_ALLOW_BUTTON)
+                RouteRequestElement.EXERCISE_ROUTE_DIALOG_DONT_ALLOW_BUTTON
+            )
             finishCancelled()
         }
 
@@ -194,23 +199,16 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
 
         allowAllButton.setOnClickListener {
             healthConnectLogger.logInteraction(
-                RouteRequestElement.EXERCISE_ROUTE_DIALOG_ALWAYS_ALLOW_BUTTON)
+                RouteRequestElement.EXERCISE_ROUTE_DIALOG_ALWAYS_ALLOW_BUTTON
+            )
             viewModel.grantReadRoutesPermission(callingPackage)
             finishWithResult(route)
         }
 
-        val shouldShowAllowAllRoutesButton = featureUtils.isExerciseRouteReadAllEnabled()
-
-        allowAllButton.visibility =
-            if (shouldShowAllowAllRoutesButton) {
-                VISIBLE
-            } else {
-                GONE
-            }
-
         view.findViewById<Button>(R.id.route_allow_button).setOnClickListener {
             healthConnectLogger.logInteraction(
-                RouteRequestElement.EXERCISE_ROUTE_DIALOG_ALLOW_BUTTON)
+                RouteRequestElement.EXERCISE_ROUTE_DIALOG_ALLOW_BUTTON
+            )
             finishWithResult(route)
         }
 
@@ -222,13 +220,17 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
                 .setCancelable(false)
                 .setAdditionalLogging {
                     healthConnectLogger.logImpression(
-                        RouteRequestElement.EXERCISE_ROUTE_DIALOG_ROUTE_VIEW)
+                        RouteRequestElement.EXERCISE_ROUTE_DIALOG_ROUTE_VIEW
+                    )
                     healthConnectLogger.logImpression(
-                        RouteRequestElement.EXERCISE_ROUTE_DIALOG_ALLOW_BUTTON)
+                        RouteRequestElement.EXERCISE_ROUTE_DIALOG_ALLOW_BUTTON
+                    )
                     healthConnectLogger.logImpression(
-                        RouteRequestElement.EXERCISE_ROUTE_DIALOG_DONT_ALLOW_BUTTON)
+                        RouteRequestElement.EXERCISE_ROUTE_DIALOG_DONT_ALLOW_BUTTON
+                    )
                     healthConnectLogger.logImpression(
-                        RouteRequestElement.EXERCISE_ROUTE_DIALOG_INFORMATION_BUTTON)
+                        RouteRequestElement.EXERCISE_ROUTE_DIALOG_INFORMATION_BUTTON
+                    )
                 }
                 .create()
         if (shouldShowDialog()) {
@@ -244,7 +246,8 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
                     MigrationUiState.COMPLETE,
                     MigrationUiState.COMPLETE_IDLE,
                     MigrationUiState.ALLOWED_MIGRATOR_DISABLED,
-                    MigrationUiState.ALLOWED_ERROR)
+                    MigrationUiState.ALLOWED_ERROR,
+                )
 
     private fun setupInfoDialog() {
         val view = layoutInflater.inflate(R.layout.route_sharing_info_dialog, null)
@@ -254,9 +257,10 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
                 .setCustomTitle(getString(R.string.request_route_info_header_title))
                 .setNegativeButton(
                     R.string.back_button,
-                    RouteRequestElement.EXERCISE_ROUTE_EDUCATION_DIALOG_BACK_BUTTON) { _, _ ->
-                        dialog?.show()
-                    }
+                    RouteRequestElement.EXERCISE_ROUTE_EDUCATION_DIALOG_BACK_BUTTON,
+                ) { _, _ ->
+                    dialog?.show()
+                }
                 .setView(view)
                 .setCancelable(false)
                 .create()
@@ -271,21 +275,30 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
             showMigrationInProgressDialog(
                 this,
                 applicationContext.getString(
-                    R.string.migration_in_progress_permissions_dialog_content, requester)) { _, _ ->
-                    finish()
-                }
-        } else if (migrationUiState in
-            listOf(
-                MigrationUiState.ALLOWED_PAUSED,
-                MigrationUiState.ALLOWED_NOT_STARTED,
-                MigrationUiState.MODULE_UPGRADE_REQUIRED,
-                MigrationUiState.APP_UPGRADE_REQUIRED)) {
+                    R.string.migration_in_progress_permissions_dialog_content,
+                    requester,
+                ),
+            ) { _, _ ->
+                finish()
+            }
+        } else if (
+            migrationUiState in
+                listOf(
+                    MigrationUiState.ALLOWED_PAUSED,
+                    MigrationUiState.ALLOWED_NOT_STARTED,
+                    MigrationUiState.MODULE_UPGRADE_REQUIRED,
+                    MigrationUiState.APP_UPGRADE_REQUIRED,
+                )
+        ) {
             showMigrationPendingDialog(
                 this,
                 applicationContext.getString(
-                    R.string.migration_pending_permissions_dialog_content, requester),
+                    R.string.migration_pending_permissions_dialog_content,
+                    requester,
+                ),
                 positiveButtonAction = { _, _ -> dialog?.show() },
-                negativeButtonAction = { _, _ -> finishCancelled() })
+                negativeButtonAction = { _, _ -> finishCancelled() },
+            )
         } else if (migrationUiState == MigrationUiState.COMPLETE) {
             maybeShowWhatsNewDialog(this) { _, _ -> dialog?.show() }
         } else {

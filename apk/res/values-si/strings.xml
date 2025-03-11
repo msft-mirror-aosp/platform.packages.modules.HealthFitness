@@ -23,6 +23,7 @@
     <string name="home_subtitle" msgid="2154213430054477787">"ඔබේ උපාංගයෙහි සෞඛ්‍ය සහ යෝග්‍යතා දත්ත කළමනාකරණය කරන්න, සහ එයට ප්‍රවේශ විය හැකි යෙදුම් පාලනය කරන්න"</string>
     <string name="data_title" msgid="4456619761533380816">"දත්ත සහ ප්‍රවේශය"</string>
     <string name="browse_medical_data" msgid="6963802956096683273">"සෞඛ්‍ය වාර්තා බ්‍රවුස් කරන්න"</string>
+    <string name="browse_medical_data_subtitle" msgid="4115165261000205538">"ඔබේ සෞඛ්‍ය වාර්තා සහ ඒවාට ප්‍රවේශ විය හැකි යෙදුම් බලන්න"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"ප්‍රවර්ග සියල්ල"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"සියලු ප්‍රවර්ග බලන්න"</string>
     <string name="no_data" msgid="1906986019249068659">"දත්ත නැත"</string>
@@ -52,7 +53,7 @@
     <string name="yesterday_header" msgid="6652176268273681505">"ඊයේ"</string>
     <string name="read_data_access_label" msgid="8968758932021241976">"කියවන්න: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="write_data_access_label" msgid="105976369853871061">"ලියන්න: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
-    <string name="data_type_separator" msgid="1299848322898210658">", "</string>
+    <string name="separator" msgid="5521285473288943819">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"අවසර කළමනාකරණය කරන්න"</string>
     <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"වේලාව: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"ක්‍රියාකාරකම"</string>
@@ -92,16 +93,56 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"ඔබේ සෞඛ්‍ය දත්ත වෙත ප්‍රවේශය"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"දහනය කරන ලද කැලරි කියවන්න"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"යෙදුමට දහන කරන ලද කැලරි කියවීමට ඉඩ දෙයි"</string>
-    <string name="background_read_title" msgid="5061383169517186234">"පසුබිමේ දත්ත ප්‍රවේශ කරන්න"</string>
-    <string name="background_read_request_title" msgid="8492898140120977977">"<xliff:g id="APP_NAME">%1$s</xliff:g> හට පසුබිමේ දත්ත වෙත ප්‍රවේශ වීමට ඉඩ දෙන්න ද?"</string>
+    <string name="background_read_single_request_title" msgid="4903874755139858906">"<xliff:g id="APP_NAME">%1$s</xliff:g> හට පසුබිමේ දත්ත වෙත ප්‍රවේශ වීමට ඉඩ දෙන්න ද?"</string>
+    <string name="background_read_medical_single_request_description_both_types_granted" msgid="7716161960428574364">"ඔබ ඉඩ දෙන්නේ නම්, මෙම යෙදුමට ඔබ යෙදුම භාවිතා නොකරන විට යෝග්‍යතා සහ සුවතා දත්ත සහ සෞඛ්‍ය වාර්තා වෙත ප්‍රවේශ විය හැක."</string>
+    <string name="background_read_medical_single_request_description_medical_granted" msgid="5162456401369633859">"ඔබ ඉඩ දෙන්නේ නම්, ඔබ යෙදුම භාවිතා නොකරන විට මෙම යෙදුමට සෞඛ්‍ය වාර්තා වෙත ප්‍රවේශ විය හැක."</string>
+    <string name="background_read_medical_single_request_description_fitness_granted" msgid="6850185345786666516">"ඔබ ඉඩ දෙන්නේ නම්, ඔබ යෙදුම භාවිතා නොකරන විට මෙම යෙදුමට යෝග්‍යතා සහ සුවතා දත්ත වෙත ප්‍රවේශ විය හැක."</string>
+    <string name="background_read_single_request_description" msgid="2679634929322639576">"ඔබ ඉඩ දෙන්නේ නම්, ඔබ යෙදුම භාවිත නොකරන විට මෙම යෙදුමට Health Connect දත්ත වෙත ප්‍රවේශ විය හැක."</string>
+    <string name="history_read_single_request_title" msgid="6848027207063414793">"පසුගිය දත්ත වෙත ප්‍රවේශ වීමට <xliff:g id="APP_NAME">%1$s</xliff:g> හට ඉඩ දෙන්න ද?"</string>
+    <string name="history_read_medical_single_request_description" msgid="6408051015819625330">"ඔබ ඉඩ දෙන්නේ නම්, <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>ට පෙර එක් කරන ලද යෝග්‍යතා සහ සුවතා දත්ත මෙම යෙදුමට ප්‍රවේශ විය හැක."</string>
+    <string name="history_read_medical_single_request_description_fallback" msgid="6685832866184737207">"ඔබ ඉඩ දෙන්නේ නම්, මෙම යෙදුමට සියලු ම අතීත යෝග්‍යතා සහ සුවතා දත්ත වෙත ප්‍රවේශ විය හැක."</string>
+    <string name="history_read_single_request_description" msgid="9140843675330318112">"ඔබ ඉඩ දෙන්නේ නම්, මෙම යෙදුමට <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>ට පෙර එක් කරන ලද Health Connect දත්ත වෙත ප්‍රවේශ විය හැක."</string>
+    <string name="history_read_single_request_description_fallback" msgid="7685531357676523654">"ඔබ ඉඩ දෙන්නේ නම්, මෙම යෙදුමට පසුගිය Health Connect දත්ත සියල්ල වෙත ප්‍රවේශ විය නොහැක."</string>
+    <string name="additional_permissions_combined_request_title" msgid="5509177449679251301">"<xliff:g id="APP_NAME">%1$s</xliff:g> සඳහා අමතර ප්‍රවේශයට ඉඩ දෙන්න ද?"</string>
+    <string name="additional_permissions_combined_request_description" msgid="7136418603696342323">"<xliff:g id="APP_NAME">%1$s</xliff:g>ට මෙම Health Connect සැකසීම් වෙත ප්‍රවේශ වීමට ද අවශ්‍යයි"</string>
+    <string name="background_read_medical_combined_request_title_both_types_granted" msgid="4225111383019900451">"පසුබිමේ ඇති සියලු ම දත්ත වෙත ප්‍රවේශ වන්න"</string>
+    <string name="background_read_medical_combined_request_title_medical_granted" msgid="7245376864667067106">"පසුබිමේ සෞඛ්‍ය වාර්තා වෙත ප්‍රවේශ වන්න"</string>
+    <string name="background_read_medical_combined_request_title_fitness_granted" msgid="2639416977416876229">"පසුබිමේ යෝග්‍යතා සහ සුවතා දත්ත වෙත ප්‍රවේශ වන්න"</string>
+    <string name="background_read_medical_combined_request_description_both_types_granted" msgid="8812552783934180223">"ඔබ යෙදුම භාවිතා නොකරන විට යෝග්‍යතා සහ සුවතා දත්ත සහ සෞඛ්‍ය වාර්තා වෙත ප්‍රවේශ වීමට මෙම යෙදුමට ඉඩ දෙන්න"</string>
+    <string name="background_read_medical_combined_request_description_medical_granted" msgid="5140647084504657934">"ඔබ යෙදුම භාවිතා නොකරන විට මෙම දත්ත වෙත ප්‍රවේශ වීමට මෙම යෙදුමට ඉඩ දෙන්න"</string>
+    <string name="background_read_medical_combined_request_description_fitness_granted" msgid="919785628751851996">"ඔබ යෙදුම භාවිතා නොකරන විට මෙම දත්ත වෙත ප්‍රවේශ වීමට මෙම යෙදුමට ඉඩ දෙන්න"</string>
+    <string name="background_read_combined_request_title" msgid="4184649296697480520">"පසුබිමේ දත්ත ප්‍රවේශ කරන්න"</string>
+    <string name="background_read_combined_request_description" msgid="2423480522986545286">"ඔබ යෙදුම භාවිත නොකරන විට Health Connect දත්ත වෙත ප්‍රවේශ වීමට මෙම යෙදුමට ඉඩ දෙන්න"</string>
+    <string name="history_read_medical_combined_request_title" msgid="1262267962861942478">"අතීත යෝග්‍යතා සහ සුවතා දත්ත වෙත ප්‍රවේශ වන්න"</string>
+    <string name="history_read_medical_combined_request_description" msgid="7550922315652791771">"<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>ට පෙර එක් කළ දත්ත වෙත ප්‍රවේශ වීමට මෙම යෙදුමට ඉඩ දෙන්න"</string>
+    <string name="history_read_medical_combined_request_description_fallback" msgid="3567968660826834911">"සියලු ම අතීත දත්ත වෙත ප්‍රවේශ වීමට මෙම යෙදුමට ඉඩ දෙන්න"</string>
+    <string name="history_read_combined_request_title" msgid="9023811767370482028">"අතීත දත්ත වෙත ප්‍රවේශය"</string>
+    <string name="history_read_combined_request_description" msgid="1437787086896636484">"<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>ට පෙර එක් කරන ලද Health Connect දත්ත වෙත ප්‍රවේශ වීමට මෙම යෙදුමට ඉඩ දෙන්න"</string>
+    <string name="history_read_combined_request_description_fallback" msgid="4974756796396067521">"පසුගිය Health Connect දත්ත සියල්ල වෙත ප්‍රවේශ වීමට මෙම යෙදුමට ඉඩ දෙන්න"</string>
+    <string name="history_read_medical_combined_request_footer" msgid="5301940225768076844">"<xliff:g id="APP_NAME">%1$s</xliff:g> හට දැනටමත් ඔබේ සෞඛ්‍ය වාර්තා සඳහා අතීත දත්ත වෙත ප්‍රවේශ විය හැක"</string>
+    <string name="history_read_medical_combined_request_footer_link" msgid="355676489585738987">"අවසර ගැන වැඩිදුර කියවන්න"</string>
+    <string name="background_read_medical_access_title_both_types_granted" msgid="4475972082863444603">"පසුබිමේ ඇති සියලු ම දත්ත වෙත ප්‍රවේශ වන්න"</string>
+    <string name="background_read_medical_access_title_medical_granted" msgid="7852915238347056139">"පසුබිමේ සෞඛ්‍ය වාර්තා වෙත ප්‍රවේශ වන්න"</string>
+    <string name="background_read_medical_access_title_fitness_granted" msgid="8691675952190647227">"පසුබිමේ යෝග්‍යතා සහ සුවතා දත්ත වෙත ප්‍රවේශ වන්න"</string>
+    <string name="background_read_medical_access_description_both_types_granted" msgid="7193350031798606366">"ඔබ යෙදුම භාවිතා නොකරන විට යෝග්‍යතා සහ සුවතා දත්ත සහ සෞඛ්‍ය වාර්තා වෙත ප්‍රවේශ වීමට මෙම යෙදුමට ඉඩ දෙන්න"</string>
+    <string name="background_read_medical_access_description_medical_granted" msgid="8570683510275055450">"ඔබ යෙදුම භාවිතා නොකරන විට මෙම දත්ත වෙත ප්‍රවේශ වීමට මෙම යෙදුමට ඉඩ දෙන්න"</string>
+    <string name="background_read_medical_access_description_fitness_granted" msgid="2584567718805499407">"ඔබ යෙදුම භාවිතා නොකරන විට මෙම දත්ත වෙත ප්‍රවේශ වීමට මෙම යෙදුමට ඉඩ දෙන්න"</string>
+    <string name="background_read_access_title" msgid="4184498185599147117">"පසුබිමේ දත්ත ප්‍රවේශ කරන්න"</string>
+    <string name="background_read_access_description" msgid="2360433029368320323">"ඔබ යෙදුම භාවිත නොකරන විට Health Connect දත්ත වෙත ප්‍රවේශ වීමට මෙම යෙදුමට ඉඩ දෙන්න"</string>
+    <string name="history_read_medical_access_title" msgid="1375462150672418692">"අතීත යෝග්‍යතා සහ සුවතා දත්ත වෙත ප්‍රවේශ වන්න"</string>
+    <string name="history_read_medical_access_description" msgid="5615959269427106141">"<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>ට පෙර එක් කළ දත්ත වෙත ප්‍රවේශ වීමට මෙම යෙදුමට ඉඩ දෙන්න"</string>
+    <string name="history_read_medical_access_description_fallback" msgid="3888547064992673535">"සියලු ම අතීත දත්ත වෙත ප්‍රවේශ වීමට මෙම යෙදුමට ඉඩ දෙන්න"</string>
+    <string name="history_read_access_title" msgid="870048398702887144">"අතීත දත්ත වෙත ප්‍රවේශය"</string>
+    <string name="history_read_access_description" msgid="800722432229526128">"<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>ට පෙර එක් කරන ලද Health Connect දත්ත වෙත ප්‍රවේශ වීමට මෙම යෙදුමට ඉඩ දෙන්න"</string>
+    <string name="history_read_access_description_fallback" msgid="4151538305657852010">"සියලු ම Health Connect අතීත දත්ත වෙත ප්‍රවේශ වීමට මෙම යෙදුමට ඉඩ දෙන්න"</string>
+    <string name="history_read_medical_access_read_warning" msgid="8878271647163400440">"<xliff:g id="APP_NAME">%1$s</xliff:g> හට කියවීමේ අවසරයක් නොමැති නිසා දැනට යෝග්‍යතා දත්ත කිසිවක් කියවනු නොලැබේ"</string>
+    <string name="additional_access_medical_read_footer" msgid="4640796038121080343">"<xliff:g id="APP_NAME">%1$s</xliff:g> හට දැනටමත් ඔබේ සෞඛ්‍ය වාර්තා සඳහා අතීත දත්ත වෙත ප්‍රවේශ විය හැක. මෙය වෙනස් කිරීමට, මෙම යෙදුම සඳහා සෞඛ්‍ය වාර්තා අවසර ක්‍රියාවිරහිත කරන්න"</string>
+    <string name="additional_access_medical_read_footer_link" msgid="2797623091827504856">"සෞඛ්‍ය වාර්තා අවසර කළමනාකරණය කරන්න"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"මෙම යෙදුම සඳහා පසුබිම හෝ අතීත දත්ත ප්‍රවේශය ක්‍රියාත්මක කිරීමට අවම වශයෙන් එක් කියවීම් අවසරයක්වත් සබල කරන්න"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"මෙම යෙදුම සඳහා පසුබිම් ප්‍රවේශය ක්‍රියාත්මක කිරීමට අවම වශයෙන් එක් කියවීම් අවසරයක්වත් සබල කරන්න"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"මෙම යෙදුම සඳහා අතීත දත්ත ප්‍රවේශය ක්‍රියාත්මක කිරීමට අවම වශයෙන් එක් කියවීම් අවසරයක්වත් සබල කරන්න"</string>
+    <string name="historic_access_description" msgid="3309195636349468633">"පසුගිය Health Connect දත්ත සියල්ල වෙත ප්‍රවේශ වීමට මෙම යෙදුමට ඉඩ දෙන්න"</string>
     <string name="background_read_description" msgid="3203594555849969283">"ඔබ යෙදුම භාවිත නොකරන විට Health Connect දත්ත වෙත ප්‍රවේශ වීමට මෙම යෙදුමට ඉඩ දෙන්න"</string>
-    <string name="background_read_request_description" msgid="1664402237648709581">"ඔබ ඉඩ දෙන්නේ නම්, ඔබ යෙදුම භාවිත නොකරන විට මෙම යෙදුමට Health Connect දත්ත වෙත ප්‍රවේශ විය හැක."</string>
-    <string name="historic_access_title" msgid="3584594624937737030">"අතීත දත්ත වෙත ප්‍රවේශය"</string>
-    <string name="historic_access_request_title" msgid="4645920231853414742">"පසුගිය දත්ත වෙත ප්‍රවේශ වීමට <xliff:g id="APP_NAME">%1$s</xliff:g> හට ඉඩ දෙන්න ද?"</string>
-    <string name="historic_access_description" msgid="2616669701088141765">"<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>ට පෙර එක් කරන ලද Health Connect දත්ත වෙත ප්‍රවේශ වීමට මෙම යෙදුමට ඉඩ දෙන්න"</string>
-    <string name="historic_access_description_fallback" msgid="3361696143557784403">"පසුගිය Health Connect දත්ත සියල්ල වෙත ප්‍රවේශ වීමට මෙම යෙදුමට ඉඩ දෙන්න"</string>
-    <string name="historic_access_request_description" msgid="136335743939253358">"ඔබ ඉඩ දෙන්නේ නම්, මෙම යෙදුමට <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>ට පෙර එක් කරන ලද Health Connect දත්ත වෙත ප්‍රවේශ විය හැක."</string>
-    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"ඔබ ඉඩ දෙන්නේ නම්, මෙම යෙදුමට පසුගිය Health Connect දත්ත සියල්ල වෙත ප්‍රවේශ විය නොහැක."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"දහනය කළ ක්‍රීයාකාරී කැලරි"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"දහනය කළ ක්‍රීයාකාරී කැලරි"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"දහනය කළ ක්‍රියාකාරී කැලරි කියවන්න"</string>
@@ -155,6 +196,10 @@
     <string name="wheelchair_pushes_lowercase_label" msgid="8919337990806379687">"රෝද පුටු තල්ලු කිරීම්"</string>
     <string name="wheelchair_pushes_read_content_description" msgid="157304610943976471">"රෝද පුටු තල්ලු කිරීම් කියවන්න"</string>
     <string name="wheelchair_pushes_write_content_description" msgid="2745600707106818641">"රෝද පුටු තල්ලු කිරීම් ලියන්න"</string>
+    <string name="activity_intensity_uppercase_label" msgid="8718366426053335611">"ක්‍රියාකාරකම් තීව්‍රතාව"</string>
+    <string name="activity_intensity_lowercase_label" msgid="4260366013498161858">"ක්‍රියාකාරකම් තීව්‍රතාව"</string>
+    <string name="activity_intensity_read_content_description" msgid="5503681098610026279">"කියවීම් ක්‍රියාකාරකම් තීව්‍රතාව"</string>
+    <string name="activity_intensity_write_content_description" msgid="4843212785611055496">"ලිවීම් ක්‍රියාකාරකම් තීව්‍රතාව"</string>
     <string name="basal_metabolic_rate_uppercase_label" msgid="4802351493928086473">"මූලස්ථ පරිවෘත්තීය ශීඝ්‍රතාව"</string>
     <string name="basal_metabolic_rate_lowercase_label" msgid="7195596626083893231">"මූලස්ථ පරිවෘත්තීය ශීඝ්‍රතාව"</string>
     <string name="basal_metabolic_rate_read_content_description" msgid="5583222212705234907">"මූලස්ථ පරිවෘත්තීය ශීඝ්‍රතාව කියවන්න"</string>
@@ -267,34 +312,44 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"සමේ උෂ්ණත්වය"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"සමේ උෂ්ණත්වය කියවන්න"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"සමේ උෂ්ණත්වය ලියන්න"</string>
+    <string name="browse_health_records_intro" msgid="1611488691642390523">"Health Connect වෙත සමමුහුර්ත කර එක් කළ සියලු ම සෞඛ්‍ය වාර්තා මෙයට ඇතුළත් වේ. මෙය ඔබේ සම්පූර්ණ වෛද්‍ය වාර්තාව නොවිය හැකි අතර ඔබේ සෞඛ්‍ය වාර්තා පිළිබඳ වෛද්‍ය විස්තරයක් ඇතුළත් නොවේ."</string>
     <string name="all_medical_data_uppercase_label" msgid="2380759160541898783">"සියලු ම සෞඛ්‍ය වාර්තා"</string>
     <string name="all_medical_data_lowercase_label" msgid="6293814928992081842">"සියලු ම සෞඛ්‍ය වාර්තා"</string>
     <string name="all_medical_data_content_description" msgid="4846586780533295022">"සියලු ම සෞඛ්‍ය වාර්තා ලියන්න"</string>
-    <string name="allergy_intolerance_uppercase_label" msgid="962905760867412783">"අසාත්මිකතා"</string>
-    <string name="allergy_intolerance_lowercase_label" msgid="8705895234297776508">"අසාත්මිකතා"</string>
-    <string name="allergy_intolerance_content_description" msgid="5938549394285540206">"අසාත්මිකතා කියවන්න"</string>
-    <string name="immunization_uppercase_label" msgid="1467176749064014020">"ප්‍රතිශක්තිකරණය"</string>
-    <string name="immunization_lowercase_label" msgid="6464922369026887687">"ප්‍රතිශක්තිකරණය"</string>
-    <string name="immunization_content_description" msgid="2910674919337229803">"ප්‍රතිශක්තිකරණය කියවන්න"</string>
-    <string name="laboratory_results_uppercase_label" msgid="2521886562709901654">"රසායනාගාර ප්‍රතිඵල"</string>
-    <string name="laboratory_results_lowercase_label" msgid="6437932041744631964">"රසායනාගාර ප්‍රතිඵල"</string>
-    <string name="laboratory_results_content_description" msgid="5882338877203692484">"රසායනාගාර ප්‍රතිඵල කියවන්න"</string>
+    <string name="allergies_intolerances_uppercase_label" msgid="2458552115947636884">"අසාත්මිකතා"</string>
+    <string name="allergies_intolerances_lowercase_label" msgid="5066782073511167288">"අසාත්මිකතා"</string>
+    <string name="allergies_intolerances_content_description" msgid="7954532940667325068">"අසාත්මිකතා කියවන්න"</string>
+    <string name="conditions_uppercase_label" msgid="5260404343402770877">"කොන්දේසි"</string>
+    <string name="conditions_lowercase_label" msgid="2678248918552246997">"කොන්දේසි"</string>
+    <string name="conditions_content_description" msgid="3230552343616193829">"කොන්දේසි කියවන්න"</string>
+    <string name="vaccines_uppercase_label" msgid="1101176371071123187">"එන්නත්"</string>
+    <string name="vaccines_lowercase_label" msgid="4991324441768127447">"එන්නත්"</string>
+    <string name="vaccines_content_description" msgid="7152741514791951684">"එන්නත් කියවන්න"</string>
+    <string name="laboratory_results_uppercase_label" msgid="3400725778254150910">"රසායනාගාර ප්‍රතිඵල"</string>
+    <string name="laboratory_results_lowercase_label" msgid="7647457227104919126">"රසායනාගාර ප්‍රතිඵල"</string>
+    <string name="laboratory_results_content_description" msgid="7888886103734085841">"රසායනාගාර ප්‍රතිඵල කියවන්න"</string>
     <string name="medications_uppercase_label" msgid="4783281053427990225">"ඖෂධ"</string>
     <string name="medications_lowercase_label" msgid="7808038774503092207">"ඖෂධ"</string>
     <string name="medications_content_description" msgid="6165382876281780190">"ඖෂධ කියවන්න"</string>
+    <string name="personal_details_uppercase_label" msgid="7241635933310394120">"පුද්ගලික විස්තර"</string>
+    <string name="personal_details_lowercase_label" msgid="1907848447611775151">"පුද්ගලික විස්තර"</string>
+    <string name="personal_details_content_description" msgid="3191211304673909831">"පුද්ගලික විස්තර කියවන්න"</string>
+    <string name="practitioner_details_uppercase_label" msgid="2940667649808082510">"වෘත්තිකයාගේ විස්තර"</string>
+    <string name="practitioner_details_lowercase_label" msgid="8195591077717971542">"වෘත්තිකයාගේ විස්තර"</string>
+    <string name="practitioner_details_content_description" msgid="8775396516928504185">"වෘත්තිකයාගේ විස්තර කියවන්න"</string>
     <string name="pregnancy_uppercase_label" msgid="5979925175194337864">"ගර්භනීභාවය"</string>
     <string name="pregnancy_lowercase_label" msgid="810439290131044517">"ගර්භනීභාවය"</string>
     <string name="pregnancy_content_description" msgid="3436773729243586287">"ගර්භනීභාවය කියවන්න"</string>
-    <string name="problems_uppercase_label" msgid="4047882613795113715">"ගැටලු"</string>
-    <string name="problems_lowercase_label" msgid="6934298611508910866">"ගැටලු"</string>
-    <string name="problems_content_description" msgid="1549418294742668962">"ගැටලු කියවන්න"</string>
     <string name="procedures_uppercase_label" msgid="9176087520132593261">"ක්‍රියා පටිපාටි"</string>
     <string name="procedures_lowercase_label" msgid="5320804313946273234">"ක්‍රියා පටිපාටි"</string>
     <string name="procedures_content_description" msgid="1086900373141440005">"ක්‍රියා පටිපාටි කියවන්න"</string>
-    <string name="social_history_uppercase_label" msgid="1731364502071035544">"සමාජ ඉතිහාසය"</string>
+    <string name="social_history_uppercase_label" msgid="4119611299449533999">"සමාජ ඉතිහාසය"</string>
     <string name="social_history_lowercase_label" msgid="9027541979445736412">"සමාජ ඉතිහාසය"</string>
     <string name="social_history_content_description" msgid="7187059309389849831">"සමාජ ඉතිහාසය කියවන්න"</string>
-    <string name="vital_signs_uppercase_label" msgid="214938594708280346">"වැදගත් සංඥා"</string>
+    <string name="visits_uppercase_label" msgid="8532619758336375886">"පැමිණීම්"</string>
+    <string name="visits_lowercase_label" msgid="2545887061364564151">"පැමිණීම්"</string>
+    <string name="visits_content_description" msgid="6336796415049565697">"පැමිණීම් කියවන්න"</string>
+    <string name="vital_signs_uppercase_label" msgid="289862347143374640">"වැදගත් සංඥා"</string>
     <string name="vital_signs_lowercase_label" msgid="9141304492316454529">"වැදගත් සංඥා"</string>
     <string name="vital_signs_content_description" msgid="914944352640528612">"වැදගත් සංඥා කියවන්න"</string>
     <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"සිහිකල්පනාව"</string>
@@ -303,16 +358,25 @@
     <string name="mindfulness_write_content_description" msgid="7925112426563398421">"සිහිකල්පනාව ලියන්න"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"“<xliff:g id="APP_NAME">%1$s</xliff:g>” හට කියවීමට ඉඩ දෙන්න"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"“<xliff:g id="APP_NAME">%1$s</xliff:g>” හට ලිවීමට ඉඩ දෙන්න"</string>
-    <string name="request_permissions_cancel" msgid="1787483997235365393">"අවලංගු කරන්න"</string>
     <string name="request_permissions_allow" msgid="4201324235711040631">"ඉඩ දෙන්න"</string>
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"සියල්ලට ඉඩ දෙන්න"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"ඉඩ නොදෙන්න"</string>
-    <string name="request_permissions_header_desc" msgid="5561173070722750153">"ඔබට මෙම යෙදුම Health Connect වෙත කියවීමට හෝ ලිවීමට අවශ්‍ය දත්ත තෝරන්න"</string>
+    <string name="request_permissions_data_access_type_read_write" msgid="3179244850699732544">"ඔබට මෙම යෙදුම Health Connect වෙත කියවීමට හෝ ලිවීමට අවශ්‍ය දත්ත තෝරන්න"</string>
+    <string name="request_permissions_data_access_type_read" msgid="6005792244220381045">"Health Connect වෙතින් ඔබට මෙම යෙදුම කියවීමට අවශ්‍ය දත්ත තෝරා ගන්න"</string>
+    <string name="request_permissions_data_access_type_write" msgid="6369810467678676337">"ඔබට මෙම යෙදුම Health Connect වෙත ලිවීමට අවශ්‍ය දත්ත තෝරා ගන්න"</string>
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"ඔබ කියවීම් ප්‍රවේශය ලබා දෙන්නේ නම්, යෙදුමට පසුගිය දින 30 සිට නව දත්ත සහ දත්ත කියවිය හැක"</string>
     <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"ඔබ කියවීමට ප්‍රවේශය ලබා දෙන්නේ නම්, යෙදුමට නව සහ අතීත දත්ත කියවිය හැක"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"<xliff:g id="APP_NAME">%1$s</xliff:g> හට Health Connect වෙත ප්‍රවේශ වීමට ඉඩ දෙන්නද?"</string>
-    <string name="request_permissions_rationale" msgid="6154280355215802538">"ඔබට <xliff:g id="APP_NAME">%1$s</xliff:g> ඔබේ දත්ත හසුරුවන ආකාරය ගැන සංවර්ධකගේ <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> තුළ දැන ගත හැක"</string>
+    <string name="request_permissions_with_medical_header_title" msgid="6269944931319362595">"<xliff:g id="APP_NAME">%1$s</xliff:g> හට යෝග්‍යතා සහ සුවතා දත්ත වෙත ප්‍රවේශ වීමට ඉඩ දෙන්න ද?"</string>
+    <string name="request_permissions_rationale" msgid="2642076968583316986">"ඔවුන්ගේ <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> හි <xliff:g id="APP_NAME">%1$s</xliff:g> ඔබේ දත්ත හසුරුවන ආකාරය ඔබට දැන ගත හැක"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"පෞද්ගලිකත්ව ප්‍රතිපත්තිය"</string>
+    <string name="medical_request_header" msgid="2300521519021510027">"<xliff:g id="APP_NAME">%1$s</xliff:g> හට ඔබේ සෞඛ්‍ය වාර්තා වෙත ප්‍රවේශ වීමට ඉඩ දෙන්න ද?"</string>
+    <string name="medical_request_header_access_info_read_write" msgid="221400464566148357">"ඔබ ප්‍රවේශය ලබා දෙන්නේ නම්, යෙදුමට අසාත්මිකතා, පරීක්ෂණාගාර ප්‍රතිඵල, එන්නත් සහ තවත් බොහෝ දත්ත කියවීමට සහ ලිවීමට හැක\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_header_access_info_read" msgid="7817630833626125558">"ඔබ ප්‍රවේශය ලබා දෙන්නේ නම්, යෙදුමට අසාත්මිකතා, පරීක්ෂණාගාර ප්‍රතිඵල, එන්නත් සහ තවත් බොහෝ දත්ත කියවීමට හැක\n<xliff:g id="ABOUT_HEALTH_RECORDS_LINK">%1$s</xliff:g>"</string>
+    <string name="medical_request_about_health_records" msgid="7204918218748362687">"සෞඛ්‍ය වාර්තා ගැන"</string>
+    <string name="medical_request_data_to_share" msgid="6778034304921873317">"බෙදා ගැනීමට දත්තවල ඇතුළත් වේ"</string>
+    <string name="medical_request_summary" msgid="7281321524805015510">"ඔබ ඉඩ දෙන්නේ නම්, <xliff:g id="APP_NAME">%1$s</xliff:g> හට ඔබේ සෞඛ්‍ය වාර්තා Health Connect සමග බෙදා ගත හැක."</string>
+    <string name="medical_request_footer" msgid="6533749932770903089">"ඔබේ සෞඛ්‍ය වාර්තා එක තැනක තබා ගැනීමට ඔබේ විවිධ යෙදුම් සහ මූලාශ්‍රවලින් සමමුහුර්ත කරන්න"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"සියලු අවසර ඉවත් කරන්න ද?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"සියල්ල ඉවත් කරන්න"</string>
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> හට තවදුරටත් Health Connect වෙතින් දත්ත කිසිවක් කියවීමට හෝ ලිවීමට නොහැකි වනු ඇත.\n\nමෙම යෙදුමට කැමරාව, මයික්‍රෆෝනය, හෝ ස්ථානය වැනි වෙනත් අවසරවලට මෙය බලපාන්නේ නැත."</string>
@@ -320,20 +384,28 @@
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> හට තවදුරටත් අතීත දත්ත ඇතුළුව, Health Connect වෙතින් දත්ත කිසිවක් කියවීමට හෝ ලිවීමට නොහැකි වනු ඇත.\n\nස්ථානය, කැමරාව, හෝ මයික්‍රෆෝනය වැනි, මෙම යෙදුමට තිබිය හැකි වෙනත් අවසරවලට මෙය බලපාන්නේ නැත."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> හට තවදුරටත් පසුබිම් සහ අතීත දත්ත ඇතුළුව, Health Connect වෙතින් දත්ත කිසිවක් කියවීමට හෝ ලිවීමට නොහැකි වනු ඇත.\n\nස්ථානය, කැමරාව, හෝ මයික්‍රෆෝනය වැනි, මෙම යෙදුමට තිබිය හැකි වෙනත් අවසරවලට මෙය බලපාන්නේ නැත."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Health Connect වෙතින් <xliff:g id="APP_NAME">%1$s</xliff:g> දත්ත ද මකන්න"</string>
-    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"සියලු අවසර ඉවත් කරන්න ද?"</string>
-    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"සියලුම සෞඛ්‍ය වාර්තා අවසර ඉවත් කරන්න ද?"</string>
     <string name="disconnect_all_fitness_permissions_title" msgid="7612364222525900592">"සියලුම යෝග්‍යතා සහ සුවතා අවසර ඉවත් කරන්න ද?"</string>
+    <string name="disconnect_all_fitness_permissions_dialog_checkbox" msgid="8808559689899914478">"Health Connect වෙතින් <xliff:g id="APP_NAME">%1$s</xliff:g> හි යෝග්‍යතා දත්ත ද මකන්න"</string>
+    <string name="disconnect_all_medical_permissions_title" msgid="735315242997370168">"සියලුම සෞඛ්‍ය වාර්තා අවසර ඉවත් කරන්න ද?"</string>
+    <string name="disconnect_all_medical_permissions_dialog_checkbox" msgid="7782158941871987263">"Health Connect වෙතින් <xliff:g id="APP_NAME">%1$s</xliff:g> හි සෞඛ්‍ය වාර්තා ද මකන්න"</string>
+    <string name="disconnect_all_fitness_or_medical_no_additional_permissions_dialog_message" msgid="6610810945930258582">"<xliff:g id="APP_NAME">%1$s</xliff:g> හට තවදුරටත් Health Connect වෙතින් මෙම දත්ත කියවීමට හෝ ලිවීමට නොහැකි වනු ඇත.\n\nකැමරාව, මයික්‍රොෆෝනය හෝ ස්ථානය වැනි මෙම යෙදුමට තිබිය හැකි වෙනත් අවසරවලට මෙය බලපාන්නේ නැත."</string>
+    <string name="disconnect_all_fitness_or_medical_and_background_permissions_dialog_message" msgid="7138878481421234556">"<xliff:g id="APP_NAME">%1$s</xliff:g> හට තවදුරටත් පසුබිම් දත්ත ඇතුළුව Health Connect වෙතින් මෙම දත්ත කියවීමට හෝ ලිවීමට නොහැකි වනු ඇත.\n\nකැමරාව, මයික්‍රොෆෝනය හෝ ස්ථානය වැනි මෙම යෙදුමට තිබිය හැකි වෙනත් අවසරවලට මෙය බලපාන්නේ නැත."</string>
+    <string name="disconnect_all_fitness_or_medical_and_historical_permissions_dialog_message" msgid="1519496566456028625">"<xliff:g id="APP_NAME">%1$s</xliff:g> හට තවදුරටත් අතීත දත්ත ඇතුළුව Health Connect වෙතින් මෙම දත්ත කියවීමට හෝ ලිවීමට නොහැකි වනු ඇත.\n\nකැමරාව, මයික්‍රොෆෝනය හෝ ස්ථානය වැනි මෙම යෙදුමට තිබිය හැකි වෙනත් අවසරවලට මෙය බලපාන්නේ නැත."</string>
+    <string name="disconnect_all_fitness_or_medical_and_additional_permissions_dialog_message" msgid="5147728456578218902">"<xliff:g id="APP_NAME">%1$s</xliff:g> හට තවදුරටත් පසුබිම් සහ අතීත දත්ත ඇතුළුව Health Connect වෙතින් මෙම දත්ත කියවීමට හෝ ලිවීමට නොහැකි වනු ඇත.\n\nකැමරාව, මයික්‍රොෆෝනය හෝ ස්ථානය වැනි මෙම යෙදුමට තිබිය හැකි වෙනත් අවසරවලට මෙය බලපාන්නේ නැත."</string>
+    <string name="disconnect_all_health_permissions_title" msgid="3995410660376966233">"සියලු අවසර ඉවත් කරන්න ද?"</string>
     <string name="disconnect_all_health_no_additional_permissions_dialog_message" msgid="211728516196974197">"<xliff:g id="APP_NAME">%1$s</xliff:g> හට තවදුරටත් Health Connect වෙතින් දත්ත කියවීමට හෝ ලිවීමට නොහැකි වනු ඇත.\n\nකැමරාව, මයික්‍රොෆෝනය හෝ ස්ථානය වැනි මෙම යෙදුමට තිබිය හැකි වෙනත් අවසරවලට මෙය බලපාන්නේ නැත."</string>
     <string name="disconnect_all_health_and_background_permissions_dialog_message" msgid="654533675296670869">"<xliff:g id="APP_NAME">%1$s</xliff:g> හට තවදුරටත් පසුබිම් දත්ත ඇතුළුව Health Connect වෙතින් දත්ත කියවීමට හෝ ලිවීමට නොහැකි වනු ඇත.\n\nකැමරාව, මයික්‍රොෆෝනය හෝ ස්ථානය වැනි මෙම යෙදුමට තිබිය හැකි වෙනත් අවසරවලට මෙය බලපාන්නේ නැත."</string>
     <string name="disconnect_all_health_and_historical_permissions_dialog_message" msgid="6743215620789357899">"<xliff:g id="APP_NAME">%1$s</xliff:g> හට තවදුරටත් අතීත දත්ත ඇතුළුව Health Connect වෙතින් දත්ත කියවීමට හෝ ලිවීමට නොහැකි වනු ඇත.\n\nකැමරාව, මයික්‍රොෆෝනය හෝ ස්ථානය වැනි මෙම යෙදුමට තිබිය හැකි වෙනත් අවසරවලට මෙය බලපාන්නේ නැත."</string>
     <string name="disconnect_all_health_and_additional_permissions_dialog_message" msgid="6062891741278986209">"<xliff:g id="APP_NAME">%1$s</xliff:g> හට තවදුරටත් පසුබිම් සහ අතීත දත්ත ඇතුළුව Health Connect වෙතින් දත්ත කියවීමට හෝ ලිවීමට නොහැකි වනු ඇත.\n\nකැමරාව, මයික්‍රොෆෝනය හෝ ස්ථානය වැනි මෙම යෙදුමට තිබිය හැකි වෙනත් අවසරවලට මෙය බලපාන්නේ නැත."</string>
     <string name="disconnect_all_health_permissions_dialog_checkbox" msgid="762880061016391846">"Health Connect වෙතින් <xliff:g id="APP_NAME">%1$s</xliff:g> හි යෝග්‍යතා දත්ත සහ සෞඛ්‍ය වාර්තා ද මකන්න"</string>
     <string name="disconnect_all_health_permissions_success_toast" msgid="9010063821116197894">"මෙම යෙදුම සඳහා අවසර ඉවත් කරන ලදි"</string>
+    <string name="disconnect_all_app_permissions_dialog_checkbox" msgid="2927403999111348272">"එසේම සියලු Health Connect දත්ත මකන්න"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"ඊළඟ දිනය"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"තෝරා ගත් දිනය"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"පෙර දිනය"</string>
     <string name="default_error" msgid="7966868260616403475">"යමක් වැරදිණි. නැවත උත්සාහ කරන්න."</string>
     <string name="unkwown_resource" msgid="7932225227431922125">"නොදන්නා සම්පත"</string>
+    <string name="raw_fhir_title" msgid="1295744907036066319">"මූලාශ්‍ර දත්ත"</string>
     <string name="raw_fhir_open_bracket" msgid="7974657451368655325">"<xliff:g id="PREFIX">%1$s</xliff:g>විවෘත වරහන."</string>
     <string name="raw_fhir_closed_bracket" msgid="9084379463440675078">"<xliff:g id="PREFIX">%1$s</xliff:g>වැසුණු වරහන."</string>
     <string name="raw_fhir_field_value" msgid="369633095565031835">"<xliff:g id="PREFIX">%1$s</xliff:g> ක්ෂේත්‍රය <xliff:g id="FIELD">%2$s</xliff:g> අගය"</string>
@@ -361,20 +433,21 @@
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"මෙම යෙදුම්වලට තවදුරටත් ප්‍රවේශය නැති නමුත්, තවමත් Health Connect තුළ දත්ත ගබඩා කර ඇත"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g>ට <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>ට පසුව එක් කළ දත්ත කියවිය හැක"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"මෙම යෙදුමට ප්‍රවේශ විය හැකි වෙනත් Android අවසර කළමනාකරණය කිරීමට, සැකසීම් &gt; යෙදුම් වෙත යන්න"</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"ඔබ <xliff:g id="APP_NAME">%1$s</xliff:g> සමග බෙදා ගන්නා දත්ත ඒවායේ පෞද්ගලිකත්ව ප්‍රතිපත්තියෙන් ආවරණය වේ"</string>
+    <string name="manage_permissions_rationale" msgid="2780008055185441703">"ඔබට <xliff:g id="APP_NAME">%1$s</xliff:g> ඔබගේ දත්ත හසුරුවන ආකාරය ගැන සංවර්ධකගේ පෞද්ගලිකත්ව ප්‍රතිපත්තිය තුළ දැන ගත හැකිය"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"මෙම යෙදුමට ප්‍රවේශ විය හැකි වෙනත් Android අවසර කළමනාකරණය කිරීමට, සැකසීම්, පසුව යෙදුම් වෙත යන්න"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"පෞද්ගලිකත්ව ප්‍රතිපත්තිය කියවන්න"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"පසුගිය පැය 24 තුළ ප්‍රවේශ විය"</string>
     <string name="app_access_title" msgid="7137018424885371763">"යෙදුම් ප්‍රවේශය"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"ඔබට දැනට ගැළපෙන යෙදුම් කිසිවක් ස්ථාපන කර නැත"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"අතිරේක ප්‍රවේශය"</string>
+    <string name="additional_access_summary" msgid="1076197455435130191">"අතීත දත්ත, පසුබිම් දත්ත"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"මෙම යෙදුම සඳහා අතිරේක අවසර ඉවත් කරන ලදි"</string>
     <string name="permissions_header" msgid="6519976063360071569">"අවසර"</string>
     <string name="fitness_permissions" msgid="586264186537460254">"යෝග්‍යතාවය සහ සුවතාවය"</string>
     <string name="fitness_permissions_summary" msgid="6476469281589015459">"ව්‍යායාම, නින්ද, පෝෂණය සහ වෙනත් ඒවා"</string>
     <string name="medical_permissions" msgid="1224097151249321566">"සෞඛ්‍ය වාර්තා"</string>
     <string name="medical_permissions_lowercase" msgid="3969792205103436491">"සෞඛ්‍ය වාර්තා"</string>
-    <string name="medical_permissions_summary" msgid="5553982055903211592">"රසායනාගාර ප්‍රතිඵල, ඖෂධ, ප්‍රතිශක්තිකරණ සහ වෙනත් ඒවා"</string>
+    <string name="medical_permissions_summary" msgid="5526004634109548577">"රසායනාගාර ප්‍රතිඵල, ඖෂධ, එන්නත් සහ වෙනත්"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"යෙදුම් අවසර ඉවත් කර ඇත"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"<xliff:g id="APP_DATA">%s</xliff:g> සඳහා Health Connect අවසර ඉවත් කර ඇත"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"<xliff:g id="APP_DATA_0">%1$s</xliff:g> සහ <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> සඳහා Health Connect අවසර ඉවත් කර ඇත"</string>
@@ -466,6 +539,8 @@
     <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"Play Store වෙත යන්න"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect සමග පටන් ගන්න"</string>
     <string name="onboarding_description" msgid="3479157507808350452">"Health Connect ඔබට ඔබේ උපාංගයෙහි විවිධ යෙදුම් සමමුහුර්ත කිරීමට සරල ක්‍රමයක් ලබා දෙමින්, ඔබේ සෞඛ්‍ය සහ යෝග්‍යතා දත්ත ගබඩා කරයි"</string>
+    <string name="onboarding_description_health_records" msgid="6586657048844511252">"Health Connect විවිධ යෙදුම්වලින් ඔබේ සෞඛ්‍ය සහ යෝග්‍යතා දත්ත ගබඩා කර සමමුහුර්ත කරයි.\n\nව්‍යායාම සැසි, පියවර, පෝෂණය, නින්ද සහ තවත් දේ ඇතුළුව, "<b>"යෝග්‍යතා සහ සුවතා දත්ත"</b>\n\n"එන්නත්, රසායනාගාර ප්‍රතිඵල සහ තවත් දේ ඇතුළුව, "<b>"සෞඛ්‍ය වාර්තා"</b></string>
+    <string name="onboarding_description_with_health_connect" msgid="8751881078749676542">"Health Connect සමගින් ඔබට හැකියි"</string>
     <string name="share_data" msgid="3481932156368883946">"ඔබේ යෙදුම් සමග දත්ත බෙදා ගන්න"</string>
     <string name="share_data_description" msgid="2919871301634375092">"එක් එක් යෙදුමට Health Connect වෙත කියවීමට හෝ ලිවීමට හැකි දත්ත තෝරා ගන්න"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"ඔබේ සැකසීම් සහ පෞද්ගලිකත්වය කළමනා කරන්න"</string>
@@ -566,7 +641,9 @@
     <string name="flow_light" msgid="1937543318146228793">"සුළු වහනයක් සහිත"</string>
     <string name="flow_medium" msgid="3783688724668943154">"මධ්‍යම වහනයක් සහිත"</string>
     <string name="flow_heavy" msgid="8672261792750634294">"දැඩි වහනයක් සහිත"</string>
+    <string name="flow_unknown" msgid="1634411759928572900">"නොදන්නා ප්‍රවාහය"</string>
     <string name="period_day" msgid="3821944462093965882">"ඔසප් වීම <xliff:g id="TOTAL_LENGTH">%2$d</xliff:g> න් <xliff:g id="DAY">%1$d</xliff:g> වෙනි දිනය"</string>
+    <string name="period_length" msgid="2257138792780916599">"{count,plural, =1{ඔසප් වීම (1 දිනයක්)}one{ඔසප් වීම (දින #ක්)}other{ඔසප් වීම (දින #ක්)}}"</string>
     <string name="ovulation_positive" msgid="6588547263126320238">"පොසිටිව්"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"නෙගටිව්"</string>
     <string name="ovulation_high" msgid="205362931427158291">"ඉහළ"</string>
@@ -713,6 +790,8 @@
     <string name="mindfulness_type_music" msgid="7041364137895485917">"සංගීතය"</string>
     <string name="mindfulness_type_other" msgid="793524328911038908">"වෙනත්"</string>
     <string name="mindfulness_type_unguided" msgid="2367259868577157922">"මගපෙන්වීමක් නැත"</string>
+    <string name="activity_intensity_type_moderate" msgid="7974792315871109564">"මධ්‍යස්ථ"</string>
+    <string name="activity_intensity_type_vigorous" msgid="5651020560923780330">"ජවසම්පන්න"</string>
     <string name="minute_duration" msgid="9035288227090160206">"මිනි <xliff:g id="MINUTE">%1$s</xliff:g>ක්"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"පැ<xliff:g id="HOUR">%1$s</xliff:g> මි<xliff:g id="MIN">%2$s</xliff:g>"</string>
     <string name="hour_duration" msgid="3472489613837138711">"පැය <xliff:g id="HOUR">%1$s</xliff:g>ක්"</string>
@@ -965,23 +1044,18 @@
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"ඒකාබද්ධ කිරීම සිදු වෙමින් පවතී"</string>
     <string name="migration_in_progress_screen_integration_details" msgid="5916989113111973466">"Health Connect, Android පද්ධතිය සමග ඒකාබද්ධ වෙමින් පවතී.\n\nඔබේ දත්ත සහ අවසර මාරු කරන අතරතුර යම් කාලයක් ගත විය හැක."</string>
     <string name="migration_in_progress_screen_integration_dont_close" msgid="2095732208438772444">"ක්‍රියාවලිය සම්පූර්ණ වූ බවට ඔබට දැනුම්දීමක් ලැබෙන තුරු යෙදුම නොවසන්න."</string>
-    <string name="migration_in_progress_notification_title" msgid="8873411008158407737">"Health Connect ඒකාබද්ධ කිරීම සිදු වෙමින් පවතී"</string>
     <string name="migration_update_needed_screen_title" msgid="3260466598312877429">"යාවත්කාලීනය අවශ්‍යයි"</string>
     <string name="migration_update_needed_screen_details" msgid="7984745102006782603">"Health Connect, Android පද්ධතිය සමග ඒකාබද්ධ වෙමින් පවතින බැවින් ඔබට ඔබේ සැකසීම් වෙතින් එයට සෘජුවම ප්‍රවේශ විය හැක."</string>
     <string name="update_button" msgid="4544529019832009496">"යාවත්කාලීන කරන්න"</string>
     <string name="migration_update_needed_notification_content" msgid="478899618719297517">"Health Connect හට ඔබේ පද්ධති සැකසීම් සමග දිගටම ඒකාබද්ධ කළ හැකි පරිදි මෙම යාවත්කාලීනය ආරම්භ කරන්න"</string>
-    <string name="migration_update_needed_notification_action" msgid="1219223694165492000">"දැන් යාවත්කාලීන කරන්න"</string>
     <string name="migration_module_update_needed_notification_title" msgid="5428523284357105379">"පද්ධති යාවත්කාලීනය අවශ්‍යයි"</string>
     <string name="migration_module_update_needed_action" msgid="7211167950758064289">"ඉදිරියට යාමට පෙර, ඔබේ දුරකථන පද්ධතිය යාවත්කාලීන කරන්න."</string>
     <string name="migration_module_update_needed_restart" msgid="1246884613546321798">"ඔබ දැනටමත් ඔබේ දුරකථන පද්ධතිය යාවත්කාලීන කර ඇති නම්, දිගටම ඒකාබද්ධ කිරීමට ඔබේ දුරකථනය යළි ඇරඹීමට උත්සාහ කරන්න"</string>
-    <string name="migration_app_update_needed_notification_title" msgid="8971076370900025444">"Health Connect යාවත්කාලීන කිරීම අවශ්‍යයි"</string>
     <string name="migration_app_update_needed_action" msgid="3289432528592774601">"ඉදිරියට යාමට පෙර, Health Connect යෙදුම නවතම අනුවාදයට යාවත්කාලීන කරන්න."</string>
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"තව ඉඩ අවශ්‍යයි"</string>
     <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"දිගටම ඒකාබද්ධ කිරීමට Health Connect හට ඔබේ දුරකථනයේ <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> ගබඩා ඉඩ අවශ්‍ය වෙයි.\n\nඔබේ දුරකථනයේ යම් ඉඩක් හිස් කර නැවත උත්සාහ කරන්න."</string>
     <string name="try_again_button" msgid="8745496819992160789">"නැවත උත්සාහ කරන්න"</string>
     <string name="free_up_space_button" msgid="4141013808635654695">"ඉඩ නිදහස් කර ගන්න"</string>
-    <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"තව ඉඩ අවශ්‍යයි"</string>
-    <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"Health Connect හට දිගටම ඒකාබද්ධ කිරීමට ඔබේ දුරකථනයේ <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> ගබඩා ඉඩ අවශ්‍යයි."</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"ඒකාබද්ධ කිරීම විරාම කරන ලදී"</string>
     <string name="migration_paused_screen_details" msgid="5898311710030340187">"Health Connect යෙදුම Android පද්ධතිය සමග ඒකාබද්ධ වෙමින් තිබියදී වැසුණා.\n\nයෙදුම නැවත විවෘත කර ඔබේ දත්ත සහ අවසර දිගටම මාරු කිරීමට නැවත පටන් ගන්න ක්ලික් කරන්න."</string>
     <string name="migration_paused_screen_details_timeout" msgid="353768000785837394">"ඔබේ Health Connect දත්ත තබා ගැනීමට මෙය <xliff:g id="TIME_NEEDED">%1$s</xliff:g> ඇතුළත සම්පූර්ණ කරන්න"</string>
@@ -992,11 +1066,9 @@
     <string name="resume_migration_banner_description" msgid="6236230413670826036">"Health Connect, Android පද්ධතිය සමග දිගටම ඒකාබද්ධ කිරීමට තට්ටු කරන්න. ඔබේ දත්ත තබා ගැනීම සඳහා, මෙය <xliff:g id="TIME_NEEDED">%1$s</xliff:g> ඇතුළත සම්පූර්ණ කරන්න"</string>
     <string name="resume_migration_banner_description_fallback" msgid="6060444898839211883">"Health Connect, Android පද්ධතිය සමග දිගටම ඒකාබද්ධ කිරීමට තට්ටු කරන්න."</string>
     <string name="resume_migration_banner_button" msgid="2112318760107756469">"ඉදිරියට යන්න"</string>
-    <string name="resume_migration_notification_title" msgid="8859575633668908327">"Health Connect ඒකාබද්ධ කිරීම නැවත ආරම්භ කරන්න"</string>
-    <string name="resume_migration_notification_content" msgid="46172108837648715">"ඔබේ දත්ත තබා ගැනීම සඳහා, මෙය <xliff:g id="TIME_NEEDED">%1$s</xliff:g> ඇතුළත සම්පූර්ණ කරන්න"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"යෙදුම් යාවත්කාලීනය අවශ්‍යයි"</string>
-    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"<xliff:g id="APP_NAME">%1$s</xliff:g> Health Connect සමඟ සමමුහුර්ත කිරීම දිගටම කරගෙන යාමට යාවත්කාලීන කිරීමට අවශ්‍ය වේ"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Health Connect සමග සමමුහුර්ත කිරීම දිගටම කරගෙන යාමට සමහර යෙදුම් යාවත්කාලීන කිරීමට අවශ්‍ය වේ"</string>
+    <string name="app_update_needed_banner_description_single" msgid="8220676317438592573">"<xliff:g id="APP_NAME">%1$s</xliff:g> Health Connect සමඟ සමමුහුර්ත කිරීම දිගටම කරගෙන යාමට යාවත්කාලීන කිරීමට අවශ්‍ය වේ. සියලු ම යෙදුම් සඳහා යාවත්කාලීන නොතිබිය හැක."</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="6021498912770754575">"Health Connect සමග සමමුහුර්ත කිරීම දිගටම කරගෙන යාමට සමහර යෙදුම් යාවත්කාලීන කිරීමට අවශ්‍ය වේ. සියලු ම යෙදුම් සඳහා යාවත්කාලීන නොතිබිය හැක."</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"යාවත්කාලීන තිබේද පරීක්‍ෂා කරන්න"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"තව දැන ගන්න"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Health Connect ඒකාබද්ධ කිරීම"</string>
@@ -1011,10 +1083,6 @@
     <string name="migration_not_complete_dialog_title" msgid="3725576338159027149">"Health Connect ඒකාබද්ධ කිරීම සම්පූර්ණ නොවුණි"</string>
     <string name="migration_not_complete_dialog_content" msgid="4992771587233088606">"එය නැවත ලබා ගත හැකි වූ විට ඔබට දැනුම්දීමක් ලැබෙයි."</string>
     <string name="migration_not_complete_dialog_button" msgid="3271842109680807482">"තේරුණා"</string>
-    <string name="migration_not_complete_notification_title" msgid="7392885522310227293">"Health Connect ඒකාබද්ධ කිරීම සම්පූර්ණ නොවුණි"</string>
-    <string name="migration_not_complete_notification_action" msgid="757041885992445657">"තව කියවන්න"</string>
-    <string name="migration_complete_notification_title" msgid="4988631739109332404">"Health Connect ඒකාබද්ධ කිරීම සම්පූර්ණයි"</string>
-    <string name="migration_complete_notification_action" msgid="5350322865206331186">"විවෘත කරන්න"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"අලුත් මොනවා ද"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"ඔබට දැන් ඔබේ සැකසීම්වලින් සෘජුවම Health Connect වෙත ප්‍රවේශ විය හැක. ගබඩා ඉඩ නිදහස් කර ගැනීමට ඕනෑම වේලාවක Health Connect යෙදුම අස්ථාපන කරන්න."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"තේරුණා"</string>
@@ -1035,7 +1103,8 @@
     <string name="edit_data_sources" msgid="79641360876849547">"යෙදුම් මූලාශ්‍ර සංස්කරණය කරන්න"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"උපාංගයේ පෙරනිමිය"</string>
     <string name="app_data_title" msgid="6499967982291000837">"යෙදුම් දත්ත"</string>
-    <string name="no_data_footer" msgid="4777297654713673100">"Health Connect වෙත ප්‍රවේශය ඇති යෙදුම් වෙතින් දත්ත මෙහි පෙන්වනු ඇත"</string>
+    <string name="app_data_no_data_footer" msgid="7027700714577530371">"<xliff:g id="APP_NAME">%1$s</xliff:g> වෙතින් දත්ත මෙහි පෙන්වනු ඇත"</string>
+    <string name="all_data_no_data_footer" msgid="2553443887019153340">"Health Connect වෙත ප්‍රවේශය ඇති යෙදුම් වෙතින් දත්ත මෙහි පෙන්වනු ඇත"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"දිනය"</string>
     <string name="date_picker_week" msgid="1038805538316142229">"සතිය"</string>
     <string name="date_picker_month" msgid="3560692391260778560">"මාසය"</string>
@@ -1045,11 +1114,6 @@
     <string name="last_month_header" msgid="1359164797239191253">"පසුගිය මාසය"</string>
     <string name="tab_entries" msgid="3402700951602029493">"ඇතුළත් කිරීම්"</string>
     <string name="tab_access" msgid="7818197975407243701">"ප්‍රවේශය"</string>
-    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"<xliff:g id="APP_NAME">%1$s</xliff:g> සඳහා අමතර ප්‍රවේශයට ඉඩ දෙන්න ද?"</string>
-    <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g>ට මෙම Health Connect සැකසීම් වෙත ප්‍රවේශ වීමට ද අවශ්‍යයි"</string>
-    <string name="additional_access_combined_footer" msgid="5967785355544362840">"මෙම යෙදුම සඳහා පසුබිම හෝ අතීත දත්ත ප්‍රවේශය ක්‍රියාත්මක කිරීමට අවම වශයෙන් එක් කියවීම් අවසරයක්වත් සබල කරන්න"</string>
-    <string name="additional_access_background_footer" msgid="1638739578431818525">"මෙම යෙදුම සඳහා පසුබිම් ප්‍රවේශය ක්‍රියාත්මක කිරීමට අවම වශයෙන් එක් කියවීම් අවසරයක්වත් සබල කරන්න"</string>
-    <string name="additional_access_history_footer" msgid="5326814559930548467">"මෙම යෙදුම සඳහා අතීත දත්ත ප්‍රවේශය ක්‍රියාත්මක කිරීමට අවම වශයෙන් එක් කියවීම් අවසරයක්වත් සබල කරන්න"</string>
     <string name="start_using_hc_banner_title" msgid="2030178284749796384">"Health Connect භාවිත කිරීම අරඹන්න"</string>
     <string name="start_using_hc_banner_content" msgid="3171560198945933334">"ඔවුන් අතර සෞඛ්‍ය සහ යෝග්‍යතා දත්ත බෙදා ගැනීමට ඔබේ පළමු යෙදුම් සමමුහුර්ත කරන්න"</string>
     <string name="start_using_hc_set_up_button" msgid="7486865297236439364">"පිහිටුවන්න"</string>
@@ -1059,8 +1123,20 @@
     <string name="see_compatible_apps_banner_title" msgid="5217106184748241727">"ගැළපෙන යෙදුම් බලන්න"</string>
     <string name="see_compatible_apps_banner_content" msgid="1940786301699569588">"Health Connect හරහා <xliff:g id="APP_NAME">%s</xliff:g> සමමුහුර්ත කිරීමට තවත් යෙදුම් සොයා ගන්න"</string>
     <string name="see_compatible_apps_set_up_button" msgid="8260738204782792905">"App Store හි බලන්න"</string>
+    <string name="lock_screen_banner_title" msgid="5384381892985739755">"තිර අගුලක් සකසන්න"</string>
+    <string name="lock_screen_banner_content" msgid="3392527073622152481">"ඔබේ සෞඛ්‍ය දත්ත සඳහා අමතර ආරක්ෂාවක් ලබා ගැනීමට, මෙම උපාංගය සඳහා PIN, රටාව හෝ මුරපදය සකසන්න"</string>
+    <string name="lock_screen_banner_button" msgid="2537090011380728122">"තිර අගුල සකසන්න"</string>
     <string name="select_all" msgid="837499881590001166">"සියල්ල තෝරන්න"</string>
     <string name="deletion_confirmation_dialog_body" msgid="7643182907084645805">"සම්බන්ධිත යෙදුම්වලට තවදුරටත් Health Connect වෙතින් මෙම දත්ත කියවීමට නොහැකි වනු ඇත"</string>
+    <string name="a11y_checked" msgid="3685413382346589880">"සලකුණු කරන ලදි"</string>
+    <string name="a11y_unchecked" msgid="6258943223981886207">"සලකුණු නොකළ"</string>
+    <string name="a11y_map_description" msgid="4992907698581164434">"අභ්‍යාස සිතියම් මාර්ගය තිබේ"</string>
+    <string name="a11y_next_day" msgid="7298174378837366410">"ඊළඟ දිනය"</string>
+    <string name="a11y_next_week" msgid="6692230156318350735">"ඊළඟ සතිය"</string>
+    <string name="a11y_next_month" msgid="4462534553687997396">"ඊළඟ මාසය"</string>
+    <string name="a11y_previous_day" msgid="2529677154858456085">"පෙර දිනය"</string>
+    <string name="a11y_previous_week" msgid="2992971531628685405">"පෙර සතිය"</string>
+    <string name="a11y_previous_month" msgid="3304373968190750755">"පෙර මාසය"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="2103387413531373305">"සියලු දත්ත ස්ථිරවම මකන්න ද?"</string>
     <string name="some_data_selected_deletion_confirmation_dialog" msgid="2466281529240054537">"තෝරා ගත් දත්ත ස්ථිරවම මකන්න ද?"</string>
     <string name="all_app_data_selected_deletion_confirmation_dialog" msgid="1077157006579195958">"සියලු <xliff:g id="APP_NAME">%s</xliff:g> දත්ත ස්ථිරවම මකන්න ද?"</string>
@@ -1079,4 +1155,38 @@
     <string name="some_app_entries_selected_week_deletion_confirmation_dialog" msgid="8009352719322914060">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> සතිය සඳහා තෝරා ගත් <xliff:g id="APP_NAME">%1$s</xliff:g> ඇතුළත් කිරීම් ස්ථිරවම මකන්න ද?"</string>
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> සඳහා තෝරා ගත් <xliff:g id="APP_NAME">%1$s</xliff:g> ඇතුළත් කිරීම් ස්ථිරවම මකන්න ද?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"මෙම <xliff:g id="APP_NAME">%s</xliff:g> ඇතුළත් කිරීම ස්ථිරවම මකන්න ද?"</string>
+    <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"<xliff:g id="APP_NAME">%2$s</xliff:g> සඳහා <xliff:g id="DATA_TYPE">%1$s</xliff:g> දත්ත ස්ථිරවම මකන්න ද?"</string>
+    <string name="on" msgid="8266542510798355807">"ක්‍රියාත්මකයි"</string>
+    <string name="off" msgid="6996623844428550649">"ක්‍රියාවිරහිතයි"</string>
+    <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"ප්‍රවේශ වූයේ <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
+    <string name="wear_app_perms_24h_access_yest" msgid="325061728619254928">"ප්‍රවේශ වූයේ ඊයේ <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>
+    <string name="wear_app_perms_7d_access" msgid="5694169440873563459">"ප්‍රවේශ වූයේ <xliff:g id="TIME_DATE_0">%1$s</xliff:g> <xliff:g id="TIME_DATE_1">%2$s</xliff:g>"</string>
+    <string name="request_permissions_allow_all_the_time" msgid="4081502779872893569">"සැම විට ඉඩ දෙන්න"</string>
+    <string name="request_permissions_allow_selected" msgid="218527615680495438">"තෝරා ගැනීමට ඉඩ දෙන්න"</string>
+    <string name="request_permissions_while_using_the_app" msgid="5155929974398889727">"යෙදුම භාවිත කරන අතරතුර"</string>
+    <string name="request_permissions_deny_all" msgid="4123735770293545320">"සියල්ල ප්‍රතික්ෂේප කරන්න"</string>
+    <string name="wear_allow_app_access_fitness_and_wellness_data" msgid="7914569541993476826">"<xliff:g id="APP_NAME">%1$s</xliff:g> හට යෝග්‍යතා සහ සුවතා දත්ත වෙත ප්‍රවේශ වීමට ඉඩ දෙන්න ද?"</string>
+    <string name="wear_request_multiple_data_type_permissions" msgid="5348997693739610876">"<xliff:g id="APP_NAME">%1$s</xliff:g> <xliff:g id="DATA_TYPES">%2$s</xliff:g> වෙත ප්‍රවේශය.\n\nසියල්ලට ඉඩ දීමට හෝ ඒවා තනි තනිව පාලනය කිරීමට තෝරා ගන්න."</string>
+    <string name="wear_request_single_data_type_permission" msgid="4479262151480683518">"<xliff:g id="APP_NAME">%1$s</xliff:g> හට <xliff:g id="DATA_TYPE">%2$s</xliff:g> වෙත ප්‍රවේශයට ඉඩ දෙන්න ද?"</string>
+    <string name="fitness_and_wellness" msgid="2002316898861559748">"යෝග්‍යතාවය සහ සුවතාවය"</string>
+    <string name="view_permissions_all_the_time" msgid="6899702815770193290">"සෑම විට ම"</string>
+    <string name="view_permissions_while_in_use" msgid="2031627107397429473">"භාවිත කරන අතරේ"</string>
+    <string name="view_permissions_all_the_time_cap" msgid="7703114160274796464">"සෑම විට ම"</string>
+    <string name="view_permissions_while_in_use_cap" msgid="2567477283044619917">"භාවිත කරන අතරේ"</string>
+    <string name="view_permissions_mode" msgid="5954826327563393399">"<xliff:g id="APP_NAME">%1$s</xliff:g> හට ඔබේ සියලුම යෝග්‍යතා සහ සුවතා දත්ත වෙත <xliff:g id="ALLOW_MODE">%2$s</xliff:g> ප්‍රවේශ විය හැක"</string>
+    <string name="allowed_to_access" msgid="4179317387300812335">"ප්‍රවේශ වීමට අවසර ඇත"</string>
+    <string name="allowed_to_read" msgid="2775365229411407406">"කියවීමට ඉඩ දී ඇත"</string>
+    <string name="give_permission_prompt" msgid="5788144216023065504">"මෙම අවසර ඔබේ උපාංග සංවේදක වලින් දත්ත වෙත <xliff:g id="APP_NAME">%1$s</xliff:g> ප්‍රවේශය ලබා දෙයි."</string>
+    <string name="allowed_apps_count" msgid="2289260267605628310">"යෙදුම් <xliff:g id="NUMBER_0">%1$d</xliff:g>කින් <xliff:g id="OTHER_NUMBER">%2$d</xliff:g>කට ඉඩ දෙන ලදි"</string>
+    <string name="no_apps_requesting" msgid="8088684445910698363">"යෙදුම් කිසිවක් ඉල්ලා නැත"</string>
+    <string name="allowed" msgid="4158456017482263737">"ඉඩ දී ඇත"</string>
+    <string name="not_allowed" msgid="6092523505093372147">"ඉඩ නොදෙයි"</string>
+    <string name="access_sensor_note" msgid="7949933977197789634">"මෙම අවසරය ඇති යෙදුම් වලට ඔබේ උපාංග සංවේදකවලින් <xliff:g id="DATA_TYPE">%s</xliff:g> දත්ත වෙත ප්‍රවේශ විය හැක."</string>
+    <string name="remove_one_permission_for_all" msgid="6732728480265044938">"ඔබේ ඔරලෝසුවේ ඇති සියලුම යෙදුම් සඳහා <xliff:g id="DATA_TYPE">%s</xliff:g> ප්‍රවේශය ඉවත් කරන්න ද?"</string>
+    <string name="icon_content_check_mark" msgid="358150681017987426">"හරි ලකුණ"</string>
+    <string name="icon_content_cross_mark" msgid="3007762424358780248">"හරස් ලකුණ"</string>
+    <string name="current_allow_mode" msgid="6716206063077569218">"දැනට, <xliff:g id="APP_NAME">%1$s</xliff:g> හට යෝග්‍යතා සහ සුවතා දත්ත වෙත ප්‍රවේශ විය හැක <xliff:g id="ALLOW_MODE">%2$s</xliff:g>"</string>
+    <string name="allow_all_the_time_prompt" msgid="5625132426961157398">"සැම විට ම යෝග්‍යතා සහ සුවතා දත්ත වෙත <xliff:g id="APP_NAME">%1$s</xliff:g> හට ප්‍රවේශයට ඉඩ දෙන්න ද?"</string>
+    <string name="current_access" msgid="1457167070428176139">"<xliff:g id="APP_NAME">%1$s</xliff:g> හට <xliff:g id="DATA_TYPES">%2$s</xliff:g> වෙත ප්‍රවේශය ඇත."</string>
+    <string name="manage_fitness_and_wellness_permissions" msgid="6198936108436598267">"යෝග්‍යතා සහ සුවතා අවසර කළමනාකරණය කරන්න"</string>
 </resources>

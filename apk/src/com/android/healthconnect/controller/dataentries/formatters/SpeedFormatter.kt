@@ -49,7 +49,7 @@ class SpeedFormatter @Inject constructor(@ApplicationContext private val context
         record: SpeedRecord,
         header: String,
         headerA11y: String,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
     ): FormattedEntry {
         return FormattedEntry.SeriesDataEntry(
             uuid = record.metadata.id,
@@ -57,12 +57,13 @@ class SpeedFormatter @Inject constructor(@ApplicationContext private val context
             headerA11y = headerA11y,
             title = formatValue(record, unitPreferences),
             titleA11y = formatA11yValue(record, unitPreferences),
-            dataType = getDataType(record))
+            dataType = record::class,
+        )
     }
 
     override suspend fun formatValue(
         record: SpeedRecord,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
     ): String {
         val res = getUnitRes(unitPreferences)
         return formatRecord(res, record.samples, unitPreferences)
@@ -70,7 +71,7 @@ class SpeedFormatter @Inject constructor(@ApplicationContext private val context
 
     override suspend fun formatA11yValue(
         record: SpeedRecord,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
     ): String {
         val res = getA11yUnitRes(unitPreferences)
         return formatRecord(res, record.samples, unitPreferences)
@@ -85,7 +86,7 @@ class SpeedFormatter @Inject constructor(@ApplicationContext private val context
     private fun formatSample(
         id: String,
         sample: SpeedRecordSample,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
     ): FormattedSessionDetail {
         return FormattedSessionDetail(
             uuid = id,
@@ -93,18 +94,23 @@ class SpeedFormatter @Inject constructor(@ApplicationContext private val context
             headerA11y = timeFormatter.formatTime(sample.time),
             title =
                 formatSpeedValue(
-                    getUnitRes(unitPreferences), sample.speed.inMetersPerSecond, unitPreferences),
+                    getUnitRes(unitPreferences),
+                    sample.speed.inMetersPerSecond,
+                    unitPreferences,
+                ),
             titleA11y =
                 formatSpeedValue(
                     getA11yUnitRes(unitPreferences),
                     sample.speed.inMetersPerSecond,
-                    unitPreferences))
+                    unitPreferences,
+                ),
+        )
     }
 
     private fun formatRecord(
         @StringRes res: Int,
         samples: List<SpeedRecordSample>,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
     ): String {
         if (samples.isEmpty()) {
             return context.getString(R.string.no_data)
@@ -116,7 +122,7 @@ class SpeedFormatter @Inject constructor(@ApplicationContext private val context
     fun formatSpeedValue(
         @StringRes res: Int,
         speed: Double,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
     ): String {
         val speedWithUnit = convertToDistancePerHour(unitPreferences.getDistanceUnit(), speed)
         return MessageFormat.format(context.getString(res), mapOf("value" to speedWithUnit))
@@ -139,46 +145,66 @@ class SpeedFormatter @Inject constructor(@ApplicationContext private val context
     fun formatSpeedValue(
         speed: Velocity,
         unitPreferences: UnitPreferences,
-        exerciseSegmentType: Int
+        exerciseSegmentType: Int,
     ): String {
         if (Companion.ACTIVITY_TYPES_WITH_PACE_VELOCITY.contains(exerciseSegmentType)) {
             return formatSpeedValueToMinPerDistance(
-                getUnitResInMinPerDistance(unitPreferences), speed, unitPreferences)
+                getUnitResInMinPerDistance(unitPreferences),
+                speed,
+                unitPreferences,
+            )
         } else if (Companion.SWIMMING_ACTIVITY_TYPES.contains(exerciseSegmentType)) {
             return formatSpeedValueToMinPerOneHundredDistance(
-                getUnitResInMinPerOneHundredDistance(unitPreferences), speed, unitPreferences)
+                getUnitResInMinPerOneHundredDistance(unitPreferences),
+                speed,
+                unitPreferences,
+            )
         }
         return formatSpeedValue(
-            getUnitRes(unitPreferences), speed.inMetersPerSecond, unitPreferences)
+            getUnitRes(unitPreferences),
+            speed.inMetersPerSecond,
+            unitPreferences,
+        )
     }
 
     fun formatA11ySpeedValue(
         speed: Velocity,
         unitPreferences: UnitPreferences,
-        exerciseSegmentType: Int
+        exerciseSegmentType: Int,
     ): String {
         if (Companion.ACTIVITY_TYPES_WITH_PACE_VELOCITY.contains(exerciseSegmentType)) {
             return formatSpeedValueToMinPerDistance(
-                getA11yUnitResInMinPerDistance(unitPreferences), speed, unitPreferences)
+                getA11yUnitResInMinPerDistance(unitPreferences),
+                speed,
+                unitPreferences,
+            )
         }
         if (Companion.SWIMMING_ACTIVITY_TYPES.contains(exerciseSegmentType)) {
             return formatSpeedValueToMinPerOneHundredDistance(
-                getA11yUnitResInMinPerOneHundredDistance(unitPreferences), speed, unitPreferences)
+                getA11yUnitResInMinPerOneHundredDistance(unitPreferences),
+                speed,
+                unitPreferences,
+            )
         }
         return formatSpeedValue(
-            getA11yUnitRes(unitPreferences), speed.inMetersPerSecond, unitPreferences)
+            getA11yUnitRes(unitPreferences),
+            speed.inMetersPerSecond,
+            unitPreferences,
+        )
     }
 
     private fun formatSpeedValueToMinPerDistance(
         @StringRes res: Int,
         speed: Velocity,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
     ): String {
         val timePerUnitInSeconds =
             if (speed.inMetersPerSecond != 0.0)
                 3600 /
                     convertToDistancePerHour(
-                        unitPreferences.getDistanceUnit(), speed.inMetersPerSecond)
+                        unitPreferences.getDistanceUnit(),
+                        speed.inMetersPerSecond,
+                    )
             else speed.inMetersPerSecond
 
         // Display "--:--" if pace value is unrealistic
@@ -206,11 +232,12 @@ class SpeedFormatter @Inject constructor(@ApplicationContext private val context
     private fun formatSpeedValueToMinPerOneHundredDistance(
         @StringRes res: Int,
         speed: Velocity,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
     ): String {
         val timePerUnitInSeconds =
-            if (unitPreferences.getDistanceUnit() == MILES &&
-                Locale.getDefault().equals(Locale.US)) {
+            if (
+                unitPreferences.getDistanceUnit() == MILES && Locale.getDefault().equals(Locale.US)
+            ) {
                 val yardsPerSecond = speed.inMetersPerSecond * METER_TO_YARD
                 if (yardsPerSecond != 0.0) 100 / yardsPerSecond else yardsPerSecond
             } else {
@@ -263,6 +290,7 @@ class SpeedFormatter @Inject constructor(@ApplicationContext private val context
                 ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_SWIMMING_MIXED,
                 ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_SWIMMING_OPEN_WATER,
                 ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_SWIMMING_OTHER,
-                ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_SWIMMING_POOL)
+                ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_SWIMMING_POOL,
+            )
     }
 }

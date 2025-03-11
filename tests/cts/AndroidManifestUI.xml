@@ -21,7 +21,13 @@
 
     <application android:debuggable="true">
         <uses-library android:name="android.test.runner"/>
-        <activity android:name="android.healthconnect.cts.utils.ProxyActivity"/>
+        <activity android:name="android.healthconnect.cts.utils.ProxyActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW_PERMISSION_USAGE"/>
+                <category android:name="android.intent.category.HEALTH_PERMISSIONS"/>
+            </intent-filter>
+        </activity>
     </application>
 
     <!-- To get visibility of the app with health permissions definitions,
@@ -33,6 +39,7 @@
 
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
     <uses-permission android:name="android.permission.health.READ_ACTIVE_CALORIES_BURNED"/>
+    <uses-permission android:name="android.permission.health.READ_ACTIVITY_INTENSITY"/>
     <uses-permission android:name="android.permission.health.READ_BASAL_BODY_TEMPERATURE"/>
     <uses-permission android:name="android.permission.health.READ_BASAL_METABOLIC_RATE"/>
     <uses-permission android:name="android.permission.health.READ_BLOOD_GLUCOSE"/>
@@ -73,6 +80,7 @@
     <uses-permission android:name="android.permission.health.READ_WEIGHT"/>
     <uses-permission android:name="android.permission.health.READ_WHEELCHAIR_PUSHES"/>
     <uses-permission android:name="android.permission.health.WRITE_ACTIVE_CALORIES_BURNED"/>
+    <uses-permission android:name="android.permission.health.WRITE_ACTIVITY_INTENSITY"/>
     <uses-permission android:name="android.permission.health.WRITE_BASAL_BODY_TEMPERATURE"/>
     <uses-permission android:name="android.permission.health.WRITE_BASAL_METABOLIC_RATE"/>
     <uses-permission android:name="android.permission.health.WRITE_BLOOD_GLUCOSE"/>

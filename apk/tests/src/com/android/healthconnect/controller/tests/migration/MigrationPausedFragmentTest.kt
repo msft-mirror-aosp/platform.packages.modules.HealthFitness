@@ -10,7 +10,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.migration.MigrationPausedFragment
 import com.android.healthconnect.controller.tests.utils.launchFragment
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.MigrationElement
@@ -31,6 +30,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class MigrationPausedFragmentTest {
@@ -58,7 +58,9 @@ class MigrationPausedFragmentTest {
                 withText(
                     "The Health Connect app closed while it was being integrated " +
                         "with the Android system.\n\nClick resume to reopen the app and continue " +
-                        "transferring your data and permissions."))
+                        "transferring your data and permissions."
+                )
+            )
             .check(matches(isDisplayed()))
         onView(withText("Cancel")).check(matches(isDisplayed()))
         onView(withText("Resume")).check(matches(isDisplayed()))
@@ -110,7 +112,9 @@ class MigrationPausedFragmentTest {
                 withText(
                     "The Health Connect app closed while it was being integrated " +
                         "with the Android system.\n\nClick resume to reopen the app and continue " +
-                        "transferring your data and permissions."))
+                        "transferring your data and permissions."
+                )
+            )
             .check(matches(isDisplayed()))
         onView(withText("Cancel")).check(matches(isDisplayed()))
         onView(withText("Resume")).check(matches(isDisplayed()))

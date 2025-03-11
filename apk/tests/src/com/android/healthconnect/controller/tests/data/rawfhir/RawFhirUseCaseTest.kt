@@ -25,6 +25,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.data.rawfhir.RawFhirUseCase
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
+import com.android.healthconnect.controller.tests.utils.TEST_DATASOURCE_ID
 import com.android.healthconnect.controller.tests.utils.TEST_FHIR_RESOURCE_IMMUNIZATION
 import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_RESOURCE_IMMUNIZATION
 import com.android.healthconnect.controller.tests.utils.setLocale
@@ -94,7 +95,7 @@ class RawFhirUseCaseTest {
         assertThat((result as UseCaseResults.Failed).exception is IllegalStateException).isTrue()
         assertThat((result.exception as IllegalStateException).message)
             .isEqualTo(
-                "No FHIR resource found for given MedicalResourceId{dataSourceId=123,fhirResourceType=1,fhirResourceId=Immunization1}"
+                "No FHIR resource found for given MedicalResourceId{dataSourceId=$TEST_DATASOURCE_ID,fhirResourceType=1,fhirResourceId=Immunization1}"
             )
     }
 
