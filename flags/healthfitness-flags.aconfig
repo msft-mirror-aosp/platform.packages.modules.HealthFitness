@@ -196,6 +196,15 @@ flag {
 }
 
 flag {
+    name: "phr_fhir_resource_validator_use_weak_reference"
+    namespace: "health_fitness_aconfig"
+    description: "Flag for using WeakReference for the FhirResourceValidator to allow it to be garbage collected."
+    bug: "375153151"
+    is_fixed_read_only: true
+    is_exported: true
+}
+
+flag {
     name: "phr_upsert_fix_parcel_size_calculation"
     namespace: "health_fitness_aconfig"
     description: "Flag for fixing the UpsertMedicalResourceRequest parcel size calculation."
