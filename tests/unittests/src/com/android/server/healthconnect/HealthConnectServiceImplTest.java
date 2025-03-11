@@ -95,7 +95,6 @@ import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import android.app.ActivityManager;
@@ -574,7 +573,7 @@ public class HealthConnectServiceImplTest {
         mHealthConnectService.startMigration(
                 MigrationTestUtils.MOCK_CONFIGURED_PACKAGE, mMigrationCallback);
         awaitAllExecutorsIdle();
-        verifyZeroInteractions(mMigrationStateManager);
+        verifyNoMoreInteractions(mMigrationStateManager);
         verify(mMigrationCallback).onError(any(MigrationException.class));
     }
 
@@ -598,7 +597,7 @@ public class HealthConnectServiceImplTest {
         mHealthConnectService.finishMigration(
                 MigrationTestUtils.MOCK_CONFIGURED_PACKAGE, mMigrationCallback);
         awaitAllExecutorsIdle();
-        verifyZeroInteractions(mMigrationStateManager);
+        verifyNoMoreInteractions(mMigrationStateManager);
         verify(mMigrationCallback).onError(any(MigrationException.class));
     }
 
@@ -624,7 +623,7 @@ public class HealthConnectServiceImplTest {
                 mock(MigrationEntityParcel.class),
                 mMigrationCallback);
         awaitAllExecutorsIdle();
-        verifyZeroInteractions(mMigrationStateManager);
+        verifyNoMoreInteractions(mMigrationStateManager);
         verify(mMigrationCallback).onError(any(MigrationException.class));
     }
 
@@ -651,7 +650,7 @@ public class HealthConnectServiceImplTest {
         mHealthConnectService.insertMinDataMigrationSdkExtensionVersion(
                 MigrationTestUtils.MOCK_CONFIGURED_PACKAGE, 0, mMigrationCallback);
         awaitAllExecutorsIdle();
-        verifyZeroInteractions(mMigrationStateManager);
+        verifyNoMoreInteractions(mMigrationStateManager);
         verify(mMigrationCallback).onError(any(MigrationException.class));
     }
 

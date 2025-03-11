@@ -43,7 +43,7 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import android.app.job.JobInfo;
@@ -136,7 +136,7 @@ public class MigrationStateChangeJobTest {
         when(mMigrationStateManager.getMigrationState()).thenReturn(MIGRATION_STATE_ALLOWED);
         MigrationStateChangeJob.executeMigrationPauseJob(
                 mContext, mPreferenceHelper, mMigrationStateManager);
-        verifyZeroInteractions(mPreferenceHelper);
+        verifyNoMoreInteractions(mPreferenceHelper);
         verifyNoStateChange();
     }
 
@@ -247,7 +247,7 @@ public class MigrationStateChangeJobTest {
         when(mMigrationStateManager.getMigrationState()).thenReturn(MIGRATION_STATE_COMPLETE);
         MigrationStateChangeJob.executeMigrationCompletionJob(
                 mContext, mPreferenceHelper, mMigrationStateManager);
-        verifyZeroInteractions(mPreferenceHelper);
+        verifyNoMoreInteractions(mPreferenceHelper);
         verifyNoStateChange();
     }
 
