@@ -101,13 +101,14 @@ fun ControlSingleDataTypeForSingleAppScreen(
         }
 
         // Button to allow/disallow background permission.
-        item {
-            WearPermissionButton(
-                label = stringResource(R.string.additional_access_label),
-                labelMaxLines = 3,
-                onClick = { onAdditionalPermissionClick(packageName) },
-                enabled = isBackgroundPermissionRequested,
-            )
+        if (isBackgroundPermissionRequested) {
+            item {
+                WearPermissionButton(
+                    label = stringResource(R.string.additional_access_label),
+                    labelMaxLines = 3,
+                    onClick = { onAdditionalPermissionClick(packageName) },
+                )
+            }
         }
 
         // Allow mode text.
