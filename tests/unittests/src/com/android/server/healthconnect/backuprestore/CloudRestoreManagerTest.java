@@ -16,8 +16,6 @@
 
 package com.android.server.healthconnect.backuprestore;
 
-import static android.health.connect.Constants.DEFAULT_LONG;
-
 import static com.android.server.healthconnect.backuprestore.CloudBackupSettingsHelper.AUTO_DELETE_PREF_KEY;
 import static com.android.server.healthconnect.backuprestore.CloudBackupSettingsHelper.DISTANCE_UNIT_PREF_KEY;
 import static com.android.server.healthconnect.backuprestore.CloudBackupSettingsHelper.ENERGY_UNIT_PREF_KEY;
@@ -480,21 +478,11 @@ public class CloudRestoreManagerTest {
     @NotNull
     private RecordInternal<?> readExerciseSession(String sessionId) {
         List<RecordInternal<?>> records =
-                mFitnessRecordReadHelper.readRecords(
+                mFitnessRecordReadHelper.readRecordsUnrestricted(
                         mTransactionManager,
-                        /* callingPackageName= */ "",
                         ImmutableMap.of(
                                 RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION,
-                                List.of(UUID.fromString(sessionId))),
-                        DEFAULT_LONG,
-                        Set.copyOf(
-                                mMappings
-                                        .getRecordHelper(
-                                                RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION)
-                                        .getExtraReadPermissions()),
-                        /* isInForeground= */ true,
-                        /* shouldRecordAccessLog= */ false,
-                        /* isReadingSelfData= */ false);
+                                List.of(UUID.fromString(sessionId))));
         assertThat(records.size()).isEqualTo(1);
         return records.get(0);
     }

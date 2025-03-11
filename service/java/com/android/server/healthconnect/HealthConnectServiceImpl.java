@@ -818,11 +818,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                         mTransactionManager,
                                         callingPackageName,
                                         request,
-                                        startDateAccessEpochMilli,
-                                        enforceSelfRead,
                                         grantedExtraReadPermissions,
+                                        startDateAccessEpochMilli,
                                         isInForeground,
                                         shouldRecordAccessLog,
+                                        enforceSelfRead,
                                         /* packageNamesByAppIds= */ null);
                         List<RecordInternal<?>> records = readRecordsResponse.first;
                         long pageToken = readRecordsResponse.second.encode();
@@ -1060,11 +1060,12 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         }
                     }
 
+                    tryAcquireApiCallQuota(
+                            uid, QuotaCategory.QUOTA_CATEGORY_READ, isInForeground, logger);
+
                     ChangeLogsRequestHelper.TokenRequest changeLogsTokenRequest =
                             mChangeLogsRequestHelper.getRequest(
                                     callerPackageName, request.getToken());
-                    tryAcquireApiCallQuota(
-                            uid, QuotaCategory.QUOTA_CATEGORY_READ, isInForeground, logger);
                     if (changeLogsTokenRequest.getRecordTypes().isEmpty()) {
                         throw new IllegalArgumentException(
                                 "Requested record types must not be empty.");
@@ -1103,11 +1104,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                     mTransactionManager,
                                     callerPackageName,
                                     recordTypeToInsertedUuids,
-                                    startDateAccessEpochMilli,
                                     grantedExtraReadPermissions,
+                                    startDateAccessEpochMilli,
                                     isInForeground,
-                                    /* shouldRecordAccessLog= */ true,
-                                    isReadingSelfData);
+                                    /* shouldRecordAccessLog= */ !isReadingSelfData);
                     List<DeletedLog> deletedLogs =
                             ChangeLogsHelper.getDeletedLogs(changeLogsResponse.getChangeLogsMap());
 

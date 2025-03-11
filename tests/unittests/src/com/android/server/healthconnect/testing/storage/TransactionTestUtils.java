@@ -145,28 +145,22 @@ public final class TransactionTestUtils {
     /** Read records with the given IDs from storage, as the given package name. */
     public List<RecordInternal<?>> readRecordsByIds(
             String packageName, Map<Integer, List<UUID>> recordTypeToUuids) {
-        return readRecordsByIds(
-                packageName,
-                recordTypeToUuids,
-                /* shouldRecordAccessLog */ false,
-                /* isReadingSelfData= */ false);
+        return readRecordsByIds(packageName, recordTypeToUuids, /* shouldRecordAccessLog */ false);
     }
 
     /** Read records with the given IDs from storage, as the given package name. */
     public List<RecordInternal<?>> readRecordsByIds(
             String packageName,
             Map<Integer, List<UUID>> recordTypeToUuids,
-            boolean shouldRecordAccessLogs,
-            boolean isReadingSelfData) {
+            boolean shouldRecordAccessLogs) {
         return mFitnessRecordReadHelper.readRecords(
                 mTransactionManager,
                 packageName,
                 recordTypeToUuids,
-                /* startDateAccessMillis= */ 0,
-                NO_EXTRA_PERMS,
+                /* startDateAccessMillis= */ NO_EXTRA_PERMS,
+                0,
                 /* isInForeground= */ true,
-                shouldRecordAccessLogs,
-                isReadingSelfData);
+                shouldRecordAccessLogs);
     }
 
     public static RecordInternal<StepsRecord> createStepsRecord(
