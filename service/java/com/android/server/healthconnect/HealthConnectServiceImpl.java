@@ -231,6 +231,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.ref.WeakReference;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -304,8 +305,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private final PreferencesManager mPreferencesManager;
     private final ReadAccessLogsHelper mReadAccessLogsHelper;
     private final RateLimiter mRateLimiter;
-    // This will be null if the phr_fhir_structural_validation flag is false.
+    // Used if PHR_FHIR_RESOURCE_VALIDATOR_USE_WEAK_REFERENCE is false.
     @Nullable private FhirResourceValidator mFhirResourceValidator;
+    // Used if PHR_FHIR_RESOURCE_VALIDATOR_USE_WEAK_REFERENCE is true.
+    WeakReference<FhirResourceValidator> mFhirResourceValidatorWeakReference =
+            new WeakReference<>(null);
     private final HealthConnectThreadScheduler mThreadScheduler;
     private final HealthFitnessStatsLog mStatsLog;
 
@@ -818,11 +822,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                         mTransactionManager,
                                         callingPackageName,
                                         request,
-                                        startDateAccessEpochMilli,
-                                        enforceSelfRead,
                                         grantedExtraReadPermissions,
+                                        startDateAccessEpochMilli,
                                         isInForeground,
                                         shouldRecordAccessLog,
+                                        enforceSelfRead,
                                         /* packageNamesByAppIds= */ null);
                         List<RecordInternal<?>> records = readRecordsResponse.first;
                         long pageToken = readRecordsResponse.second.encode();
@@ -1060,11 +1064,12 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         }
                     }
 
+                    tryAcquireApiCallQuota(
+                            uid, QuotaCategory.QUOTA_CATEGORY_READ, isInForeground, logger);
+
                     ChangeLogsRequestHelper.TokenRequest changeLogsTokenRequest =
                             mChangeLogsRequestHelper.getRequest(
                                     callerPackageName, request.getToken());
-                    tryAcquireApiCallQuota(
-                            uid, QuotaCategory.QUOTA_CATEGORY_READ, isInForeground, logger);
                     if (changeLogsTokenRequest.getRecordTypes().isEmpty()) {
                         throw new IllegalArgumentException(
                                 "Requested record types must not be empty.");
@@ -1103,11 +1108,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                     mTransactionManager,
                                     callerPackageName,
                                     recordTypeToInsertedUuids,
-                                    startDateAccessEpochMilli,
                                     grantedExtraReadPermissions,
+                                    startDateAccessEpochMilli,
                                     isInForeground,
-                                    /* shouldRecordAccessLog= */ true,
-                                    isReadingSelfData);
+                                    /* shouldRecordAccessLog= */ !isReadingSelfData);
                     List<DeletedLog> deletedLogs =
                             ChangeLogsHelper.getDeletedLogs(changeLogsResponse.getChangeLogsMap());
 
@@ -2694,18 +2698,16 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     mMedicalDataPermissionEnforcer.enforceWriteMedicalDataPermission(
                             attributionSource);
 
-                    // Initialise validator when upsertMedicalResources is called for the
-                    // first time to avoid unnecessary initialisation when PHR apis are not used.
-                    if (Flags.phrFhirStructuralValidation() && mFhirResourceValidator == null) {
-                        mFhirResourceValidator = new FhirResourceValidator();
-                    }
-
                     List<UpsertMedicalResourceInternalRequest> validatedMedicalResourcesToUpsert =
                             new ArrayList<>();
+                    FhirResourceValidator fhirResourceValidator =
+                            Flags.phrFhirStructuralValidation()
+                                    ? getOrCreateFhirResourceValidator()
+                                    : null;
                     for (UpsertMedicalResourceRequest upsertMedicalResourceRequest : requests) {
                         MedicalResourceValidator validator =
                                 new MedicalResourceValidator(
-                                        upsertMedicalResourceRequest, mFhirResourceValidator);
+                                        upsertMedicalResourceRequest, fhirResourceValidator);
                         validatedMedicalResourcesToUpsert.add(
                                 validator.validateAndCreateInternalRequest());
                     }
@@ -2736,6 +2738,28 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 errorCallback,
                 uid,
                 /* isController= */ holdsDataManagementPermission);
+    }
+
+    /** Creates a FhirResourceValidator if it does not exist and returns it. */
+    private FhirResourceValidator getOrCreateFhirResourceValidator() {
+        // If the flag FHIR_RESOURCE_VALIDATOR_USE_WEAK_REFERENCE is enabled, we use a
+        // WeakReference so that the FhirResourceValidator can be shared between API
+        // calls but garbage collected when not in use, due to its size.
+        if (Flags.phrFhirResourceValidatorUseWeakReference()) {
+            FhirResourceValidator fhirResourceValidator = mFhirResourceValidatorWeakReference.get();
+            if (fhirResourceValidator == null) {
+                fhirResourceValidator = new FhirResourceValidator();
+                mFhirResourceValidatorWeakReference = new WeakReference<>(fhirResourceValidator);
+            }
+            return fhirResourceValidator;
+        } else {
+            if (mFhirResourceValidator == null) {
+                // The FhirResourceValidator is initialised here if null, to avoid
+                // unnecessary initialisation when PHR APIs are not used.
+                mFhirResourceValidator = new FhirResourceValidator();
+            }
+            return mFhirResourceValidator;
+        }
     }
 
     @Override

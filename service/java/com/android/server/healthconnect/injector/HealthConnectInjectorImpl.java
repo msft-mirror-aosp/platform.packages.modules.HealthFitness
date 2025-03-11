@@ -334,7 +334,8 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                                 mDeviceInfoHelper,
                                 mAppInfoHelper,
                                 mAccessLogsHelper,
-                                mReadAccessLogsHelper)
+                                mReadAccessLogsHelper,
+                                mInternalHealthConnectMappings)
                         : builder.mFitnessRecordReadHelper;
         mMedicalDataSourceHelper =
                 builder.mMedicalDataSourceHelper == null

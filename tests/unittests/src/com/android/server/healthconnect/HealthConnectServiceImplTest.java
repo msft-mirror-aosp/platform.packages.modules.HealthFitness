@@ -48,6 +48,7 @@ import static android.healthconnect.cts.phr.utils.PhrDataFactory.getCreateMedica
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.getGetMedicalDataSourceRequest;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.getMedicalDataSourceRequiredFieldsOnly;
 import static android.healthconnect.cts.phr.utils.PhrDataFactory.getMedicalResourceId;
+import static android.healthconnect.cts.phr.utils.PhrDataFactory.getUpsertMedicalResourceRequest;
 import static android.healthconnect.cts.utils.DataFactory.MAXIMUM_PAGE_SIZE;
 import static android.healthconnect.cts.utils.DataFactory.NOW;
 
@@ -59,6 +60,8 @@ import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_TELEMETRY_PRIVATE_WW;
+import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_RESOURCE_VALIDATOR_USE_WEAK_REFERENCE;
+import static com.android.healthfitness.flags.Flags.FLAG_PHR_FHIR_STRUCTURAL_VALIDATION;
 import static com.android.healthfitness.flags.Flags.FLAG_REPLACE_BODY_SENSOR_PERMISSION_ENABLED;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.DATA_DOWNLOAD_STATE_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.DATA_RESTORE_STATE_KEY;
@@ -95,7 +98,6 @@ import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import android.app.ActivityManager;
@@ -574,7 +576,7 @@ public class HealthConnectServiceImplTest {
         mHealthConnectService.startMigration(
                 MigrationTestUtils.MOCK_CONFIGURED_PACKAGE, mMigrationCallback);
         awaitAllExecutorsIdle();
-        verifyZeroInteractions(mMigrationStateManager);
+        verifyNoMoreInteractions(mMigrationStateManager);
         verify(mMigrationCallback).onError(any(MigrationException.class));
     }
 
@@ -598,7 +600,7 @@ public class HealthConnectServiceImplTest {
         mHealthConnectService.finishMigration(
                 MigrationTestUtils.MOCK_CONFIGURED_PACKAGE, mMigrationCallback);
         awaitAllExecutorsIdle();
-        verifyZeroInteractions(mMigrationStateManager);
+        verifyNoMoreInteractions(mMigrationStateManager);
         verify(mMigrationCallback).onError(any(MigrationException.class));
     }
 
@@ -624,7 +626,7 @@ public class HealthConnectServiceImplTest {
                 mock(MigrationEntityParcel.class),
                 mMigrationCallback);
         awaitAllExecutorsIdle();
-        verifyZeroInteractions(mMigrationStateManager);
+        verifyNoMoreInteractions(mMigrationStateManager);
         verify(mMigrationCallback).onError(any(MigrationException.class));
     }
 
@@ -651,7 +653,7 @@ public class HealthConnectServiceImplTest {
         mHealthConnectService.insertMinDataMigrationSdkExtensionVersion(
                 MigrationTestUtils.MOCK_CONFIGURED_PACKAGE, 0, mMigrationCallback);
         awaitAllExecutorsIdle();
-        verifyZeroInteractions(mMigrationStateManager);
+        verifyNoMoreInteractions(mMigrationStateManager);
         verify(mMigrationCallback).onError(any(MigrationException.class));
     }
 
@@ -1354,6 +1356,46 @@ public class HealthConnectServiceImplTest {
         verify(callback, timeout(5000).times(1)).onError(mErrorCaptor.capture());
         assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
                 .isEqualTo(ERROR_UNSUPPORTED_OPERATION);
+    }
+
+    @Test
+    @EnableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PHR_FHIR_STRUCTURAL_VALIDATION
+    })
+    @DisableFlags({FLAG_PHR_FHIR_RESOURCE_VALIDATOR_USE_WEAK_REFERENCE})
+    public void testUpsertMedicalResources_weakReferenceFlagOff_succeeds() throws RemoteException {
+        setUpPhrMocksWithIrrelevantResponses();
+        setDataManagementPermission(PERMISSION_DENIED);
+        setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
+
+        mHealthConnectService.upsertMedicalResources(
+                mAttributionSource,
+                List.of(getUpsertMedicalResourceRequest()),
+                mMedicalResourcesResponseCallback);
+
+        verify(mMedicalResourcesResponseCallback, timeout(5000)).onResult(any());
+    }
+
+    @Test
+    @EnableFlags({
+        FLAG_PERSONAL_HEALTH_RECORD,
+        FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        FLAG_PHR_FHIR_STRUCTURAL_VALIDATION,
+        FLAG_PHR_FHIR_RESOURCE_VALIDATOR_USE_WEAK_REFERENCE
+    })
+    public void testUpsertMedicalResources_weakReferenceFlagOn_succeeds() throws RemoteException {
+        setUpPhrMocksWithIrrelevantResponses();
+        setDataManagementPermission(PERMISSION_DENIED);
+        setDataReadWritePermissionGranted(WRITE_MEDICAL_DATA);
+
+        mHealthConnectService.upsertMedicalResources(
+                mAttributionSource,
+                List.of(getUpsertMedicalResourceRequest()),
+                mMedicalResourcesResponseCallback);
+
+        verify(mMedicalResourcesResponseCallback, timeout(5000)).onResult(any());
     }
 
     @Test
