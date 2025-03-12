@@ -1170,10 +1170,8 @@
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"Белгилүү бир ай (<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>) боюнча тандалган <xliff:g id="APP_NAME">%1$s</xliff:g> маалыматы биротоло өчүрүлсүнбү?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"<xliff:g id="APP_NAME">%s</xliff:g> маалыматын биротоло өчүрөсүзбү?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"<xliff:g id="APP_NAME">%2$s</xliff:g> колдонмосундагы <xliff:g id="DATA_TYPE">%1$s</xliff:g> биротоло өчүрүлсүнбү?"</string>
-    <!-- no translation found for menu_show_system (5608880605989914394) -->
-    <skip />
-    <!-- no translation found for menu_hide_system (9218325603953186714) -->
-    <skip />
+    <string name="menu_show_system" msgid="5608880605989914394">"Системаны көрсөтүү"</string>
+    <string name="menu_hide_system" msgid="9218325603953186714">"Системаны жашыруу"</string>
     <string name="on" msgid="8266542510798355807">"Күйүк"</string>
     <string name="off" msgid="6996623844428550649">"Өчүк"</string>
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"Cаат <xliff:g id="TIME_DATE">%1$s</xliff:g> колдонулду"</string>
