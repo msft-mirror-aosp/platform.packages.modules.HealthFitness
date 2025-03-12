@@ -383,13 +383,13 @@ public class HealthConnectAccessLogsTest {
         assertThat(log.getRecordTypes()).containsExactly(DistanceRecord.class);
         assertThat(log.getOperationType()).isEqualTo(OPERATION_TYPE_READ);
 
-        // filtering self package, this is a self read and won't generate change logs
+        // filtering self package, self read also generates changelog.
         ChangeLogsResponse selfReadResponse =
                 getChangeLogs(new ChangeLogsRequest.Builder(selfReadToken.getToken()).build());
         assertThat(selfReadResponse.getUpsertedRecords()).containsExactly(record);
 
         List<AccessLog> accessLogs = queryAccessLogs();
-        assertThat(accessLogs).hasSize((2));
+        assertThat(accessLogs).hasSize((3));
     }
 
     @Test
