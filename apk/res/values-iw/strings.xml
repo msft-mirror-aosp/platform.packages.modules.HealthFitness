@@ -428,8 +428,8 @@
     <string name="manage_permissions_write_header" msgid="6876806848658168370">"אישור לכתוב"</string>
     <string name="no_apps_allowed" msgid="5794833581324128108">"אין אפליקציות שקיבלו הרשאת גישה"</string>
     <string name="no_apps_denied" msgid="743327680286446017">"אין אפליקציות שסורב לתת להן גישה"</string>
-    <string name="permissions_disconnect_all_dialog_title" msgid="27474286046207122">"להסיר את הרשאת הגישה לכל האפליקציות?"</string>
-    <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"לאף אחת מהאפליקציות שלך לא תהיה אפשרות לגשת לנתונים או להוסיף נתונים חדשים ל-Health Connect. הפעולה הזאת לא תמחק נתונים קיימים.\n\nהפעולה הזאת לא משפיעה על הרשאות אחרות שעשויות להיות לאפליקציה, כמו המיקום, המצלמה או המיקרופון."</string>
+    <string name="permissions_disconnect_all_dialog_title" msgid="27474286046207122">"להסיר את הרשאת הגישה של כל האפליקציות?"</string>
+    <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"אף אחת מהאפליקציות לא יוכלו לגשת לנתונים ב-Health Connect או להוסיף נתונים חדשים. הפעולה הזאת לא תמחק נתונים קיימים.\n\nהפעולה הזאת לא משפיעה על הרשאות אחרות שיש לאפליקציה, למשל למיקום, למצלמה או למיקרופון."</string>
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"הסרת הכול"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"ניהול האפליקציה"</string>
     <string name="see_app_data" msgid="3951030076195119476">"צפייה בנתוני האפליקציה"</string>
@@ -1170,10 +1170,8 @@
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"למחוק לתמיד את רשומות <xliff:g id="APP_NAME">%1$s</xliff:g> שנבחרו מחודש <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"למחוק לתמיד את הרשומה הזו של <xliff:g id="APP_NAME">%s</xliff:g>?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"למחוק לתמיד את הנתונים מסוג <xliff:g id="DATA_TYPE">%1$s</xliff:g> של <xliff:g id="APP_NAME">%2$s</xliff:g>?"</string>
-    <!-- no translation found for menu_show_system (5608880605989914394) -->
-    <skip />
-    <!-- no translation found for menu_hide_system (9218325603953186714) -->
-    <skip />
+    <string name="menu_show_system" msgid="5608880605989914394">"הצגת אפליקציות המערכת"</string>
+    <string name="menu_hide_system" msgid="9218325603953186714">"הסתרת אפליקציות המערכת"</string>
     <string name="on" msgid="8266542510798355807">"מופעל"</string>
     <string name="off" msgid="6996623844428550649">"כבוי"</string>
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"הגישה האחרונה נעשתה בתאריך: <xliff:g id="TIME_DATE">%1$s</xliff:g>"</string>

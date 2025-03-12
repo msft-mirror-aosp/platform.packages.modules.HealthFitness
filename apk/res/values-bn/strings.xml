@@ -1170,10 +1170,8 @@
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"<xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g>-এর বেছে নেওয়া <xliff:g id="APP_NAME">%1$s</xliff:g> সম্পর্কিত ডেটা স্থায়ীভাবে মুছে দিতে চান?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"এই <xliff:g id="APP_NAME">%s</xliff:g> সম্পর্কিত এন্ট্রি স্থায়ীভাবে মুছে দিতে চান?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"<xliff:g id="APP_NAME">%2$s</xliff:g>-এর <xliff:g id="DATA_TYPE">%1$s</xliff:g> ডেটা স্থায়ীভাবে মুছে ফেলতে চান?"</string>
-    <!-- no translation found for menu_show_system (5608880605989914394) -->
-    <skip />
-    <!-- no translation found for menu_hide_system (9218325603953186714) -->
-    <skip />
+    <string name="menu_show_system" msgid="5608880605989914394">"সিস্টেম দেখুন"</string>
+    <string name="menu_hide_system" msgid="9218325603953186714">"সিস্টেম লুকান"</string>
     <string name="on" msgid="8266542510798355807">"চালু আছে"</string>
     <string name="off" msgid="6996623844428550649">"বন্ধ আছে"</string>
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"<xliff:g id="TIME_DATE">%1$s</xliff:g>-এ অ্যাক্সেস করা হয়েছে"</string>
