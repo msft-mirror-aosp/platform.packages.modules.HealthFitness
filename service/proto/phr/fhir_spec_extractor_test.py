@@ -275,9 +275,9 @@ class FhirSpecExtractorTest(unittest.TestCase):
         immunization_config = (
             generated_spec.resource_type_to_config[self.IMMUNIZATION_RESOURCE_TYPE_INT])
         # Check that the list of required fields is as expected
-        self.assertEquals(set(immunization_config.required_fields), expected_required_fields)
+        self.assertEqual(set(immunization_config.required_fields), expected_required_fields)
         # Check that the list of multi type configs is as expected
-        self.assertEquals(len(immunization_config.multi_type_fields), 1)
+        self.assertEqual(len(immunization_config.multi_type_fields), 1)
         received_multi_type_config = immunization_config.multi_type_fields[0]
         self.assertEqual(received_multi_type_config.name, expected_multi_type_config.name)
         self.assertEqual(received_multi_type_config.typed_field_names,
