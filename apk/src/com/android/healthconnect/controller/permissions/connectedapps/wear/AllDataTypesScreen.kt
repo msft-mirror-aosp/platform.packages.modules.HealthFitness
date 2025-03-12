@@ -31,7 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.wear.compose.material3.Text
+import androidx.wear.compose.material.Text
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings
 import com.android.healthconnect.controller.permissions.data.HealthPermission
@@ -53,12 +53,23 @@ fun AllDataTypesScreen(
     val systemHealthPermissionsUnsorted by viewModel.systemHealthPermissions.collectAsState()
     val nTotalApps = connectedApps.size
 
+    val systemHealthPermissiontoAllowedNonSystemApps =
+        systemHealthPermissionsUnsorted.associateWith {
+            dataTypeToAllowedApps[it]?.filter { !it.isSystem }
+        }
+    val systemHealthPermissiontoDeniedNonSystemApps =
+        systemHealthPermissionsUnsorted.associateWith {
+            dataTypeToDeniedApps[it]?.filter { !it.isSystem }
+        }
+
     // Sort system health order alphabetically, and defer no-usage data types to the last.
     val systemHealthPermissions =
         systemHealthPermissionsUnsorted.sortedWith(
             compareBy<HealthPermission> { healthPermission ->
-                    val nAllowedApps = dataTypeToAllowedApps[healthPermission]?.size ?: 0
-                    val nDeniedApps = dataTypeToDeniedApps[healthPermission]?.size ?: 0
+                    val nAllowedApps =
+                        systemHealthPermissiontoAllowedNonSystemApps[healthPermission]?.size ?: 0
+                    val nDeniedApps =
+                        systemHealthPermissiontoDeniedNonSystemApps[healthPermission]?.size ?: 0
                     // If a health permission is not requested by any apps, put to the end of list.
                     if ((nAllowedApps + nDeniedApps) > 0) {
                         0
@@ -105,9 +116,9 @@ fun AllDataTypesScreen(
                         .uppercaseLabel
                 )
             val nAllowedApps =
-                dataTypeToAllowedApps[healthPermission]?.filter { !it.isSystem }?.size ?: 0
+                systemHealthPermissiontoAllowedNonSystemApps[healthPermission]?.size ?: 0
             val nDeniedApps =
-                dataTypeToDeniedApps[healthPermission]?.filter { !it.isSystem }?.size ?: 0
+                systemHealthPermissiontoDeniedNonSystemApps[healthPermission]?.size ?: 0
             val nUsedApps =
                 dataTypeToAppToLastAccessTime
                     .find { it.permission == healthPermission }
