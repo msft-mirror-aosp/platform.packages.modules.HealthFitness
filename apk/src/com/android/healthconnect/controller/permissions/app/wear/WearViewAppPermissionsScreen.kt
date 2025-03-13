@@ -20,6 +20,7 @@ package com.android.healthconnect.controller.permissions.app.wear
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.Text
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
@@ -130,7 +132,11 @@ fun WearViewAppPermissionsScreen(viewModel: AppPermissionViewModel) {
 
         // Granular data type toggles.
         item {
-            Row(horizontalArrangement = Arrangement.Start) {
+            Row(
+                modifier =
+                    Modifier.fillMaxWidth().padding(start = 12.dp, top = 8.dp, bottom = 8.dp),
+                horizontalArrangement = Arrangement.Start,
+            ) {
                 Text(res.getString(R.string.allowed_to_read))
             }
         }
@@ -154,7 +160,10 @@ fun WearViewAppPermissionsScreen(viewModel: AppPermissionViewModel) {
             )
         }
         item {
-            Row(horizontalArrangement = Arrangement.Start) {
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                modifier = Modifier.padding(start = 12.dp, top = 16.dp, bottom = 16.dp),
+            ) {
                 Text(res.getString(R.string.give_permission_prompt, appName))
             }
         }
@@ -164,7 +173,10 @@ fun WearViewAppPermissionsScreen(viewModel: AppPermissionViewModel) {
             // Background permission.
             // Allow all the time.
             item {
-                Row(horizontalArrangement = Arrangement.Start) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(start = 12.dp),
+                    horizontalArrangement = Arrangement.Start,
+                ) {
                     Text(res.getString(R.string.allowed_to_access))
                 }
             }
@@ -207,7 +219,10 @@ fun WearViewAppPermissionsScreen(viewModel: AppPermissionViewModel) {
             }
 
             item {
-                Row(horizontalArrangement = Arrangement.Start) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(start = 12.dp),
+                    horizontalArrangement = Arrangement.Start,
+                ) {
                     val resourceId =
                         if (allowAllTheTimeGranted) {
                             R.string.view_permissions_description_all_the_time
