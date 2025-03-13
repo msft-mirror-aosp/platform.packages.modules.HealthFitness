@@ -66,37 +66,25 @@ fun WearGrantPermissionsScreen(viewModel: RequestPermissionViewModel, onButtonCl
     val appMetadata: State<AppMetadata?> = viewModel.appMetadata.observeAsState(null)
     val appName = appMetadata.value?.appName ?: ""
     val fitnessPermissions = viewModel.fitnessPermissionsList.observeAsState(emptyList())
-    val dataTypes =
-        fitnessPermissions.value.map { permission ->
-            stringResource(
-                FitnessPermissionStrings.fromPermissionType(permission.fitnessPermissionType)
-                    .lowercaseLabel
-            )
-        }
     val additionalPermissions = viewModel.additionalPermissionsList.observeAsState(emptyList())
     val backgroundPermission =
         additionalPermissions.value.filter { it.isBackgroundReadPermission() }
 
-    if (dataTypes.size > 1) {
-        GrantMultipleFitnessPermissions(
-            fitnessPermissions,
-            appName,
-            dataTypes,
-            onButtonClicked,
-            viewModel,
-        )
-    } else if (dataTypes.size == 1) {
-        GrantSingleFitnessPermission(appName, dataTypes[0], onButtonClicked, viewModel)
-    } else if (dataTypes.size == 0 && !backgroundPermission.isEmpty()) {
+    val fitnessPermissionsList = fitnessPermissions.value
+    if (fitnessPermissionsList.size > 1) {
+        GrantMultipleFitnessPermissions(fitnessPermissionsList, appName, onButtonClicked, viewModel)
+    } else if (fitnessPermissionsList.size == 1) {
+        GrantSingleFitnessPermission(appName, fitnessPermissionsList[0], onButtonClicked, viewModel)
+    } else if (fitnessPermissionsList.size == 0 && !backgroundPermission.isEmpty()) {
         GrantReadBackgroundHealthPermission(appName, onButtonClicked, viewModel)
     }
 }
 
+// TODO: b/402848385 - Consider passing in a callback rather than viewmodel.
 @Composable
 fun GrantMultipleFitnessPermissions(
-    fitnessPermissions: State<List<FitnessPermission>>,
+    fitnessPermissions: List<FitnessPermission>,
     appName: String,
-    dataTypes: List<String>,
     onButtonClicked: () -> Unit,
     viewModel: RequestPermissionViewModel,
 ) {
@@ -104,11 +92,17 @@ fun GrantMultipleFitnessPermissions(
     val materialUIVersion = ResourceHelper.materialUIVersionInApp
     // Represents whether user has toggled-on a granular data type permission, by default toggled.
     val checkedStates =
-        remember(fitnessPermissions.value) { // Recalculate when fitness permissions change.
-            mutableStateListOf(*(fitnessPermissions.value).map { true }.toTypedArray())
+        remember(fitnessPermissions) { // Recalculate when fitness permissions change.
+            mutableStateListOf(*(fitnessPermissions).map { true }.toTypedArray())
         }
     val expandableState = rememberExpandableState()
 
+    val lowercaseLabels =
+        fitnessPermissions.map {
+            stringResource(
+                FitnessPermissionStrings.fromPermissionType(it.fitnessPermissionType).lowercaseLabel
+            )
+        }
     ScrollableScreen(
         materialUIVersion = materialUIVersion,
         asScalingList = true,
@@ -118,23 +112,31 @@ fun GrantMultipleFitnessPermissions(
             res.getString(
                 R.string.wear_request_multiple_data_type_permissions,
                 appName,
-                ListFormatter.getInstance().format(dataTypes),
+                ListFormatter.getInstance().format(lowercaseLabels),
             ),
     ) {
 
         // Granular health data types. By default hidden, will show up once user clicks expand
         // button.
-        expandableItems(expandableState, dataTypes.size) { index ->
-            val dataType = dataTypes[index]
+        expandableItems(expandableState, fitnessPermissions.size) { index ->
+            val uppercaseLabel =
+                stringResource(
+                    FitnessPermissionStrings.fromPermissionType(
+                            fitnessPermissions[index].fitnessPermissionType
+                        )
+                        .uppercaseLabel
+                )
             val isChecked = checkedStates[index]
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                 SwitchButton(
-                    label = { Text(dataType, maxLines = 3, overflow = TextOverflow.Ellipsis) },
+                    label = {
+                        Text(uppercaseLabel, maxLines = 3, overflow = TextOverflow.Ellipsis)
+                    },
                     checked = isChecked,
                     onCheckedChange = { newCheckedValue ->
                         checkedStates[index] = newCheckedValue
                         viewModel.updateHealthPermission(
-                            fitnessPermissions.value[index],
+                            fitnessPermissions[index],
                             newCheckedValue as Boolean,
                         )
                     },
@@ -211,16 +213,26 @@ fun GrantMultipleFitnessPermissions(
 @Composable
 fun GrantSingleFitnessPermission(
     appName: String,
-    dataType: String,
+    permission: FitnessPermission,
     onButtonClicked: () -> Unit,
     viewModel: RequestPermissionViewModel,
 ) {
     val res = LocalContext.current.resources
     val materialUIVersion = ResourceHelper.materialUIVersionInApp
+    val permissionLabel =
+        stringResource(
+            FitnessPermissionStrings.fromPermissionType(permission.fitnessPermissionType)
+                .lowercaseLabel
+        )
     ScrollableScreen(
         materialUIVersion = materialUIVersion,
         showTimeText = false,
-        title = res.getString(R.string.wear_request_single_data_type_permission, appName, dataType),
+        title =
+            res.getString(
+                R.string.wear_request_single_data_type_permission,
+                appName,
+                permissionLabel,
+            ),
     ) {
         // Allow button.
         item {
