@@ -33,6 +33,9 @@ import static java.time.Duration.ofMinutes;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.health.connect.RecordIdFilter;
+import android.health.connect.aidl.DeleteUsingFiltersRequestParcel;
+import android.health.connect.aidl.RecordIdFiltersParcel;
 import android.health.connect.datatypes.BloodPressureRecord;
 import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.internal.datatypes.BloodPressureRecordInternal;
@@ -50,6 +53,7 @@ import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
+import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
@@ -135,6 +139,22 @@ public final class TransactionTestUtils {
                         mHealthConnectInjector.getAccessLogsHelper(),
                         /* extraPermsStateMap= */ new ArrayMap<>())
                 .execute();
+    }
+
+    /** Deletes records with the given IDs from storage. */
+    public void deleteRecords(String packageName, RecordIdFilter... recordIdFilters) {
+        deleteRecords(packageName, List.of(recordIdFilters));
+    }
+
+    private void deleteRecords(String packageName, List<RecordIdFilter> recordIdFilters) {
+        DeleteUsingFiltersRequestParcel parcel =
+                new DeleteUsingFiltersRequestParcel(
+                        new RecordIdFiltersParcel(recordIdFilters), packageName);
+        mTransactionManager.deleteAllRecords(
+                new DeleteTransactionRequest(
+                        packageName, parcel, mHealthConnectInjector.getAppInfoHelper()),
+                /* shouldRecordDeleteAccessLogs= */ false,
+                mHealthConnectInjector.getAccessLogsHelper());
     }
 
     /** Read records with the given IDs from storage. */
