@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2023 The Android Open Source Project
+  Copyright (C) 2025 The Android Open Source Project
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -38,12 +38,13 @@
             android:layout_marginBottom="@dimen/spacing_normal"
             android:paddingHorizontal="12dp"
             android:paddingVertical="@dimen/spacing_normal"
-            android:background="@drawable/filter_chip_background">
+            android:background="@drawable/warning_expressive_background">
 
             <ImageView
                 android:layout_width="@dimen/route_request_icon_size"
                 android:layout_height="@dimen/route_request_icon_size"
                 android:background="?attr/privacyPolicyIcon"
+                android:backgroundTint="@color/settingslib_materialColorPrimary"
                 android:importantForAccessibility="no"/>
 
             <TextView
@@ -52,13 +53,14 @@
                 android:layout_weight="1"
                 android:layout_gravity="center_vertical"
                 android:layout_marginHorizontal="12dp"
-                android:textAppearance="?attr/textAppearanceRouteRequest"
+                android:textAppearance="@style/TextAppearance.HealthConnect.Expressive.RouteRequestWarning"
                 android:text="@string/request_route_disclaimer_notice" />
 
             <ImageView
                 android:layout_width="@dimen/route_request_icon_size"
                 android:layout_height="@dimen/route_request_icon_size"
                 android:background="?attr/seeAllIcon"
+                android:backgroundTint="@color/settingslib_materialColorPrimary"
                 android:importantForAccessibility="no"/>
         </LinearLayout>
 
@@ -94,14 +96,13 @@
                     android:id="@+id/session_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_small"
-                    android:textAppearance="?attr/textAppearanceHeadline6"/>
+                    style="@style/TextAppearance.HealthConnect.Expressive.PreferenceTitle"/>
 
                 <TextView
                     android:id="@+id/date_app"
-                    android:textAppearance="?attr/textAppearanceSummary"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    style="@style/TextAppearance.HealthConnect.Expressive.PreferenceSummary"/>
             </LinearLayout>
         </LinearLayout>
 

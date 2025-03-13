@@ -175,8 +175,8 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
         val view =
             layoutInflater.inflate(
                 if (SettingsThemeHelper.isExpressiveTheme(applicationContext))
-                    R.layout.route_request_dialog_legacy
-                else R.layout.route_request_dialog_expressive,
+                    R.layout.route_request_dialog_expressive
+                else R.layout.route_request_dialog_legacy,
                 null,
             )
         val text = applicationContext.getString(R.string.request_route_header_title, requester)
