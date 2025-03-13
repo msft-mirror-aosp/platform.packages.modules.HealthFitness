@@ -1123,90 +1123,13 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 /* isController= */ false);
     }
 
-    /**
-     * API to delete records based on {@code request}
-     *
-     * <p>NOTE: Though internally we only need a single API to handle deletes as SDK code transform
-     * all its delete requests to {@link DeleteUsingFiltersRequestParcel}, we have this separation
-     * to make sure no non-controller APIs can use {@link
-     * HealthConnectServiceImpl#deleteUsingFilters} API
-     */
-    @Override
-    public void deleteUsingFiltersForSelf(
-            AttributionSource attributionSource,
-            DeleteUsingFiltersRequestParcel request,
-            IEmptyResponseCallback callback) {
-        checkParamsNonNull(attributionSource, request, callback);
-        ErrorCallback wrappedCallback = callback::onError;
-
-        final int uid = Binder.getCallingUid();
-        final int pid = Binder.getCallingPid();
-        final UserHandle userHandle = Binder.getCallingUserHandle();
-        final boolean holdsDataManagementPermission = hasDataManagementPermission(uid, pid);
-        final HealthConnectServiceLogger.Builder logger =
-                new HealthConnectServiceLogger.Builder(holdsDataManagementPermission, DELETE_DATA)
-                        .setHealthFitnessStatsLog(mStatsLog)
-                        .setPackageName(attributionSource.getPackageName());
-
-        scheduleLoggingHealthDataApiErrors(
-                () -> {
-                    enforceIsForegroundUser(userHandle);
-                    verifyPackageNameFromUid(uid, attributionSource);
-                    throwExceptionIfDataSyncInProgress();
-                    List<Integer> recordTypeIdsToDelete =
-                            (!request.getRecordTypeFilters().isEmpty())
-                                    ? request.getRecordTypeFilters()
-                                    : new ArrayList<>(
-                                            mHealthConnectMappings
-                                                    .getRecordIdToExternalRecordClassMap()
-                                                    .keySet());
-                    // Requests from non controller apps are not allowed to use non-id
-                    // filters
-                    request.setPackageNameFilters(
-                            singletonList(attributionSource.getPackageName()));
-
-                    if (!holdsDataManagementPermission) {
-                        tryAcquireApiCallQuota(
-                                uid,
-                                QuotaCategory.QUOTA_CATEGORY_WRITE,
-                                mAppOpsManagerLocal.isUidInForeground(uid),
-                                logger);
-                        mDataPermissionEnforcer.enforceRecordIdsWritePermissions(
-                                recordTypeIdsToDelete, attributionSource);
-                    }
-
-                    int numberOfRecordsDeleted =
-                            mFitnessRecordDeleteHelper.deleteRecords(
-                                    Objects.requireNonNull(attributionSource.getPackageName()),
-                                    request,
-                                    holdsDataManagementPermission,
-                                    /* shouldRecordAccessLog= */ !holdsDataManagementPermission);
-                    tryAndReturnResult(callback, logger);
-                    mThreadScheduler.scheduleInternalTask(
-                            () -> postDeleteTasks(recordTypeIdsToDelete));
-                    logger.setNumberOfRecords(numberOfRecordsDeleted)
-                            .setDataTypesFromRecordTypes(recordTypeIdsToDelete);
-                },
-                logger,
-                wrappedCallback,
-                uid,
-                /* isController= */ holdsDataManagementPermission);
-    }
-
-    /**
-     * API to delete records based on {@code request}
-     *
-     * <p>NOTE: Though internally we only need a single API to handle deletes as SDK code transform
-     * all its delete requests to {@link DeleteUsingFiltersRequestParcel}, we have this separation
-     * to make sure no non-controller APIs can use this API
-     */
+    /** API to delete records based on {@code request}. */
     @Override
     public void deleteUsingFilters(
             AttributionSource attributionSource,
             DeleteUsingFiltersRequestParcel request,
             IEmptyResponseCallback callback) {
         checkParamsNonNull(attributionSource, request, callback);
-
         ErrorCallback errorCallback = callback::onError;
 
         final int uid = Binder.getCallingUid();
@@ -1224,7 +1147,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     enforceIsForegroundUser(requestContext.getCallingUser());
                     verifyPackageNameFromUid(uid, attributionSource);
                     throwExceptionIfDataSyncInProgress();
-                    mContext.enforcePermission(MANAGE_HEALTH_DATA_PERMISSION, pid, uid, null);
                     List<Integer> recordTypeIdsToDelete =
                             (!request.getRecordTypeFilters().isEmpty())
                                     ? request.getRecordTypeFilters()
@@ -1233,12 +1155,22 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                                     .getRecordIdToExternalRecordClassMap()
                                                     .keySet());
 
+                    if (!holdsDataManagementPermission) {
+                        tryAcquireApiCallQuota(
+                                uid,
+                                QuotaCategory.QUOTA_CATEGORY_WRITE,
+                                mAppOpsManagerLocal.isUidInForeground(uid),
+                                logger);
+                        mDataPermissionEnforcer.enforceRecordIdsWritePermissions(
+                                recordTypeIdsToDelete, attributionSource);
+                    }
+
                     int numberOfRecordsDeleted =
                             mFitnessRecordDeleteHelper.deleteRecords(
-                                    attributionSource.getPackageName(),
+                                    Objects.requireNonNull(attributionSource.getPackageName()),
                                     request,
-                                    /* holdsDataManagementPermission= */ true,
-                                    /* shouldRecordAccessLog= */ false);
+                                    /* enforceSelfDelete= */ !holdsDataManagementPermission,
+                                    /* shouldRecordAccessLog= */ !holdsDataManagementPermission);
                     tryAndReturnResult(callback, logger);
                     mThreadScheduler.scheduleInternalTask(
                             () -> postDeleteTasks(recordTypeIdsToDelete));
