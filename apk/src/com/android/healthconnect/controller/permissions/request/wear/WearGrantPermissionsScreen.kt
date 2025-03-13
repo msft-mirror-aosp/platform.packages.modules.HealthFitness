@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.Hyphens
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.expandableButton
@@ -43,6 +44,7 @@ import androidx.wear.compose.foundation.rememberExpandableState
 import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.CompactChip
 import androidx.wear.compose.material.Icon
+import androidx.wear.compose.material3.LocalTextStyle
 import androidx.wear.compose.material3.SwitchButton
 import androidx.wear.compose.material3.Text
 import com.android.healthconnect.controller.R
@@ -130,7 +132,12 @@ fun GrantMultipleFitnessPermissions(
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                 SwitchButton(
                     label = {
-                        Text(uppercaseLabel, maxLines = 3, overflow = TextOverflow.Ellipsis)
+                        Text(
+                            uppercaseLabel,
+                            maxLines = 3,
+                            overflow = TextOverflow.Ellipsis,
+                            style = LocalTextStyle.current.copy(hyphens = Hyphens.Auto),
+                        )
                     },
                     checked = isChecked,
                     onCheckedChange = { newCheckedValue ->
