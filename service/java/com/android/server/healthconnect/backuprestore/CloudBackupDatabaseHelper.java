@@ -48,7 +48,6 @@ import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.BackupChangeTokenHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
@@ -72,7 +71,6 @@ public class CloudBackupDatabaseHelper {
     private final AppInfoHelper mAppInfoHelper;
     private final TransactionManager mTransactionManager;
     private final FitnessRecordReadHelper mFitnessRecordReadHelper;
-    private final DeviceInfoHelper mDeviceInfoHelper;
     private final HealthConnectMappings mHealthConnectMappings;
     private final InternalHealthConnectMappings mInternalHealthConnectMappings;
     private final ChangeLogsHelper mChangeLogsHelper;
@@ -87,7 +85,6 @@ public class CloudBackupDatabaseHelper {
             TransactionManager transactionManager,
             FitnessRecordReadHelper fitnessRecordReadHelper,
             AppInfoHelper appInfoHelper,
-            DeviceInfoHelper deviceInfoHelper,
             HealthConnectMappings healthConnectMappings,
             InternalHealthConnectMappings internalHealthConnectMappings,
             ChangeLogsHelper changeLogsHelper,
@@ -97,7 +94,6 @@ public class CloudBackupDatabaseHelper {
         mTransactionManager = transactionManager;
         mFitnessRecordReadHelper = fitnessRecordReadHelper;
         mAppInfoHelper = appInfoHelper;
-        mDeviceInfoHelper = deviceInfoHelper;
         mHealthConnectMappings = healthConnectMappings;
         mInternalHealthConnectMappings = internalHealthConnectMappings;
         mChangeLogsHelper = changeLogsHelper;

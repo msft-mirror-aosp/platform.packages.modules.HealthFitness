@@ -1170,10 +1170,8 @@
     <string name="some_app_entries_selected_month_deletion_confirmation_dialog" msgid="6617805533334875710">"क्या आपको <xliff:g id="SELECTED_DATE_RANGE">%2$s</xliff:g> के लिए, <xliff:g id="APP_NAME">%1$s</xliff:g> की चुनी हुई एंट्री हमेशा के लिए मिटानी हैं?"</string>
     <string name="one_app_entry_selected_deletion_confirmation_dialog" msgid="7101939753210640660">"क्या आपको <xliff:g id="APP_NAME">%s</xliff:g> की इस एंट्री को हमेशा के लिए मिटाना है?"</string>
     <string name="inactive_app_data_selected_deletion_confirmation_dialog" msgid="3192411589802497811">"क्या आपको <xliff:g id="APP_NAME">%2$s</xliff:g> के लिए, <xliff:g id="DATA_TYPE">%1$s</xliff:g> का डेटा हमेशा के लिए मिटाना है?"</string>
-    <!-- no translation found for menu_show_system (5608880605989914394) -->
-    <skip />
-    <!-- no translation found for menu_hide_system (9218325603953186714) -->
-    <skip />
+    <string name="menu_show_system" msgid="5608880605989914394">"सिस्टम के ऐप्लिकेशन दिखाएं"</string>
+    <string name="menu_hide_system" msgid="9218325603953186714">"सिस्टम के ऐप्लिकेशन छिपाएं"</string>
     <string name="on" msgid="8266542510798355807">"चालू है"</string>
     <string name="off" msgid="6996623844428550649">"बंद है"</string>
     <string name="wear_app_perms_24h_access" msgid="2997184871873750357">"<xliff:g id="TIME_DATE">%1$s</xliff:g> को ऐक्सेस किया गया"</string>
