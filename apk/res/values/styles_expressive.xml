@@ -39,4 +39,18 @@
         <item name="android:textSize">14sp</item>
         <item name="android:lineHeight">20sp</item>
     </style>
+
+    <style name="PermissionGrantButton.Expressive.Outline" parent="@style/SettingsLibButtonStyle.Expressive.Outline">
+        <item name="android:paddingVertical">@dimen/spacing_xxsmall</item>
+        <item name="android:layout_marginVertical">@dimen/spacing_xxsmall</item>
+        <item name="android:layout_marginHorizontal">@dimen/spacing_large</item>
+        <item name="android:layout_width">match_parent</item>
+    </style>
+
+    <style name="PermissionGrantButton.Expressive.Full" parent="@style/SettingsLibButtonStyle.Expressive.Filled">
+        <item name="android:paddingVertical">@dimen/spacing_xxsmall</item>
+        <item name="android:layout_marginVertical">@dimen/spacing_xxsmall</item>
+        <item name="android:layout_marginHorizontal">@dimen/spacing_large</item>
+        <item name="android:layout_width">match_parent</item>
+    </style>
 </resources>
