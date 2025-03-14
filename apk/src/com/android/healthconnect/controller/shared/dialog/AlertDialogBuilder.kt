@@ -43,17 +43,12 @@ class AlertDialogBuilder(private val context: Context, private val containerLogN
 
     private var alertDialogBuilder: AlertDialog.Builder
     private var customTitleLayout: View =
-        LayoutInflater.from(context).inflate(R.layout.dialog_title, null)
+        inflateLayout(R.layout.dialog_title_expressive, R.layout.dialog_title_legacy)
     private var customMessageLayout: View =
-        LayoutInflater.from(context).inflate(R.layout.dialog_message, null)
+        inflateLayout(R.layout.dialog_message_expressive, R.layout.dialog_message_legacy)
     private var customDialogLayout: View =
-        LayoutInflater.from(context)
-            .inflate(
-                if (SettingsThemeHelper.isExpressiveTheme(context))
-                    R.layout.dialog_expressive_layout
-                else R.layout.dialog_legacy_layout,
-                null,
-            )
+        inflateLayout(R.layout.dialog_expressive_layout, R.layout.dialog_legacy_layout)
+
     private var logger: HealthConnectLogger
 
     constructor(
@@ -321,5 +316,14 @@ class AlertDialogBuilder(private val context: Context, private val containerLogN
         } finally {
             typedArray.recycle()
         }
+    }
+
+    private fun inflateLayout(expressiveLayout: Int, legacyLayout: Int): View {
+        return LayoutInflater.from(context)
+            .inflate(
+                if (SettingsThemeHelper.isExpressiveTheme(context)) expressiveLayout
+                else legacyLayout,
+                null,
+            )
     }
 }
