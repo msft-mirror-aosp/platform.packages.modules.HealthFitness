@@ -28,6 +28,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -39,6 +40,7 @@ import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission.Companion.fromPermissionString
 import com.android.permissioncontroller.wear.permission.components.ScrollableScreen
 import com.android.permissioncontroller.wear.permission.components.material3.WearPermissionButton
+import com.android.permissioncontroller.wear.permission.components.material3.WearPermissionButtonStyle
 import com.android.permissioncontroller.wear.permission.components.material3.WearPermissionIconBuilder
 import java.time.Instant
 import java.time.LocalTime
@@ -182,8 +184,10 @@ fun AllowedAppsList(
                     onRemoveAllAppAccessButtonClick(healthPermission.toString(), dataTypeStr)
                 },
                 iconBuilder =
-                    WearPermissionIconBuilder.builder(R.drawable.ic_remove_access_for_all_apps),
+                    WearPermissionIconBuilder.builder(R.drawable.ic_remove_access_for_all_apps)
+                        .tint(Color(0xFFEC928E)),
                 modifier = Modifier.padding(start = 2.dp, end = 2.dp, top = 14.dp),
+                style = WearPermissionButtonStyle.Warning,
             )
         }
     }
