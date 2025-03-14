@@ -53,11 +53,11 @@ fun AllDataTypesScreen(
     val systemHealthPermissionsUnsorted by viewModel.systemHealthPermissions.collectAsState()
     val nTotalApps = connectedApps.size
 
-    val systemHealthPermissiontoAllowedNonSystemApps =
+    val systemHealthPermissionToAllowedNonSystemApps =
         systemHealthPermissionsUnsorted.associateWith {
             dataTypeToAllowedApps[it]?.filter { !it.isSystem }
         }
-    val systemHealthPermissiontoDeniedNonSystemApps =
+    val systemHealthPermissionToDeniedNonSystemApps =
         systemHealthPermissionsUnsorted.associateWith {
             dataTypeToDeniedApps[it]?.filter { !it.isSystem }
         }
@@ -67,9 +67,9 @@ fun AllDataTypesScreen(
         systemHealthPermissionsUnsorted.sortedWith(
             compareBy<HealthPermission> { healthPermission ->
                     val nAllowedApps =
-                        systemHealthPermissiontoAllowedNonSystemApps[healthPermission]?.size ?: 0
+                        systemHealthPermissionToAllowedNonSystemApps[healthPermission]?.size ?: 0
                     val nDeniedApps =
-                        systemHealthPermissiontoDeniedNonSystemApps[healthPermission]?.size ?: 0
+                        systemHealthPermissionToDeniedNonSystemApps[healthPermission]?.size ?: 0
                     // If a health permission is not requested by any apps, put to the end of list.
                     if ((nAllowedApps + nDeniedApps) > 0) {
                         0
@@ -92,12 +92,12 @@ fun AllDataTypesScreen(
 
     ScrollableScreen(
         asScalingList = true,
-        showTimeText = false,
+        showTimeText = true,
         title = stringResource(R.string.fitness_and_wellness),
     ) {
         item {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                modifier = Modifier.fillMaxWidth().padding(start = 12.dp, bottom = 8.dp),
                 horizontalArrangement = Arrangement.Start,
             ) {
                 Text(stringResource(R.string.vitals_category_uppercase))
@@ -116,9 +116,9 @@ fun AllDataTypesScreen(
                         .uppercaseLabel
                 )
             val nAllowedApps =
-                systemHealthPermissiontoAllowedNonSystemApps[healthPermission]?.size ?: 0
+                systemHealthPermissionToAllowedNonSystemApps[healthPermission]?.size ?: 0
             val nDeniedApps =
-                systemHealthPermissiontoDeniedNonSystemApps[healthPermission]?.size ?: 0
+                systemHealthPermissionToDeniedNonSystemApps[healthPermission]?.size ?: 0
             val nUsedApps =
                 dataTypeToAppToLastAccessTime
                     .find { it.permission == healthPermission }

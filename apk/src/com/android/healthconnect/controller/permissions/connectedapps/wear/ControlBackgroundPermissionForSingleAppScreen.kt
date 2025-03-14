@@ -67,7 +67,7 @@ fun ControlBackgroundReadForSingleAppScreen(
 
     ScrollableScreen(
         asScalingList = true,
-        showTimeText = false,
+        showTimeText = true,
         title = stringResource(R.string.allow_all_the_time_prompt, appName),
         subtitle = subtitle,
     ) {

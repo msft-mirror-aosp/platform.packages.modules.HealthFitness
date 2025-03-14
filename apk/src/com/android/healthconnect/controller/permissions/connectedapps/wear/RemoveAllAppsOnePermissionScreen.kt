@@ -46,7 +46,7 @@ fun RemoveAllAppsOnePermissionScreen(
     val healthPermission = fromPermissionString(permissionStr)
     ScrollableScreen(
         asScalingList = true,
-        showTimeText = false,
+        showTimeText = true,
         title = stringResource(R.string.remove_one_permission_for_all, dataTypeStr),
     ) {
         item {
