@@ -14,7 +14,8 @@ filegroup {
         "unittests/src/android/healthconnect/internal/datatypes/SleepSessionInternalTest.java",
         // Still uses ExtendedMockito
         "unittests/src/com/android/server/healthconnect/HealthConnectManagerServiceTest.java",
-        // TestUtils.isHealthConnectFullySupported
+        // testStageRemoteData_withNotReadMode_onlyValidFilesStaged fails but all other tests
+        // passing
         "unittests/src/com/android/server/healthconnect/HealthConnectServiceImplTest.java",
         // TestUtils.waitForTaskToFinishSuccessfully is timing out
         "unittests/src/com/android/server/healthconnect/HealthConnectThreadSchedulerTest.java",
@@ -87,6 +88,7 @@ android_robolectric_test {
         "cts/phr/src/android/healthconnect/cts/phr/utils/PhrDataFactory.java",
         "cts/utils/HealthConnectTestUtils/src/android/healthconnect/cts/utils/AssumptionCheckerRule.java",
         "cts/utils/HealthConnectTestUtils/src/android/healthconnect/cts/utils/DataFactory.java",
+        "cts/utils/HealthConnectTestUtils/src/android/healthconnect/cts/utils/DeviceSupportUtils.java",
         "cts/utils/HealthConnectTestUtils/src/android/healthconnect/cts/utils/HealthConnectReceiver.java",
         "cts/utils/HealthConnectTestUtils/src/android/healthconnect/cts/utils/TestOutcomeReceiver.java",
     ],
