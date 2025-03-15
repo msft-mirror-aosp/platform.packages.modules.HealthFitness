@@ -29,7 +29,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Text
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission.Companion.fromPermissionString
@@ -126,8 +128,14 @@ fun ControlSingleDataTypeForSingleAppScreen(
                 } else {
                     R.string.current_allow_mode_while_in_use
                 }
-            Row(horizontalArrangement = Arrangement.Start) {
-                Text(stringResource(resourceId, appMetadata!!.appName))
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                modifier = Modifier.fillMaxWidth().padding(start = 12.dp),
+            ) {
+                Text(
+                    text = stringResource(resourceId, appMetadata!!.appName),
+                    style = TextStyle(fontSize = 10.sp),
+                )
             }
         }
     }

@@ -234,7 +234,10 @@ fun WearViewAppPermissionsScreen(viewModel: AppPermissionViewModel) {
                         } else {
                             R.string.view_permissions_description_while_in_use
                         }
-                    Text(res.getString(resourceId, appName))
+                    Text(
+                        text = res.getString(resourceId, appName),
+                        style = TextStyle(fontSize = 12.sp),
+                    )
                 }
             }
         }

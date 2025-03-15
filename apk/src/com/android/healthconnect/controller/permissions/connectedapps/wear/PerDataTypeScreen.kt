@@ -86,7 +86,7 @@ fun PerDataTypeScreen(
         item {
             Row(
                 horizontalArrangement = Arrangement.Start,
-                modifier = Modifier.padding(start = 12.dp, top = 16.dp, bottom = 16.dp),
+                modifier = Modifier.padding(start = 12.dp, bottom = 8.dp),
             ) {
                 Text(
                     text = stringResource(R.string.access_sensor_note, lowercaseDataTypeStr),
@@ -186,7 +186,7 @@ fun AllowedAppsList(
                 iconBuilder =
                     WearPermissionIconBuilder.builder(R.drawable.ic_remove_access_for_all_apps)
                         .tint(Color(0xFFEC928E)),
-                modifier = Modifier.padding(start = 2.dp, end = 2.dp, top = 14.dp),
+                modifier = Modifier.padding(start = 2.dp, end = 2.dp, top = 14.dp, bottom = 8.dp),
                 style = WearPermissionButtonStyle.Warning,
             )
         }
