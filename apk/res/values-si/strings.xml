@@ -1012,11 +1012,9 @@
     <string name="action_drag_label_move_bottom" msgid="3117764196696569512">"පතුළට ගෙන යන්න"</string>
     <string name="reorder_button_content_description" msgid="2685032520710743533">"ප්‍රමුඛතා ලැයිස්තුවේ <xliff:g id="SELECTED_APP">%s</xliff:g> ඇද නැවත ඇණවුම් කිරීමට බොත්තම"</string>
     <string name="remove_button_content_description" msgid="6170490900032612048">"ප්‍රමුඛතා ලැයිස්තුවෙන් <xliff:g id="SELECTED_APP">%s</xliff:g> ඉවත් කිරීමට බොත්තම"</string>
-    <!-- no translation found for see_actions_button_content_description (2004104767369363475) -->
-    <skip />
+    <string name="see_actions_button_content_description" msgid="2004104767369363475">"යෙදුම් මූලාශ්‍ර ලැයිස්තුවෙන් <xliff:g id="SELECTED_APP">%s</xliff:g> නැවත ඇණවුම් කිරීමට හෝ ඉවත් කිරීමට බොත්තම"</string>
     <string name="reorder_button_action_description" msgid="5197462036756192214">"යළි අනුපිළිවෙලට සැකසීමට දෙවරක් තට්ටු කර අදින්න"</string>
-    <!-- no translation found for priority_list_item_content_description (8792727829749801217) -->
-    <skip />
+    <string name="priority_list_item_content_description" msgid="8792727829749801217">"ලැයිස්තුවේ <xliff:g id="POSITION">%1$s</xliff:g> <xliff:g id="SELECTED_APP">%2$s</xliff:g>"</string>
     <string name="search_keywords_home" msgid="5386515593026555327">"යෝග්‍යතාව, සුවතාවය"</string>
     <string name="search_keywords_permissions" msgid="7821010295153350533">"අවසර"</string>
     <string name="search_keywords_data" msgid="5359602744325490523">"health connect, සෞඛ්‍ය දත්ත, සෞඛ්‍ය ප්‍රවර්ග, දත්ත ප්‍රවේශය, ක්‍රියාකාරකම්, ශරීර මිනුම්, ඔසප් චක්‍ර ලුහුබැඳීම, පෝෂණය, නින්ද, vitals"</string>
@@ -1110,12 +1108,9 @@
     <string name="data_sources_add_app" msgid="319926596123692514">"යෙදුමක් එක් කරන්න"</string>
     <string name="edit_data_sources" msgid="79641360876849547">"යෙදුම් මූලාශ්‍ර සංස්කරණය කරන්න"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"උපාංගයේ පෙරනිමිය"</string>
-    <!-- no translation found for move_up (9136155291380319606) -->
-    <skip />
-    <!-- no translation found for move_down (4404970288236170693) -->
-    <skip />
-    <!-- no translation found for remove (1340423400489007362) -->
-    <skip />
+    <string name="move_up" msgid="9136155291380319606">"ඉහළට ගෙන යන්න"</string>
+    <string name="move_down" msgid="4404970288236170693">"පහළට ගෙන යන්න"</string>
+    <string name="remove" msgid="1340423400489007362">"ඉවත් කරන්න"</string>
     <string name="app_data_title" msgid="6499967982291000837">"යෙදුම් දත්ත"</string>
     <string name="app_data_no_data_footer" msgid="7027700714577530371">"<xliff:g id="APP_NAME">%1$s</xliff:g> වෙතින් දත්ත මෙහි පෙන්වනු ඇත"</string>
     <string name="all_data_no_data_footer" msgid="2553443887019153340">"Health Connect වෙත ප්‍රවේශය ඇති යෙදුම් වෙතින් දත්ත මෙහි පෙන්වනු ඇත"</string>

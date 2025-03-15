@@ -46,6 +46,7 @@ import android.health.connect.internal.datatypes.SpeedRecordInternal;
 import android.health.connect.internal.datatypes.StepsRecordInternal;
 import android.util.ArrayMap;
 
+import com.android.server.healthconnect.fitness.FitnessRecordDeleteHelper;
 import com.android.server.healthconnect.fitness.FitnessRecordReadHelper;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
@@ -53,7 +54,6 @@ import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
-import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
@@ -74,11 +74,13 @@ public final class TransactionTestUtils {
     private static final String TEST_PACKAGE_NAME = "package.name";
     private final TransactionManager mTransactionManager;
     private final FitnessRecordReadHelper mFitnessRecordReadHelper;
+    private final FitnessRecordDeleteHelper mFitnessRecordDeleteHelper;
     private final HealthConnectInjector mHealthConnectInjector;
 
     public TransactionTestUtils(HealthConnectInjector injector) {
         mTransactionManager = injector.getTransactionManager();
         mFitnessRecordReadHelper = injector.getFitnessRecordReadHelper();
+        mFitnessRecordDeleteHelper = injector.getFitnessRecordDeleteHelper();
         mHealthConnectInjector = injector;
     }
 
@@ -150,11 +152,11 @@ public final class TransactionTestUtils {
         DeleteUsingFiltersRequestParcel parcel =
                 new DeleteUsingFiltersRequestParcel(
                         new RecordIdFiltersParcel(recordIdFilters), packageName);
-        mTransactionManager.deleteAllRecords(
-                new DeleteTransactionRequest(
-                        packageName, parcel, mHealthConnectInjector.getAppInfoHelper()),
-                /* shouldRecordDeleteAccessLogs= */ false,
-                mHealthConnectInjector.getAccessLogsHelper());
+        mFitnessRecordDeleteHelper.deleteRecords(
+                packageName,
+                parcel,
+                /* holdsDataManagementPermission= */ false,
+                /* shouldRecordAccessLog= */ false);
     }
 
     /** Read records with the given IDs from storage. */

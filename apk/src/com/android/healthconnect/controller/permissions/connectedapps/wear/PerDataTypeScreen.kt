@@ -28,8 +28,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Text
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings
@@ -37,6 +40,7 @@ import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission.Companion.fromPermissionString
 import com.android.permissioncontroller.wear.permission.components.ScrollableScreen
 import com.android.permissioncontroller.wear.permission.components.material3.WearPermissionButton
+import com.android.permissioncontroller.wear.permission.components.material3.WearPermissionButtonStyle
 import com.android.permissioncontroller.wear.permission.components.material3.WearPermissionIconBuilder
 import java.time.Instant
 import java.time.LocalTime
@@ -56,7 +60,7 @@ fun PerDataTypeScreen(
 ) {
     // TODO: b/401597500 - The HealthPermission should be passed into these composables.
     val healthPermission = fromPermissionString(permissionStr)
-    val lowercaseDataTypetSr =
+    val lowercaseDataTypeStr =
         stringResource(
             FitnessPermissionStrings.fromPermissionType(
                     (healthPermission as HealthPermission.FitnessPermission).fitnessPermissionType
@@ -65,7 +69,7 @@ fun PerDataTypeScreen(
         )
     val showSystem by viewModel.showSystemFlow.collectAsState()
 
-    ScrollableScreen(asScalingList = true, showTimeText = false, title = dataTypeStr) {
+    ScrollableScreen(asScalingList = true, showTimeText = true, title = dataTypeStr) {
         // Allowed apps.
         item {
             AllowedAppsList(
@@ -80,8 +84,14 @@ fun PerDataTypeScreen(
 
         // Notes on what this permission is about.
         item {
-            Row(horizontalArrangement = Arrangement.Start) {
-                Text(stringResource(R.string.access_sensor_note, lowercaseDataTypetSr))
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                modifier = Modifier.padding(start = 12.dp, top = 16.dp, bottom = 16.dp),
+            ) {
+                Text(
+                    text = stringResource(R.string.access_sensor_note, lowercaseDataTypeStr),
+                    style = TextStyle(fontSize = 12.sp),
+                )
             }
         }
 
@@ -107,7 +117,7 @@ fun PerDataTypeScreen(
                     },
                 labelMaxLines = Int.MAX_VALUE,
                 onClick = { onShowSystemClick(!showSystem) },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.padding(start = 2.dp, end = 2.dp),
             )
         }
     }
@@ -137,7 +147,12 @@ fun AllowedAppsList(
         val nApps = allowedApps.size
         Column {
             // Allowed text.
-            Text(stringResource(R.string.allowed))
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(start = 12.dp, bottom = 6.dp),
+                horizontalArrangement = Arrangement.Start,
+            ) {
+                Text(stringResource(R.string.allowed))
+            }
 
             // A chip for each allowed app for this data type.
             allowedApps.forEach { app ->
@@ -157,7 +172,7 @@ fun AllowedAppsList(
                         onAppChipClick(healthPermission.toString(), dataTypeStr, app.packageName)
                     },
                     iconBuilder = app.icon?.let { WearPermissionIconBuilder.builder(it) },
-                    modifier = Modifier.padding(4.dp),
+                    modifier = Modifier.padding(2.dp),
                 )
             }
 
@@ -169,7 +184,10 @@ fun AllowedAppsList(
                     onRemoveAllAppAccessButtonClick(healthPermission.toString(), dataTypeStr)
                 },
                 iconBuilder =
-                    WearPermissionIconBuilder.builder(R.drawable.ic_remove_access_for_all_apps),
+                    WearPermissionIconBuilder.builder(R.drawable.ic_remove_access_for_all_apps)
+                        .tint(Color(0xFFEC928E)),
+                modifier = Modifier.padding(start = 2.dp, end = 2.dp, top = 14.dp),
+                style = WearPermissionButtonStyle.Warning,
             )
         }
     }
@@ -203,7 +221,12 @@ fun DeniedAppsList(
         val nApps = deniedApps.size
         Column {
             // Not allowed text.
-            Text(stringResource(R.string.not_allowed))
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(start = 12.dp, bottom = 6.dp),
+                horizontalArrangement = Arrangement.Start,
+            ) {
+                Text(stringResource(R.string.not_allowed))
+            }
 
             // A chip for each denied app for this data type.
             deniedApps.forEach { app ->
@@ -223,7 +246,7 @@ fun DeniedAppsList(
                         onAppChipClick(healthPermission.toString(), dataTypeStr, app.packageName)
                     },
                     iconBuilder = app.icon?.let { WearPermissionIconBuilder.builder(it) },
-                    modifier = Modifier.padding(4.dp),
+                    modifier = Modifier.padding(2.dp),
                 )
             }
         }

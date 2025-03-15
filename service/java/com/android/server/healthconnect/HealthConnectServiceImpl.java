@@ -182,6 +182,7 @@ import com.android.server.healthconnect.exportimport.DocumentProvidersManager;
 import com.android.server.healthconnect.exportimport.ExportImportJobs;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.exportimport.ImportManager;
+import com.android.server.healthconnect.fitness.FitnessRecordDeleteHelper;
 import com.android.server.healthconnect.fitness.FitnessRecordReadHelper;
 import com.android.server.healthconnect.logging.BackupRestoreLogger;
 import com.android.server.healthconnect.logging.ExportImportLogger;
@@ -217,7 +218,6 @@ import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper
 import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.request.AggregateTransactionRequest;
-import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
 import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInternalRequest;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
@@ -289,9 +289,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private final DeviceInfoHelper mDeviceInfoHelper;
     private final ExportImportSettingsStorage mExportImportSettingsStorage;
     private final PreferenceHelper mPreferenceHelper;
-    private FitnessRecordReadHelper mFitnessRecordReadHelper;
-    private MedicalResourceHelper mMedicalResourceHelper;
-    private MedicalDataSourceHelper mMedicalDataSourceHelper;
+    private final FitnessRecordReadHelper mFitnessRecordReadHelper;
+    private final FitnessRecordDeleteHelper mFitnessRecordDeleteHelper;
+    private final MedicalResourceHelper mMedicalResourceHelper;
+    private final MedicalDataSourceHelper mMedicalDataSourceHelper;
     private final ExportManager mExportManager;
     private final AccessLogsHelper mAccessLogsHelper;
     private final ActivityDateHelper mActivityDateHelper;
@@ -327,6 +328,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             MigrationUiStateManager migrationUiStateManager,
             MigrationCleaner migrationCleaner,
             FitnessRecordReadHelper fitnessRecordReadHelper,
+            FitnessRecordDeleteHelper fitnessRecordDeleteHelper,
             MedicalResourceHelper medicalResourceHelper,
             MedicalDataSourceHelper medicalDataSourceHelper,
             ExportManager exportManager,
@@ -371,6 +373,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         migrationCleaner.attachTo(migrationStateManager);
 
         mFitnessRecordReadHelper = fitnessRecordReadHelper;
+        mFitnessRecordDeleteHelper = fitnessRecordDeleteHelper;
         mMedicalResourceHelper = medicalResourceHelper;
         mMedicalDataSourceHelper = medicalDataSourceHelper;
 
@@ -1183,15 +1186,17 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 recordTypeIdsToDelete, attributionSource);
                     }
 
-                    deleteUsingFiltersInternal(
-                            attributionSource,
-                            request,
-                            callback,
-                            logger,
-                            recordTypeIdsToDelete,
-                            /* shouldRecordDeleteAccessLogs= */ !holdsDataManagementPermission,
-                            uid,
-                            pid);
+                    int numberOfRecordsDeleted =
+                            mFitnessRecordDeleteHelper.deleteRecords(
+                                    Objects.requireNonNull(attributionSource.getPackageName()),
+                                    request,
+                                    holdsDataManagementPermission,
+                                    /* shouldRecordAccessLog= */ !holdsDataManagementPermission);
+                    tryAndReturnResult(callback, logger);
+                    mThreadScheduler.scheduleInternalTask(
+                            () -> postDeleteTasks(recordTypeIdsToDelete));
+                    logger.setNumberOfRecords(numberOfRecordsDeleted)
+                            .setDataTypesFromRecordTypes(recordTypeIdsToDelete);
                 },
                 logger,
                 wrappedCallback,
@@ -1239,47 +1244,22 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                                     .getRecordIdToExternalRecordClassMap()
                                                     .keySet());
 
-                    deleteUsingFiltersInternal(
-                            attributionSource,
-                            request,
-                            callback,
-                            logger,
-                            recordTypeIdsToDelete,
-                            /* shouldRecordDeleteAccessLogs= */ !holdsDataManagementPermission,
-                            uid,
-                            pid);
+                    int numberOfRecordsDeleted =
+                            mFitnessRecordDeleteHelper.deleteRecords(
+                                    attributionSource.getPackageName(),
+                                    request,
+                                    /* holdsDataManagementPermission= */ true,
+                                    /* shouldRecordAccessLog= */ false);
+                    tryAndReturnResult(callback, logger);
+                    mThreadScheduler.scheduleInternalTask(
+                            () -> postDeleteTasks(recordTypeIdsToDelete));
+                    logger.setNumberOfRecords(numberOfRecordsDeleted)
+                            .setDataTypesFromRecordTypes(recordTypeIdsToDelete);
                 },
                 logger,
                 errorCallback,
                 uid,
                 /* isController= */ holdsDataManagementPermission);
-    }
-
-    private void deleteUsingFiltersInternal(
-            AttributionSource attributionSource,
-            DeleteUsingFiltersRequestParcel request,
-            IEmptyResponseCallback callback,
-            HealthConnectServiceLogger.Builder logger,
-            List<Integer> recordTypeIdsToDelete,
-            boolean shouldRecordDeleteAccessLogs,
-            int uid,
-            int pid) {
-        if (request.usesIdFilters() && request.usesNonIdFilters()) {
-            throw new IllegalArgumentException(
-                    "Requests with both id and non-id filters are not" + " supported");
-        }
-        DeleteTransactionRequest deleteTransactionRequest =
-                new DeleteTransactionRequest(
-                                attributionSource.getPackageName(), request, mAppInfoHelper)
-                        .setHasManageHealthDataPermission(hasDataManagementPermission(uid, pid));
-        int numberOfRecordsDeleted =
-                mTransactionManager.deleteAllRecords(
-                        deleteTransactionRequest, shouldRecordDeleteAccessLogs, mAccessLogsHelper);
-        tryAndReturnResult(callback, logger);
-        mThreadScheduler.scheduleInternalTask(() -> postDeleteTasks(recordTypeIdsToDelete));
-
-        logger.setNumberOfRecords(numberOfRecordsDeleted)
-                .setDataTypesFromRecordTypes(recordTypeIdsToDelete);
     }
 
     /** API to get Priority for {@code dataCategory} */

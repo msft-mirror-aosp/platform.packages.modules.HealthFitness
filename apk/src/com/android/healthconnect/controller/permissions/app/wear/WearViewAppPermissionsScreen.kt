@@ -35,7 +35,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Text
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
@@ -98,7 +100,7 @@ fun WearViewAppPermissionsScreen(viewModel: AppPermissionViewModel) {
 
     ScrollableScreen(
         asScalingList = true,
-        showTimeText = false,
+        showTimeText = true,
         title = res.getString(R.string.fitness_and_wellness),
     ) {
         // Allow all toggle.
@@ -162,9 +164,12 @@ fun WearViewAppPermissionsScreen(viewModel: AppPermissionViewModel) {
         item {
             Row(
                 horizontalArrangement = Arrangement.Start,
-                modifier = Modifier.padding(start = 12.dp, top = 16.dp, bottom = 16.dp),
+                modifier = Modifier.padding(start = 12.dp, top = 8.dp, bottom = 16.dp),
             ) {
-                Text(res.getString(R.string.give_permission_prompt, appName))
+                Text(
+                    text = res.getString(R.string.give_permission_prompt, appName),
+                    style = TextStyle(fontSize = 12.sp),
+                )
             }
         }
 
@@ -220,7 +225,7 @@ fun WearViewAppPermissionsScreen(viewModel: AppPermissionViewModel) {
 
             item {
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(start = 12.dp),
+                    modifier = Modifier.fillMaxWidth().padding(start = 12.dp, top = 8.dp),
                     horizontalArrangement = Arrangement.Start,
                 ) {
                     val resourceId =

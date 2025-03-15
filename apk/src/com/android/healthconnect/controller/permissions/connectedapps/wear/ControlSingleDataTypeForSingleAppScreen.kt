@@ -62,7 +62,7 @@ fun ControlSingleDataTypeForSingleAppScreen(
     val backgroundReadStatus by viewModel.appToBackgroundReadStatus.collectAsState()
     val isBackgroundPermissionRequested = appMetadata!! in backgroundReadStatus
 
-    ScrollableScreen(asScalingList = true, showTimeText = false, title = appMetadata!!.appName) {
+    ScrollableScreen(asScalingList = true, showTimeText = true, title = appMetadata!!.appName) {
         // Data type text.
         item {
             Row(

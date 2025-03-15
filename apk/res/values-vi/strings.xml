@@ -1012,11 +1012,9 @@
     <string name="action_drag_label_move_bottom" msgid="3117764196696569512">"Chuyển xuống dưới cùng"</string>
     <string name="reorder_button_content_description" msgid="2685032520710743533">"Nút để kéo và sắp xếp lại <xliff:g id="SELECTED_APP">%s</xliff:g> trong danh sách ưu tiên"</string>
     <string name="remove_button_content_description" msgid="6170490900032612048">"Nút để xoá <xliff:g id="SELECTED_APP">%s</xliff:g> khỏi danh sách ưu tiên"</string>
-    <!-- no translation found for see_actions_button_content_description (2004104767369363475) -->
-    <skip />
+    <string name="see_actions_button_content_description" msgid="2004104767369363475">"Nút để sắp xếp lại hoặc xoá <xliff:g id="SELECTED_APP">%s</xliff:g> khỏi danh sách nguồn ứng dụng"</string>
     <string name="reorder_button_action_description" msgid="5197462036756192214">"Nhấn đúp và kéo để sắp xếp lại"</string>
-    <!-- no translation found for priority_list_item_content_description (8792727829749801217) -->
-    <skip />
+    <string name="priority_list_item_content_description" msgid="8792727829749801217">"<xliff:g id="POSITION">%1$s</xliff:g> trong danh sách <xliff:g id="SELECTED_APP">%2$s</xliff:g>"</string>
     <string name="search_keywords_home" msgid="5386515593026555327">"thể chất, sức khoẻ"</string>
     <string name="search_keywords_permissions" msgid="7821010295153350533">"quyền"</string>
     <string name="search_keywords_data" msgid="5359602744325490523">"health connect, dữ liệu sức khoẻ, danh mục liên quan đến sức khoẻ, truy cập dữ liệu, hoạt động, số đo cơ thể, theo dõi chu kỳ kinh nguyệt, dinh dưỡng, giấc ngủ, chỉ số sức khoẻ"</string>
@@ -1110,12 +1108,9 @@
     <string name="data_sources_add_app" msgid="319926596123692514">"Thêm ứng dụng"</string>
     <string name="edit_data_sources" msgid="79641360876849547">"Chỉnh sửa nguồn ứng dụng"</string>
     <string name="default_app_summary" msgid="6183876151011837062">"Theo chế độ cài đặt mặc định của thiết bị"</string>
-    <!-- no translation found for move_up (9136155291380319606) -->
-    <skip />
-    <!-- no translation found for move_down (4404970288236170693) -->
-    <skip />
-    <!-- no translation found for remove (1340423400489007362) -->
-    <skip />
+    <string name="move_up" msgid="9136155291380319606">"Di chuyển lên"</string>
+    <string name="move_down" msgid="4404970288236170693">"Di chuyển xuống"</string>
+    <string name="remove" msgid="1340423400489007362">"Xoá"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Dữ liệu ứng dụng"</string>
     <string name="app_data_no_data_footer" msgid="7027700714577530371">"Dữ liệu của <xliff:g id="APP_NAME">%1$s</xliff:g> sẽ xuất hiện tại đây"</string>
     <string name="all_data_no_data_footer" msgid="2553443887019153340">"Dữ liệu của các ứng dụng có quyền truy cập vào Health Connect sẽ xuất hiện ở đây"</string>

@@ -58,6 +58,7 @@ import android.platform.test.flag.junit.SetFlagsRule;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.android.server.healthconnect.fitness.FitnessRecordDeleteHelper;
 import com.android.server.healthconnect.injector.HealthConnectInjector;
 import com.android.server.healthconnect.injector.HealthConnectInjectorImpl;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
@@ -72,7 +73,6 @@ import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
-import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.testing.storage.TransactionTestUtils;
 
@@ -114,6 +114,7 @@ public class CloudBackupDatabaseHelperTest {
     private CloudBackupDatabaseHelper mCloudBackupDatabaseHelper;
     private TransactionTestUtils mTransactionTestUtils;
     private TransactionManager mTransactionManager;
+    private FitnessRecordDeleteHelper mFitnessRecordDeleteHelper;
     private AccessLogsHelper mAccessLogsHelper;
     private AppInfoHelper mAppInfoHelper;
     private final RecordProtoConverter mRecordProtoConverter = new RecordProtoConverter();
@@ -133,6 +134,7 @@ public class CloudBackupDatabaseHelperTest {
                         .setEnvironmentDataDirectory(mEnvironmentDataDir.getRoot())
                         .build();
         mTransactionManager = healthConnectInjector.getTransactionManager();
+        mFitnessRecordDeleteHelper = healthConnectInjector.getFitnessRecordDeleteHelper();
         mAppInfoHelper = healthConnectInjector.getAppInfoHelper();
         mAccessLogsHelper = healthConnectInjector.getAccessLogsHelper();
 
@@ -379,8 +381,7 @@ public class CloudBackupDatabaseHelperTest {
                 createBloodPressureRecord(TEST_TIME_IN_MILLIS, TEST_SYSTOLIC, TEST_DIASTOLIC));
 
         // Delete the original change logs.
-        mTransactionManager.delete(
-                new DeleteTableRequest(ChangeLogsHelper.TABLE_NAME, stepRecord.getRecordType()));
+        mTransactionManager.delete(new DeleteTableRequest(ChangeLogsHelper.TABLE_NAME));
 
         assertThat(mCloudBackupDatabaseHelper.isChangeLogsTokenValid(response.getNextChangeToken()))
                 .isFalse();
@@ -480,11 +481,11 @@ public class CloudBackupDatabaseHelperTest {
                                         .setStartTime(Instant.EPOCH)
                                         .build())
                         .build();
-        DeleteUsingFiltersRequestParcel parcel = new DeleteUsingFiltersRequestParcel(deleteRequest);
-        mTransactionManager.deleteAllRecords(
-                new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel, mAppInfoHelper),
-                /* shouldRecordDeleteAccessLogs= */ true,
-                mAccessLogsHelper);
+        mFitnessRecordDeleteHelper.deleteRecords(
+                TEST_PACKAGE_NAME,
+                new DeleteUsingFiltersRequestParcel(deleteRequest),
+                /* holdsDataManagementPermission= */ false,
+                /* shouldRecordAccessLog= */ false);
 
         GetChangesForBackupResponse secondResponse =
                 mCloudBackupDatabaseHelper.getIncrementalChanges(
