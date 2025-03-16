@@ -82,15 +82,16 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
             PackageInfoUtils packageInfoUtils,
             HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
             MigrationStateManager migrationStateManager) {
+        mContext = context;
         mTracker = tracker;
         mDatastore = datastore;
-        mPackageManager = context.getPackageManager();
-        mUserManager = context.getSystemService(UserManager.class);
-        mUidToGrantTimeCache = new UidToGrantTimeCache();
-        mContext = context;
         mPackageInfoHelper = packageInfoUtils;
         mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
         mMigrationStateManager = migrationStateManager;
+
+        mUidToGrantTimeCache = new UidToGrantTimeCache();
+        mUserManager = context.getSystemService(UserManager.class);
+        mPackageManager = context.getPackageManager();
         mPackageManager.addOnPermissionsChangeListener(this);
     }
 
@@ -106,7 +107,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
     public Optional<Instant> getFirstGrantTime(String packageName, UserHandle user)
             throws IllegalArgumentException {
 
-        Integer uid = mPackageInfoHelper.getPackageUid(packageName, user, getUserContext(user));
+        Integer uid = mPackageInfoHelper.getPackageUid(packageName, user, mContext);
         if (uid == null) {
             throw new IllegalArgumentException(
                     "Package name "
@@ -124,14 +125,13 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
 
         // Check and update the state in case health permission has been granted before
         // onPermissionsChanged callback was propagated.
-        updateFirstGrantTimesFromPermissionState(uid, true);
+        updateFirstGrantTimesFromPermissionState(user, uid, true);
         return getGrantTimeReadLocked(uid);
     }
 
     /** Sets the provided first grant time for the given {@code packageName}. */
     public void setFirstGrantTime(String packageName, Instant time, UserHandle user) {
-        final Integer uid =
-                mPackageInfoHelper.getPackageUid(packageName, user, getUserContext(user));
+        final Integer uid = mPackageInfoHelper.getPackageUid(packageName, user, mContext);
         if (uid == null) {
             throw new IllegalArgumentException(
                     "Package name "
@@ -156,7 +156,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
 
     @Override
     public void onPermissionsChanged(int uid) {
-        updateFirstGrantTimesFromPermissionState(uid, false);
+        updateFirstGrantTimesFromPermissionState(UserHandle.getUserHandleForUid(uid), uid, false);
     }
 
     /**
@@ -165,8 +165,8 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
      * the same thread where this method is called if {@code sync} is set to {@code true}, another
      * background thread otherwise.
      */
-    private void updateFirstGrantTimesFromPermissionState(int uid, boolean sync) {
-        if (!mUserManager.isUserUnlocked()) {
+    private void updateFirstGrantTimesFromPermissionState(UserHandle user, int uid, boolean sync) {
+        if (!mUserManager.isUserUnlocked(user)) {
             // this method is called in onPermissionsChanged(uid) which is called as soon as the
             // system boots up, even before the user has unlock the device for the first time.
             // Side note: onPermissionsChanged() is also called on both primary user and work
@@ -174,13 +174,11 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
             return;
         }
 
-        final String[] packageNames = mPackageManager.getPackagesForUid(uid);
+        final String[] packageNames = mPackageInfoHelper.getPackagesForUid(mContext, user, uid);
         if (packageNames == null) {
             Log.w(TAG, "onPermissionsChanged: no known packages for UID: " + uid);
             return;
         }
-
-        final UserHandle user = UserHandle.getUserHandleForUid(uid);
 
         if (!checkSupportPermissionsUsageIntent(packageNames, user)) {
             logIfInDebugMode("Cannot find health intent declaration in ", packageNames[0]);
@@ -218,8 +216,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
         mGrantTimeLock.writeLock().lock();
         try {
             boolean anyHealthPermissionGranted =
-                    mPackageInfoHelper.hasGrantedHealthPermissions(
-                            packageNames, user, getUserContext(user));
+                    mPackageInfoHelper.hasGrantedHealthPermissions(packageNames, user, mContext);
 
             boolean grantTimeRecorded = getGrantTimeReadLocked(uid).isPresent();
             if (grantTimeRecorded != anyHealthPermissionGranted) {
@@ -249,9 +246,12 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
                 // take care of merging permissions
                 if (!mMigrationStateManager.isMigrationInProgress()) {
                     HealthConnectThreadScheduler.scheduleInternalTask(
-                            () ->
-                                    mHealthDataCategoryPriorityHelper.updateHealthDataPriority(
-                                            packageNames, user, getUserContext(user)));
+                            () -> {
+                                for (String packageName : packageNames) {
+                                    mHealthDataCategoryPriorityHelper
+                                            .maybeRemoveAppFromPriorityList(packageName, user);
+                                }
+                            });
                 }
             }
         } finally {
@@ -294,8 +294,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
 
     void onPackageRemoved(String packageName, int removedPackageUid, UserHandle userHandle) {
         String[] leftSharedUidPackages =
-                mPackageInfoHelper.getPackagesForUid(
-                        removedPackageUid, userHandle, getUserContext(userHandle));
+                mPackageInfoHelper.getPackagesForUid(mContext, userHandle, removedPackageUid);
         if (leftSharedUidPackages != null && leftSharedUidPackages.length > 0) {
             // There are installed packages left with given UID,
             // don't need to update grant time state.
@@ -356,7 +355,8 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
         }
 
         Instant stagedTime = null;
-        for (String packageName : mPackageInfoHelper.getPackageNamesForUid(uid)) {
+        for (String packageName :
+                mPackageInfoHelper.getPackagesForUidNonNull(mContext, user, uid)) {
             stagedTime = backupState.getPackageGrantTimes().get(packageName);
             if (stagedTime != null) {
                 break;
@@ -377,7 +377,8 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
         }
 
         mUidToGrantTimeCache.put(uid, stagedTime);
-        for (String packageName : mPackageInfoHelper.getPackageNamesForUid(uid)) {
+        for (String packageName :
+                mPackageInfoHelper.getPackagesForUidNonNull(mContext, user, uid)) {
             backupState.getPackageGrantTimes().remove(packageName);
         }
         mDatastore.writeForUser(backupState, user, DATA_TYPE_STAGED);
@@ -386,7 +387,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
 
     /** Initialize first grant time state for given user. */
     private void initAndValidateUserStateIfNeedLocked(UserHandle user) {
-        if (!mUserManager.isUserUnlocked()) {
+        if (!mUserManager.isUserUnlocked(user)) {
             // only init first grant time state when device is unlocked, because before that, we
             // cannot access any files, which leads to `mUidToGrantTimeCache` being empty and never
             // get re-initialized.
@@ -408,8 +409,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
             UserGrantTimeState restoredState = restoreCurrentUserStateLocked(user);
 
             List<PackageInfo> validHealthApps =
-                    mPackageInfoHelper.getPackagesHoldingHealthPermissions(
-                            user, getUserContext(user));
+                    mPackageInfoHelper.getPackagesHoldingHealthPermissions(user, mContext);
 
             logIfInDebugMode(
                     "Packages holding health perms of user " + user + " :", validHealthApps);
@@ -418,8 +418,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
 
             // TODO(b/260691599): consider removing mapping when getUidForSharedUser is
             Map<String, Set<Integer>> sharedUserNamesToUid =
-                    mPackageInfoHelper.collectSharedUserNameToUidsMappingForUser(
-                            validHealthApps, user);
+                    collectSharedUserNameToUidsMappingForUser(validHealthApps);
 
             mUidToGrantTimeCache.populateFromUserGrantTimeState(
                     restoredState, sharedUserNamesToUid, user);
@@ -430,6 +429,20 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
         } finally {
             mGrantTimeLock.writeLock().unlock();
         }
+    }
+
+    private static Map<String, Set<Integer>> collectSharedUserNameToUidsMappingForUser(
+            List<PackageInfo> packageInfos) {
+        Map<String, Set<Integer>> sharedUserNameToUids = new ArrayMap<>();
+        for (PackageInfo info : packageInfos) {
+            if (info.sharedUserId != null) {
+                if (sharedUserNameToUids.get(info.sharedUserId) == null) {
+                    sharedUserNameToUids.put(info.sharedUserId, new ArraySet<>());
+                }
+                sharedUserNameToUids.get(info.sharedUserId).add(info.applicationInfo.uid);
+            }
+        }
+        return sharedUserNameToUids;
     }
 
     private boolean userStateIsInitializedReadLocked(UserHandle user) {
@@ -642,15 +655,15 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
                     continue;
                 }
 
-                String sharedUserName =
-                        mPackageInfoHelper.getSharedUserNameFromUid(uid, getUserContext(user));
+                String sharedUserName = mPackageInfoHelper.getSharedUserNameFromUid(uid, mContext);
                 if (sharedUserName != null) {
                     sharedUserToGrantTime.put(sharedUserName, time);
                 } else {
-                    mPackageInfoHelper
-                            .getPackageNameFromUid(uid)
-                            .ifPresent(
-                                    packageName -> packageNameToGrantTime.put(packageName, time));
+                    String[] packageNames =
+                            mPackageInfoHelper.getPackagesForUid(mContext, user, uid);
+                    if (packageNames != null && packageNames.length == 1) {
+                        packageNameToGrantTime.put(packageNames[0], time);
+                    }
                 }
             }
 
@@ -676,7 +689,8 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
                     continue;
                 }
 
-                for (String packageName : mPackageInfoHelper.getPackageNamesForUid(uid)) {
+                for (String packageName :
+                        mPackageInfoHelper.getPackagesForUidNonNull(mContext, user, uid)) {
                     packageNameToGrantTime.put(packageName, time);
                 }
             }
@@ -712,8 +726,7 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
                 String packageName = entry.getKey();
                 Instant time = entry.getValue();
 
-                Integer uid =
-                        mPackageInfoHelper.getPackageUid(packageName, user, getUserContext(user));
+                Integer uid = mPackageInfoHelper.getPackageUid(packageName, user, mContext);
                 if (uid != null) {
                     put(uid, time);
                 }
@@ -726,9 +739,5 @@ public final class FirstGrantTimeManager implements PackageManager.OnPermissions
             mHealthDataCategoryPriorityHelper.maybeRemoveAppWithoutWritePermissionsFromPriorityList(
                     packageName);
         }
-    }
-
-    private Context getUserContext(UserHandle userHandle) {
-        return mContext.createContextAsUser(userHandle, /*flags*/ 0);
     }
 }

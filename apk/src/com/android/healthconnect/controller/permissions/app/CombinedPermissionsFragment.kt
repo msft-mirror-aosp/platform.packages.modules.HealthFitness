@@ -28,9 +28,9 @@ import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel.RevokeAllState
-import com.android.healthconnect.controller.permissions.shared.DisconnectAllAppPermissionsDialogFragment
-import com.android.healthconnect.controller.permissions.shared.DisconnectAllAppPermissionsDialogFragment.Companion.DISCONNECT_EVENT
-import com.android.healthconnect.controller.permissions.shared.DisconnectAllAppPermissionsDialogFragment.Companion.KEY_DELETE_DATA
+import com.android.healthconnect.controller.permissions.shared.DisconnectHealthPermissionsDialogFragment
+import com.android.healthconnect.controller.permissions.shared.DisconnectHealthPermissionsDialogFragment.Companion.DISCONNECT_ALL_EVENT
+import com.android.healthconnect.controller.permissions.shared.DisconnectHealthPermissionsDialogFragment.Companion.KEY_DELETE_DATA
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.Constants.SHOW_MANAGE_APP_SECTION
 import com.android.healthconnect.controller.shared.HealthPermissionReader
@@ -39,6 +39,7 @@ import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.utils.dismissLoadingDialog
 import com.android.healthconnect.controller.utils.logging.AppAccessElement
+import com.android.healthconnect.controller.utils.logging.CombinedAppAccessElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.pref
@@ -65,8 +66,7 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
     }
 
     init {
-        // TODO(b/342159144): Update visual elements.
-        this.setPageName(PageName.UNKNOWN_PAGE)
+        this.setPageName(PageName.COMBINED_APP_ACCESS_PAGE)
     }
 
     private var packageName = ""
@@ -119,7 +119,7 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
             setupManageAppPreferenceCategory(granted)
         }
 
-        childFragmentManager.setFragmentResultListener(DISCONNECT_EVENT, this) { _, bundle ->
+        childFragmentManager.setFragmentResultListener(DISCONNECT_ALL_EVENT, this) { _, bundle ->
             val permissionsUpdated = revokeAllPermissions()
             val toastString =
                 if (!permissionsUpdated) {
@@ -152,6 +152,7 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
 
         managePermissionsCategory.addPreference(
             HealthPreference(requireContext()).also {
+                it.logName = CombinedAppAccessElement.FITNESS_PERMISSIONS_BUTTON
                 it.title = getString(R.string.fitness_permissions)
                 it.summary = getString(R.string.fitness_permissions_summary)
                 it.setOnPreferenceClickListener {
@@ -171,6 +172,7 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
 
         managePermissionsCategory.addPreference(
             HealthPreference(requireContext()).also {
+                it.logName = CombinedAppAccessElement.MEDICAL_PERMISSIONS_BUTTON
                 it.title = getString(R.string.medical_permissions)
                 it.summary = getString(R.string.medical_permissions_summary)
                 it.setOnPreferenceClickListener {
@@ -190,12 +192,13 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
 
         additionalAccessViewModel.loadAdditionalAccessPreferences(packageName)
         additionalAccessViewModel.additionalAccessState.observe(viewLifecycleOwner) { state ->
-            if (state.isValid() && shouldAddAdditionalAccessPref()) {
+            if (state.isAvailable() && shouldAddAdditionalAccessPref()) {
                 val additionalAccessPref =
                     HealthPreference(requireContext()).also {
                         it.key = KEY_ADDITIONAL_ACCESS
                         it.logName = AppAccessElement.ADDITIONAL_ACCESS_BUTTON
-                        it.setTitle(R.string.additional_access_label)
+                        it.title = getString(R.string.additional_access_label)
+                        it.summary = getString(R.string.additional_access_summary)
                         it.setOnPreferenceClickListener { _ ->
                             val extras = bundleOf(EXTRA_PACKAGE_NAME to packageName)
                             findNavController()
@@ -209,7 +212,7 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
                 managePermissionsCategory.addPreference(additionalAccessPref)
             }
             managePermissionsCategory.children.find { it.key == KEY_ADDITIONAL_ACCESS }?.isVisible =
-                state.isValid()
+                state.isAvailable()
         }
     }
 
@@ -234,6 +237,7 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
         )
         manageAppCategory.addPreference(
             HealthPreference(requireContext()).also {
+                it.logName = CombinedAppAccessElement.REMOVE_ALL_PERMISSIONS_BUTTON
                 it.title = getString(R.string.remove_access_for_this_app)
                 it.setOnPreferenceClickListener {
                     showRevokeAllPermissions()
@@ -268,8 +272,12 @@ class CombinedPermissionsFragment : Hilt_CombinedPermissionsFragment() {
     }
 
     private fun showRevokeAllPermissions() {
-        DisconnectAllAppPermissionsDialogFragment(appName)
-            .show(childFragmentManager, DisconnectAllAppPermissionsDialogFragment.TAG)
+        DisconnectHealthPermissionsDialogFragment(
+                appName,
+                enableDeleteData = true,
+                disconnectType = DisconnectHealthPermissionsDialogFragment.DisconnectType.ALL,
+            )
+            .show(childFragmentManager, DisconnectHealthPermissionsDialogFragment.TAG)
     }
 
     private fun revokeAllPermissions(): Boolean {

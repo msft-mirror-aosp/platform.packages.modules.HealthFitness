@@ -18,6 +18,7 @@ package com.android.healthfitness.flags;
 
 import static com.android.healthfitness.flags.AconfigFlagHelper.DB_VERSION_TO_DB_FLAG_MAP;
 import static com.android.healthfitness.flags.AconfigFlagHelper.getDbVersion;
+import static com.android.healthfitness.flags.AconfigFlagHelper.isEcosystemMetricsEnabled;
 import static com.android.healthfitness.flags.AconfigFlagHelper.isPersonalHealthRecordEnabled;
 import static com.android.healthfitness.flags.DatabaseVersions.LAST_ROLLED_OUT_DB_VERSION;
 
@@ -31,11 +32,11 @@ import android.platform.test.flag.junit.SetFlagsRule;
 
 import org.junit.Before;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 
 public class AconfigFlagHelperTest {
     @ClassRule public static final SetFlagsRule.ClassRule mClassRule = new SetFlagsRule.ClassRule();
@@ -50,7 +51,7 @@ public class AconfigFlagHelperTest {
     @DisableFlags({Flags.FLAG_INFRA_TO_GUARD_DB_CHANGES})
     public void infraToGuardDbChangesDisabled() {
         // putting a very high DB version mapping to true to the map
-        DB_VERSION_TO_DB_FLAG_MAP.put(1000_000, true);
+        DB_VERSION_TO_DB_FLAG_MAP.put(1000_000, () -> true);
 
         // since FLAG_INFRA_TO_GUARD_DB_CHANGES is disabled, that very high version shouldn't be
         // taken into account.
@@ -59,6 +60,7 @@ public class AconfigFlagHelperTest {
 
     @Test
     @EnableFlags({Flags.FLAG_INFRA_TO_GUARD_DB_CHANGES})
+    @DisableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     public void infraToGuardDbChangesEnabled() {
         assertThat(getDbVersion()).isEqualTo(LAST_ROLLED_OUT_DB_VERSION);
     }
@@ -83,9 +85,9 @@ public class AconfigFlagHelperTest {
     public void testGetDbVersion_true_true_true() {
         // initialize DB_VERSION_TO_DB_FLAG_MAP, so it won't be empty when getDbVersion() is called,
         // so the entries created in this test will be used.
-        DB_VERSION_TO_DB_FLAG_MAP.put(1, true);
-        DB_VERSION_TO_DB_FLAG_MAP.put(2, true);
-        DB_VERSION_TO_DB_FLAG_MAP.put(3, true);
+        DB_VERSION_TO_DB_FLAG_MAP.put(1, () -> true);
+        DB_VERSION_TO_DB_FLAG_MAP.put(2, () -> true);
+        DB_VERSION_TO_DB_FLAG_MAP.put(3, () -> true);
 
         assertThat(getDbVersion()).isEqualTo(3);
     }
@@ -95,9 +97,9 @@ public class AconfigFlagHelperTest {
     public void testGetDbVersion_true_false_true() {
         // initialize DB_VERSION_TO_DB_FLAG_MAP, so it won't be empty when getDbVersion() is called,
         // so the entries created in this test will be used.
-        DB_VERSION_TO_DB_FLAG_MAP.put(1, true);
-        DB_VERSION_TO_DB_FLAG_MAP.put(2, false);
-        DB_VERSION_TO_DB_FLAG_MAP.put(3, true);
+        DB_VERSION_TO_DB_FLAG_MAP.put(1, () -> true);
+        DB_VERSION_TO_DB_FLAG_MAP.put(2, () -> false);
+        DB_VERSION_TO_DB_FLAG_MAP.put(3, () -> true);
 
         assertThat(getDbVersion()).isEqualTo(1);
     }
@@ -107,9 +109,9 @@ public class AconfigFlagHelperTest {
     public void testGetDbVersion_true_false_false() {
         // initialize DB_VERSION_TO_DB_FLAG_MAP, so it won't be empty when getDbVersion() is called,
         // so the entries created in this test will be used.
-        DB_VERSION_TO_DB_FLAG_MAP.put(1, true);
-        DB_VERSION_TO_DB_FLAG_MAP.put(2, false);
-        DB_VERSION_TO_DB_FLAG_MAP.put(3, false);
+        DB_VERSION_TO_DB_FLAG_MAP.put(1, () -> true);
+        DB_VERSION_TO_DB_FLAG_MAP.put(2, () -> false);
+        DB_VERSION_TO_DB_FLAG_MAP.put(3, () -> false);
 
         assertThat(getDbVersion()).isEqualTo(1);
     }
@@ -127,18 +129,20 @@ public class AconfigFlagHelperTest {
         // - DB_VERSION_TO_DB_FLAG_MAP contains a single entry of 15 => false
         // Now, if a version X = 16 is added to DatabaseVersions.java, and X is assigned to
         // LAST_ROLLED_OUT_DB_VERSION, then this test would fail.
-        for (Map.Entry<Integer, Boolean> entry : DB_VERSION_TO_DB_FLAG_MAP.entrySet()) {
+        for (Map.Entry<Integer, BooleanSupplier> entry : DB_VERSION_TO_DB_FLAG_MAP.entrySet()) {
             int dbVersion = entry.getKey();
-            boolean flagValue = entry.getValue();
+            boolean flagValue = entry.getValue().getAsBoolean();
             if (!flagValue) { // flagValue being `false` means the feature hasn't been rolled out
                 // If a feature hasn't been rolled out, then its DB version must be greater than
                 // the last rolled out DB version.
                 assertTrue(
                         String.format(
                                 "DB version %d hasn't been rolled out yet, it's likely a mistake to"
-                                    + " set DatabaseVersions#LAST_ROLLED_OUT_DB_VERSION to a number"
-                                    + " greater than %d. Make sure you follow the instructions in"
-                                    + " go/hc-mainline-dev/trunk_stable/add-db-changes.",
+                                        + " set DatabaseVersions#LAST_ROLLED_OUT_DB_VERSION to a "
+                                        + "number"
+                                        + " greater than %d. Make sure you follow the "
+                                        + "instructions in"
+                                        + " go/hc-mainline-dev/trunk_stable/add-db-changes.",
                                 dbVersion, dbVersion),
                         dbVersion > LAST_ROLLED_OUT_DB_VERSION);
             }
@@ -164,11 +168,35 @@ public class AconfigFlagHelperTest {
         assertThat(isPersonalHealthRecordEnabled()).isFalse();
     }
 
-    @Ignore("TODO(b/357062401): enabled this test when PHR schemas are finalized")
     @Test
     @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD)
     @DisableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     public void phr_featureFlagTrueAndDbFalse_expectFalse() {
         assertThat(isPersonalHealthRecordEnabled()).isFalse();
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_ECOSYSTEM_METRICS_DB_CHANGES)
+    @DisableFlags(Flags.FLAG_ECOSYSTEM_METRICS)
+    public void isEcosystemMetricsEnabled_featureFlagOff_expectFalse() {
+        assertThat(isEcosystemMetricsEnabled()).isFalse();
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_ECOSYSTEM_METRICS)
+    @DisableFlags(Flags.FLAG_ECOSYSTEM_METRICS_DB_CHANGES)
+    public void isEcosystemMetricsEnabled_dbFlagOff_expectFalse() {
+        assertThat(isEcosystemMetricsEnabled()).isFalse();
+    }
+
+    @Test
+    @EnableFlags({
+        Flags.FLAG_ECOSYSTEM_METRICS,
+        Flags.FLAG_ECOSYSTEM_METRICS_DB_CHANGES,
+        Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE,
+        Flags.FLAG_ACTIVITY_INTENSITY_DB
+    })
+    public void isEcosystemMetricsEnabled_bothFlagsOn_expectTrue() {
+        assertThat(isEcosystemMetricsEnabled()).isTrue();
     }
 }

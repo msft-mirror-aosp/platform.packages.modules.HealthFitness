@@ -40,6 +40,10 @@ import java.util.List;
  */
 public final class MigrationEntityHelper extends DatabaseHelper {
 
+    public MigrationEntityHelper(DatabaseHelpers databaseHelpers) {
+        super(databaseHelpers);
+    }
+
     @VisibleForTesting public static final String TABLE_NAME = "migration_entity_table";
     private static final String COLUMN_ENTITY_ID = "entity_id";
 
@@ -62,7 +66,7 @@ public final class MigrationEntityHelper extends DatabaseHelper {
     }
 
     /** Returns a request to insert the provided {@code entityId}. */
-    public static UpsertTableRequest getInsertRequest(String entityId) {
+    public UpsertTableRequest getInsertRequest(String entityId) {
         final ContentValues values = new ContentValues();
         values.put(COLUMN_ENTITY_ID, entityId);
         return new UpsertTableRequest(

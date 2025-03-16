@@ -16,6 +16,11 @@
 package com.android.healthconnect.controller.tests.data.entries
 
 import android.content.Context
+import android.health.connect.datatypes.ExerciseSessionRecord
+import android.health.connect.datatypes.HeartRateRecord
+import android.health.connect.datatypes.PlannedExerciseSessionRecord
+import android.health.connect.datatypes.SleepSessionRecord
+import android.health.connect.datatypes.StepsRecord
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
 import androidx.test.espresso.Espresso.onIdle
@@ -45,7 +50,6 @@ import com.android.healthconnect.controller.permissions.data.FitnessPermissionTy
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.SLEEP
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.STEPS
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
-import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
@@ -54,7 +58,12 @@ import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_RESOURCE_IM
 import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_RESOURCE_IMMUNIZATION_3
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
+import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.tests.utils.withIndex
+import com.android.healthconnect.controller.utils.logging.AllEntriesElement
+import com.android.healthconnect.controller.utils.logging.DataEntriesElement
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -62,11 +71,17 @@ import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
 import kotlinx.coroutines.test.runTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.kotlin.atLeast
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class AllEntriesFragmentTest {
@@ -75,19 +90,21 @@ class AllEntriesFragmentTest {
 
     @BindValue val viewModel: EntriesViewModel = Mockito.mock(EntriesViewModel::class.java)
 
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock()
+
     private lateinit var context: Context
 
     @Before
     fun setup() {
         hiltRule.inject()
+        toggleAnimation(false)
         context = InstrumentationRegistry.getInstrumentation().context
         context.setLocale(Locale.UK)
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
 
-        Mockito.`when`(viewModel.currentSelectedDate).thenReturn(MutableLiveData())
-        Mockito.`when`(viewModel.period)
-            .thenReturn(MutableLiveData(DateNavigationPeriod.PERIOD_DAY))
-        Mockito.`when`(viewModel.appInfo)
+        whenever(viewModel.currentSelectedDate).thenReturn(MutableLiveData())
+        whenever(viewModel.period).thenReturn(MutableLiveData(DateNavigationPeriod.PERIOD_DAY))
+        whenever(viewModel.appInfo)
             .thenReturn(
                 MutableLiveData(
                     AppMetadata(
@@ -97,26 +114,57 @@ class AllEntriesFragmentTest {
                     )
                 )
             )
-        Mockito.`when`(viewModel.screenState)
+        whenever(viewModel.screenState)
             .thenReturn(MutableLiveData(EntriesViewModel.EntriesDeletionScreenState.VIEW))
-        Mockito.`when`(viewModel.mapOfEntriesToBeDeleted).thenReturn(MutableLiveData())
-        Mockito.`when`(viewModel.allEntriesSelected).thenReturn(MutableLiveData(false))
+        whenever(viewModel.mapOfEntriesToBeDeleted).thenReturn(MutableLiveData())
+        whenever(viewModel.allEntriesSelected).thenReturn(MutableLiveData(false))
+    }
+
+    @After
+    fun tearDown() {
+        toggleAnimation(true)
+        reset(healthConnectLogger)
     }
 
     @Test
     fun showsDateNavigationPreference() {
-        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
-        Mockito.`when`(viewModel.getEntriesList())
-            .thenReturn((FORMATTED_STEPS_LIST.toMutableList()))
+        whenever(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
+        whenever(viewModel.getEntriesList()).thenReturn((FORMATTED_STEPS_LIST.toMutableList()))
 
         launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
         onView(withId(R.id.date_picker_spinner)).check(matches(isDisplayed()))
+        verify(healthConnectLogger, atLeast(1))
+            .logImpression(AllEntriesElement.DATE_VIEW_SPINNER_DAY)
+        verify(healthConnectLogger).logImpression(DataEntriesElement.PREVIOUS_DAY_BUTTON)
+        verify(healthConnectLogger).logImpression(DataEntriesElement.NEXT_DAY_BUTTON)
+    }
+
+    @Test
+    fun fitnessData_logsFitnessPageImpression() {
+        whenever(viewModel.entries).thenReturn(MutableLiveData(Empty))
+
+        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.TAB_ENTRIES_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+    }
+
+    @Test
+    fun medicalData_logsMedicalPageImpression() {
+        whenever(viewModel.entries).thenReturn(MutableLiveData(Empty))
+
+        launchFragment<AllEntriesFragment>(
+            bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.VACCINES.name)
+        )
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.TAB_MEDICAL_ENTRIES_PAGE)
+        verify(healthConnectLogger).logPageImpression()
     }
 
     @Test
     fun whenNoData_showsNoData() {
-        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(Empty))
+        whenever(viewModel.entries).thenReturn(MutableLiveData(Empty))
 
         launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
@@ -125,7 +173,7 @@ class AllEntriesFragmentTest {
 
     @Test
     fun whenError_showsErrorView() {
-        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(LoadingFailed))
+        whenever(viewModel.entries).thenReturn(MutableLiveData(LoadingFailed))
 
         launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
@@ -134,7 +182,7 @@ class AllEntriesFragmentTest {
 
     @Test
     fun whenLoading_showsLoading() {
-        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(Loading))
+        whenever(viewModel.entries).thenReturn(MutableLiveData(Loading))
 
         launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
 
@@ -143,46 +191,48 @@ class AllEntriesFragmentTest {
 
     @Test
     fun withSleepData_showsListOfEntries() {
-        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_SLEEP_LIST)))
-        Mockito.`when`(viewModel.getEntriesList()).thenReturn(FORMATTED_SLEEP_LIST.toMutableList())
+        whenever(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_SLEEP_LIST)))
+        whenever(viewModel.getEntriesList()).thenReturn(FORMATTED_SLEEP_LIST.toMutableList())
 
         launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to SLEEP.name))
 
         onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
         onView(withText("7 hours")).check(matches(isDisplayed()))
+
+        verify(healthConnectLogger).logImpression(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
     }
 
     @Test
     fun withHeartRateData_showsListOfEntries() {
-        Mockito.`when`(viewModel.entries)
-            .thenReturn(MutableLiveData(With(FORMATTED_HEART_RATE_LIST)))
-        Mockito.`when`(viewModel.getEntriesList())
-            .thenReturn(FORMATTED_HEART_RATE_LIST.toMutableList())
+        whenever(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_HEART_RATE_LIST)))
+        whenever(viewModel.getEntriesList()).thenReturn(FORMATTED_HEART_RATE_LIST.toMutableList())
 
         launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to HEART_RATE.name))
 
         onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
         onView(withText("128 - 140 bpm")).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
     }
 
     @Test
     fun withExerciseData_showsListOfEntries() {
-        Mockito.`when`(viewModel.entries)
+        whenever(viewModel.entries)
             .thenReturn(MutableLiveData(With(FORMATTED_EXERCISE_SESSION_LIST)))
-        Mockito.`when`(viewModel.getEntriesList())
+        whenever(viewModel.getEntriesList())
             .thenReturn(FORMATTED_EXERCISE_SESSION_LIST.toMutableList())
 
         launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to EXERCISE.name))
 
         onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
         onView(withText("Biking")).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
     }
 
     @Test
     fun withPlannedExerciseData_showsListOfEntries() {
-        Mockito.`when`(viewModel.entries)
+        whenever(viewModel.entries)
             .thenReturn(MutableLiveData(With(FORMATTED_PLANNED_EXERCISE_LIST)))
-        Mockito.`when`(viewModel.getEntriesList())
+        whenever(viewModel.getEntriesList())
             .thenReturn(FORMATTED_PLANNED_EXERCISE_LIST.toMutableList())
 
         launchFragment<AllEntriesFragment>(
@@ -191,12 +241,13 @@ class AllEntriesFragmentTest {
 
         onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
         onView(withText("Workout")).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
     }
 
     @Test
     fun withStepsData_showsListOfEntries() {
-        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
-        Mockito.`when`(viewModel.getEntriesList())
+        whenever(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
+        whenever(viewModel.getEntriesList())
             .thenReturn(FORMATTED_PLANNED_EXERCISE_LIST.toMutableList())
 
         launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
@@ -205,12 +256,14 @@ class AllEntriesFragmentTest {
         onView(withText("12 steps")).check(matches(isDisplayed()))
         onView(withText("8:06 - 8:06")).check(matches(isDisplayed()))
         onView(withText("15 steps")).check(matches(isDisplayed()))
+        verify(healthConnectLogger, times(2))
+            .logImpression(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
     }
 
     @Test
     fun showsData_onOrientationChange() {
-        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
-        Mockito.`when`(viewModel.getEntriesList()).thenReturn(FORMATTED_STEPS_LIST.toMutableList())
+        whenever(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
+        whenever(viewModel.getEntriesList()).thenReturn(FORMATTED_STEPS_LIST.toMutableList())
 
         val scenario =
             launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
@@ -231,10 +284,10 @@ class AllEntriesFragmentTest {
 
     @Test
     fun whenNoMedicalData_showsNoData() {
-        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(Empty))
+        whenever(viewModel.entries).thenReturn(MutableLiveData(Empty))
 
         launchFragment<AllEntriesFragment>(
-            bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATION.name)
+            bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.VACCINES.name)
         )
 
         onView(withId(R.id.no_data_view)).check(matches(isDisplayed()))
@@ -242,10 +295,10 @@ class AllEntriesFragmentTest {
 
     @Test
     fun whenMedicalError_showsErrorView() {
-        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(LoadingFailed))
+        whenever(viewModel.entries).thenReturn(MutableLiveData(LoadingFailed))
 
         launchFragment<AllEntriesFragment>(
-            bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATION.name)
+            bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.VACCINES.name)
         )
 
         onView(withId(R.id.error_view)).check(matches(isDisplayed()))
@@ -253,10 +306,10 @@ class AllEntriesFragmentTest {
 
     @Test
     fun whenMedicalLoading_showsLoading() {
-        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(Loading))
+        whenever(viewModel.entries).thenReturn(MutableLiveData(Loading))
 
         launchFragment<AllEntriesFragment>(
-            bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATION.name)
+            bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.VACCINES.name)
         )
 
         onView(withId(R.id.loading)).check(matches(isDisplayed()))
@@ -264,13 +317,11 @@ class AllEntriesFragmentTest {
 
     @Test
     fun withMedicalData_showsListOfEntries() {
-        Mockito.`when`(viewModel.entries)
-            .thenReturn(MutableLiveData(With(FORMATTED_IMMUNIZATION_LIST)))
-        Mockito.`when`(viewModel.getEntriesList())
-            .thenReturn(FORMATTED_IMMUNIZATION_LIST.toMutableList())
+        whenever(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_IMMUNIZATION_LIST)))
+        whenever(viewModel.getEntriesList()).thenReturn(FORMATTED_IMMUNIZATION_LIST.toMutableList())
 
         launchFragment<AllEntriesFragment>(
-            bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.IMMUNIZATION.name)
+            bundleOf(PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.VACCINES.name)
         )
 
         onView(withText("02 May 2023 • Health Connect Toolbox")).check(matches(isDisplayed()))
@@ -280,8 +331,8 @@ class AllEntriesFragmentTest {
 
     @Test
     fun triggerDeletion_showsCheckboxes() {
-        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
-        Mockito.`when`(viewModel.getEntriesList()).thenReturn(FORMATTED_STEPS_LIST.toMutableList())
+        whenever(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
+        whenever(viewModel.getEntriesList()).thenReturn(FORMATTED_STEPS_LIST.toMutableList())
 
         val scenario =
             launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
@@ -297,10 +348,10 @@ class AllEntriesFragmentTest {
 
     @Test
     fun inDeletion_checkboxesRemainOnOrientationChange() = runTest {
-        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
-        Mockito.`when`(viewModel.screenState)
+        whenever(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
+        whenever(viewModel.screenState)
             .thenReturn(MutableLiveData(EntriesViewModel.EntriesDeletionScreenState.DELETE))
-        Mockito.`when`(viewModel.getEntriesList()).thenReturn(FORMATTED_STEPS_LIST.toMutableList())
+        whenever(viewModel.getEntriesList()).thenReturn(FORMATTED_STEPS_LIST.toMutableList())
 
         val scenario =
             launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
@@ -321,9 +372,9 @@ class AllEntriesFragmentTest {
 
     @Test
     fun inDeletion_checkedItemsAddedToDeleteSet() {
-        Mockito.`when`(viewModel.entries)
+        whenever(viewModel.entries)
             .thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST_WITH_AGGREGATION)))
-        Mockito.`when`(viewModel.getEntriesList())
+        whenever(viewModel.getEntriesList())
             .thenReturn(FORMATTED_STEPS_LIST_WITH_AGGREGATION.toMutableList())
 
         val scenario =
@@ -337,14 +388,14 @@ class AllEntriesFragmentTest {
 
         onView(withText("12 steps")).perform(click())
         onIdle()
-        verify(viewModel).addToDeleteMap("test_id", DataType.STEPS)
+        verify(viewModel).addToDeleteMap("test_id", StepsRecord::class)
     }
 
     @Test
     fun triggerDeletion_displaysSelectAll() {
-        Mockito.`when`(viewModel.entries)
+        whenever(viewModel.entries)
             .thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST_WITH_AGGREGATION)))
-        Mockito.`when`(viewModel.getEntriesList())
+        whenever(viewModel.getEntriesList())
             .thenReturn(FORMATTED_STEPS_LIST_WITH_AGGREGATION.toMutableList())
 
         val scenario =
@@ -362,9 +413,9 @@ class AllEntriesFragmentTest {
 
     @Test
     fun inDeletion_selectAllChecked_allEntriesChecked() {
-        Mockito.`when`(viewModel.entries)
+        whenever(viewModel.entries)
             .thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST_WITH_AGGREGATION)))
-        Mockito.`when`(viewModel.getEntriesList())
+        whenever(viewModel.getEntriesList())
             .thenReturn(FORMATTED_STEPS_LIST_WITH_AGGREGATION.toMutableList())
 
         val scenario =
@@ -378,21 +429,23 @@ class AllEntriesFragmentTest {
 
         onView(withText("Select all")).perform(click())
         onIdle()
-        verify(viewModel).addToDeleteMap("test_id", DataType.STEPS)
-        verify(viewModel).addToDeleteMap("test_id_2", DataType.STEPS)
+        verify(viewModel).addToDeleteMap("test_id", StepsRecord::class)
+        verify(viewModel).addToDeleteMap("test_id_2", StepsRecord::class)
     }
 
     @Test
     fun inDeletion_selectAllUnchecked_allEntriesUnchecked() {
-        Mockito.`when`(viewModel.entries)
+        whenever(viewModel.entries)
             .thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST_WITH_AGGREGATION)))
-        Mockito.`when`(viewModel.getEntriesList())
+        whenever(viewModel.getEntriesList())
             .thenReturn(FORMATTED_STEPS_LIST_WITH_AGGREGATION.toMutableList())
-        Mockito.`when`(viewModel.mapOfEntriesToBeDeleted)
+        whenever(viewModel.mapOfEntriesToBeDeleted)
             .thenReturn(
-                MutableLiveData(mapOf("test_id" to DataType.STEPS, "test_id_2" to DataType.STEPS))
+                MutableLiveData(
+                    mapOf("test_id" to StepsRecord::class, "test_id_2" to StepsRecord::class)
+                )
             )
-        Mockito.`when`(viewModel.allEntriesSelected).thenReturn(MutableLiveData(true))
+        whenever(viewModel.allEntriesSelected).thenReturn(MutableLiveData(true))
 
         val scenario =
             launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
@@ -418,7 +471,7 @@ private val FORMATTED_STEPS_LIST =
             headerA11y = "from 7:06 to 7:06",
             title = "12 steps",
             titleA11y = "12 steps",
-            dataType = DataType.STEPS,
+            dataType = StepsRecord::class,
         ),
         FormattedDataEntry(
             uuid = "test_id_2",
@@ -426,7 +479,7 @@ private val FORMATTED_STEPS_LIST =
             headerA11y = "from 8:06 to 8:06",
             title = "15 steps",
             titleA11y = "15 steps",
-            dataType = DataType.STEPS,
+            dataType = StepsRecord::class,
         ),
     )
 
@@ -438,7 +491,7 @@ private val FORMATTED_SLEEP_LIST =
             headerA11y = "from 7:06 to 7:06",
             title = "7 hours",
             titleA11y = "7 hours",
-            dataType = DataType.SLEEP,
+            dataType = SleepSessionRecord::class,
             notes = "",
         )
     )
@@ -450,7 +503,7 @@ private val FORMATTED_HEART_RATE_LIST =
             headerA11y = "from 7:06 to 7:06",
             title = "128 - 140 bpm",
             titleA11y = "128 - 140 bpm",
-            dataType = DataType.HEART_RATE,
+            dataType = HeartRateRecord::class,
         )
     )
 private val FORMATTED_PLANNED_EXERCISE_LIST =
@@ -461,7 +514,7 @@ private val FORMATTED_PLANNED_EXERCISE_LIST =
             headerA11y = "from 7:06 to 7:06",
             title = "Workout",
             titleA11y = "Workout",
-            dataType = DataType.PLANNED_EXERCISE,
+            dataType = PlannedExerciseSessionRecord::class,
             notes = "",
         )
     )
@@ -473,7 +526,7 @@ private val FORMATTED_EXERCISE_SESSION_LIST =
             headerA11y = "from 7:06 to 7:06",
             title = "Biking",
             titleA11y = "Biking",
-            dataType = DataType.EXERCISE,
+            dataType = ExerciseSessionRecord::class,
             notes = "",
         )
     )
@@ -516,7 +569,7 @@ private val FORMATTED_STEPS_LIST_WITH_AGGREGATION =
             headerA11y = "from 7:06 to 7:06",
             title = "12 steps",
             titleA11y = "12 steps",
-            dataType = DataType.STEPS,
+            dataType = StepsRecord::class,
         ),
         FormattedDataEntry(
             uuid = "test_id_2",
@@ -524,6 +577,6 @@ private val FORMATTED_STEPS_LIST_WITH_AGGREGATION =
             headerA11y = "from 8:06 to 8:06",
             title = "15 steps",
             titleA11y = "15 steps",
-            dataType = DataType.STEPS,
+            dataType = StepsRecord::class,
         ),
     )

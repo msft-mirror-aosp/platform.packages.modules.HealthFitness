@@ -54,7 +54,6 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.logging.DataRestoreElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -80,6 +79,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class SettingsMedicalAppFragmentTest {
@@ -158,7 +158,7 @@ class SettingsMedicalAppFragmentTest {
     @Test
     fun fragment_starts() {
         val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATION)
+        val readPermission = MedicalPermission(MedicalPermissionType.VACCINES)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -177,7 +177,29 @@ class SettingsMedicalAppFragmentTest {
         onView(withText("Allow all")).check(matches(isDisplayed()))
         onView(withText("Allowed to read")).check(matches(isDisplayed()))
         onView(withText("Allowed to write")).check(matches(isDisplayed()))
-        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.MANAGE_PERMISSIONS_PAGE)
+    }
+
+    @Test
+    fun fragmentStarts_logPageImpression() {
+        val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
+        val readPermission = MedicalPermission(MedicalPermissionType.VACCINES)
+        whenever(viewModel.medicalPermissions).then {
+            MutableLiveData(listOf(writePermission, readPermission))
+        }
+        whenever(viewModel.grantedMedicalPermissions).then {
+            MutableLiveData(setOf(writePermission))
+        }
+
+        val scenario =
+            launchFragment<SettingsMedicalAppFragment>(
+                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+            )
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+
+        verify(healthConnectLogger, atLeast(1))
+            .setPageId(PageName.SETTINGS_MANAGE_MEDICAL_APP_PERMISSIONS_PAGE)
         verify(healthConnectLogger).logPageImpression()
         verify(healthConnectLogger).logImpression(PermissionsElement.ALLOW_ALL_SWITCH)
         verify(healthConnectLogger, times(2)).logImpression(PermissionsElement.PERMISSION_SWITCH)
@@ -185,7 +207,7 @@ class SettingsMedicalAppFragmentTest {
 
     @Test
     fun doesNotShowWriteHeader_whenNoWritePermissions() {
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATION)
+        val readPermission = MedicalPermission(MedicalPermissionType.VACCINES)
         whenever(viewModel.medicalPermissions).then { MutableLiveData(listOf(readPermission)) }
         whenever(viewModel.grantedMedicalPermissions).then {
             MutableLiveData(setOf(readPermission))
@@ -227,7 +249,7 @@ class SettingsMedicalAppFragmentTest {
 
     @Test
     fun unsupportedPackage_grantedPermissionsNotLoaded_onOrientationChange() {
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATION)
+        val readPermission = MedicalPermission(MedicalPermissionType.VACCINES)
         val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
 
         whenever(viewModel.medicalPermissions).then {
@@ -247,10 +269,10 @@ class SettingsMedicalAppFragmentTest {
         }
 
         onView(withText("Allow all")).check(matches(isDisplayed()))
-        onView(withText("Immunization")).check(matches(isDisplayed()))
+        onView(withText("Vaccines")).check(matches(isDisplayed()))
         onView(withText("All health records")).check(matches(isDisplayed()))
-        onView(withText("Immunization")).perform(click())
-        onView(withText("Immunization")).check(matches(not(isChecked())))
+        onView(withText("Vaccines")).perform(click())
+        onView(withText("Vaccines")).check(matches(not(isChecked())))
 
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
@@ -259,12 +281,12 @@ class SettingsMedicalAppFragmentTest {
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(RecyclerViewActions.scrollToLastPosition<RecyclerView.ViewHolder>())
         onIdle()
-        onView(withText("Immunization")).perform(scrollTo()).check(matches(not(isChecked())))
+        onView(withText("Vaccines")).perform(scrollTo()).check(matches(not(isChecked())))
     }
 
     @Test
     fun unsupportedPackage_doesNotShowFooter() {
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATION)
+        val readPermission = MedicalPermission(MedicalPermissionType.VACCINES)
         val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
 
         whenever(viewModel.medicalPermissions).then {
@@ -285,7 +307,11 @@ class SettingsMedicalAppFragmentTest {
 
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(RecyclerViewActions.scrollToLastPosition<RecyclerView.ViewHolder>())
-        onView(withText("Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+        onView(
+                withText(
+                    "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
+                )
+            )
             .check(doesNotExist())
         onView(withText("Read privacy policy")).check(doesNotExist())
     }
@@ -293,7 +319,7 @@ class SettingsMedicalAppFragmentTest {
     @Test
     fun supportedPackage_whenNoHistoryRead_showsFooterWithGrantTime() {
         val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATION)
+        val readPermission = MedicalPermission(MedicalPermissionType.VACCINES)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -310,7 +336,11 @@ class SettingsMedicalAppFragmentTest {
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
 
-        onView(withText("Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+        onView(
+                withText(
+                    "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
+                )
+            )
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Read privacy policy")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -319,7 +349,7 @@ class SettingsMedicalAppFragmentTest {
     @Test
     fun supportedPackage_whenHistoryRead_showsFooterWithoutGrantTime() {
         val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATION)
+        val readPermission = MedicalPermission(MedicalPermissionType.VACCINES)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -336,7 +366,11 @@ class SettingsMedicalAppFragmentTest {
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
 
-        onView(withText("Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+        onView(
+                withText(
+                    "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
+                )
+            )
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Read privacy policy")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -440,7 +474,7 @@ class SettingsMedicalAppFragmentTest {
             )
         }
         val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATION)
+        val readPermission = MedicalPermission(MedicalPermissionType.VACCINES)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -497,7 +531,7 @@ class SettingsMedicalAppFragmentTest {
             )
         }
         val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATION)
+        val readPermission = MedicalPermission(MedicalPermissionType.VACCINES)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -554,7 +588,7 @@ class SettingsMedicalAppFragmentTest {
             )
         }
         val writePermission = MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
-        val readPermission = MedicalPermission(MedicalPermissionType.IMMUNIZATION)
+        val readPermission = MedicalPermission(MedicalPermissionType.VACCINES)
         whenever(viewModel.medicalPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }

@@ -27,25 +27,23 @@ import androidx.preference.PreferenceViewHolder
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.connectedapps.ComparablePreference
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
-import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.utils.logging.ElementName
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 
 /** Custom preference for displaying checkboxes where the user can delete their data */
-class DeletionPermissionTypesPreference(context: Context) :
-    Preference(context), ComparablePreference {
-    private var checkboxButtonListener: OnClickListener? = null
-
+class DeletionPermissionTypesPreference(
+    context: Context,
+    private val viewModel: DeletionDataViewModel,
+    private val onPreferenceClickListener: OnPreferenceClickListener,
+) : Preference(context), ComparablePreference {
     private var logger: HealthConnectLogger
 
-    private var isShowCheckbox: Boolean = false
-    private var widgetFrame: ViewGroup? = null
-    private var checkBox: CheckBox? = null
+    private var showCheckbox: Boolean = false
     private var isChecked: Boolean = false
-    private lateinit var mHealthPermissionType: HealthPermissionType
 
+    private lateinit var mHealthPermissionType: HealthPermissionType
     private lateinit var logNameNoCheckbox: ElementName
     private lateinit var logNameCheckbox: ElementName
 
@@ -63,18 +61,20 @@ class DeletionPermissionTypesPreference(context: Context) :
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
-        widgetFrame = holder.findViewById(android.R.id.widget_frame) as ViewGroup?
-        showCheckbox(isShowCheckbox)
+        val widgetFrame = holder.findViewById(android.R.id.widget_frame) as ViewGroup
+        widgetFrame.contentDescription = getUpdatedContentDescription(isChecked)
 
-        checkBox = holder.findViewById(R.id.checkbox_button) as CheckBox
+        val checkBox = holder.findViewById(R.id.checkbox_button) as CheckBox
+        showOrHideCheckbox(showCheckbox, widgetFrame)
 
-        checkBox?.isChecked = this.isChecked
+        checkBox.isChecked = this.isChecked
 
-        checkBox?.contentDescription = context.getString(mHealthPermissionType.upperCaseLabel())
+        checkBox.contentDescription = context.getString(mHealthPermissionType.upperCaseLabel())
 
-        checkBox?.setOnClickListener(checkboxButtonListener)
+        checkBox.setOnClickListener(getCheckboxClickListenerWrapper(widgetFrame))
+        setOnPreferenceClickListener(checkBox, widgetFrame)
 
-        val widgetFrameParent: ViewGroup? = widgetFrame?.parent as ViewGroup?
+        val widgetFrameParent: ViewGroup? = widgetFrame.parent as ViewGroup?
         widgetFrameParent?.setPaddingRelative(
             widgetFrameParent.paddingStart,
             widgetFrameParent.paddingTop,
@@ -83,32 +83,40 @@ class DeletionPermissionTypesPreference(context: Context) :
         )
     }
 
+    private fun getCheckboxClickListenerWrapper(widgetFrame: ViewGroup) = OnClickListener {
+        isChecked = !isChecked
+        widgetFrame.contentDescription = getUpdatedContentDescription(isChecked)
+        onDeletionMethod()
+        logger.logInteraction(logNameCheckbox)
+    }
+
+    private fun onDeletionMethod() {
+        if (mHealthPermissionType !in viewModel.setOfPermissionTypesToBeDeleted.value.orEmpty()) {
+            viewModel.addToDeletionSet(mHealthPermissionType)
+        } else {
+            viewModel.removeFromDeletionSet(mHealthPermissionType)
+        }
+    }
+
     /** Set a click listener to check the checkbox */
-    fun setOnPreferenceClickListener(
-        method: () -> Unit,
-        onPreferenceClickListener: OnPreferenceClickListener,
-    ) {
-        val clickListener = OnPreferenceClickListener {
-            if (isShowCheckbox) {
-                checkBox?.toggle()
-                // Set local variable to current value of whether checkBox is checked
-                isChecked = checkBox?.isChecked ?: false
-                method()
+    private fun setOnPreferenceClickListener(checkBox: CheckBox, widgetFrame: ViewGroup) {
+        val clickListenerWrapper = OnPreferenceClickListener {
+            if (showCheckbox) {
+                // If we are in deletion mode, clicking on the preference should check the checkbox
+                checkBox.toggle()
+                isChecked = checkBox.isChecked
+                widgetFrame.contentDescription = getUpdatedContentDescription(isChecked)
+                onDeletionMethod()
                 logger.logInteraction(logNameCheckbox)
             } else {
+                // Otherwise, invoke the normal click listener
                 onPreferenceClickListener.onPreferenceClick(it)
                 logger.logInteraction(logNameNoCheckbox)
             }
             true
         }
 
-        checkboxButtonListener = OnClickListener {
-            isChecked = !isChecked
-            method()
-            logger.logInteraction(logNameCheckbox)
-        }
-
-        super.setOnPreferenceClickListener(clickListener)
+        super.setOnPreferenceClickListener(clickListenerWrapper)
     }
 
     fun setHealthPermissionType(healthPermissionType: HealthPermissionType) {
@@ -119,30 +127,18 @@ class DeletionPermissionTypesPreference(context: Context) :
         return mHealthPermissionType
     }
 
-    /** Display or hide checkbox */
-    fun showCheckbox(isShowCheckbox: Boolean) {
-        setShowCheckbox(isShowCheckbox)
-        widgetFrame?.visibility = if (isShowCheckbox) VISIBLE else GONE
-        widgetFrame?.tag = if (isShowCheckbox) "checkbox" else ""
-
-        if (isShowCheckbox) {
-            logger.logImpression(logNameCheckbox)
-        } else {
-            logger.logImpression(logNameNoCheckbox)
-        }
-    }
-
     fun setIsChecked(isChecked: Boolean) {
         this.isChecked = isChecked
-        checkBox?.isChecked = isChecked
+        notifyChanged()
     }
 
     fun getIsChecked(): Boolean {
         return isChecked
     }
 
-    fun setShowCheckbox(isShowCheckbox: Boolean) {
-        this.isShowCheckbox = isShowCheckbox
+    fun setShowCheckbox(showCheckbox: Boolean) {
+        this.showCheckbox = showCheckbox
+        notifyChanged()
     }
 
     fun setLogNameNoCheckbox(logName: ElementName) {
@@ -153,12 +149,31 @@ class DeletionPermissionTypesPreference(context: Context) :
         logNameCheckbox = logName
     }
 
+    private fun showOrHideCheckbox(showCheckbox: Boolean, widgetFrame: ViewGroup) {
+        widgetFrame.visibility = if (showCheckbox) VISIBLE else GONE
+        widgetFrame.tag = if (showCheckbox) "checkbox" else ""
+
+        if (showCheckbox) {
+            logger.logImpression(logNameCheckbox)
+        } else {
+            logger.logImpression(logNameNoCheckbox)
+        }
+    }
+
+    private fun getUpdatedContentDescription(isChecked: Boolean): String {
+        return if (isChecked) {
+            context.getString(R.string.a11y_checked)
+        } else {
+            context.getString(R.string.a11y_unchecked)
+        }
+    }
+
     override fun hasSameContents(preference: Preference): Boolean {
-        return preference is HealthPreference &&
+        return preference is DeletionPermissionTypesPreference &&
             this.title == preference.title &&
             this.summary == preference.summary &&
             this.icon == preference.icon &&
-            this.isEnabled == preference.isEnabled
+            this.isChecked == preference.isChecked
     }
 
     override fun isSameItem(preference: Preference): Boolean {

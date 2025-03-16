@@ -22,6 +22,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.categories.HealthDataCategoriesFragment.Companion.CATEGORY_KEY
@@ -36,9 +37,9 @@ import com.android.healthconnect.controller.shared.HealthDataCategoryInt
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.app.AppUtils
 import com.android.healthconnect.controller.shared.preference.CardContainerPreference
-import com.android.healthconnect.controller.shared.preference.HeaderPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
+import com.android.healthconnect.controller.shared.preference.topIntroPreference
 import com.android.healthconnect.controller.utils.AttributeResolver
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsImpl
 import com.android.healthconnect.controller.utils.TimeSource
@@ -240,7 +241,7 @@ class DataSourcesFragment :
     /** Updates the priority list preference. */
     private fun updateAppSourcesSection(
         priorityList: List<AppMetadata>,
-        potentialAppSources: List<AppMetadata>
+        potentialAppSources: List<AppMetadata>,
     ) {
         removeEmptyState()
         appSourcesPreferenceGroup?.isVisible = true
@@ -253,11 +254,13 @@ class DataSourcesFragment :
                     appUtils,
                     dataSourcesViewModel,
                     currentCategorySelection,
-                    this)
+                    this,
+                )
                 .also {
                     it.key = APP_SOURCES_PREFERENCE_KEY
                     it.setEditMode(isEditMode)
-                })
+                }
+        )
 
         updateAddApp(potentialAppSources.isNotEmpty() && !isEditMode)
         nonEmptyFooterPreference?.isVisible = true
@@ -288,10 +291,12 @@ class DataSourcesFragment :
                     findNavController()
                         .navigate(
                             R.id.action_dataSourcesFragment_to_addAnAppFragment,
-                            bundleOf(CATEGORY_KEY to currentCategorySelection))
+                            bundleOf(CATEGORY_KEY to currentCategorySelection),
+                        )
                     true
                 }
-            })
+            }
+        )
     }
 
     /** Populates the data totals section with aggregation cards if needed. */
@@ -312,7 +317,8 @@ class DataSourcesFragment :
                     it.key = DATA_TOTALS_PREFERENCE_KEY
                 }
             dataTotalsPreferenceGroup?.addPreference(
-                (cardContainerPreference as CardContainerPreference))
+                (cardContainerPreference as CardContainerPreference)
+            )
         }
     }
 
@@ -360,11 +366,12 @@ class DataSourcesFragment :
         nonEmptyFooterPreference?.isVisible = false
     }
 
-    private fun getEmptyStateHeaderPreference(): HeaderPreference {
-        return HeaderPreference(requireContext()).also {
-            it.setHeaderText(getString(R.string.data_sources_empty_state))
-            it.key = EMPTY_STATE_HEADER_PREFERENCE_KEY
-        }
+    private fun getEmptyStateHeaderPreference(): Preference {
+        return topIntroPreference(
+            context = requireContext(),
+            preferenceTitle = getString(R.string.data_sources_empty_state),
+            preferenceKey = EMPTY_STATE_HEADER_PREFERENCE_KEY,
+        )
     }
 
     private fun getEmptyStateFooterPreference(): FooterPreference {
@@ -372,7 +379,8 @@ class DataSourcesFragment :
             it.title =
                 getString(
                     R.string.data_sources_empty_state_footer,
-                    getString(currentCategorySelection.lowercaseTitle()))
+                    getString(currentCategorySelection.lowercaseTitle()),
+                )
             it.setLearnMoreText(getString(R.string.data_sources_help_link))
             it.setLearnMoreAction { DeviceInfoUtilsImpl().openHCGetStartedLink(requireActivity()) }
             it.key = EMPTY_STATE_FOOTER_PREFERENCE_KEY
@@ -382,9 +390,8 @@ class DataSourcesFragment :
     private fun setupSpinnerPreference() {
         spinnerPreference = SettingsSpinnerPreference(context)
         spinnerPreference.setAdapter(
-            SettingsSpinnerAdapter<String>(context).also {
-                it.addAll(dataSourcesCategoriesStrings)
-            })
+            SettingsSpinnerAdapter<String>(context).also { it.addAll(dataSourcesCategoriesStrings) }
+        )
 
         spinnerPreference.setOnItemSelectedListener(
             object : AdapterView.OnItemSelectedListener {
@@ -392,7 +399,7 @@ class DataSourcesFragment :
                     parent: AdapterView<*>?,
                     view: View?,
                     position: Int,
-                    id: Long
+                    id: Long,
                 ) {
                     logger.logInteraction(DataSourcesElement.DATA_TYPE_SPINNER)
 
@@ -406,10 +413,12 @@ class DataSourcesFragment :
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {}
-            })
+            }
+        )
 
         spinnerPreference.setSelection(
-            dataSourcesCategories.indexOf(dataSourcesViewModel.getCurrentSelection()))
+            dataSourcesCategories.indexOf(dataSourcesViewModel.getCurrentSelection())
+        )
 
         dataTypeSpinnerPreferenceGroup?.isVisible = true
         dataTypeSpinnerPreferenceGroup?.addPreference(spinnerPreference)

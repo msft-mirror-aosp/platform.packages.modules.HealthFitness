@@ -16,9 +16,20 @@
 package com.android.healthconnect.controller.tests.data.entries
 
 import android.content.Context
+import android.content.Intent.EXTRA_PACKAGE_NAME
+import android.health.connect.datatypes.ExerciseSessionRecord
+import android.health.connect.datatypes.HeartRateRecord
+import android.health.connect.datatypes.PlannedExerciseSessionRecord
+import android.health.connect.datatypes.SleepSessionRecord
+import android.health.connect.datatypes.StepsRecord
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.Navigation
+import androidx.navigation.testing.TestNavHostController
+import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -32,25 +43,40 @@ import com.android.healthconnect.controller.data.entries.EntriesViewModel.Entrie
 import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesFragmentState.Loading
 import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesFragmentState.LoadingFailed
 import com.android.healthconnect.controller.data.entries.EntriesViewModel.EntriesFragmentState.With
+import com.android.healthconnect.controller.data.entries.FormattedEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedAggregation
 import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedDataEntry
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.EXERCISE
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.HEART_RATE
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.PLANNED_EXERCISE
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.SLEEP
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType.STEPS
-import com.android.healthconnect.controller.shared.DataType
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
+import com.android.healthconnect.controller.shared.Constants
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
+import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_RESOURCE_IMMUNIZATION
+import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_RESOURCE_IMMUNIZATION_2
+import com.android.healthconnect.controller.tests.utils.TEST_MEDICAL_RESOURCE_IMMUNIZATION_3
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
+import com.android.healthconnect.controller.tests.utils.withIndex
+import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class AppEntriesFragmentTest {
@@ -60,6 +86,7 @@ class AppEntriesFragmentTest {
     @BindValue val viewModel: EntriesViewModel = Mockito.mock(EntriesViewModel::class.java)
 
     private lateinit var context: Context
+    private lateinit var navHostController: TestNavHostController
 
     @Before
     fun setup() {
@@ -67,11 +94,11 @@ class AppEntriesFragmentTest {
         context = InstrumentationRegistry.getInstrumentation().context
         context.setLocale(Locale.UK)
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
+        navHostController = TestNavHostController(context)
 
-        Mockito.`when`(viewModel.currentSelectedDate).thenReturn(MutableLiveData())
-        Mockito.`when`(viewModel.period)
-            .thenReturn(MutableLiveData(DateNavigationPeriod.PERIOD_DAY))
-        Mockito.`when`(viewModel.appInfo)
+        whenever(viewModel.currentSelectedDate).thenReturn(MutableLiveData())
+        whenever(viewModel.period).thenReturn(MutableLiveData(DateNavigationPeriod.PERIOD_DAY))
+        whenever(viewModel.appInfo)
             .thenReturn(
                 MutableLiveData(
                     AppMetadata(
@@ -81,55 +108,443 @@ class AppEntriesFragmentTest {
                     )
                 )
             )
-        Mockito.`when`(viewModel.mapOfEntriesToBeDeleted).thenReturn(MutableLiveData())
+        whenever(viewModel.mapOfEntriesToBeDeleted).thenReturn(MutableLiveData())
+        whenever(viewModel.screenState)
+            .thenReturn(MutableLiveData(EntriesViewModel.EntriesDeletionScreenState.VIEW))
+        whenever(viewModel.mapOfEntriesToBeDeleted).thenReturn(MutableLiveData())
+        whenever(viewModel.allEntriesSelected).thenReturn(MutableLiveData(false))
     }
 
     @Test
-    fun appEntriesInit_showsDateNavigationPreference() {
-        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(emptyList())))
+    fun showsDateNavigationPreference() {
+        whenever(viewModel.entries).thenReturn(MutableLiveData(With(emptyList())))
 
-        launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+        launchFragment<AppEntriesFragment>(
+            bundleOf(
+                PERMISSION_TYPE_NAME_KEY to STEPS.name,
+                EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+            )
+        )
 
         onView(withId(R.id.date_picker_spinner)).check(matches(isDisplayed()))
     }
 
     @Test
-    fun appEntriesInit_noData_showsNoData() {
-        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(Empty))
+    fun whenNoData_showsNoData() {
+        whenever(viewModel.entries).thenReturn(MutableLiveData(Empty))
 
-        launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+        launchFragment<AppEntriesFragment>(
+            bundleOf(
+                PERMISSION_TYPE_NAME_KEY to STEPS.name,
+                EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+            )
+        )
 
         onView(withId(R.id.no_data_view)).check(matches(isDisplayed()))
     }
 
     @Test
-    fun appEntriesInit_error_showsNoData() {
-        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(LoadingFailed))
+    fun whenError_showsErrorView() {
+        whenever(viewModel.entries).thenReturn(MutableLiveData(LoadingFailed))
 
-        launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+        launchFragment<AppEntriesFragment>(
+            bundleOf(
+                PERMISSION_TYPE_NAME_KEY to STEPS.name,
+                EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+            )
+        )
 
         onView(withId(R.id.error_view)).check(matches(isDisplayed()))
     }
 
     @Test
-    fun appEntriesInit_loading_showsLoading() {
-        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(Loading))
+    fun whenLoading_showsLoading() {
+        whenever(viewModel.entries).thenReturn(MutableLiveData(Loading))
 
-        launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+        launchFragment<AppEntriesFragment>(
+            bundleOf(
+                PERMISSION_TYPE_NAME_KEY to STEPS.name,
+                EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+            )
+        )
 
         onView(withId(R.id.loading)).check(matches(isDisplayed()))
     }
 
     @Test
-    fun appEntriesInit_withData_showsListOfEntries() {
-        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
+    fun withSleepData_showsListOfEntries() {
+        whenever(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_SLEEP_LIST)))
+        whenever(viewModel.getEntriesList()).thenReturn(FORMATTED_SLEEP_LIST.toMutableList())
 
-        launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_NAME_KEY to STEPS.name))
+        launchFragment<AppEntriesFragment>(
+            bundleOf(
+                PERMISSION_TYPE_NAME_KEY to SLEEP.name,
+                EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+            )
+        )
+
+        onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
+        onView(withText("7 hours")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun withHeartRateData_showsListOfEntries() {
+        whenever(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_HEART_RATE_LIST)))
+        whenever(viewModel.getEntriesList()).thenReturn(FORMATTED_HEART_RATE_LIST.toMutableList())
+
+        launchFragment<AppEntriesFragment>(
+            bundleOf(
+                PERMISSION_TYPE_NAME_KEY to HEART_RATE.name,
+                EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+            )
+        )
+
+        onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
+        onView(withText("128 - 140 bpm")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun withExerciseData_showsListOfEntries() {
+        whenever(viewModel.entries)
+            .thenReturn(MutableLiveData(With(FORMATTED_EXERCISE_SESSION_LIST)))
+        whenever(viewModel.getEntriesList())
+            .thenReturn(FORMATTED_EXERCISE_SESSION_LIST.toMutableList())
+
+        launchFragment<AppEntriesFragment>(
+            bundleOf(
+                PERMISSION_TYPE_NAME_KEY to EXERCISE.name,
+                EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+            )
+        )
+
+        onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
+        onView(withText("Biking")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun withPlannedExerciseData_showsListOfEntries() {
+        whenever(viewModel.entries)
+            .thenReturn(MutableLiveData(With(FORMATTED_PLANNED_EXERCISE_LIST)))
+        whenever(viewModel.getEntriesList())
+            .thenReturn(FORMATTED_PLANNED_EXERCISE_LIST.toMutableList())
+
+        launchFragment<AppEntriesFragment>(
+            bundleOf(
+                PERMISSION_TYPE_NAME_KEY to PLANNED_EXERCISE.name,
+                EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+            )
+        )
+
+        onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
+        onView(withText("Workout")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun withStepsData_showsListOfEntries() {
+        whenever(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
+        whenever(viewModel.getEntriesList())
+            .thenReturn(FORMATTED_PLANNED_EXERCISE_LIST.toMutableList())
+
+        launchFragment<AppEntriesFragment>(
+            bundleOf(
+                PERMISSION_TYPE_NAME_KEY to STEPS.name,
+                EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+            )
+        )
 
         onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
         onView(withText("12 steps")).check(matches(isDisplayed()))
         onView(withText("8:06 - 8:06")).check(matches(isDisplayed()))
         onView(withText("15 steps")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun withMedicalData_showsListOfEntries() {
+        whenever(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_IMMUNIZATION_LIST)))
+        whenever(viewModel.getEntriesList()).thenReturn(FORMATTED_IMMUNIZATION_LIST.toMutableList())
+
+        launchFragment<AppEntriesFragment>(
+            bundleOf(
+                PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.VACCINES.name,
+                EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+            )
+        )
+
+        onView(withText("Covid vaccine 1")).check(matches(isDisplayed()))
+        onView(withText("Covid vaccine 2")).check(matches(isDisplayed()))
+        onView(withText("Covid vaccine 3")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun showsData_onOrientationChange() {
+        whenever(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
+        whenever(viewModel.getEntriesList()).thenReturn(FORMATTED_STEPS_LIST.toMutableList())
+
+        val scenario =
+            launchFragment<AppEntriesFragment>(
+                bundleOf(
+                    PERMISSION_TYPE_NAME_KEY to STEPS.name,
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
+
+        onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
+        onView(withText("12 steps")).check(matches(isDisplayed()))
+        onView(withText("8:06 - 8:06")).check(matches(isDisplayed()))
+        onView(withText("15 steps")).check(matches(isDisplayed()))
+
+        scenario.recreate()
+
+        onIdle()
+        onView(withText("7:06 - 7:06")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("12 steps")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("8:06 - 8:06")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("15 steps")).perform(scrollTo()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun inDeletion_showsCheckboxes() {
+        whenever(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
+        whenever(viewModel.getEntriesList()).thenReturn(FORMATTED_STEPS_LIST.toMutableList())
+
+        val scenario =
+            launchFragment<AppEntriesFragment>(
+                bundleOf(
+                    PERMISSION_TYPE_NAME_KEY to STEPS.name,
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.findFragmentByTag("")
+            (fragment as AppEntriesFragment).triggerDeletionState(
+                EntriesViewModel.EntriesDeletionScreenState.DELETE
+            )
+        }
+
+        onView(withIndex(withId(R.id.item_checkbox_button), 1)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun inDeletion_checkboxesRemainOnOrientationChange() = runTest {
+        whenever(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
+        whenever(viewModel.screenState)
+            .thenReturn(MutableLiveData(EntriesViewModel.EntriesDeletionScreenState.DELETE))
+        whenever(viewModel.getEntriesList()).thenReturn(FORMATTED_STEPS_LIST.toMutableList())
+
+        val scenario =
+            launchFragment<AppEntriesFragment>(
+                bundleOf(
+                    PERMISSION_TYPE_NAME_KEY to STEPS.name,
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.findFragmentByTag("")
+            (fragment as AppEntriesFragment).triggerDeletionState(
+                EntriesViewModel.EntriesDeletionScreenState.DELETE
+            )
+        }
+
+        onView(withIndex(withId(R.id.item_checkbox_button), 1)).check(matches(isDisplayed()))
+
+        scenario.recreate()
+
+        onIdle()
+        onView(withIndex(withId(R.id.item_checkbox_button), 0)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun inDeletion_checkedItemsAddedToDeleteSet() {
+        whenever(viewModel.entries)
+            .thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST_WITH_AGGREGATION)))
+        whenever(viewModel.getEntriesList())
+            .thenReturn(FORMATTED_STEPS_LIST_WITH_AGGREGATION.toMutableList())
+
+        val scenario =
+            launchFragment<AppEntriesFragment>(
+                bundleOf(
+                    PERMISSION_TYPE_NAME_KEY to STEPS.name,
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.findFragmentByTag("")
+            (fragment as AppEntriesFragment).triggerDeletionState(
+                EntriesViewModel.EntriesDeletionScreenState.DELETE
+            )
+        }
+
+        onView(withText("12 steps")).perform(click())
+        onIdle()
+        verify(viewModel).addToDeleteMap("test_id", StepsRecord::class)
+    }
+
+    @Test
+    fun triggerDeletion_displaysSelectAll() {
+        whenever(viewModel.entries)
+            .thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST_WITH_AGGREGATION)))
+        whenever(viewModel.getEntriesList())
+            .thenReturn(FORMATTED_STEPS_LIST_WITH_AGGREGATION.toMutableList())
+
+        val scenario =
+            launchFragment<AppEntriesFragment>(
+                bundleOf(
+                    PERMISSION_TYPE_NAME_KEY to STEPS.name,
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.findFragmentByTag("")
+            (fragment as AppEntriesFragment).triggerDeletionState(
+                EntriesViewModel.EntriesDeletionScreenState.DELETE
+            )
+        }
+
+        onIdle()
+        onView(withIndex(withText("Select all"), 0)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun inDeletion_selectAllChecked_allEntriesChecked() {
+        whenever(viewModel.entries)
+            .thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST_WITH_AGGREGATION)))
+        whenever(viewModel.getEntriesList())
+            .thenReturn(FORMATTED_STEPS_LIST_WITH_AGGREGATION.toMutableList())
+
+        val scenario =
+            launchFragment<AppEntriesFragment>(
+                bundleOf(
+                    PERMISSION_TYPE_NAME_KEY to STEPS.name,
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.findFragmentByTag("")
+            (fragment as AppEntriesFragment).triggerDeletionState(
+                EntriesViewModel.EntriesDeletionScreenState.DELETE
+            )
+        }
+
+        onView(withText("Select all")).perform(click())
+        onIdle()
+        verify(viewModel).addToDeleteMap("test_id", StepsRecord::class)
+        verify(viewModel).addToDeleteMap("test_id_2", StepsRecord::class)
+    }
+
+    @Test
+    fun inDeletion_selectAllUnchecked_allEntriesUnchecked() {
+        whenever(viewModel.entries)
+            .thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST_WITH_AGGREGATION)))
+        whenever(viewModel.getEntriesList())
+            .thenReturn(FORMATTED_STEPS_LIST_WITH_AGGREGATION.toMutableList())
+        whenever(viewModel.mapOfEntriesToBeDeleted)
+            .thenReturn(
+                MutableLiveData(
+                    mapOf("test_id" to StepsRecord::class, "test_id_2" to StepsRecord::class)
+                )
+            )
+        whenever(viewModel.allEntriesSelected).thenReturn(MutableLiveData(true))
+
+        val scenario =
+            launchFragment<AppEntriesFragment>(
+                bundleOf(
+                    PERMISSION_TYPE_NAME_KEY to STEPS.name,
+                    EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                    Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+                )
+            )
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.findFragmentByTag("")
+            (fragment as AppEntriesFragment).triggerDeletionState(
+                EntriesViewModel.EntriesDeletionScreenState.DELETE
+            )
+        }
+
+        onView(withText("Select all")).perform(click())
+        onIdle()
+        verify(viewModel).removeFromDeleteMap("test_id")
+        verify(viewModel).removeFromDeleteMap("test_id_2")
+    }
+
+    @Test
+    fun clickOnFitnessPermission_notClickable() {
+        whenever(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
+        whenever(viewModel.getEntriesList())
+            .thenReturn(FORMATTED_PLANNED_EXERCISE_LIST.toMutableList())
+
+        launchFragment<AppEntriesFragment>(
+            bundleOf(
+                PERMISSION_TYPE_NAME_KEY to STEPS.name,
+                EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+            )
+        ) {
+            navHostController.setGraph(R.navigation.app_data_nav_graph)
+            navHostController.setCurrentDestination(R.id.appEntriesFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+        onView(withText("12 steps")).perform(click())
+
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.appEntriesFragment)
+    }
+
+    @Test
+    fun clickOnFitnessPermission_navigateToEntryDetailsFragment() {
+        whenever(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_SLEEP_LIST)))
+        whenever(viewModel.getEntriesList()).thenReturn(FORMATTED_SLEEP_LIST.toMutableList())
+
+        launchFragment<AppEntriesFragment>(
+            bundleOf(
+                PERMISSION_TYPE_NAME_KEY to SLEEP.name,
+                EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+            )
+        ) {
+            navHostController.setGraph(R.navigation.app_data_nav_graph)
+            navHostController.setCurrentDestination(R.id.appEntriesFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+        onView(withText("7 hours")).perform(click())
+
+        assertThat(navHostController.currentDestination?.id)
+            .isEqualTo(R.id.dataEntryDetailsFragment)
+    }
+
+    @Test
+    fun clickOnMedicalPermission_navigateToRawFhir() {
+        whenever(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_IMMUNIZATION_LIST)))
+        whenever(viewModel.getEntriesList()).thenReturn(FORMATTED_IMMUNIZATION_LIST.toMutableList())
+
+        launchFragment<AppEntriesFragment>(
+            bundleOf(
+                PERMISSION_TYPE_NAME_KEY to MedicalPermissionType.VACCINES.name,
+                EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                Constants.EXTRA_APP_NAME to TEST_APP_NAME,
+            )
+        ) {
+            navHostController.setGraph(R.navigation.app_data_nav_graph)
+            navHostController.setCurrentDestination(R.id.appEntriesFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+        onView(withText("Covid vaccine 2")).perform(click())
+
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.rawFhirFragment)
     }
 }
 
@@ -141,14 +556,112 @@ private val FORMATTED_STEPS_LIST =
             headerA11y = "from 7:06 to 7:06",
             title = "12 steps",
             titleA11y = "12 steps",
-            dataType = DataType.STEPS,
+            dataType = StepsRecord::class,
         ),
         FormattedDataEntry(
-            uuid = "test_id",
+            uuid = "test_id_2",
             header = "8:06 - 8:06",
             headerA11y = "from 8:06 to 8:06",
             title = "15 steps",
             titleA11y = "15 steps",
-            dataType = DataType.STEPS,
+            dataType = StepsRecord::class,
+        ),
+    )
+
+private val FORMATTED_SLEEP_LIST =
+    listOf(
+        FormattedEntry.SleepSessionEntry(
+            uuid = "test_id",
+            header = "7:06 - 7:06",
+            headerA11y = "from 7:06 to 7:06",
+            title = "7 hours",
+            titleA11y = "7 hours",
+            dataType = SleepSessionRecord::class,
+            notes = "",
+        )
+    )
+private val FORMATTED_HEART_RATE_LIST =
+    listOf(
+        FormattedEntry.SeriesDataEntry(
+            uuid = "test_id",
+            header = "7:06 - 7:06",
+            headerA11y = "from 7:06 to 7:06",
+            title = "128 - 140 bpm",
+            titleA11y = "128 - 140 bpm",
+            dataType = HeartRateRecord::class,
+        )
+    )
+private val FORMATTED_PLANNED_EXERCISE_LIST =
+    listOf(
+        FormattedEntry.PlannedExerciseSessionEntry(
+            uuid = "test_id",
+            header = "7:06 - 7:06",
+            headerA11y = "from 7:06 to 7:06",
+            title = "Workout",
+            titleA11y = "Workout",
+            dataType = PlannedExerciseSessionRecord::class,
+            notes = "",
+        )
+    )
+private val FORMATTED_EXERCISE_SESSION_LIST =
+    listOf(
+        FormattedEntry.ExerciseSessionEntry(
+            uuid = "test_id",
+            header = "7:06 - 7:06",
+            headerA11y = "from 7:06 to 7:06",
+            title = "Biking",
+            titleA11y = "Biking",
+            dataType = ExerciseSessionRecord::class,
+            notes = "",
+        )
+    )
+
+private val FORMATTED_STEPS_LIST_WITH_AGGREGATION =
+    listOf(
+        FormattedAggregation(
+            aggregation = "27",
+            aggregationA11y = "27",
+            contributingApps = TEST_APP_NAME,
+        ),
+        FormattedDataEntry(
+            uuid = "test_id",
+            header = "7:06 - 7:06",
+            headerA11y = "from 7:06 to 7:06",
+            title = "12 steps",
+            titleA11y = "12 steps",
+            dataType = StepsRecord::class,
+        ),
+        FormattedDataEntry(
+            uuid = "test_id_2",
+            header = "8:06 - 8:06",
+            headerA11y = "from 8:06 to 8:06",
+            title = "15 steps",
+            titleA11y = "15 steps",
+            dataType = StepsRecord::class,
+        ),
+    )
+
+private val FORMATTED_IMMUNIZATION_LIST =
+    listOf(
+        FormattedEntry.FormattedMedicalDataEntry(
+            header = "My Hospital",
+            headerA11y = "My Hospital",
+            title = "Covid vaccine 1",
+            titleA11y = "important vaccination",
+            medicalResourceId = TEST_MEDICAL_RESOURCE_IMMUNIZATION.id,
+        ),
+        FormattedEntry.FormattedMedicalDataEntry(
+            header = "My Hospital",
+            headerA11y = "My Hospital",
+            title = "Covid vaccine 2",
+            titleA11y = "important vaccination",
+            medicalResourceId = TEST_MEDICAL_RESOURCE_IMMUNIZATION_2.id,
+        ),
+        FormattedEntry.FormattedMedicalDataEntry(
+            header = "My Hospital 2",
+            headerA11y = "My Hospital 2",
+            title = "Covid vaccine 3",
+            titleA11y = "important vaccination",
+            medicalResourceId = TEST_MEDICAL_RESOURCE_IMMUNIZATION_3.id,
         ),
     )

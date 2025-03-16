@@ -20,6 +20,8 @@ import android.health.connect.aidl.IEmptyResponseCallback;
 import android.health.connect.aidl.IEmptyResponseCallback;
 import android.health.connect.aidl.IGetChangeLogTokenCallback;
 import android.health.connect.aidl.IGetHealthConnectDataStateCallback;
+import android.health.connect.aidl.IGetChangesForBackupResponseCallback;
+import android.health.connect.aidl.IGetSettingsForBackupResponseCallback;
 import android.health.connect.aidl.IGetHealthConnectMigrationUiStateCallback;
 import android.health.connect.aidl.IGetPriorityResponseCallback;
 import android.health.connect.aidl.IInsertRecordsResponseCallback;
@@ -27,6 +29,7 @@ import android.health.connect.aidl.IMedicalDataSourceResponseCallback;
 import android.health.connect.aidl.IMedicalDataSourcesResponseCallback;
 import android.health.connect.aidl.ReadMedicalResourcesRequestParcel;
 import android.health.connect.aidl.IMedicalResourcesResponseCallback;
+import android.health.connect.aidl.IMedicalResourceListParcelResponseCallback;
 import android.health.connect.aidl.IMedicalResourceTypeInfosCallback;
 import android.health.connect.aidl.IMigrationCallback;
 import android.health.connect.aidl.IReadMedicalResourcesResponseCallback;
@@ -36,6 +39,8 @@ import android.health.connect.aidl.ReadRecordsRequestParcel;
 import android.health.connect.aidl.RecordsParcel;
 import android.health.connect.aidl.RecordsParcel;
 import android.health.connect.aidl.UpdatePriorityRequestParcel;
+import android.health.connect.aidl.UpsertMedicalResourceRequestsParcel;
+import android.health.connect.backuprestore.BackupSettings;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.datatypes.MedicalDataSource;
@@ -167,22 +172,19 @@ interface IHealthConnectService {
         in IEmptyResponseCallback callback);
 
     /**
-     * @param packageName Calling package's name
      * @param permissionCategory PermissionCategory corresponding to which priority is requested
      * @param callback Callback to receive result of performing this operation
      */
     void getCurrentPriority(
-        String packageName,
         int permissionCategory,
         in IGetPriorityResponseCallback callback);
 
     /**
      * @param packageName Calling package's name
-     * @param request Delete request using the mentioned filters
+     * @param request Update request with the required priority changes
      * @param callback Callback to receive result of performing this operation
      */
     void updatePriority(
-        String packageName,
         in UpdatePriorityRequestParcel request,
         in IEmptyResponseCallback callback);
 
@@ -397,6 +399,13 @@ interface IHealthConnectService {
     void runImport(in UserHandle userHandle, in Uri file, in IEmptyResponseCallback callback);
 
     /**
+    * Triggers an immediate export of health connect data.
+    *
+    * @hide
+    */
+    void runImmediateExport(in Uri file, in IEmptyResponseCallback callback);
+
+    /**
      * Creates a {@code MedicalDataSource} in HealthConnect based on the {@code request} values.
      *
      * @param attributionSource attribution source for the data.
@@ -460,6 +469,19 @@ interface IHealthConnectService {
         in IMedicalResourcesResponseCallback callback);
 
     /**
+     * Upserts {@link MedicalResource}s in HealthConnect based on a {@link
+     * UpsertMedicalResourceRequestsParcel}.
+     *
+     * @param attributionSource attribution source for the data.
+     * @param requestsParcel Contains the list of upsert requests.
+     * @param callback Callback to receive result of performing this operation.
+     */
+    void upsertMedicalResourcesFromRequestsParcel(
+        in AttributionSource attributionSource,
+        in UpsertMedicalResourceRequestsParcel requestsParcel,
+        in IMedicalResourceListParcelResponseCallback callback);
+
+    /**
      * Reads from the HealthConnect database.
      *
      * @param attributionSource attribution source for the data.
@@ -514,4 +536,13 @@ interface IHealthConnectService {
      * @param callback Callback to receive result of performing this operation.
      */
     void queryAllMedicalResourceTypeInfos(in IMedicalResourceTypeInfosCallback callback);
+
+    /** @hide */
+    void getChangesForBackup(in @nullable String changeToken, in IGetChangesForBackupResponseCallback callback);
+
+    /** @hide */
+    void getSettingsForBackup(in IGetSettingsForBackupResponseCallback callback);
+
+    /** @hide */
+    void pushSettingsForRestore(in BackupSettings backupSettings, in IEmptyResponseCallback callback);
 }

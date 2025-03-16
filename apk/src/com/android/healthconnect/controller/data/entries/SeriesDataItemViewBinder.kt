@@ -24,7 +24,7 @@ import androidx.core.view.isVisible
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry.SeriesDataEntry
 import com.android.healthconnect.controller.shared.recyclerview.DeletionViewBinder
-import com.android.healthconnect.controller.utils.logging.DataEntriesElement
+import com.android.healthconnect.controller.utils.logging.AllEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
 import dagger.hilt.android.EntryPointAccessors
@@ -62,10 +62,7 @@ class SeriesDataItemViewBinder(
         val title = view.findViewById<TextView>(R.id.item_data_entry_title)
         val checkBox = view.findViewById<CheckBox>(R.id.item_checkbox_button)
 
-        logger.logImpression(DataEntriesElement.DATA_ENTRY_VIEW)
-        logger.logImpression(DataEntriesElement.DATA_ENTRY_DELETE_BUTTON)
-        title.text = data.title
-        title.contentDescription = data.titleA11y
+        logger.logImpression(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
         header.text = data.header
         header.contentDescription = data.headerA11y
         divider.isVisible = false
@@ -73,8 +70,15 @@ class SeriesDataItemViewBinder(
             if (isDeletionState) {
                 onSelectEntryListener?.onSelectEntry(data.uuid, data.dataType, index)
                 checkBox.toggle()
+                title.contentDescription =
+                    getUpdatedContentDescription(
+                        title.resources,
+                        data.titleA11y,
+                        isDeletionState,
+                        checkBox.isChecked,
+                    )
             } else {
-                logger.logInteraction(DataEntriesElement.DATA_ENTRY_VIEW)
+                logger.logInteraction(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
                 onItemClickedListener?.onItemClicked(data.uuid, index)
             }
         }
@@ -82,7 +86,23 @@ class SeriesDataItemViewBinder(
         checkBox.isChecked = isChecked
         checkBox.setOnClickListener {
             onSelectEntryListener?.onSelectEntry(data.uuid, data.dataType, index)
+            title.contentDescription =
+                getUpdatedContentDescription(
+                    title.resources,
+                    data.titleA11y,
+                    isDeletionState,
+                    checkBox.isChecked,
+                )
         }
         checkBox.tag = if (isDeletionState) "checkbox" else ""
+
+        title.text = data.title
+        title.contentDescription =
+            getUpdatedContentDescription(
+                title.resources,
+                data.titleA11y,
+                isDeletionState,
+                isChecked,
+            )
     }
 }

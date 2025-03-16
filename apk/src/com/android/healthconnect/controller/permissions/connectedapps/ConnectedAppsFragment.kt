@@ -22,10 +22,14 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
+import android.widget.CheckBox
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commitNow
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -34,12 +38,16 @@ import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.deletion.DeletionConstants
 import com.android.healthconnect.controller.deletion.DeletionConstants.DELETION_TYPE
-import com.android.healthconnect.controller.deletion.DeletionConstants.FRAGMENT_TAG_DELETION
-import com.android.healthconnect.controller.deletion.DeletionFragment
-import com.android.healthconnect.controller.deletion.DeletionType
+import com.android.healthconnect.controller.deletion.DeletionFragment as OldDeletionFragment
+import com.android.healthconnect.controller.deletion.DeletionType as OldDeletionType
+import com.android.healthconnect.controller.deletion.DeletionViewModel as OldDeletionViewModel
 import com.android.healthconnect.controller.permissions.connectedapps.ConnectedAppsViewModel.DisconnectAllState
 import com.android.healthconnect.controller.permissions.shared.HelpAndFeedbackFragment.Companion.APP_INTEGRATION_REQUEST_BUCKET_ID
 import com.android.healthconnect.controller.permissions.shared.HelpAndFeedbackFragment.Companion.FEEDBACK_INTENT_RESULT_CODE
+import com.android.healthconnect.controller.selectabledeletion.DeletionConstants.START_DELETION_KEY
+import com.android.healthconnect.controller.selectabledeletion.DeletionFragment
+import com.android.healthconnect.controller.selectabledeletion.DeletionType.DeleteAppData
+import com.android.healthconnect.controller.selectabledeletion.DeletionViewModel
 import com.android.healthconnect.controller.shared.Constants.APP_UPDATE_NEEDED_BANNER_SEEN
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.Constants.USER_ACTIVITY_TRACKER
@@ -67,7 +75,8 @@ import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.setupMenu
 import com.android.healthconnect.controller.utils.setupSharedMenu
 import com.android.healthconnect.controller.utils.showLoadingDialog
-import com.android.settingslib.widget.AppPreference
+import com.android.healthfitness.flags.Flags.newInformationArchitecture
+import com.android.healthfitness.flags.Flags.personalHealthRecord
 import com.android.settingslib.widget.TopIntroPreference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -85,6 +94,7 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
         private const val THINGS_TO_TRY = "things_to_try_app_permissions_screen"
         private const val SETTINGS_AND_HELP = "settings_and_help"
         private const val BANNER_PREFERENCE_KEY = "banner_preference"
+        private const val FRAGMENT_TAG_DELETION = "FRAGMENT_TAG_DELETION"
     }
 
     init {
@@ -97,8 +107,11 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
     @Inject lateinit var navigationUtils: NavigationUtils
 
     private val viewModel: ConnectedAppsViewModel by viewModels()
+    private val deletionViewModel: DeletionViewModel by activityViewModels()
+    private val oldDeletionViewModel: OldDeletionViewModel by activityViewModels()
     private lateinit var searchMenuItem: MenuItem
     private lateinit var removeAllAppsDialog: AlertDialog
+    private val newDeletionFlow = personalHealthRecord() || newInformationArchitecture()
 
     private val mTopIntro: TopIntroPreference by lazy {
         preferenceScreen.findPreference(TOP_INTRO)!!
@@ -128,41 +141,106 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
         preferenceScreen.findPreference(SETTINGS_AND_HELP)!!
     }
 
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        super.onCreatePreferences(savedInstanceState, rootKey)
-        setPreferencesFromResource(R.xml.connected_apps_screen, rootKey)
-
-        if (childFragmentManager.findFragmentByTag(FRAGMENT_TAG_DELETION) == null) {
-            childFragmentManager.commitNow { add(DeletionFragment(), FRAGMENT_TAG_DELETION) }
+    private fun createRemoveAllAppsAccessDialog(apps: List<ConnectedAppMetadata>) {
+        if (newDeletionFlow) {
+            createNewIADialog(apps)
+        } else {
+            createOldIADialog(apps)
         }
     }
 
-    private fun createRemoveAllAppsAccessDialog(apps: List<ConnectedAppMetadata>) {
+    private fun createOldIADialog(apps: List<ConnectedAppMetadata>) {
         removeAllAppsDialog =
             AlertDialogBuilder(
-                    this, DisconnectAllAppsDialogElement.DISCONNECT_ALL_APPS_DIALOG_CONTAINER)
+                    this,
+                    DisconnectAllAppsDialogElement.DISCONNECT_ALL_APPS_DIALOG_CONTAINER,
+                )
                 .setIcon(R.attr.disconnectAllIcon)
                 .setTitle(R.string.permissions_disconnect_all_dialog_title)
                 .setMessage(R.string.permissions_disconnect_all_dialog_message)
                 .setCancelable(false)
                 .setNeutralButton(
                     android.R.string.cancel,
-                    DisconnectAllAppsDialogElement.DISCONNECT_ALL_APPS_DIALOG_CANCEL_BUTTON) { _, _
-                        ->
-                        viewModel.setAlertDialogStatus(false)
-                    }
+                    DisconnectAllAppsDialogElement.DISCONNECT_ALL_APPS_DIALOG_CANCEL_BUTTON,
+                ) { _, _ ->
+                    viewModel.setAlertDialogStatus(false)
+                }
                 .setPositiveButton(
                     R.string.permissions_disconnect_all_dialog_disconnect,
-                    DisconnectAllAppsDialogElement.DISCONNECT_ALL_APPS_DIALOG_REMOVE_ALL_BUTTON) {
-                        _,
-                        _ ->
-                        if (!viewModel.disconnectAllApps(apps)) {
-                            Toast.makeText(
-                                    requireContext(), R.string.default_error, Toast.LENGTH_SHORT)
-                                .show()
-                        }
+                    DisconnectAllAppsDialogElement.DISCONNECT_ALL_APPS_DIALOG_REMOVE_ALL_BUTTON,
+                ) { _, _ ->
+                    if (!viewModel.disconnectAllApps(apps)) {
+                        Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT)
+                            .show()
                     }
+                }
                 .create()
+    }
+
+    private fun createNewIADialog(apps: List<ConnectedAppMetadata>) {
+        val body = layoutInflater.inflate(R.layout.dialog_message_with_checkbox, null)
+        body.findViewById<TextView>(R.id.dialog_message).apply {
+            text = getString(R.string.permissions_disconnect_all_dialog_message)
+        }
+        body.findViewById<TextView>(R.id.dialog_title).apply {
+            text = getString(R.string.permissions_disconnect_all_dialog_title)
+        }
+
+        val imageIcon = body.findViewById(R.id.dialog_icon) as ImageView
+        imageIcon.setImageDrawable(
+            AttributeResolver.getNullableDrawable(requireContext(), R.attr.disconnectAllIcon)
+        )
+        imageIcon.visibility = View.VISIBLE
+
+        val checkBox =
+            body.findViewById<CheckBox>(R.id.dialog_checkbox).apply {
+                text = getString(R.string.disconnect_all_app_permissions_dialog_checkbox)
+            }
+        checkBox.setOnCheckedChangeListener { _, _ ->
+            // TODO(b/372636258): add logging
+        }
+
+        removeAllAppsDialog =
+            AlertDialogBuilder(
+                    this,
+                    DisconnectAllAppsDialogElement.DISCONNECT_ALL_APPS_DIALOG_CONTAINER,
+                )
+                .setView(body)
+                .setCancelable(false)
+                .setNeutralButton(
+                    android.R.string.cancel,
+                    DisconnectAllAppsDialogElement.DISCONNECT_ALL_APPS_DIALOG_CANCEL_BUTTON,
+                ) { _, _ ->
+                    viewModel.setAlertDialogStatus(false)
+                }
+                .setPositiveButton(
+                    R.string.permissions_disconnect_all_dialog_disconnect,
+                    DisconnectAllAppsDialogElement.DISCONNECT_ALL_APPS_DIALOG_REMOVE_ALL_BUTTON,
+                ) { _, _ ->
+                    if (!viewModel.disconnectAllApps(apps)) {
+                        Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    if (checkBox.isChecked) {
+                        viewModel.deleteAllData()
+                    }
+                }
+                .create()
+    }
+
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        super.onCreatePreferences(savedInstanceState, rootKey)
+        setPreferencesFromResource(R.xml.connected_apps_screen, rootKey)
+
+        if (newDeletionFlow) {
+            if (childFragmentManager.findFragmentByTag(FRAGMENT_TAG_DELETION) == null) {
+                childFragmentManager.commitNow { add(DeletionFragment(), FRAGMENT_TAG_DELETION) }
+            }
+        } else {
+            if (childFragmentManager.findFragmentByTag(FRAGMENT_TAG_DELETION) == null) {
+                childFragmentManager.commitNow { add(OldDeletionFragment(), FRAGMENT_TAG_DELETION) }
+            }
+        }
     }
 
     override fun onResume() {
@@ -174,6 +252,24 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
         super.onViewCreated(view, savedInstanceState)
         observeConnectedApps()
         observeRevokeAllAppsPermissions()
+
+        if (newDeletionFlow) {
+            deletionViewModel.connectedAppsReloadNeeded.observe(viewLifecycleOwner) { isReloadNeeded
+                ->
+                if (isReloadNeeded) {
+                    viewModel.loadConnectedApps()
+                    deletionViewModel.resetPermissionTypesReloadNeeded()
+                }
+            }
+        } else {
+            oldDeletionViewModel.appPermissionReloadNeeded.observe(viewLifecycleOwner) {
+                isReloadNeeded ->
+                if (isReloadNeeded) {
+                    viewModel.loadConnectedApps()
+                    oldDeletionViewModel.resetAppPermissionReloadNeeded()
+                }
+            }
+        }
     }
 
     private fun observeRevokeAllAppsPermissions() {
@@ -228,10 +324,13 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
                             viewModel.setAlertDialogStatus(true)
                             true
                         }
-                    })
+                    }
+                )
 
-                if (deviceInfoUtils.isPlayStoreAvailable(requireContext()) ||
-                    deviceInfoUtils.isSendFeedbackAvailable(requireContext())) {
+                if (
+                    deviceInfoUtils.isPlayStoreAvailable(requireContext()) ||
+                        deviceInfoUtils.isSendFeedbackAvailable(requireContext())
+                ) {
                     mSettingsAndHelpCategory.addPreference(getHelpAndFeedbackPreference())
                 }
 
@@ -266,17 +365,31 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
                             it.icon = app.appMetadata.icon
                             it.logName = AppPermissionsElement.INACTIVE_APP_BUTTON
                             it.setOnDeleteButtonClickListener {
-                                val appDeletionType =
-                                    DeletionType.DeletionTypeAppData(
-                                        app.appMetadata.packageName, app.appMetadata.appName)
-                                childFragmentManager.setFragmentResult(
-                                    DeletionConstants.START_INACTIVE_APP_DELETION_EVENT,
-                                    bundleOf(DELETION_TYPE to appDeletionType))
+                                val packageName = app.appMetadata.packageName
+                                val appName = app.appMetadata.appName
+                                if (newDeletionFlow) {
+                                    deleteData(packageName, appName)
+                                } else {
+                                    oldDeleteData(packageName, appName)
+                                }
                             }
                         }
                     mInactiveAppsCategory.addPreference(inactiveAppPreference)
                 }
         }
+    }
+
+    private fun deleteData(packageName: String, appName: String) {
+        deletionViewModel.setDeletionType(DeleteAppData(packageName, appName))
+        childFragmentManager.setFragmentResult(START_DELETION_KEY, bundleOf())
+    }
+
+    private fun oldDeleteData(packageName: String, appName: String) {
+        val appDeletionType = OldDeletionType.DeletionTypeAppData(packageName, appName)
+        childFragmentManager.setFragmentResult(
+            DeletionConstants.START_INACTIVE_APP_DELETION_EVENT,
+            bundleOf(DELETION_TYPE to appDeletionType),
+        )
     }
 
     private fun updateNeedUpdateApps(appsList: List<ConnectedAppMetadata>) {
@@ -290,10 +403,12 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
                     val intent = appStoreUtils.getAppStoreLink(app.appMetadata.packageName)
                     if (intent == null) {
                         mNeedUpdateAppsCategory?.addPreference(
-                            getAppPreference(app).also { it.isSelectable = false })
+                            getAppPreference(app).also { it.isSelectable = false }
+                        )
                     } else {
                         mNeedUpdateAppsCategory?.addPreference(
-                            getAppPreference(app) { navigationUtils.startActivity(this, intent) })
+                            getAppPreference(app) { navigationUtils.startActivity(this, intent) }
+                        )
                     }
                 }
 
@@ -317,7 +432,8 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
                 .sortedBy { it.appMetadata.appName }
                 .forEach { app ->
                     mAllowedAppsCategory.addPreference(
-                        getAppPreference(app) { navigateToAppInfoScreen(app) })
+                        getAppPreference(app) { navigateToAppInfoScreen(app) }
+                    )
                 }
         }
     }
@@ -330,7 +446,8 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
                 .sortedBy { it.appMetadata.appName }
                 .forEach { app ->
                     mNotAllowedAppsCategory.addPreference(
-                        getAppPreference(app) { navigateToAppInfoScreen(app) })
+                        getAppPreference(app) { navigateToAppInfoScreen(app) }
+                    )
                 }
         }
     }
@@ -350,7 +467,9 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
                 navigationId,
                 bundleOf(
                     EXTRA_PACKAGE_NAME to app.appMetadata.packageName,
-                    EXTRA_APP_NAME to app.appMetadata.appName))
+                    EXTRA_APP_NAME to app.appMetadata.appName,
+                ),
+            )
     }
 
     private fun getNoAppsPreference(@StringRes res: Int): Preference {
@@ -362,8 +481,8 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
 
     private fun getAppPreference(
         app: ConnectedAppMetadata,
-        onClick: (() -> Unit)? = null
-    ): AppPreference {
+        onClick: (() -> Unit)? = null,
+    ): HealthAppPreference {
         return HealthAppPreference(requireContext(), app.appMetadata).also {
             if (app.status == ALLOWED) {
                 it.logName = AppPermissionsElement.CONNECTED_APP_BUTTON
@@ -447,10 +566,12 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
             .also { banner ->
                 banner.setPrimaryButton(
                     resources.getString(R.string.app_update_needed_banner_button),
-                    MigrationElement.MIGRATION_APP_UPDATE_BUTTON)
+                    MigrationElement.MIGRATION_APP_UPDATE_BUTTON,
+                )
                 banner.setSecondaryButton(
                     resources.getString(R.string.app_update_needed_banner_learn_more_button),
-                    MigrationElement.MIGRATION_APP_UPDATE_LEARN_MORE_BUTTON)
+                    MigrationElement.MIGRATION_APP_UPDATE_LEARN_MORE_BUTTON,
+                )
                 banner.title = resources.getString(R.string.app_update_needed_banner_title)
 
                 if (appsList.size > 1) {
@@ -460,7 +581,8 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
                     banner.summary =
                         resources.getString(
                             R.string.app_update_needed_banner_description_single,
-                            appsList[0].appMetadata.appName)
+                            appsList[0].appMetadata.appName,
+                        )
                 }
 
                 banner.key = BANNER_PREFERENCE_KEY
@@ -480,23 +602,26 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
                 }
                 banner.setIsDismissable(true)
                 banner.setDismissAction(
-                    MigrationElement.MIGRATION_APP_UPDATE_BANNER_DISMISS_BUTTON) {
-                        val sharedPreference =
-                            requireActivity()
-                                .getSharedPreferences(USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
-                        sharedPreference.edit().apply {
-                            putBoolean(APP_UPDATE_NEEDED_BANNER_SEEN, true)
-                            apply()
-                        }
-                        preferenceScreen.removePreference(banner)
+                    MigrationElement.MIGRATION_APP_UPDATE_BANNER_DISMISS_BUTTON
+                ) {
+                    val sharedPreference =
+                        requireActivity()
+                            .getSharedPreferences(USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
+                    sharedPreference.edit().apply {
+                        putBoolean(APP_UPDATE_NEEDED_BANNER_SEEN, true)
+                        apply()
                     }
+                    preferenceScreen.removePreference(banner)
+                }
             }
     }
 
     private fun setUpEmptyState() {
         mTopIntro.title = getString(R.string.connected_apps_empty_list_section_title)
-        if (deviceInfoUtils.isPlayStoreAvailable(requireContext()) ||
-            deviceInfoUtils.isSendFeedbackAvailable(requireContext())) {
+        if (
+            deviceInfoUtils.isPlayStoreAvailable(requireContext()) ||
+                deviceInfoUtils.isSendFeedbackAvailable(requireContext())
+        ) {
             mThingsToTryCategory.isVisible = true
         }
         if (deviceInfoUtils.isPlayStoreAvailable(requireContext())) {

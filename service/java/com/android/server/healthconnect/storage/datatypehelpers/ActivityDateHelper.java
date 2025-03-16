@@ -25,7 +25,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.datatypes.Record;
 import android.health.connect.internal.datatypes.RecordInternal;
-import android.health.connect.internal.datatypes.utils.RecordMapper;
+import android.health.connect.internal.datatypes.utils.HealthConnectMappings;
 import android.util.Pair;
 
 import com.android.server.healthconnect.storage.TransactionManager;
@@ -33,7 +33,7 @@ import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
-import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
+import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.WhereClauses;
 
 import java.time.LocalDate;
@@ -56,6 +56,18 @@ public final class ActivityDateHelper extends DatabaseHelper {
     private static final String EPOCH_DAYS_COLUMN_NAME = "epoch_days";
     private static final String RECORD_TYPE_ID_COLUMN_NAME = "record_type_id";
 
+    private final TransactionManager mTransactionManager;
+    private final InternalHealthConnectMappings mInternalHealthConnectMappings;
+
+    public ActivityDateHelper(
+            TransactionManager transactionManager,
+            InternalHealthConnectMappings internalHealthConnectMappings,
+            DatabaseHelpers databaseHelpers) {
+        super(databaseHelpers);
+        mTransactionManager = transactionManager;
+        mInternalHealthConnectMappings = internalHealthConnectMappings;
+    }
+
     /**
      * Returns a requests representing the tables that should be created corresponding to this
      * helper
@@ -71,23 +83,23 @@ public final class ActivityDateHelper extends DatabaseHelper {
     }
 
     /** Insert a new activity dates for the given records */
-    public static void insertRecordDate(List<RecordInternal<?>> recordInternals) {
+    public void insertRecordDate(List<RecordInternal<?>> recordInternals) {
         Objects.requireNonNull(recordInternals);
-
-        final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
 
         List<UpsertTableRequest> upsertTableRequests = new ArrayList<>();
         recordInternals.forEach(
                 (recordInternal) -> upsertTableRequests.add(getUpsertTableRequest(recordInternal)));
 
-        transactionManager.insertOrIgnoreOnConflict(upsertTableRequests);
+        mTransactionManager.insertOrIgnoreOnConflict(upsertTableRequests);
     }
 
     /** Returns a list of all dates with database writes for the given record types */
-    public static List<LocalDate> getActivityDates(List<Class<? extends Record>> recordTypes) {
-        RecordMapper recordMapper = RecordMapper.getInstance();
+    public List<LocalDate> getActivityDates(List<Class<? extends Record>> recordTypes) {
+        HealthConnectMappings healthConnectMappings = HealthConnectMappings.getInstance();
         List<Integer> recordTypeIds =
-                recordTypes.stream().map(recordMapper::getRecordType).collect(Collectors.toList());
+                recordTypes.stream()
+                        .map(healthConnectMappings::getRecordType)
+                        .collect(Collectors.toList());
 
         return readDates(
                 new ReadTableRequest(TABLE_NAME)
@@ -100,18 +112,20 @@ public final class ActivityDateHelper extends DatabaseHelper {
     }
 
     /** Updates the activity dates cache for all records */
-    public static void reSyncForAllRecords() {
+    public void reSyncForAllRecords() {
         List<Integer> recordTypeIds =
-                RecordMapper.getInstance().getRecordIdToExternalRecordClassMap().keySet().stream()
+                HealthConnectMappings.getInstance()
+                        .getRecordIdToExternalRecordClassMap()
+                        .keySet()
+                        .stream()
                         .toList();
 
         reSyncByRecordTypeIds(recordTypeIds);
     }
 
     /** Updates the activity dates cache for the given record IDs */
-    public static void reSyncByRecordTypeIds(List<Integer> recordTypeIds) {
+    public void reSyncByRecordTypeIds(List<Integer> recordTypeIds) {
         List<UpsertTableRequest> upsertTableRequests = new ArrayList<>();
-        final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
 
         DeleteTableRequest deleteTableRequest =
                 new DeleteTableRequest(TABLE_NAME)
@@ -120,8 +134,7 @@ public final class ActivityDateHelper extends DatabaseHelper {
                                 recordTypeIds.stream().map(String::valueOf).toList());
 
         // Fetch updated dates from respective record table and update the activity dates cache.
-        HashMap<Integer, List<Long>> recordTypeIdToEpochDays =
-                fetchUpdatedDates(recordTypeIds, transactionManager);
+        HashMap<Integer, List<Long>> recordTypeIdToEpochDays = fetchUpdatedDates(recordTypeIds);
 
         recordTypeIdToEpochDays.forEach(
                 (recordTypeId, epochDays) ->
@@ -130,12 +143,13 @@ public final class ActivityDateHelper extends DatabaseHelper {
                                         upsertTableRequests.add(
                                                 getUpsertTableRequest(recordTypeId, epochDay))));
 
-        transactionManager.runAsTransaction(
+        mTransactionManager.runAsTransaction(
                 db -> {
                     db.execSQL(deleteTableRequest.getDeleteCommand());
                     upsertTableRequests.forEach(
                             upsertTableRequest ->
-                                    transactionManager.insertOrIgnore(db, upsertTableRequest));
+                                    mTransactionManager.insertOrIgnoreOnConflict(
+                                            db, upsertTableRequest));
                 });
     }
 
@@ -146,19 +160,18 @@ public final class ActivityDateHelper extends DatabaseHelper {
                 new Pair<>(RECORD_TYPE_ID_COLUMN_NAME, INTEGER_NOT_NULL));
     }
 
-    private static HashMap<Integer, List<Long>> fetchUpdatedDates(
-            List<Integer> recordTypeIds, TransactionManager transactionManager) {
+    private HashMap<Integer, List<Long>> fetchUpdatedDates(List<Integer> recordTypeIds) {
 
         ReadTableRequest request;
         RecordHelper<?> recordHelper;
         HashMap<Integer, List<Long>> recordTypeIdToEpochDays = new HashMap<>();
         for (int recordTypeId : recordTypeIds) {
-            recordHelper = RecordHelperProvider.getRecordHelper(recordTypeId);
+            recordHelper = mInternalHealthConnectMappings.getRecordHelper(recordTypeId);
             request =
                     new ReadTableRequest(recordHelper.getMainTableName())
                             .setColumnNames(List.of(recordHelper.getPeriodGroupByColumnName()))
                             .setDistinctClause(true);
-            try (Cursor cursor = transactionManager.read(request)) {
+            try (Cursor cursor = mTransactionManager.read(request)) {
                 List<Long> distinctDates = new ArrayList<>();
                 while (cursor.moveToNext()) {
                     long epochDay =
@@ -185,9 +198,8 @@ public final class ActivityDateHelper extends DatabaseHelper {
      * @param request a read request.
      * @return Cursor from table based on ids.
      */
-    private static List<LocalDate> readDates(ReadTableRequest request) {
-        final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
-        try (Cursor cursor = transactionManager.read(request)) {
+    private List<LocalDate> readDates(ReadTableRequest request) {
+        try (Cursor cursor = mTransactionManager.read(request)) {
             List<LocalDate> dates = new ArrayList<>();
             while (cursor.moveToNext()) {
                 long epochDay = getCursorLong(cursor, EPOCH_DAYS_COLUMN_NAME);

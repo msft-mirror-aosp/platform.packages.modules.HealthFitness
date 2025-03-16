@@ -25,7 +25,7 @@ import com.android.healthconnect.controller.data.entries.FormattedEntry.Exercise
 import com.android.healthconnect.controller.shared.RoundView
 import com.android.healthconnect.controller.shared.map.MapView
 import com.android.healthconnect.controller.shared.recyclerview.DeletionViewBinder
-import com.android.healthconnect.controller.utils.logging.DataEntriesElement
+import com.android.healthconnect.controller.utils.logging.AllEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
 import dagger.hilt.android.EntryPointAccessors
@@ -65,15 +65,14 @@ class ExerciseSessionItemViewBinder(
         val mapView = view.findViewById<MapView>(R.id.map_view)
         val mapContainer = view.findViewById<RoundView>(R.id.map_round_view)
         val checkBox = view.findViewById<CheckBox>(R.id.item_checkbox_button)
-        logger.logImpression(DataEntriesElement.EXERCISE_SESSION_ENTRY_BUTTON)
-        title.text = data.title
-        title.contentDescription = data.titleA11y
+        logger.logImpression(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
         header.text = data.header
         header.contentDescription = data.headerA11y
         notes.isVisible = !data.notes.isNullOrBlank()
         notes.text = data.notes
         divider.isVisible = false
         mapContainer.isVisible = (data.route != null)
+        mapContainer.contentDescription = view.resources.getString(R.string.a11y_map_description)
         if (data.route != null) {
             mapView.setRoute(data.route)
         }
@@ -82,11 +81,18 @@ class ExerciseSessionItemViewBinder(
             container.setOnClickListener {
                 onSelectEntryListener?.onSelectEntry(data.uuid, data.dataType, index)
                 checkBox.toggle()
+                title.contentDescription =
+                    getUpdatedContentDescription(
+                        title.resources,
+                        data.titleA11y,
+                        isDeletionState,
+                        checkBox.isChecked,
+                    )
             }
         } else {
             if (data.isClickable) {
                 container.setOnClickListener {
-                    logger.logInteraction(DataEntriesElement.EXERCISE_SESSION_ENTRY_BUTTON)
+                    logger.logInteraction(AllEntriesElement.ENTRY_BUTTON_NO_CHECKBOX)
                     onItemClickedListener?.onItemClicked(data.uuid, index)
                 }
             } else {
@@ -98,6 +104,22 @@ class ExerciseSessionItemViewBinder(
         checkBox.isChecked = isChecked
         checkBox.setOnClickListener {
             onSelectEntryListener?.onSelectEntry(data.uuid, data.dataType, index)
+            title.contentDescription =
+                getUpdatedContentDescription(
+                    title.resources,
+                    data.titleA11y,
+                    isDeletionState,
+                    checkBox.isChecked,
+                )
         }
+
+        title.text = data.title
+        title.contentDescription =
+            getUpdatedContentDescription(
+                title.resources,
+                data.titleA11y,
+                isDeletionState,
+                isChecked,
+            )
     }
 }

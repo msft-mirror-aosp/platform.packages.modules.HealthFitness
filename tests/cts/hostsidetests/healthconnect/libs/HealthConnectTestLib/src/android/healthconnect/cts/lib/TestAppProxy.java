@@ -16,6 +16,7 @@
 
 package android.healthconnect.cts.lib;
 
+import static android.health.connect.datatypes.FhirVersion.parseFhirVersion;
 import static android.healthconnect.cts.lib.BundleHelper.INTENT_EXCEPTION;
 import static android.healthconnect.cts.lib.BundleHelper.KILL_SELF_REQUEST;
 import static android.healthconnect.cts.lib.BundleHelper.QUERY_TYPE;
@@ -28,6 +29,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.health.connect.CreateMedicalDataSourceRequest;
+import android.health.connect.DeleteMedicalResourcesRequest;
+import android.health.connect.GetMedicalDataSourcesRequest;
+import android.health.connect.MedicalResourceId;
+import android.health.connect.ReadMedicalResourcesRequest;
+import android.health.connect.ReadMedicalResourcesResponse;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordIdFilter;
@@ -38,7 +44,6 @@ import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.Record;
-import android.healthconnect.cts.utils.PhrDataFactory;
 import android.healthconnect.cts.utils.ProxyActivity;
 import android.os.Bundle;
 
@@ -103,7 +108,7 @@ public class TestAppProxy {
     }
 
     /** Inserts records to HC on behalf of the app. */
-    public List<String> insertRecords(List<Record> records) throws Exception {
+    public List<String> insertRecords(List<? extends Record> records) throws Exception {
         Bundle requestBundle = BundleHelper.fromInsertRecordsRequest(records);
         Bundle responseBundle = getFromTestApp(requestBundle);
         return BundleHelper.toInsertRecordsResponse(responseBundle);
@@ -173,6 +178,21 @@ public class TestAppProxy {
         return BundleHelper.toMedicalDataSource(responseBundle);
     }
 
+    /** Gets a list of {@link MedicalDataSource}s given a list of ids on behalf of the app. */
+    public List<MedicalDataSource> getMedicalDataSources(List<String> ids) throws Exception {
+        Bundle requestBundle = BundleHelper.fromMedicalDataSourceIds(ids);
+        Bundle responseBundle = getFromTestApp(requestBundle);
+        return BundleHelper.toMedicalDataSources(responseBundle);
+    }
+
+    /** Gets a list of {@link MedicalDataSource}s given a {@link GetMedicalDataSourcesRequest}. */
+    public List<MedicalDataSource> getMedicalDataSources(GetMedicalDataSourcesRequest request)
+            throws Exception {
+        Bundle requestBundle = BundleHelper.fromMedicalDataSourceRequest(request);
+        Bundle responseBundle = getFromTestApp(requestBundle);
+        return BundleHelper.toMedicalDataSources(responseBundle);
+    }
+
     /**
      * Upserts a Medical Resource to HC on behalf of the app.
      *
@@ -180,13 +200,53 @@ public class TestAppProxy {
      */
     public MedicalResource upsertMedicalResource(String datasourceId, String data)
             throws Exception {
+        String R4VersionString = "4.0.1";
         UpsertMedicalResourceRequest request =
                 new UpsertMedicalResourceRequest.Builder(
-                                datasourceId, PhrDataFactory.FHIR_VERSION_R4, data)
+                                datasourceId, parseFhirVersion(R4VersionString), data)
                         .build();
         Bundle requestBundle = BundleHelper.fromUpsertMedicalResourceRequests(List.of(request));
         Bundle responseBundle = getFromTestApp(requestBundle);
         return BundleHelper.toMedicalResources(responseBundle).get(0);
+    }
+
+    /**
+     * Reads a list of {@link MedicalResource}s for the provided {@code request} on behalf of the
+     * app.
+     */
+    public ReadMedicalResourcesResponse readMedicalResources(ReadMedicalResourcesRequest request)
+            throws Exception {
+        Bundle requestBundle = BundleHelper.fromReadMedicalResourcesRequest(request);
+        Bundle responseBundle = getFromTestApp(requestBundle);
+        return BundleHelper.toReadMedicalResourcesResponse(responseBundle);
+    }
+
+    /**
+     * Reads a list of {@link MedicalResource}s for the provided {@code ids} on behalf of the app.
+     */
+    public List<MedicalResource> readMedicalResources(List<MedicalResourceId> ids)
+            throws Exception {
+        Bundle requestBundle = BundleHelper.fromMedicalResourceIdsForRead(ids);
+        Bundle responseBundle = getFromTestApp(requestBundle);
+        return BundleHelper.toMedicalResources(responseBundle);
+    }
+
+    /** Deletes Medical Resources from HC on behalf of the app for the given {@code ids}. */
+    public void deleteMedicalResources(List<MedicalResourceId> ids) throws Exception {
+        Bundle requestBundle = BundleHelper.fromMedicalResourceIdsForDelete(ids);
+        getFromTestApp(requestBundle);
+    }
+
+    /** Deletes Medical Resources from HC on behalf of the app for the given {@code request}. */
+    public void deleteMedicalResources(DeleteMedicalResourcesRequest request) throws Exception {
+        Bundle requestBundle = BundleHelper.fromDeleteMedicalResourcesRequest(request);
+        getFromTestApp(requestBundle);
+    }
+
+    /** Deletes Medical Data Source with data for the provided {@code id} on behalf of the app. */
+    public void deleteMedicalDataSourceWithData(String id) throws Exception {
+        Bundle requestBundle = BundleHelper.fromMedicalDataSourceId(id);
+        getFromTestApp(requestBundle);
     }
 
     /** Instructs the app to self-revokes the specified permission. */

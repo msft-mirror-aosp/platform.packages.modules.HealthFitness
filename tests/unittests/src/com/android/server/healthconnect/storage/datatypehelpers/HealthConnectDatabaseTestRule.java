@@ -16,7 +16,7 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
-import static com.android.server.healthconnect.TestUtils.TEST_USER;
+import static com.android.server.healthconnect.storage.HealthConnectDatabase.DEFAULT_DATABASE_NAME;
 
 import static org.mockito.Mockito.when;
 
@@ -25,9 +25,7 @@ import android.os.Environment;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
-import com.android.server.healthconnect.HealthConnectUserContext;
-import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.StorageContext;
 
 import org.junit.rules.ExternalResource;
 
@@ -40,49 +38,49 @@ import java.io.File;
  * <p><code>
  * {@literal @} Rule (order = 1)
  * public final ExtendedMockitoRule mExtendedMockitoRule = new ExtendedMockitoRule.Builder(this)
- *     .mockStatic(HealthConnectManager.class)
- *     .mockStatic(Environment.class)
- *     .setStrictness(Strictness.LENIENT)
- *     .build();
+ * .mockStatic(HealthConnectManager.class)
+ * .mockStatic(Environment.class)
+ * .setStrictness(Strictness.LENIENT)
+ * .build();
  *
  * {@literal @} Rule (order = 2)
  * public final HealthConnectDatabaseTestRule mDatabaseTestRule =
- *     new HealthConnectDatabaseTestRule();
+ * new HealthConnectDatabaseTestRule();
  * </code>
  *
  * <p>Mocking is done in the test class rather than here to avoid interferences for Mockito session
  * handling when multiple test rules are used. It avoids starting multiple sessions in parallel.
+ *
+ * @deprecated Use {@link com.android.server.healthconnect.SQLiteDatabaseFixture} instead.
  */
+@Deprecated
 public class HealthConnectDatabaseTestRule extends ExternalResource {
-    private HealthConnectUserContext mContext;
-    private TransactionManager mTransactionManager;
+    private StorageContext mStorageContext;
+    private final String mDatabaseName;
 
     // Mock Environment using ExtendedMockitoRule in the test using this rule.
-    public HealthConnectDatabaseTestRule() {}
+    public HealthConnectDatabaseTestRule() {
+        this(DEFAULT_DATABASE_NAME);
+    }
+
+    public HealthConnectDatabaseTestRule(String databaseName) {
+        mDatabaseName = databaseName;
+    }
 
     @Override
     public void before() {
-        mContext =
-                new HealthConnectUserContext(
-                        InstrumentationRegistry.getInstrumentation().getContext(), TEST_USER);
-        File mockDataDirectory = mContext.getDir("mock_data", Context.MODE_PRIVATE);
+        Context context = InstrumentationRegistry.getInstrumentation().getContext();
+        File mockDataDirectory = context.getDir("mock_data", Context.MODE_PRIVATE);
         when(Environment.getDataDirectory()).thenReturn(mockDataDirectory);
-        TransactionManager.cleanUpForTest();
-        mTransactionManager = TransactionManager.initializeInstance(mContext);
-        HealthConnectDeviceConfigManager.initializeInstance(mContext);
+        mStorageContext = StorageContext.create(context, context.getUser());
     }
 
     @Override
     public void after() {
-        DatabaseHelper.clearAllData(mTransactionManager);
-        TransactionManager.cleanUpForTest();
+        mStorageContext.deleteDatabase(mDatabaseName);
     }
 
-    public HealthConnectUserContext getUserContext() {
-        return mContext;
-    }
-
-    public TransactionManager getTransactionManager() {
-        return mTransactionManager;
+    public StorageContext getDatabaseContext() {
+        return mStorageContext;
     }
 }

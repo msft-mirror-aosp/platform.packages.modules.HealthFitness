@@ -47,8 +47,8 @@ import com.android.healthconnect.controller.permissions.app.AppPermissionViewMod
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel.DisableExerciseRouteDialogEvent
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel.RevokeAllState
 import com.android.healthconnect.controller.permissions.app.SettingsFitnessAppFragment
-import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
+import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
@@ -56,7 +56,6 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
-import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.logging.DataRestoreElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -84,6 +83,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @HiltAndroidTest
 class SettingsFitnessAppFragmentTest {
@@ -123,7 +123,9 @@ class SettingsFitnessAppFragmentTest {
                 AppMetadata(
                     TEST_APP_PACKAGE_NAME,
                     TEST_APP_NAME,
-                    context.getDrawable(R.drawable.health_connect_logo)))
+                    context.getDrawable(R.drawable.health_connect_logo),
+                )
+            )
         }
 
         whenever(additionalAccessViewModel.additionalAccessState).then {
@@ -134,7 +136,8 @@ class SettingsFitnessAppFragmentTest {
             MigrationRestoreState(
                 migrationUiState = MigrationUiState.IDLE,
                 dataRestoreState = DataRestoreUiState.IDLE,
-                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+                dataRestoreError = DataRestoreUiError.ERROR_NONE,
+            )
         }
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData(
@@ -142,7 +145,10 @@ class SettingsFitnessAppFragmentTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IDLE,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
         whenever(viewModel.lastReadPermissionDisconnected).then { MutableLiveData(false) }
 
@@ -172,7 +178,8 @@ class SettingsFitnessAppFragmentTest {
 
         val scenario =
             launchFragment<SettingsFitnessAppFragment>(
-                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+            )
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
@@ -180,6 +187,29 @@ class SettingsFitnessAppFragmentTest {
         onView(withText("Allow all")).check(matches(isDisplayed()))
         onView(withText("Allowed to read")).check(matches(isDisplayed()))
         onView(withText("Allowed to write")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun fragmentStarts_logPageImpression() {
+        val writePermission =
+            FitnessPermission(FitnessPermissionType.EXERCISE, PermissionsAccessType.WRITE)
+        val readPermission =
+            FitnessPermission(FitnessPermissionType.DISTANCE, PermissionsAccessType.READ)
+        whenever(viewModel.fitnessPermissions).then {
+            MutableLiveData(listOf(writePermission, readPermission))
+        }
+        whenever(viewModel.grantedFitnessPermissions).then {
+            MutableLiveData(setOf(writePermission))
+        }
+
+        val scenario =
+            launchFragment<SettingsFitnessAppFragment>(
+                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+            )
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+
         verify(healthConnectLogger, atLeast(1)).setPageId(PageName.MANAGE_PERMISSIONS_PAGE)
         verify(healthConnectLogger).logPageImpression()
         verify(healthConnectLogger).logImpression(PermissionsElement.ALLOW_ALL_SWITCH)
@@ -197,7 +227,8 @@ class SettingsFitnessAppFragmentTest {
 
         val scenario =
             launchFragment<SettingsFitnessAppFragment>(
-                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+            )
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
@@ -218,7 +249,8 @@ class SettingsFitnessAppFragmentTest {
 
         val scenario =
             launchFragment<SettingsFitnessAppFragment>(
-                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+            )
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
@@ -245,7 +277,8 @@ class SettingsFitnessAppFragmentTest {
 
         val scenario =
             launchFragment<SettingsFitnessAppFragment>(
-                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+            )
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
@@ -283,7 +316,8 @@ class SettingsFitnessAppFragmentTest {
 
         val scenario =
             launchFragment<SettingsFitnessAppFragment>(
-                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+            )
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
@@ -294,7 +328,9 @@ class SettingsFitnessAppFragmentTest {
                 withText(
                     "$TEST_APP_NAME can read data added after October 20, 2022" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+                        "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
+                )
+            )
             .check(doesNotExist())
         onView(withText("Read privacy policy")).check(doesNotExist())
     }
@@ -315,7 +351,8 @@ class SettingsFitnessAppFragmentTest {
 
         val scenario =
             launchFragment<SettingsFitnessAppFragment>(
-                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+            )
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
@@ -324,7 +361,9 @@ class SettingsFitnessAppFragmentTest {
                 withText(
                     "$TEST_APP_NAME can read data added after October 20, 2022" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+                        "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
+                )
+            )
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Read privacy policy")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -346,7 +385,8 @@ class SettingsFitnessAppFragmentTest {
 
         val scenario =
             launchFragment<SettingsFitnessAppFragment>(
-                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+            )
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
@@ -355,7 +395,9 @@ class SettingsFitnessAppFragmentTest {
                 withText(
                     "$TEST_APP_NAME can read data added after October 20, 2022" +
                         "\n\n" +
-                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+                        "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"
+                )
+            )
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Read privacy policy")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -368,7 +410,8 @@ class SettingsFitnessAppFragmentTest {
         }
 
         launchFragment<SettingsFitnessAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+        )
 
         onView(withText(R.string.additional_access_label)).check(doesNotExist())
     }
@@ -378,13 +421,15 @@ class SettingsFitnessAppFragmentTest {
         val validState =
             AdditionalAccessViewModel.State(
                 exerciseRoutePermissionUIState = PermissionUiState.ASK_EVERY_TIME,
-                exercisePermissionUIState = PermissionUiState.ASK_EVERY_TIME)
+                exercisePermissionUIState = PermissionUiState.ASK_EVERY_TIME,
+            )
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(validState)
         }
 
         launchFragment<SettingsFitnessAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+        )
 
         onView(withText(R.string.additional_access_label)).check(matches(isDisplayed()))
     }
@@ -395,13 +440,18 @@ class SettingsFitnessAppFragmentTest {
             AdditionalAccessViewModel.State(
                 backgroundReadUIState =
                     AdditionalAccessViewModel.AdditionalPermissionState(
-                        isDeclared = true, isEnabled = false, isGranted = false))
+                        isDeclared = true,
+                        isEnabled = false,
+                        isGranted = false,
+                    )
+            )
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(validState)
         }
 
         launchFragment<SettingsFitnessAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+        )
 
         onView(withText(R.string.additional_access_label)).check(matches(isDisplayed()))
     }
@@ -411,20 +461,23 @@ class SettingsFitnessAppFragmentTest {
         val validState =
             AdditionalAccessViewModel.State(
                 exerciseRoutePermissionUIState = PermissionUiState.ASK_EVERY_TIME,
-                exercisePermissionUIState = PermissionUiState.ASK_EVERY_TIME)
+                exercisePermissionUIState = PermissionUiState.ASK_EVERY_TIME,
+            )
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(validState)
         }
 
         launchFragment<SettingsFitnessAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+        )
         onView(withText(R.string.additional_access_label)).perform(click())
 
         verify(navigationUtils)
             .navigate(
                 fragment = any(),
                 action = eq(R.id.action_settingsFitnessApp_to_additionalAccessFragment),
-                bundle = any())
+                bundle = any(),
+            )
     }
 
     @Test
@@ -433,7 +486,8 @@ class SettingsFitnessAppFragmentTest {
             MigrationRestoreState(
                 migrationUiState = MigrationUiState.APP_UPGRADE_REQUIRED,
                 dataRestoreState = DataRestoreUiState.IDLE,
-                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+                dataRestoreError = DataRestoreUiError.ERROR_NONE,
+            )
         }
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData(
@@ -441,7 +495,10 @@ class SettingsFitnessAppFragmentTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.APP_UPGRADE_REQUIRED,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
         val writePermission =
             FitnessPermission(FitnessPermissionType.EXERCISE, PermissionsAccessType.WRITE)
@@ -456,11 +513,14 @@ class SettingsFitnessAppFragmentTest {
         whenever(viewModel.isPackageSupported(TEST_APP_PACKAGE_NAME)).then { true }
 
         launchFragment<SettingsFitnessAppFragment>(
-            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+        )
 
         onView(
                 withText(
-                    "Health Connect is ready to be integrated with your Android system. If you give $TEST_APP_NAME access now, some features may not work until integration is complete."))
+                    "Health Connect is ready to be integrated with your Android system. If you give $TEST_APP_NAME access now, some features may not work until integration is complete."
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         // TODO (b/322495982) check navigation to Migration activity
@@ -485,7 +545,8 @@ class SettingsFitnessAppFragmentTest {
             MigrationRestoreState(
                 migrationUiState = MigrationUiState.IN_PROGRESS,
                 dataRestoreState = DataRestoreUiState.IDLE,
-                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+                dataRestoreError = DataRestoreUiError.ERROR_NONE,
+            )
         }
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData(
@@ -493,7 +554,10 @@ class SettingsFitnessAppFragmentTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IN_PROGRESS,
                         dataRestoreState = DataRestoreUiState.IDLE,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
         val writePermission =
             FitnessPermission(FitnessPermissionType.EXERCISE, PermissionsAccessType.WRITE)
@@ -509,11 +573,14 @@ class SettingsFitnessAppFragmentTest {
 
         val scenario =
             launchFragment<SettingsFitnessAppFragment>(
-                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+            )
 
         onView(
                 withText(
-                    "Health Connect is being integrated with the Android system.\n\nYou'll get a notification when the process is complete and you can use $TEST_APP_NAME with Health Connect."))
+                    "Health Connect is being integrated with the Android system.\n\nYou'll get a notification when the process is complete and you can use $TEST_APP_NAME with Health Connect."
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(withText("Got it")).inRoot(isDialog()).check(matches(isDisplayed()))
@@ -537,7 +604,8 @@ class SettingsFitnessAppFragmentTest {
             MigrationRestoreState(
                 migrationUiState = MigrationUiState.IDLE,
                 dataRestoreState = DataRestoreUiState.IN_PROGRESS,
-                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+                dataRestoreError = DataRestoreUiError.ERROR_NONE,
+            )
         }
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData(
@@ -545,7 +613,10 @@ class SettingsFitnessAppFragmentTest {
                     MigrationRestoreState(
                         migrationUiState = MigrationUiState.IDLE,
                         dataRestoreState = DataRestoreUiState.IN_PROGRESS,
-                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE,
+                    )
+                )
+            )
         }
         val writePermission =
             FitnessPermission(FitnessPermissionType.EXERCISE, PermissionsAccessType.WRITE)
@@ -561,14 +632,17 @@ class SettingsFitnessAppFragmentTest {
 
         val scenario =
             launchFragment<SettingsFitnessAppFragment>(
-                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME)
+            )
 
         onView(withText("Health Connect restore in progress"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(
                 withText(
-                    "Health Connect is restoring data and permissions. This may take some time to complete."))
+                    "Health Connect is restoring data and permissions. This may take some time to complete."
+                )
+            )
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(withText("Got it")).inRoot(isDialog()).check(matches(isDisplayed()))

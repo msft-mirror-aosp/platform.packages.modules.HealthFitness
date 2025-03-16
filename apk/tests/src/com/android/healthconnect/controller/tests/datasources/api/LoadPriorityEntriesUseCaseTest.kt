@@ -11,10 +11,12 @@ import android.os.OutcomeReceiver
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.data.entries.api.LoadEntriesHelper
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
+import com.android.healthconnect.controller.dataentries.formatters.MenstruationPeriodFormatter
 import com.android.healthconnect.controller.dataentries.formatters.shared.HealthDataEntryFormatter
 import com.android.healthconnect.controller.datasources.api.LoadPriorityEntriesUseCase
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.shared.HealthPermissionToDatatypeMapper
+import com.android.healthconnect.controller.shared.app.MedicalDataSourceReader
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import com.android.healthconnect.controller.tests.utils.TEST_APP
 import com.android.healthconnect.controller.tests.utils.TEST_APP_2
@@ -65,6 +67,8 @@ class LoadPriorityEntriesUseCaseTest {
 
     private lateinit var loadPriorityEntriesUseCase: LoadPriorityEntriesUseCase
     @Inject lateinit var healthDataEntryFormatter: HealthDataEntryFormatter
+    @Inject lateinit var menstruationPeriodFormatter: MenstruationPeriodFormatter
+    @Inject lateinit var dataSourceReader: MedicalDataSourceReader
 
     @Before
     fun setup() {
@@ -74,7 +78,13 @@ class LoadPriorityEntriesUseCaseTest {
         context.setLocale(Locale.US)
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
         loadEntriesHelper =
-            LoadEntriesHelper(context, healthDataEntryFormatter, healthConnectManager)
+            LoadEntriesHelper(
+                context,
+                healthDataEntryFormatter,
+                menstruationPeriodFormatter,
+                healthConnectManager,
+                dataSourceReader,
+            )
         loadPriorityEntriesUseCase =
             LoadPriorityEntriesUseCase(loadEntriesHelper, loadPriorityListUseCase, Dispatchers.Main)
     }
@@ -104,7 +114,10 @@ class LoadPriorityEntriesUseCaseTest {
                 getSleepSessionRecords(
                     listOf(
                         Pair(SLEEP_SESSION_1_START_DATE, SLEEP_SESSION_1_END_DATE),
-                        Pair(SLEEP_SESSION_2_START_DATE, SLEEP_SESSION_2_END_DATE))))
+                        Pair(SLEEP_SESSION_2_START_DATE, SLEEP_SESSION_2_END_DATE),
+                    )
+                ),
+        )
 
         mockEntriesResult(
             packageName = TEST_APP_PACKAGE_NAME_2,
@@ -112,7 +125,9 @@ class LoadPriorityEntriesUseCaseTest {
             queryDate = sleepDate,
             records =
                 getSleepSessionRecords(
-                    listOf(Pair(SLEEP_SESSION_3_START_DATE, SLEEP_SESSION_3_END_DATE))))
+                    listOf(Pair(SLEEP_SESSION_3_START_DATE, SLEEP_SESSION_3_END_DATE))
+                ),
+        )
 
         val result = loadPriorityEntriesUseCase.invoke(FitnessPermissionType.SLEEP, sleepDate)
         assertThat(result is UseCaseResults.Success).isTrue()
@@ -122,7 +137,10 @@ class LoadPriorityEntriesUseCaseTest {
                 getSleepSessionRecords(
                     listOf(
                         Pair(SLEEP_SESSION_2_START_DATE, SLEEP_SESSION_2_END_DATE),
-                        Pair(SLEEP_SESSION_1_START_DATE, SLEEP_SESSION_1_END_DATE))))
+                        Pair(SLEEP_SESSION_1_START_DATE, SLEEP_SESSION_1_END_DATE),
+                    )
+                ),
+        )
     }
 
     @Test
@@ -162,7 +180,9 @@ class LoadPriorityEntriesUseCaseTest {
             queryDate = sleepDate,
             records =
                 getSleepSessionRecords(
-                    listOf(Pair(SLEEP_SESSION_1_START_DATE, SLEEP_SESSION_1_END_DATE))))
+                    listOf(Pair(SLEEP_SESSION_1_START_DATE, SLEEP_SESSION_1_END_DATE))
+                ),
+        )
 
         mockEntriesResult(
             packageName = TEST_APP_PACKAGE_NAME_2,
@@ -170,7 +190,9 @@ class LoadPriorityEntriesUseCaseTest {
             queryDate = sleepDate,
             records =
                 getSleepSessionRecords(
-                    listOf(Pair(SLEEP_SESSION_2_START_DATE, SLEEP_SESSION_2_END_DATE))))
+                    listOf(Pair(SLEEP_SESSION_2_START_DATE, SLEEP_SESSION_2_END_DATE))
+                ),
+        )
 
         mockEntriesResult(
             packageName = TEST_APP_PACKAGE_NAME,
@@ -178,7 +200,9 @@ class LoadPriorityEntriesUseCaseTest {
             queryDate = pastSleepDate,
             records =
                 getSleepSessionRecords(
-                    listOf(Pair(SLEEP_SESSION_4_START_DATE, SLEEP_SESSION_4_END_DATE))))
+                    listOf(Pair(SLEEP_SESSION_4_START_DATE, SLEEP_SESSION_4_END_DATE))
+                ),
+        )
 
         mockEntriesResult(
             packageName = TEST_APP_PACKAGE_NAME_2,
@@ -188,7 +212,10 @@ class LoadPriorityEntriesUseCaseTest {
                 getSleepSessionRecords(
                     listOf(
                         Pair(SLEEP_SESSION_3_START_DATE, SLEEP_SESSION_3_END_DATE),
-                        Pair(SLEEP_SESSION_5_START_DATE, SLEEP_SESSION_5_END_DATE))))
+                        Pair(SLEEP_SESSION_5_START_DATE, SLEEP_SESSION_5_END_DATE),
+                    )
+                ),
+        )
 
         mockEntriesResult(
             packageName = TEST_APP_PACKAGE_NAME_3,
@@ -196,7 +223,9 @@ class LoadPriorityEntriesUseCaseTest {
             queryDate = sleepDate,
             records =
                 getSleepSessionRecords(
-                    listOf(Pair(SLEEP_SESSION_6_START_DATE, SLEEP_SESSION_6_END_DATE))))
+                    listOf(Pair(SLEEP_SESSION_6_START_DATE, SLEEP_SESSION_6_END_DATE))
+                ),
+        )
 
         val result = loadPriorityEntriesUseCase.invoke(FitnessPermissionType.SLEEP, sleepDate)
         assertThat(result is UseCaseResults.Success).isTrue()
@@ -206,7 +235,10 @@ class LoadPriorityEntriesUseCaseTest {
                 getSleepSessionRecords(
                     listOf(
                         Pair(SLEEP_SESSION_2_START_DATE, SLEEP_SESSION_2_END_DATE),
-                        Pair(SLEEP_SESSION_1_START_DATE, SLEEP_SESSION_1_END_DATE))))
+                        Pair(SLEEP_SESSION_1_START_DATE, SLEEP_SESSION_1_END_DATE),
+                    )
+                ),
+        )
     }
 
     @Test
@@ -245,13 +277,15 @@ class LoadPriorityEntriesUseCaseTest {
             packageName = TEST_APP_PACKAGE_NAME,
             fitnessPermissionType = FitnessPermissionType.SLEEP,
             queryDate = noDataDate,
-            records = listOf())
+            records = listOf(),
+        )
 
         mockEntriesResult(
             packageName = TEST_APP_PACKAGE_NAME_2,
             fitnessPermissionType = FitnessPermissionType.SLEEP,
             queryDate = noDataDate,
-            records = listOf())
+            records = listOf(),
+        )
 
         mockEntriesResult(
             packageName = TEST_APP_PACKAGE_NAME,
@@ -259,7 +293,9 @@ class LoadPriorityEntriesUseCaseTest {
             queryDate = sleepDate,
             records =
                 getSleepSessionRecords(
-                    listOf(Pair(SLEEP_SESSION_1_START_DATE, SLEEP_SESSION_1_END_DATE))))
+                    listOf(Pair(SLEEP_SESSION_1_START_DATE, SLEEP_SESSION_1_END_DATE))
+                ),
+        )
 
         mockEntriesResult(
             packageName = TEST_APP_PACKAGE_NAME_2,
@@ -267,7 +303,9 @@ class LoadPriorityEntriesUseCaseTest {
             queryDate = sleepDate,
             records =
                 getSleepSessionRecords(
-                    listOf(Pair(SLEEP_SESSION_2_START_DATE, SLEEP_SESSION_2_END_DATE))))
+                    listOf(Pair(SLEEP_SESSION_2_START_DATE, SLEEP_SESSION_2_END_DATE))
+                ),
+        )
 
         mockEntriesResult(
             packageName = TEST_APP_PACKAGE_NAME,
@@ -275,7 +313,9 @@ class LoadPriorityEntriesUseCaseTest {
             queryDate = pastSleepDate,
             records =
                 getSleepSessionRecords(
-                    listOf(Pair(SLEEP_SESSION_4_START_DATE, SLEEP_SESSION_4_END_DATE))))
+                    listOf(Pair(SLEEP_SESSION_4_START_DATE, SLEEP_SESSION_4_END_DATE))
+                ),
+        )
 
         mockEntriesResult(
             packageName = TEST_APP_PACKAGE_NAME_2,
@@ -285,7 +325,10 @@ class LoadPriorityEntriesUseCaseTest {
                 getSleepSessionRecords(
                     listOf(
                         Pair(SLEEP_SESSION_3_START_DATE, SLEEP_SESSION_3_END_DATE),
-                        Pair(SLEEP_SESSION_5_START_DATE, SLEEP_SESSION_5_END_DATE))))
+                        Pair(SLEEP_SESSION_5_START_DATE, SLEEP_SESSION_5_END_DATE),
+                    )
+                ),
+        )
 
         mockEntriesResult(
             packageName = TEST_APP_PACKAGE_NAME_3,
@@ -293,7 +336,9 @@ class LoadPriorityEntriesUseCaseTest {
             queryDate = sleepDate,
             records =
                 getSleepSessionRecords(
-                    listOf(Pair(SLEEP_SESSION_6_START_DATE, SLEEP_SESSION_6_END_DATE))))
+                    listOf(Pair(SLEEP_SESSION_6_START_DATE, SLEEP_SESSION_6_END_DATE))
+                ),
+        )
 
         val result = loadPriorityEntriesUseCase.invoke(FitnessPermissionType.SLEEP, noDataDate)
         assertThat(result is UseCaseResults.Success).isTrue()
@@ -331,13 +376,14 @@ class LoadPriorityEntriesUseCaseTest {
         packageName: String,
         fitnessPermissionType: FitnessPermissionType,
         queryDate: LocalDate,
-        records: List<Record>
+        records: List<Record>,
     ) {
         val timeFilterRange =
             loadEntriesHelper.getTimeFilter(
                 queryDate.toInstantAtStartOfDay(),
                 DateNavigationPeriod.PERIOD_DAY,
-                endTimeExclusive = true)
+                endTimeExclusive = true,
+            )
         val dataTypes = HealthPermissionToDatatypeMapper.getDataTypes(fitnessPermissionType)
 
         dataTypes.map { dataType ->
@@ -350,7 +396,8 @@ class LoadPriorityEntriesUseCaseTest {
                             request.forDataType(dataType)
                     },
                     ArgumentMatchers.any(),
-                    ArgumentMatchers.any())
+                    ArgumentMatchers.any(),
+                )
         }
     }
 

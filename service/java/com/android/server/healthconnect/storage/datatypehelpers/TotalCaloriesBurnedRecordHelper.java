@@ -30,6 +30,7 @@ import android.health.connect.internal.datatypes.TotalCaloriesBurnedRecordIntern
 import android.util.Pair;
 
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.AggregateParams;
 import com.android.server.healthconnect.storage.request.AggregateTableRequest;
 
@@ -97,7 +98,8 @@ public final class TotalCaloriesBurnedRecordHelper
     }
 
     @Override
-    public double[] deriveAggregate(Cursor cursor, AggregateTableRequest request) {
+    public double[] deriveAggregate(
+            Cursor cursor, AggregateTableRequest request, TransactionManager transactionManager) {
         int index = 0;
         List<Pair<Long, Long>> groupIntervals = request.getGroupSplitIntervals();
 
@@ -114,7 +116,8 @@ public final class TotalCaloriesBurnedRecordHelper
                         groupIntervals.get(0).first,
                         groupIntervals.get(groupIntervals.size() - 1).second,
                         priorityList,
-                        request.getUseLocalTime());
+                        request.getUseLocalTime(),
+                        transactionManager);
         double[] totalCaloriesBurnedArray = new double[groupIntervals.size()];
         for (Pair<Long, Long> groupInterval : groupIntervals) {
             long groupStartTime = groupInterval.first;
