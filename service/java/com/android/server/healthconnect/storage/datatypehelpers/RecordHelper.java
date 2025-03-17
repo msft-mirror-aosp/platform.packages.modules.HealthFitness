@@ -58,9 +58,9 @@ import android.util.Slog;
 import androidx.annotation.Nullable;
 
 import com.android.healthfitness.flags.Flags;
+import com.android.server.healthconnect.fitness.aggregation.AggregateParams;
+import com.android.server.healthconnect.fitness.aggregation.AggregateRecordRequest;
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.request.AggregateParams;
-import com.android.server.healthconnect.storage.request.AggregateTableRequest;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
@@ -130,9 +130,9 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     }
 
     /**
-     * @return {@link AggregateTableRequest} corresponding to {@code aggregationType}
+     * @return {@link AggregateRecordRequest} corresponding to {@code aggregationType}
      */
-    public final AggregateTableRequest getAggregateTableRequest(
+    public final AggregateRecordRequest getAggregateRecordRequest(
             AggregationType<?> aggregationType,
             String callingPackage,
             List<String> packageFilters,
@@ -199,7 +199,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             whereClauses.addWhereGreaterThanOrEqualClause(startTimeColumnName, startTime);
         }
 
-        return new AggregateTableRequest(
+        return new AggregateRecordRequest(
                         params,
                         aggregationType,
                         this,
@@ -243,7 +243,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
      *     first group.
      * @param aggregationType the aggregation type being calculated.
      * @param total the calculated derived value for this group returned by {@link
-     *     #deriveAggregate(Cursor, AggregateTableRequest, TransactionManager)}.
+     *     #deriveAggregate(Cursor, AggregateRecordRequest, TransactionManager)}.
      * @return {@link AggregateResult} for {@link AggregationType}
      */
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
@@ -266,7 +266,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
      */
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public double[] deriveAggregate(
-            Cursor cursor, AggregateTableRequest request, TransactionManager transactionManager) {
+            Cursor cursor, AggregateRecordRequest request, TransactionManager transactionManager) {
         if (Flags.refactorAggregations()) {
             throw new UnsupportedOperationException("Not implemented by the subclass");
         }

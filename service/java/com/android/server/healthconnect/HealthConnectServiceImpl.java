@@ -185,6 +185,7 @@ import com.android.server.healthconnect.exportimport.ImportManager;
 import com.android.server.healthconnect.fitness.FitnessRecordDeleteHelper;
 import com.android.server.healthconnect.fitness.FitnessRecordReadHelper;
 import com.android.server.healthconnect.fitness.FitnessRecordUpsertHelper;
+import com.android.server.healthconnect.fitness.aggregation.FitnessRecordAggregateHelper;
 import com.android.server.healthconnect.logging.BackupRestoreLogger;
 import com.android.server.healthconnect.logging.ExportImportLogger;
 import com.android.server.healthconnect.logging.HealthConnectServiceLogger;
@@ -218,7 +219,6 @@ import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityH
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
-import com.android.server.healthconnect.storage.request.AggregateTransactionRequest;
 import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInternalRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.PreferencesManager;
@@ -292,6 +292,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private final FitnessRecordUpsertHelper mFitnessRecordUpsertHelper;
     private final FitnessRecordReadHelper mFitnessRecordReadHelper;
     private final FitnessRecordDeleteHelper mFitnessRecordDeleteHelper;
+    private final FitnessRecordAggregateHelper mFitnessRecordAggregateHelper;
     private final MedicalResourceHelper mMedicalResourceHelper;
     private final MedicalDataSourceHelper mMedicalDataSourceHelper;
     private final ExportManager mExportManager;
@@ -331,6 +332,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             FitnessRecordUpsertHelper fitnessRecordUpsertHelper,
             FitnessRecordReadHelper fitnessRecordReadHelper,
             FitnessRecordDeleteHelper fitnessRecordDeleteHelper,
+            FitnessRecordAggregateHelper fitnessRecordAggregateHelper,
             MedicalResourceHelper medicalResourceHelper,
             MedicalDataSourceHelper medicalDataSourceHelper,
             ExportManager exportManager,
@@ -377,6 +379,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mFitnessRecordUpsertHelper = fitnessRecordUpsertHelper;
         mFitnessRecordReadHelper = fitnessRecordReadHelper;
         mFitnessRecordDeleteHelper = fitnessRecordDeleteHelper;
+        mFitnessRecordAggregateHelper = fitnessRecordAggregateHelper;
         mMedicalResourceHelper = medicalResourceHelper;
         mMedicalDataSourceHelper = medicalDataSourceHelper;
 
@@ -694,18 +697,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     }
                     boolean shouldRecordAccessLog = !holdsDataManagementPermission;
                     callback.onResult(
-                            new AggregateTransactionRequest(
-                                            attributionSource.getPackageName(),
-                                            request,
-                                            mTransactionManager,
-                                            mAppInfoHelper,
-                                            mHealthDataCategoryPriorityHelper,
-                                            mAccessLogsHelper,
-                                            mReadAccessLogsHelper,
-                                            mInternalHealthConnectMappings,
-                                            startDateAccess,
-                                            shouldRecordAccessLog)
-                                    .getAggregateDataResponseParcel());
+                            mFitnessRecordAggregateHelper.aggregateRecords(
+                                    attributionSource.getPackageName(),
+                                    request,
+                                    startDateAccess,
+                                    shouldRecordAccessLog));
                     logger.setDataTypesFromRecordTypes(recordTypesToTest)
                             .setHealthDataServiceApiStatusSuccess();
                 },

@@ -73,6 +73,7 @@ public class HealthConnectManagerService extends SystemService {
                         mHealthConnectInjector.getFitnessRecordUpsertHelper(),
                         mHealthConnectInjector.getFitnessRecordReadHelper(),
                         mHealthConnectInjector.getFitnessRecordDeleteHelper(),
+                        mHealthConnectInjector.getFitnessRecordAggregateHelper(),
                         mHealthConnectInjector.getMedicalResourceHelper(),
                         mHealthConnectInjector.getMedicalDataSourceHelper(),
                         mHealthConnectInjector.getExportManager(),

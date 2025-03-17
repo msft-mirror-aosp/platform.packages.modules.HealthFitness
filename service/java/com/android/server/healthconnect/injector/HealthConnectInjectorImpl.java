@@ -35,6 +35,7 @@ import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.fitness.FitnessRecordDeleteHelper;
 import com.android.server.healthconnect.fitness.FitnessRecordReadHelper;
 import com.android.server.healthconnect.fitness.FitnessRecordUpsertHelper;
+import com.android.server.healthconnect.fitness.aggregation.FitnessRecordAggregateHelper;
 import com.android.server.healthconnect.logging.BackupRestoreLogger;
 import com.android.server.healthconnect.logging.ExportImportLogger;
 import com.android.server.healthconnect.logging.UsageStatsCollector;
@@ -117,6 +118,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     private final FitnessRecordUpsertHelper mFitnessRecordUpsertHelper;
     private final FitnessRecordReadHelper mFitnessRecordReadHelper;
     private final FitnessRecordDeleteHelper mFitnessRecordDeleteHelper;
+    private final FitnessRecordAggregateHelper mFitnessRecordAggregateHelper;
     private final MedicalDataSourceHelper mMedicalDataSourceHelper;
     private final MedicalResourceHelper mMedicalResourceHelper;
     private final MigrationBroadcastScheduler mMigrationBroadcastScheduler;
@@ -358,6 +360,16 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                                 mAccessLogsHelper,
                                 mInternalHealthConnectMappings)
                         : builder.mFitnessRecordDeleteHelper;
+        mFitnessRecordAggregateHelper =
+                builder.mFitnessRecordAggregateHelper == null
+                        ? new FitnessRecordAggregateHelper(
+                                mTransactionManager,
+                                mAppInfoHelper,
+                                mHealthDataCategoryPriorityHelper,
+                                mAccessLogsHelper,
+                                mReadAccessLogsHelper,
+                                mInternalHealthConnectMappings)
+                        : builder.mFitnessRecordAggregateHelper;
         mMedicalDataSourceHelper =
                 builder.mMedicalDataSourceHelper == null
                         ? new MedicalDataSourceHelper(
@@ -534,6 +546,11 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
     }
 
     @Override
+    public FitnessRecordAggregateHelper getFitnessRecordAggregateHelper() {
+        return mFitnessRecordAggregateHelper;
+    }
+
+    @Override
     public MedicalDataSourceHelper getMedicalDataSourceHelper() {
         return mMedicalDataSourceHelper;
     }
@@ -700,6 +717,7 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
         @Nullable private FitnessRecordUpsertHelper mFitnessRecordUpsertHelper;
         @Nullable private FitnessRecordReadHelper mFitnessRecordReadHelper;
         @Nullable private FitnessRecordDeleteHelper mFitnessRecordDeleteHelper;
+        @Nullable private FitnessRecordAggregateHelper mFitnessRecordAggregateHelper;
         @Nullable private MedicalDataSourceHelper mMedicalDataSourceHelper;
         @Nullable private MedicalResourceHelper mMedicalResourceHelper;
         @Nullable private MigrationBroadcastScheduler mMigrationBroadcastScheduler;
@@ -907,6 +925,14 @@ public class HealthConnectInjectorImpl extends HealthConnectInjector {
                 FitnessRecordDeleteHelper fitnessRecordDeleteHelper) {
             Objects.requireNonNull(fitnessRecordDeleteHelper);
             mFitnessRecordDeleteHelper = fitnessRecordDeleteHelper;
+            return this;
+        }
+
+        /** Set fake or custom {@link FitnessRecordDeleteHelper} */
+        public Builder setFitnessRecordDeleteHelper(
+                FitnessRecordAggregateHelper fitnessRecordAggregateHelper) {
+            Objects.requireNonNull(fitnessRecordAggregateHelper);
+            mFitnessRecordAggregateHelper = fitnessRecordAggregateHelper;
             return this;
         }
 
