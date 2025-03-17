@@ -160,6 +160,7 @@ public class CloudRestoreManagerTest {
         mCloudRestoreManager =
                 new CloudRestoreManager(
                         mTransactionManager,
+                        healthConnectInjector.getFitnessRecordUpsertHelper(),
                         mFitnessRecordReadHelper,
                         mMappings,
                         mDeviceInfoHelper,

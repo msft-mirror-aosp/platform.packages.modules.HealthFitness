@@ -28,6 +28,7 @@ import com.android.server.healthconnect.backuprestore.BackupRestore;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.fitness.FitnessRecordDeleteHelper;
 import com.android.server.healthconnect.fitness.FitnessRecordReadHelper;
+import com.android.server.healthconnect.fitness.FitnessRecordUpsertHelper;
 import com.android.server.healthconnect.logging.BackupRestoreLogger;
 import com.android.server.healthconnect.logging.ExportImportLogger;
 import com.android.server.healthconnect.logging.UsageStatsCollector;
@@ -173,6 +174,12 @@ public abstract class HealthConnectInjector {
 
     /** Getter for {@link MigrationCleaner} instance initialised by the Health Connect Injector. */
     public abstract MigrationCleaner getMigrationCleaner();
+
+    /**
+     * Getter for {@link FitnessRecordUpsertHelper} instance initialised by the Health Connect
+     * Injector.
+     */
+    public abstract FitnessRecordUpsertHelper getFitnessRecordUpsertHelper();
 
     /**
      * Getter for {@link FitnessRecordReadHelper} instance initialised by the Health Connect

@@ -28,6 +28,7 @@ import android.health.connect.internal.datatypes.RecordInternal;
 import android.util.Slog;
 
 import com.android.server.healthconnect.fitness.FitnessRecordReadHelper;
+import com.android.server.healthconnect.fitness.FitnessRecordUpsertHelper;
 import com.android.server.healthconnect.logging.BackupRestoreLogger;
 import com.android.server.healthconnect.proto.backuprestore.AppInfoMap;
 import com.android.server.healthconnect.proto.backuprestore.BackupData;
@@ -38,7 +39,6 @@ import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
-import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 
 import java.time.Clock;
@@ -61,6 +61,7 @@ public class CloudRestoreManager {
     private static final String TAG = "CloudRestoreManager";
 
     private final TransactionManager mTransactionManager;
+    private final FitnessRecordUpsertHelper mFitnessRecordUpsertHelper;
     private final FitnessRecordReadHelper mFitnessRecordReadHelper;
     private final InternalHealthConnectMappings mInternalHealthConnectMappings;
     private final DeviceInfoHelper mDeviceInfoHelper;
@@ -74,6 +75,7 @@ public class CloudRestoreManager {
 
     public CloudRestoreManager(
             TransactionManager transactionManager,
+            FitnessRecordUpsertHelper fitnessRecordUpsertHelper,
             FitnessRecordReadHelper fitnessRecordReadHelper,
             InternalHealthConnectMappings internalHealthConnectMappings,
             DeviceInfoHelper deviceInfoHelper,
@@ -83,6 +85,7 @@ public class CloudRestoreManager {
             Clock clock,
             BackupRestoreLogger backupRestoreLogger) {
         mTransactionManager = transactionManager;
+        mFitnessRecordUpsertHelper = fitnessRecordUpsertHelper;
         mFitnessRecordReadHelper = fitnessRecordReadHelper;
         mInternalHealthConnectMappings = internalHealthConnectMappings;
         mDeviceInfoHelper = deviceInfoHelper;
@@ -136,15 +139,9 @@ public class CloudRestoreManager {
         var internalRecords =
                 protoRecords.stream().map(this::toRecordInternal).filter(Objects::nonNull).toList();
         removeNonExistentReferences(internalRecords);
-
-        UpsertTransactionRequest upsertRequest =
-                UpsertTransactionRequest.createForRestore(
-                        internalRecords,
-                        mTransactionManager,
-                        mInternalHealthConnectMappings,
-                        mDeviceInfoHelper,
-                        mAppInfoHelper);
-        var insertedRecords = upsertRequest.execute();
+        var insertedRecords =
+                mFitnessRecordUpsertHelper.insertRecordsUnrestricted(
+                        internalRecords, /* shouldGenerateChangeLog= */ true);
 
         protoRecords.stream()
                 .collect(
