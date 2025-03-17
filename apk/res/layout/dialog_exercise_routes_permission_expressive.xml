@@ -55,34 +55,31 @@
                 android:id="@+id/radio_button_always_allow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="?android:attr/listPreferredItemHeight"
+                android:minHeight="@dimen/button_size"
                 android:paddingStart="?android:attr/listPreferredItemPaddingStart"
                 android:paddingEnd="0dp"
                 android:text="@string/route_permissions_always_allow"
-                android:textAppearance="?attr/textAppearanceSummary"
-                android:textColor="?android:attr/textColorPrimary" />
+                android:textAppearance="?attr/textAppearanceExpressiveRadioButton"  />
 
             <RadioButton
                 android:id="@+id/radio_button_ask"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="?android:attr/listPreferredItemHeight"
+                android:minHeight="@dimen/button_size"
                 android:paddingStart="?android:attr/listPreferredItemPaddingStart"
                 android:paddingEnd="0dp"
                 android:text="@string/route_permissions_ask"
-                android:textAppearance="?attr/textAppearanceSummary"
-                android:textColor="?android:attr/textColorPrimary" />
+                android:textAppearance="?attr/textAppearanceExpressiveRadioButton"  />
 
             <RadioButton
                 android:id="@+id/radio_button_revoke"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="?android:attr/listPreferredItemHeight"
+                android:minHeight="@dimen/button_size"
                 android:paddingStart="?android:attr/listPreferredItemPaddingStart"
                 android:paddingEnd="0dp"
                 android:text="@string/route_permissions_deny"
-                android:textAppearance="?attr/textAppearanceSummary"
-                android:textColor="?android:attr/textColorPrimary" />
+                android:textAppearance="?attr/textAppearanceExpressiveRadioButton" />
 
         </RadioGroup>
     </LinearLayout>
