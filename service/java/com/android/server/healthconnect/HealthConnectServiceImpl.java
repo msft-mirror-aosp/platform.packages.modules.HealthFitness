@@ -184,6 +184,8 @@ import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.exportimport.ImportManager;
 import com.android.server.healthconnect.fitness.FitnessRecordDeleteHelper;
 import com.android.server.healthconnect.fitness.FitnessRecordReadHelper;
+import com.android.server.healthconnect.fitness.FitnessRecordUpsertHelper;
+import com.android.server.healthconnect.fitness.aggregation.FitnessRecordAggregateHelper;
 import com.android.server.healthconnect.logging.BackupRestoreLogger;
 import com.android.server.healthconnect.logging.ExportImportLogger;
 import com.android.server.healthconnect.logging.HealthConnectServiceLogger;
@@ -217,9 +219,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityH
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ReadAccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
-import com.android.server.healthconnect.storage.request.AggregateTransactionRequest;
 import com.android.server.healthconnect.storage.request.UpsertMedicalResourceInternalRequest;
-import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
 import com.android.server.healthconnect.storage.utils.InternalHealthConnectMappings;
 import com.android.server.healthconnect.storage.utils.PreferencesManager;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
@@ -289,8 +289,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private final DeviceInfoHelper mDeviceInfoHelper;
     private final ExportImportSettingsStorage mExportImportSettingsStorage;
     private final PreferenceHelper mPreferenceHelper;
+    private final FitnessRecordUpsertHelper mFitnessRecordUpsertHelper;
     private final FitnessRecordReadHelper mFitnessRecordReadHelper;
     private final FitnessRecordDeleteHelper mFitnessRecordDeleteHelper;
+    private final FitnessRecordAggregateHelper mFitnessRecordAggregateHelper;
     private final MedicalResourceHelper mMedicalResourceHelper;
     private final MedicalDataSourceHelper mMedicalDataSourceHelper;
     private final ExportManager mExportManager;
@@ -327,8 +329,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             MigrationStateManager migrationStateManager,
             MigrationUiStateManager migrationUiStateManager,
             MigrationCleaner migrationCleaner,
+            FitnessRecordUpsertHelper fitnessRecordUpsertHelper,
             FitnessRecordReadHelper fitnessRecordReadHelper,
             FitnessRecordDeleteHelper fitnessRecordDeleteHelper,
+            FitnessRecordAggregateHelper fitnessRecordAggregateHelper,
             MedicalResourceHelper medicalResourceHelper,
             MedicalDataSourceHelper medicalDataSourceHelper,
             ExportManager exportManager,
@@ -372,8 +376,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mMigrationUiStateManager.attachTo(migrationStateManager);
         migrationCleaner.attachTo(migrationStateManager);
 
+        mFitnessRecordUpsertHelper = fitnessRecordUpsertHelper;
         mFitnessRecordReadHelper = fitnessRecordReadHelper;
         mFitnessRecordDeleteHelper = fitnessRecordDeleteHelper;
+        mFitnessRecordAggregateHelper = fitnessRecordAggregateHelper;
         mMedicalResourceHelper = medicalResourceHelper;
         mMedicalDataSourceHelper = medicalDataSourceHelper;
 
@@ -409,6 +415,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         mContext,
                         mExportImportSettingsStorage,
                         mTransactionManager,
+                        mFitnessRecordUpsertHelper,
                         mFitnessRecordReadHelper,
                         mDeviceInfoHelper,
                         mHealthDataCategoryPriorityHelper,
@@ -437,6 +444,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 isCloudBackupRestoreEnabled()
                         ? new CloudRestoreManager(
                                 mTransactionManager,
+                                mFitnessRecordUpsertHelper,
                                 mFitnessRecordReadHelper,
                                 mInternalHealthConnectMappings,
                                 mDeviceInfoHelper,
@@ -571,18 +579,12 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             recordsParcel.getRecordsChunkSize());
                     mDataPermissionEnforcer.enforceRecordsWritePermissions(
                             recordInternals, attributionSource);
-                    UpsertTransactionRequest insertRequest =
-                            UpsertTransactionRequest.createForInsert(
+                    List<String> uuids =
+                            mFitnessRecordUpsertHelper.insertRecords(
                                     Objects.requireNonNull(attributionSource.getPackageName()),
                                     recordInternals,
-                                    mTransactionManager,
-                                    mInternalHealthConnectMappings,
-                                    mDeviceInfoHelper,
-                                    mAppInfoHelper,
-                                    mAccessLogsHelper,
                                     mDataPermissionEnforcer.collectExtraWritePermissionStateMapping(
                                             recordInternals, attributionSource));
-                    List<String> uuids = insertRequest.execute();
                     tryAndReturnResult(callback, uuids, logger);
 
                     mThreadScheduler.scheduleInternalTask(
@@ -695,18 +697,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     }
                     boolean shouldRecordAccessLog = !holdsDataManagementPermission;
                     callback.onResult(
-                            new AggregateTransactionRequest(
-                                            attributionSource.getPackageName(),
-                                            request,
-                                            mTransactionManager,
-                                            mAppInfoHelper,
-                                            mHealthDataCategoryPriorityHelper,
-                                            mAccessLogsHelper,
-                                            mReadAccessLogsHelper,
-                                            mInternalHealthConnectMappings,
-                                            startDateAccess,
-                                            shouldRecordAccessLog)
-                                    .getAggregateDataResponseParcel());
+                            mFitnessRecordAggregateHelper.aggregateRecords(
+                                    attributionSource.getPackageName(),
+                                    request,
+                                    startDateAccess,
+                                    shouldRecordAccessLog));
                     logger.setDataTypesFromRecordTypes(recordTypesToTest)
                             .setHealthDataServiceApiStatusSuccess();
                 },
@@ -944,18 +939,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             recordsParcel.getRecordsChunkSize());
                     mDataPermissionEnforcer.enforceRecordsWritePermissions(
                             recordInternals, attributionSource);
-                    UpsertTransactionRequest updateRequest =
-                            UpsertTransactionRequest.createForUpdate(
-                                    Objects.requireNonNull(attributionSource.getPackageName()),
-                                    recordInternals,
-                                    mTransactionManager,
-                                    mInternalHealthConnectMappings,
-                                    mDeviceInfoHelper,
-                                    mAppInfoHelper,
-                                    mAccessLogsHelper,
-                                    mDataPermissionEnforcer.collectExtraWritePermissionStateMapping(
-                                            recordInternals, attributionSource));
-                    updateRequest.execute();
+                    mFitnessRecordUpsertHelper.updateRecords(
+                            Objects.requireNonNull(attributionSource.getPackageName()),
+                            recordInternals,
+                            mDataPermissionEnforcer.collectExtraWritePermissionStateMapping(
+                                    recordInternals, attributionSource));
                     tryAndReturnResult(callback, logger);
                     logRecordTypeSpecificUpsertMetrics(
                             recordInternals, attributionSource.getPackageName());
