@@ -199,6 +199,7 @@ import com.android.server.healthconnect.permission.DataPermissionEnforcer;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
 import com.android.server.healthconnect.permission.MedicalDataPermissionEnforcer;
+import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.phr.PhrPageTokenWrapper;
 import com.android.server.healthconnect.phr.ReadMedicalResourcesInternalResponse;
 import com.android.server.healthconnect.phr.validations.FhirResourceValidator;
@@ -3734,7 +3735,12 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         int permissionFlags =
                 mContext.getPackageManager()
                         .getPermissionFlags(READ_HEALTH_DATA_IN_BACKGROUND, packageName, user);
-        return HealthConnectPermissionHelper.isFromSplitPermission(permissionFlags);
+        int targetSdk =
+                PackageInfoUtils.getPackageInfoUnchecked(
+                                packageName, user, PackageManager.PackageInfoFlags.of(0), mContext)
+                        .applicationInfo
+                        .targetSdkVersion;
+        return HealthConnectPermissionHelper.isFromSplitPermission(permissionFlags, targetSdk);
     }
 
     private static void tryAndReturnResult(
