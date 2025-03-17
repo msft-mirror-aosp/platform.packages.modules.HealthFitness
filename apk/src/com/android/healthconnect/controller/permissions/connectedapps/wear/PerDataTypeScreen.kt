@@ -186,7 +186,7 @@ fun AllowedAppsList(
                 iconBuilder =
                     WearPermissionIconBuilder.builder(R.drawable.ic_remove_access_for_all_apps)
                         .tint(Color(0xFFEC928E)),
-                modifier = Modifier.padding(start = 2.dp, end = 2.dp, top = 14.dp, bottom = 8.dp),
+                modifier = Modifier.padding(start = 2.dp, end = 2.dp, top = 2.dp, bottom = 8.dp),
                 style = WearPermissionButtonStyle.Warning,
             )
         }
