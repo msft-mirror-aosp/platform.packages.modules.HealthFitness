@@ -17,8 +17,6 @@ filegroup {
         // testStageRemoteData_withNotReadMode_onlyValidFilesStaged fails but all other tests
         // passing
         "unittests/src/com/android/server/healthconnect/HealthConnectServiceImplTest.java",
-        // TestUtils.waitForTaskToFinishSuccessfully is timing out
-        "unittests/src/com/android/server/healthconnect/HealthConnectThreadSchedulerTest.java",
         // Uses ExtendedMockito
         "unittests/src/com/android/server/healthconnect/backuprestore/BackupRestoreTest.java",
         // Uses CTS TestUtils
