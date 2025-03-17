@@ -411,6 +411,7 @@ public class HealthConnectServiceImplTest {
                         healthConnectInjector.getFitnessRecordUpsertHelper(),
                         healthConnectInjector.getFitnessRecordReadHelper(),
                         healthConnectInjector.getFitnessRecordDeleteHelper(),
+                        healthConnectInjector.getFitnessRecordAggregateHelper(),
                         healthConnectInjector.getMedicalResourceHelper(),
                         healthConnectInjector.getMedicalDataSourceHelper(),
                         healthConnectInjector.getExportManager(),
