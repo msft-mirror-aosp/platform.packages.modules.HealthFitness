@@ -144,6 +144,7 @@ fun AllowedAppsList(
     }
 
     if (allowedApps?.isNotEmpty() == true) {
+        allowedApps.sortBy { it.appName }
         val nApps = allowedApps.size
         Column {
             // Allowed text.
@@ -218,6 +219,7 @@ fun DeniedAppsList(
     }
 
     if (deniedApps?.isNotEmpty() == true) {
+        deniedApps.sortBy { it.appName }
         val nApps = deniedApps.size
         Column {
             // Not allowed text.
