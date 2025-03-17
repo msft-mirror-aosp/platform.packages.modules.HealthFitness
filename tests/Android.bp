@@ -14,7 +14,7 @@ filegroup {
         "unittests/src/android/healthconnect/internal/datatypes/SleepSessionInternalTest.java",
         // Still uses ExtendedMockito
         "unittests/src/com/android/server/healthconnect/HealthConnectManagerServiceTest.java",
-        // - SystemUtil.eventually from cts
+        // TestUtils.isHealthConnectFullySupported
         "unittests/src/com/android/server/healthconnect/HealthConnectServiceImplTest.java",
         // TestUtils.waitForTaskToFinishSuccessfully is timing out
         "unittests/src/com/android/server/healthconnect/HealthConnectThreadSchedulerTest.java",
@@ -40,8 +40,6 @@ filegroup {
         // Mockito cannot mock this class: class android.content.pm.PackageManager.
         "unittests/src/com/android/server/healthconnect/logging/UsageStatsCollectorTest.java",
         // Uses ExtendedMockito
-        "unittests/src/com/android/server/healthconnect/migration/MigrationStateChangeJobTest.java",
-        // Uses ExtendedMockito
         "unittests/src/com/android/server/healthconnect/migration/MigrationStateManagerTest.java",
         // Fails due to resources not included
         "unittests/src/com/android/server/healthconnect/migration/notification/MigrationNotificationFactoryTest.java",
@@ -53,10 +51,6 @@ filegroup {
         "unittests/src/com/android/server/healthconnect/permission/PermissionPackageChangesOrchestratorTest.java",
         // Doesn't work because threadScheduler is null (so can't read member)
         "unittests/src/com/android/server/healthconnect/storage/datatypehelpers/HealthDataCategoryPriorityHelperTest.java",
-        // Need PhrHelperTestUtils, which has CTS dependencies that don't work
-        "unittests/src/com/android/server/healthconnect/storage/datatypehelpers/MedicalDataSourceHelperTest.java",
-        "unittests/src/com/android/server/healthconnect/storage/datatypehelpers/MedicalResourceHelperTest.java",
-        "unittests/src/com/android/server/healthconnect/storage/datatypehelpers/MedicalResourceIndicesHelperTest.java",
         // ExtendedMockito cannot be used in Robolectric tests so these fixtures aren't used.
         "unittests/src/com/android/server/healthconnect/testing/fixtures/EnvironmentFixture.java",
         "unittests/src/com/android/server/healthconnect/testing/fixtures/SQLiteDatabaseFixture.java",
