@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -129,7 +130,10 @@ fun GrantMultipleFitnessPermissions(
                         .uppercaseLabel
                 )
             val isChecked = checkedStates[index]
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+            ) {
                 SwitchButton(
                     label = {
                         Text(
@@ -148,6 +152,7 @@ fun GrantMultipleFitnessPermissions(
                         )
                     },
                     enabled = true,
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         }
@@ -168,7 +173,7 @@ fun GrantMultipleFitnessPermissions(
                     }
                     onButtonClicked()
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                 labelMaxLines = Integer.MAX_VALUE,
                 materialUIVersion = materialUIVersion,
             )
