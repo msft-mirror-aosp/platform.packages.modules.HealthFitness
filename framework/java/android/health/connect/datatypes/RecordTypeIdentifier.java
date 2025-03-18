@@ -18,7 +18,6 @@ package android.health.connect.datatypes;
 
 import static com.android.healthfitness.flags.Flags.FLAG_ACTIVITY_INTENSITY;
 import static com.android.healthfitness.flags.Flags.FLAG_MINDFULNESS;
-import static com.android.healthfitness.flags.Flags.FLAG_SMOKING;
 
 import android.annotation.FlaggedApi;
 import android.annotation.IntDef;
@@ -383,12 +382,6 @@ public final class RecordTypeIdentifier {
     public static final int RECORD_TYPE_ACTIVITY_INTENSITY = 42;
 
     /**
-     * @see NicotineIntakeRecord
-     */
-    @FlaggedApi(FLAG_SMOKING)
-    public static final int RECORD_TYPE_NICOTINE_INTAKE = 43;
-
-    /**
      * Valid set of values for this IntDef. Update this set when add new type or deprecate existing
      * type.
      *
@@ -487,8 +480,7 @@ public final class RecordTypeIdentifier {
         RECORD_TYPE_SKIN_TEMPERATURE,
         RECORD_TYPE_PLANNED_EXERCISE_SESSION,
         RECORD_TYPE_MINDFULNESS_SESSION,
-        RECORD_TYPE_ACTIVITY_INTENSITY,
-        RECORD_TYPE_NICOTINE_INTAKE
+        RECORD_TYPE_ACTIVITY_INTENSITY
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface RecordType {}

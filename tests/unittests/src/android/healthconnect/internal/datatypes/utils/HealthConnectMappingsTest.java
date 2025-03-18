@@ -18,7 +18,6 @@ package android.healthconnect.internal.datatypes.utils;
 
 import static android.health.connect.Constants.DEFAULT_INT;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_ACTIVITY_INTENSITY;
-import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_NICOTINE_INTAKE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_UNKNOWN;
 import static android.health.connect.internal.datatypes.utils.DataTypeDescriptors.getAllDataTypeDescriptors;
 
@@ -72,7 +71,7 @@ public class HealthConnectMappingsTest {
         assertThat(recordTypeIds).hasSize(getAllDataTypeDescriptors().size());
     }
 
-    @DisableFlags({Flags.FLAG_ACTIVITY_INTENSITY, Flags.FLAG_SMOKING})
+    @DisableFlags(Flags.FLAG_ACTIVITY_INTENSITY)
     @Test
     public void getAllRecordTypeIdentifiers_equalsToLegacy() {
         HealthConnectMappings healthConnectMappings = new HealthConnectMappings();
@@ -97,7 +96,7 @@ public class HealthConnectMappingsTest {
         }
     }
 
-    @DisableFlags({Flags.FLAG_ACTIVITY_INTENSITY, Flags.FLAG_SMOKING})
+    @DisableFlags(Flags.FLAG_ACTIVITY_INTENSITY)
     @Test
     public void getHealthReadPermission_equalsToLegacy() {
         HealthConnectMappings healthConnectMappings = new HealthConnectMappings();
@@ -123,7 +122,7 @@ public class HealthConnectMappingsTest {
         }
     }
 
-    @DisableFlags({Flags.FLAG_ACTIVITY_INTENSITY, Flags.FLAG_SMOKING})
+    @DisableFlags(Flags.FLAG_ACTIVITY_INTENSITY)
     @Test
     public void getHealthWritePermission_equalsToLegacy() {
         HealthConnectMappings healthConnectMappings = new HealthConnectMappings();
@@ -151,7 +150,7 @@ public class HealthConnectMappingsTest {
         }
     }
 
-    @DisableFlags({Flags.FLAG_ACTIVITY_INTENSITY, Flags.FLAG_SMOKING})
+    @DisableFlags(Flags.FLAG_ACTIVITY_INTENSITY)
     @Test
     public void isWritePermission_equalsToLegacy() {
         HealthConnectMappings healthConnectMappings = new HealthConnectMappings();
@@ -188,7 +187,7 @@ public class HealthConnectMappingsTest {
                 .isEqualTo(DEFAULT_INT);
     }
 
-    @DisableFlags({Flags.FLAG_ACTIVITY_INTENSITY, Flags.FLAG_SMOKING})
+    @DisableFlags(Flags.FLAG_ACTIVITY_INTENSITY)
     @Test
     public void getHealthDataCategoryForWritePermission_equalsToLegacy() {
         HealthConnectMappings healthConnectMappings = new HealthConnectMappings();
@@ -231,7 +230,7 @@ public class HealthConnectMappingsTest {
         assertThat(healthConnectMappings.getWriteHealthPermissionsFor(100)).isEmpty();
     }
 
-    @DisableFlags({Flags.FLAG_ACTIVITY_INTENSITY, Flags.FLAG_SMOKING})
+    @DisableFlags(Flags.FLAG_ACTIVITY_INTENSITY)
     @Test
     public void getWriteHealthPermissionsFor_equalsToLegacy() {
         HealthConnectMappings healthConnectMappings = new HealthConnectMappings();
@@ -265,7 +264,7 @@ public class HealthConnectMappingsTest {
         assertThat(map.values()).containsNoDuplicates();
     }
 
-    @DisableFlags({Flags.FLAG_ACTIVITY_INTENSITY, Flags.FLAG_SMOKING})
+    @DisableFlags(Flags.FLAG_ACTIVITY_INTENSITY)
     @Test
     public void getRecordIdToExternalRecordClassMap_equalsToLegacy() {
         HealthConnectMappings healthConnectMappings = new HealthConnectMappings();
@@ -287,7 +286,7 @@ public class HealthConnectMappingsTest {
         assertThat(map.values()).containsNoDuplicates();
     }
 
-    @DisableFlags({Flags.FLAG_ACTIVITY_INTENSITY, Flags.FLAG_SMOKING})
+    @DisableFlags(Flags.FLAG_ACTIVITY_INTENSITY)
     @Test
     public void getRecordIdToInternalRecordClassMap_equalsToLegacy() {
         HealthConnectMappings healthConnectMappings = new HealthConnectMappings();
@@ -307,7 +306,7 @@ public class HealthConnectMappingsTest {
         }
     }
 
-    @DisableFlags({Flags.FLAG_ACTIVITY_INTENSITY, Flags.FLAG_SMOKING})
+    @DisableFlags(Flags.FLAG_ACTIVITY_INTENSITY)
     @Test
     public void getRecordType_equalsToLegacy() {
         HealthConnectMappings healthConnectMappings = new HealthConnectMappings();
@@ -329,7 +328,7 @@ public class HealthConnectMappingsTest {
         }
     }
 
-    @DisableFlags({Flags.FLAG_ACTIVITY_INTENSITY, Flags.FLAG_SMOKING})
+    @DisableFlags(Flags.FLAG_ACTIVITY_INTENSITY)
     @Test
     public void hasRecordType_equalsToLegacy() {
         HealthConnectMappings healthConnectMappings = new HealthConnectMappings();
@@ -341,7 +340,7 @@ public class HealthConnectMappingsTest {
         }
     }
 
-    @DisableFlags({Flags.FLAG_ACTIVITY_INTENSITY, Flags.FLAG_SMOKING})
+    @DisableFlags(Flags.FLAG_ACTIVITY_INTENSITY)
     @Test
     public void getHealthPermissionCategoryForRecordType_equalsToLegacy() {
         HealthConnectMappings healthConnectMappings = new HealthConnectMappings();
@@ -370,7 +369,7 @@ public class HealthConnectMappingsTest {
         }
     }
 
-    @DisableFlags({Flags.FLAG_ACTIVITY_INTENSITY, Flags.FLAG_SMOKING})
+    @DisableFlags(Flags.FLAG_ACTIVITY_INTENSITY)
     @Test
     public void getRecordCategoryForRecordType_equalsToLegacy() {
         HealthConnectMappings healthConnectMappings = new HealthConnectMappings();
@@ -429,34 +428,5 @@ public class HealthConnectMappingsTest {
 
         assertThat(healthConnectMappings.getAllRecordTypeIdentifiers())
                 .doesNotContain(RECORD_TYPE_ACTIVITY_INTENSITY);
-    }
-
-    @EnableFlags({Flags.FLAG_SMOKING, Flags.FLAG_SMOKING_DB})
-    @Test
-    public void nicotineIntakeFlagEnabled_containsNicotineIntake() {
-        HealthConnectMappings healthConnectMappings = new HealthConnectMappings();
-
-        assertThat(healthConnectMappings.getAllRecordTypeIdentifiers())
-                .contains(RECORD_TYPE_NICOTINE_INTAKE);
-    }
-
-    @EnableFlags(Flags.FLAG_SMOKING_DB)
-    @DisableFlags(Flags.FLAG_SMOKING)
-    @Test
-    public void nicotineIntakeFlagDisabled_doesNotContainsNicotineIntake() {
-        HealthConnectMappings healthConnectMappings = new HealthConnectMappings();
-
-        assertThat(healthConnectMappings.getAllRecordTypeIdentifiers())
-                .doesNotContain(RECORD_TYPE_NICOTINE_INTAKE);
-    }
-
-    @EnableFlags(Flags.FLAG_SMOKING)
-    @DisableFlags(Flags.FLAG_SMOKING_DB)
-    @Test
-    public void nicotineIntakeDbFlagDisabled_doesNotContainsNicotineIntake() {
-        HealthConnectMappings healthConnectMappings = new HealthConnectMappings();
-
-        assertThat(healthConnectMappings.getAllRecordTypeIdentifiers())
-                .doesNotContain(RECORD_TYPE_NICOTINE_INTAKE);
     }
 }
