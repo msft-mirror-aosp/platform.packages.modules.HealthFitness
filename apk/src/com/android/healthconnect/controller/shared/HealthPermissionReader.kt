@@ -612,8 +612,6 @@ constructor(
             HealthPermissions.READ_ACTIVITY_INTENSITY,
             HealthPermissions.WRITE_ACTIVITY_INTENSITY ->
                 !AconfigFlagHelper.isActivityIntensityEnabled()
-            HealthPermissions.READ_NICOTINE_INTAKE,
-            HealthPermissions.WRITE_NICOTINE_INTAKE -> !AconfigFlagHelper.isNicotineIntakeEnabled()
             else -> false
         }
     }
