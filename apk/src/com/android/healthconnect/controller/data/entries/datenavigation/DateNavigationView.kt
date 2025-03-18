@@ -1,17 +1,17 @@
 /*
- * Copyright (C) 2022 The Android Open Source Project
+ * Copyright (C) 2025 The Android Open Source Project
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * ```
  *      http://www.apache.org/licenses/LICENSE-2.0
- * ```
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.android.healthconnect.controller.data.entries.datenavigation
 
@@ -139,11 +139,12 @@ constructor(
 
     private fun disableButtons(isEnabled: Boolean) {
         if (isEnabled) {
-            nextDayButton.isEnabled = nextDayEnabled
+            enableNextButton(nextDayEnabled)
         } else {
-            nextDayButton.isEnabled = false
+            enableNextButton(false)
         }
         previousDayButton.isEnabled = isEnabled
+        previousDayButton.isClickable = isEnabled
     }
 
     private fun bindNextDayButton(view: View) {
@@ -258,7 +259,7 @@ constructor(
                 .atStartOfDay(ZoneId.systemDefault())
                 .plus(toPeriod(period))
                 .toInstant()
-        nextDayButton.isEnabled = maxDate == null || !displayedEndDate.isAfter(today)
+        enableNextButton(maxDate == null || !displayedEndDate.isAfter(today))
         nextDayEnabled = nextDayButton.isEnabled
         (datePickerSpinner.adapter as DatePickerSpinnerAdapter).setStartTimeAndPeriod(
             getPeriodStartDate(selectedDate, period),
@@ -285,6 +286,11 @@ constructor(
                 PERIOD_WEEK -> resources.getString(R.string.a11y_previous_week)
                 PERIOD_MONTH -> resources.getString(R.string.a11y_previous_month)
             }
+    }
+
+    private fun enableNextButton(enable: Boolean) {
+        nextDayButton.isEnabled = enable
+        nextDayButton.isClickable = enable
     }
 
     interface OnDateChangedListener {
