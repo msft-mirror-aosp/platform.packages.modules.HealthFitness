@@ -3347,8 +3347,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     @Override
     @RequiresApi(Build.VERSION_CODES.BAKLAVA)
-    public void restoreChanges(
-            List<RestoreChange> changes, byte[] appInfoMap, IEmptyResponseCallback callback) {
+    public void restoreChanges(List<RestoreChange> changes, IEmptyResponseCallback callback) {
         checkParamsNonNull(changes);
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
@@ -3371,7 +3370,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 pid,
                                 uid,
                                 "Caller does not have permission to call" + " restoreChanges.");
-                        mCloudRestoreManager.restoreChanges(changes, appInfoMap);
+                        mCloudRestoreManager.restoreChanges(changes);
                         callback.onResult();
                     } catch (UnsupportedOperationException e) {
                         tryAndThrowException(errorCallback, e, ERROR_UNSUPPORTED_OPERATION);

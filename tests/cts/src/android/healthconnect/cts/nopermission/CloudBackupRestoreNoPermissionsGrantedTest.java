@@ -114,8 +114,7 @@ public class CloudBackupRestoreNoPermissionsGrantedTest {
     @Test
     public void restoreChanges_noPermission_securityException() throws InterruptedException {
         HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
-        mManager.restoreChanges(
-                List.of(), new byte[0], Executors.newSingleThreadExecutor(), receiver);
+        mManager.restoreChanges(List.of(), Executors.newSingleThreadExecutor(), receiver);
 
         HealthConnectException e = receiver.assertAndGetException();
         assertThat(e.getErrorCode()).isEqualTo(HealthConnectException.ERROR_SECURITY);

@@ -30,7 +30,6 @@ import android.util.Slog;
 import com.android.server.healthconnect.fitness.FitnessRecordReadHelper;
 import com.android.server.healthconnect.fitness.FitnessRecordUpsertHelper;
 import com.android.server.healthconnect.logging.BackupRestoreLogger;
-import com.android.server.healthconnect.proto.backuprestore.AppInfoMap;
 import com.android.server.healthconnect.proto.backuprestore.BackupData;
 import com.android.server.healthconnect.proto.backuprestore.Record;
 import com.android.server.healthconnect.proto.backuprestore.Settings;
@@ -123,19 +122,19 @@ public class CloudRestoreManager {
     }
 
     /** Restores backup data changes. */
-    public void restoreChanges(List<RestoreChange> changes, byte[] appInfoMap) {
-        Slog.i(TAG, "Restoring app info");
-        AppInfoMap appInfoMapProto;
-        try {
-            appInfoMapProto = AppInfoMap.parseFrom(appInfoMap);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Could not parse app info map", e);
-        }
-        mSettingsHelper.restoreAppInfo(appInfoMapProto.getAppInfoMap());
-        Slog.i(TAG, "Restored app info");
+    public void restoreChanges(List<RestoreChange> changes) {
+        var protoRecords = changes.stream().map(this::toRecord).filter(Objects::nonNull).toList();
+
+        Slog.i(TAG, "Creating app info");
+        protoRecords.stream()
+                .map(Record::getPackageName)
+                .distinct()
+                .forEach(
+                        packageName ->
+                                mAppInfoHelper.addAppInfoIfNoAppInfoEntryExists(packageName, null));
+        Slog.i(TAG, "Created app info");
 
         Slog.i(TAG, "Restoring " + changes.size() + " changes");
-        var protoRecords = changes.stream().map(this::toRecord).filter(Objects::nonNull).toList();
         var internalRecords =
                 protoRecords.stream().map(this::toRecordInternal).filter(Objects::nonNull).toList();
         removeNonExistentReferences(internalRecords);
