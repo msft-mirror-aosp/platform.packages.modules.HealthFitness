@@ -71,6 +71,7 @@
     <string name="recent_access_empty_state_description" description="Description of section shown when no apps have recently accessed health data [CHAR_LIMIT=NONE]">Apps which have recently accessed your data will automatically show here</string>
     <string name="recent_access_view_all_button" description="Label on a button leading to another screen showing all the writes and reads performed by connected apps in the last 24 hours. [CHAR LIMIT=50]">View all</string>
     <string name="recent_access_error" description="Text indicating to the user that there was an error while loading recent access [CHAR_LIMIT=NONE]">Could not load recent access</string>
+    <string name="recent_access_inactive_app" description="Text indicating that the app the user tried to click on is no longer available[CHAR_LIMIT=NONE]">This app is no longer available</string>
     <!--endregion-->
 
     <!--region Data categories  -->
