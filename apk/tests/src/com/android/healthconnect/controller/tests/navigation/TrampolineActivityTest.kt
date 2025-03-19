@@ -28,8 +28,7 @@ import android.health.connect.HealthConnectManager.ACTION_HEALTH_HOME_SETTINGS
 import android.health.connect.HealthConnectManager.ACTION_MANAGE_HEALTH_DATA
 import android.health.connect.HealthConnectManager.ACTION_MANAGE_HEALTH_PERMISSIONS
 import android.health.connect.HealthDataCategory
-import android.platform.test.annotations.DisableFlags
-import android.platform.test.annotations.EnableFlags
+import android.os.Build
 import android.platform.test.flag.junit.SetFlagsRule
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MediatorLiveData
@@ -42,6 +41,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.filters.SdkSuppress
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.autodelete.AutoDeleteRange.*
@@ -74,7 +74,6 @@ import com.android.healthconnect.controller.tests.utils.di.FakeDeviceInfoUtils
 import com.android.healthconnect.controller.tests.utils.showOnboarding
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
-import com.android.healthfitness.flags.Flags
 import com.android.settingslib.widget.SettingsThemeHelper
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -272,8 +271,9 @@ class TrampolineActivityTest {
         onView(withText("Steps")).check(matches(isDisplayed()))
     }
 
+    @SdkSuppress(maxSdkVersion = Build.VERSION_CODES.VANILLA_ICE_CREAM)
     @Test
-    fun manageHealthPermissions_launchesSettingsActivity() {
+    fun manageHealthPermissions_launchesSettingsActivity_healthConnectBrand() {
         launchActivityForResult<TrampolineActivity>(
             createStartIntent(ACTION_MANAGE_HEALTH_PERMISSIONS)
         )
@@ -282,6 +282,21 @@ class TrampolineActivityTest {
                 withText(
                     "Apps with this permission can read and write your" +
                         " health and fitness data."
+                )
+            )
+            .check(matches(isDisplayed()))
+    }
+
+    @SdkSuppress(minSdkVersion = Build.VERSION_CODES.BAKLAVA, codeName = "Baklava")
+    @Test
+    fun manageHealthPermissions_launchesSettingsActivity_healthFitnessBrand() {
+        launchActivityForResult<TrampolineActivity>(
+            createStartIntent(ACTION_MANAGE_HEALTH_PERMISSIONS)
+        )
+
+        onView(
+                withText(
+                    "Apps with this permission can read and write your health, fitness and wellness data. This includes data tracked from your devices and data stored in Health Connect"
                 )
             )
             .check(matches(isDisplayed()))
