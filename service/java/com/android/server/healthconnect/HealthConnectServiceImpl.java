@@ -418,7 +418,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         exportImportLogger);
 
         mCloudBackupManager =
-                isCloudBackupRestoreEnabled()
+                // TODO(b/400105647): Remove duplicate flag check once excess code size is resolved.
+                Flags.cloudBackupAndRestore() && isCloudBackupRestoreEnabled()
                         ? new CloudBackupManager(
                                 mTransactionManager,
                                 mFitnessRecordReadHelper,
@@ -434,7 +435,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 backupRestoreLogger)
                         : null;
         mCloudRestoreManager =
-                isCloudBackupRestoreEnabled()
+                // TODO(b/400105647): Remove duplicate flag check once excess code size is resolved.
+                Flags.cloudBackupAndRestore() && isCloudBackupRestoreEnabled()
                         ? new CloudRestoreManager(
                                 mTransactionManager,
                                 mFitnessRecordReadHelper,
@@ -3281,7 +3283,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
-                        if (mCloudBackupManager == null || !isCloudBackupRestoreEnabled()) {
+                        // TODO(b/400105647): Remove duplicate flag check once excess code size is
+                        // resolved.
+                        if (mCloudBackupManager == null
+                                || !Flags.cloudBackupAndRestore()
+                                || !isCloudBackupRestoreEnabled()) {
                             throw new UnsupportedOperationException(
                                     "getChangesForBackup is not supported.");
                         }
@@ -3316,7 +3322,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
-                        if (mCloudBackupManager == null || !isCloudBackupRestoreEnabled()) {
+                        // TODO(b/400105647): Remove duplicate flag check once excess code size is
+                        // resolved.
+                        if (mCloudBackupManager == null
+                                || !Flags.cloudBackupAndRestore()
+                                || !isCloudBackupRestoreEnabled()) {
                             throw new UnsupportedOperationException(
                                     "getSettingsForBackup is not supported.");
                         }
@@ -3350,7 +3360,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
-                        if (mCloudRestoreManager == null || !isCloudBackupRestoreEnabled()) {
+                        // TODO(b/400105647): Remove duplicate flag check once excess code size is
+                        // resolved.
+                        if (mCloudRestoreManager == null
+                                || !Flags.cloudBackupAndRestore()
+                                || !isCloudBackupRestoreEnabled()) {
                             throw new UnsupportedOperationException(
                                     "restoreSettings is not supported.");
                         }
@@ -3386,7 +3400,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
-                        if (mCloudRestoreManager == null || !isCloudBackupRestoreEnabled()) {
+                        // TODO(b/400105647): Remove duplicate flag check once excess code size is
+                        // resolved.
+                        if (mCloudRestoreManager == null
+                                || !Flags.cloudBackupAndRestore()
+                                || !isCloudBackupRestoreEnabled()) {
                             throw new UnsupportedOperationException("canRestore is not supported.");
                         }
                         enforceIsForegroundUser(userHandle);
@@ -3418,7 +3436,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mThreadScheduler.scheduleControllerTask(
                 () -> {
                     try {
-                        if (mCloudRestoreManager == null || !isCloudBackupRestoreEnabled()) {
+                        // TODO(b/400105647): Remove duplicate flag check once excess code size is
+                        // resolved.
+                        if (mCloudRestoreManager == null
+                                || !Flags.cloudBackupAndRestore()
+                                || !isCloudBackupRestoreEnabled()) {
                             throw new UnsupportedOperationException(
                                     "restoreChanges is not supported.");
                         }
