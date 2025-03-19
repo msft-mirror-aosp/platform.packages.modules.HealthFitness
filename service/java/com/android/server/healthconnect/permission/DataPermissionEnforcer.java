@@ -244,14 +244,21 @@ public class DataPermissionEnforcer {
             int permissionFlags =
                     mContext.getPackageManager()
                             .getPermissionFlags(permissionName, packageName, user);
-            int targetSdk =
-                    PackageInfoUtils.getPackageInfoUnchecked(
-                                    packageName,
-                                    user,
-                                    PackageManager.PackageInfoFlags.of(0),
-                                    mContext)
-                            .applicationInfo
-                            .targetSdkVersion;
+            int targetSdk;
+            try {
+                targetSdk =
+                        PackageInfoUtils.getPackageInfoUnchecked(
+                                        packageName,
+                                        user,
+                                        PackageManager.PackageInfoFlags.of(0),
+                                        mContext)
+                                .applicationInfo
+                                .targetSdkVersion;
+            } catch (Exception e) {
+                throw new SecurityException(
+                        "Caller package is not found. Unable to determine permission state.");
+            }
+
             if (HealthConnectPermissionHelper.isFromSplitPermission(permissionFlags, targetSdk)) {
                 throw new SecurityException(
                         "Caller is requesting HealthConnect API access from "

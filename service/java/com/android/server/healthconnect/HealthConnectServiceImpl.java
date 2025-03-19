@@ -3689,11 +3689,22 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         int permissionFlags =
                 mContext.getPackageManager()
                         .getPermissionFlags(READ_HEALTH_DATA_IN_BACKGROUND, packageName, user);
-        int targetSdk =
-                PackageInfoUtils.getPackageInfoUnchecked(
-                                packageName, user, PackageManager.PackageInfoFlags.of(0), mContext)
-                        .applicationInfo
-                        .targetSdkVersion;
+
+        int targetSdk;
+        try {
+            targetSdk =
+                    PackageInfoUtils.getPackageInfoUnchecked(
+                                    packageName,
+                                    user,
+                                    PackageManager.PackageInfoFlags.of(0),
+                                    mContext)
+                            .applicationInfo
+                            .targetSdkVersion;
+        } catch (Exception e) {
+            // Cannot find the package, default false.
+            return false;
+        }
+
         return HealthConnectPermissionHelper.isFromSplitPermission(permissionFlags, targetSdk);
     }
 
