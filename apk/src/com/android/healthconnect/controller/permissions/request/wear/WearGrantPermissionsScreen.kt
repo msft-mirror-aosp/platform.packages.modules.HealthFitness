@@ -110,6 +110,7 @@ fun GrantMultipleFitnessPermissions(
         materialUIVersion = materialUIVersion,
         asScalingList = true,
         showTimeText = false,
+        image = R.drawable.ic_health_connect,
         title = res.getString(R.string.wear_allow_app_access_fitness_and_wellness_data, appName),
         subtitle =
             res.getString(
@@ -239,6 +240,8 @@ fun GrantSingleFitnessPermission(
     ScrollableScreen(
         materialUIVersion = materialUIVersion,
         showTimeText = false,
+        asScalingList = true,
+        image = R.drawable.ic_health_connect,
         title =
             res.getString(
                 R.string.wear_request_single_data_type_permission,
@@ -299,6 +302,8 @@ fun GrantReadBackgroundHealthPermission(
     ScrollableScreen(
         materialUIVersion = materialUIVersion,
         showTimeText = false,
+        asScalingList = true,
+        image = R.drawable.ic_health_connect,
         title = res.getString(R.string.wear_allow_app_access_fitness_and_wellness_data, appName),
     ) {
         // Allow all the time button.
