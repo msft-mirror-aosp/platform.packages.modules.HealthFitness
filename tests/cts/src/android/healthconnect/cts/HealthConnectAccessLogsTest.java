@@ -46,6 +46,7 @@ import static android.healthconnect.cts.utils.TestUtils.readRecords;
 import static android.healthconnect.cts.utils.TestUtils.readRecordsWithManagePermission;
 import static android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords;
 
+import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
 import static com.android.healthfitness.flags.Flags.FLAG_ADD_MISSING_ACCESS_LOGS;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 
@@ -53,6 +54,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import static java.time.Instant.EPOCH;
 
+import android.app.AppOpsManager;
 import android.content.Context;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.DeleteUsingFiltersRequest;
@@ -76,6 +78,7 @@ import android.health.connect.datatypes.StepsRecord;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.DeviceSupportUtils;
 import android.healthconnect.cts.utils.TestUtils;
+import android.os.Build;
 import android.os.SystemClock;
 import android.platform.test.annotations.AppModeFull;
 import android.platform.test.annotations.RequiresFlagsEnabled;
@@ -113,20 +116,22 @@ public class HealthConnectAccessLogsTest {
                     DeviceSupportUtils::isHealthConnectFullySupported,
                     "Tests should run on supported hardware only.");
 
+    private final Context mContext = ApplicationProvider.getApplicationContext();
+    private final AppOpsManager mAppOpsManager = mContext.getSystemService(AppOpsManager.class);
+
     @Before
     public void setup() {
-        TestUtils.deleteAllStagedRemoteData();
+        clearAccessLogHistory();
     }
 
     @After
     public void tearDown() throws InterruptedException {
-        Context context = ApplicationProvider.getApplicationContext();
-        String packageName = context.getPackageName();
+        String packageName = mContext.getPackageName();
         verifyDeleteRecords(
                 new DeleteUsingFiltersRequest.Builder()
                         .addDataOrigin(new DataOrigin.Builder().setPackageName(packageName).build())
                         .build());
-        TestUtils.deleteAllStagedRemoteData();
+        clearAccessLogHistory();
     }
 
     @Test
@@ -537,6 +542,18 @@ public class HealthConnectAccessLogsTest {
         assertThat(log.getPackageName()).isEqualTo(SELF_PACKAGE_NAME);
         assertThat(log.getRecordTypes()).containsExactly(DistanceRecord.class);
         assertThat(log.getOperationType()).isEqualTo(OPERATION_TYPE_DELETE);
+    }
+
+    private void clearAccessLogHistory() {
+        TestUtils.deleteAllStagedRemoteData();
+        String packageName = mContext.getPackageName();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) {
+            runWithShellPermissionIdentity(
+                    () -> {
+                        mAppOpsManager.clearHistory();
+                        mAppOpsManager.resetPackageOpsNoHistory(packageName);
+                    });
+        }
     }
 
     /**

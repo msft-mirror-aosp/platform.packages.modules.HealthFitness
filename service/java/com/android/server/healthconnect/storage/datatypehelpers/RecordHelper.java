@@ -109,18 +109,6 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
         mRecordIdentifier = recordIdentifier;
     }
 
-    public DeleteTableRequest getDeleteRequestForAutoDelete(int recordAutoDeletePeriodInDays) {
-        return new DeleteTableRequest(getMainTableName(), getRecordIdentifier())
-                .setTimeFilter(
-                        getStartTimeColumnName(),
-                        Instant.EPOCH.toEpochMilli(),
-                        Instant.now()
-                                .minus(recordAutoDeletePeriodInDays, ChronoUnit.DAYS)
-                                .toEpochMilli())
-                .setPackageFilter(APP_INFO_ID_COLUMN_NAME, List.of())
-                .setRequiresUuId(UUID_COLUMN_NAME);
-    }
-
     /** Database migration. Introduces automatic local time generation. */
     public abstract void applyGeneratedLocalTimeUpgrade(SQLiteDatabase db);
 
@@ -687,14 +675,25 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                 .setTimeFilter(timeColumnName, startTime, endTime)
                 .setPackageFilter(
                         APP_INFO_ID_COLUMN_NAME, appInfoHelper.getAppInfoIds(packageFilters))
-                .setRequiresUuId(UUID_COLUMN_NAME);
+                .setIdColumnName(UUID_COLUMN_NAME);
     }
 
     public DeleteTableRequest getDeleteTableRequest(List<UUID> ids) {
         return new DeleteTableRequest(getMainTableName(), getRecordIdentifier())
                 .setIds(UUID_COLUMN_NAME, StorageUtils.getListOfHexStrings(ids))
-                .setRequiresUuId(UUID_COLUMN_NAME)
-                .setEnforcePackageCheck(APP_INFO_ID_COLUMN_NAME, UUID_COLUMN_NAME);
+                .setPackageColumnName(APP_INFO_ID_COLUMN_NAME);
+    }
+
+    public DeleteTableRequest getDeleteRequestForAutoDelete(int recordAutoDeletePeriodInDays) {
+        return new DeleteTableRequest(getMainTableName(), getRecordIdentifier())
+                .setTimeFilter(
+                        getStartTimeColumnName(),
+                        Instant.EPOCH.toEpochMilli(),
+                        Instant.now()
+                                .minus(recordAutoDeletePeriodInDays, ChronoUnit.DAYS)
+                                .toEpochMilli())
+                .setPackageFilter(APP_INFO_ID_COLUMN_NAME, List.of())
+                .setIdColumnName(UUID_COLUMN_NAME);
     }
 
     public abstract String getDurationGroupByColumnName();

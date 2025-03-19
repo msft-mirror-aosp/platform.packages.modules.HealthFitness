@@ -77,6 +77,7 @@ fun PerDataTypeScreen(
                 healthPermission,
                 dataTypeStr,
                 showRecentAccess,
+                showSystem,
                 onAppChipClick,
                 onRemoveAllAppAccessButtonClick,
             )
@@ -129,6 +130,7 @@ fun AllowedAppsList(
     healthPermission: HealthPermission,
     dataTypeStr: String,
     showRecentAccess: Boolean,
+    showSystem: Boolean,
     onAppChipClick: (String, String, String) -> Unit,
     onRemoveAllAppAccessButtonClick: (String, String) -> Unit,
 ) {
@@ -144,6 +146,7 @@ fun AllowedAppsList(
     }
 
     if (allowedApps?.isNotEmpty() == true) {
+        allowedApps.sortBy { it.appName }
         val nApps = allowedApps.size
         Column {
             // Allowed text.
@@ -176,19 +179,24 @@ fun AllowedAppsList(
                 )
             }
 
-            // Remove access for all apps button.
-            WearPermissionButton(
-                label = stringResource(R.string.disconnect_all_apps),
-                labelMaxLines = 3,
-                onClick = {
-                    onRemoveAllAppAccessButtonClick(healthPermission.toString(), dataTypeStr)
-                },
-                iconBuilder =
-                    WearPermissionIconBuilder.builder(R.drawable.ic_remove_access_for_all_apps)
-                        .tint(Color(0xFFEC928E)),
-                modifier = Modifier.padding(start = 2.dp, end = 2.dp, top = 14.dp, bottom = 8.dp),
-                style = WearPermissionButtonStyle.Warning,
-            )
+            // Don't show the remove all button if all of the system apps are shown since
+            // the user should revoke each of these manually if desired.
+            if (!showSystem) {
+                // Remove access for all apps button.
+                WearPermissionButton(
+                    label = stringResource(R.string.disconnect_all_apps),
+                    labelMaxLines = 3,
+                    onClick = {
+                        onRemoveAllAppAccessButtonClick(healthPermission.toString(), dataTypeStr)
+                    },
+                    iconBuilder =
+                        WearPermissionIconBuilder.builder(R.drawable.ic_remove_access_for_all_apps)
+                            .tint(Color(0xFFEC928E)),
+                    modifier =
+                        Modifier.padding(start = 2.dp, end = 2.dp, top = 2.dp, bottom = 8.dp),
+                    style = WearPermissionButtonStyle.Warning,
+                )
+            }
         }
     }
 }
@@ -218,6 +226,7 @@ fun DeniedAppsList(
     }
 
     if (deniedApps?.isNotEmpty() == true) {
+        deniedApps.sortBy { it.appName }
         val nApps = deniedApps.size
         Column {
             // Not allowed text.

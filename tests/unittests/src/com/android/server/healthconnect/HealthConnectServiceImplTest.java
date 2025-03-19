@@ -102,6 +102,7 @@ import static org.mockito.Mockito.when;
 import android.app.ActivityManager;
 import android.content.AttributionSource;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PermissionGroupInfo;
@@ -372,6 +373,9 @@ public class HealthConnectServiceImplTest {
         mAttributionSource = mContext.getAttributionSource();
         mTestPackageName = mAttributionSource.getPackageName();
         setUpAllMedicalPermissionChecksHardDenied();
+        when(mPackageManager.getPackageInfo(eq(mAttributionSource.getPackageName()), any()))
+                .thenReturn(
+                        buildPackageInfo(mAttributionSource.getPackageName(), /* targetSdk= */ 34));
 
         HealthConnectInjector healthConnectInjector =
                 HealthConnectInjectorImpl.newBuilderForTest(mServiceContext)
@@ -3110,5 +3114,14 @@ public class HealthConnectServiceImplTest {
      */
     private static void awaitAllExecutorsIdle() throws InterruptedException {
         Thread.sleep(500);
+    }
+
+    private static PackageInfo buildPackageInfo(String packageName, int targetSdk) {
+        PackageInfo info = new PackageInfo();
+        ApplicationInfo aInfo = new ApplicationInfo();
+        aInfo.targetSdkVersion = targetSdk;
+        info.applicationInfo = aInfo;
+        info.packageName = info.applicationInfo.packageName = packageName;
+        return info;
     }
 }
