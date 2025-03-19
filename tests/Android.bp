@@ -35,14 +35,13 @@ filegroup {
         "unittests/src/com/android/server/healthconnect/exportimport/ImportManagerTest.java",
         // Not passing because the SQLite library we have doesn't support dbstat
         "unittests/src/com/android/server/healthconnect/logging/DatabaseStatsCollectorTest.java",
-        // Fails due to Mockito issue
-        // Mockito cannot mock this class: class android.content.pm.PackageManager.
+        // getPermissionInfo failing HealthPermissionsMocker
         "unittests/src/com/android/server/healthconnect/logging/UsageStatsCollectorTest.java",
         // Uses ExtendedMockito
         "unittests/src/com/android/server/healthconnect/migration/MigrationStateManagerTest.java",
         // Fails due to resources not included
         "unittests/src/com/android/server/healthconnect/migration/notification/MigrationNotificationFactoryTest.java",
-        // getPermissionInfo failing HealthPermissionsMocker)
+        // getPermissionInfo failing HealthPermissionsMocker
         "unittests/src/com/android/server/healthconnect/permission/FirstGrantTimeUnitTest.java",
         // Doesn't work: invalid health permissions
         "unittests/src/com/android/server/healthconnect/permission/HealthConnectPermissionHelperTest.java",
