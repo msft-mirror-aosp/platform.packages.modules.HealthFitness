@@ -171,7 +171,6 @@ import com.android.server.healthconnect.permission.HealthConnectPermissionHelper
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.phr.PhrPageTokenWrapper;
 import com.android.server.healthconnect.phr.ReadMedicalResourcesInternalResponse;
-import com.android.server.healthconnect.proto.backuprestore.AppInfoMap;
 import com.android.server.healthconnect.proto.backuprestore.Settings;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
@@ -2893,13 +2892,7 @@ public class HealthConnectServiceImplTest {
     @DisableFlags(FLAG_CLOUD_BACKUP_AND_RESTORE)
     public void restoreChanges_flagDisabled_unsupportedOperation() throws RemoteException {
         IEmptyResponseCallback callback = mock(IEmptyResponseCallback.class);
-        AppInfoMap appInfoMap =
-                AppInfoMap.newBuilder()
-                        .putAppInfo(
-                                "random.package.name",
-                                Settings.AppInfo.newBuilder().setAppName("app name 1").build())
-                        .build();
-        mHealthConnectService.restoreChanges(List.of(), appInfoMap.toByteArray(), callback);
+        mHealthConnectService.restoreChanges(List.of(), callback);
 
         verify(callback, timeout(5000).times(1)).onError(mErrorCaptor.capture());
         assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())

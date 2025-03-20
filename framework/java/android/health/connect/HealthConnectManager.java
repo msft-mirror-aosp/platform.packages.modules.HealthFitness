@@ -3019,7 +3019,6 @@ public class HealthConnectManager {
      * thrown. The caller can retry once {@link #canRestore} returns true.
      *
      * @param restoreChanges The changes to be restored back to Health Connect.
-     * @param appInfoMap The app info map to be restored back to Health Connect.
      * @param executor Executor on which to invoke the callback.
      * @param callback Callback to receive the result of performing this operation.
      * @hide
@@ -3029,7 +3028,6 @@ public class HealthConnectManager {
     @RequiresPermission(RESTORE_HEALTH_CONNECT_DATA_AND_SETTINGS)
     public void restoreChanges(
             @NonNull List<RestoreChange> restoreChanges,
-            @NonNull byte[] appInfoMap,
             @NonNull Executor executor,
             @NonNull OutcomeReceiver<Void, HealthConnectException> callback) {
         Objects.requireNonNull(restoreChanges);
@@ -3038,7 +3036,6 @@ public class HealthConnectManager {
         try {
             mService.restoreChanges(
                     restoreChanges,
-                    appInfoMap,
                     new IEmptyResponseCallback.Stub() {
                         @Override
                         public void onResult() {
