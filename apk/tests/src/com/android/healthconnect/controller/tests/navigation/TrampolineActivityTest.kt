@@ -57,12 +57,15 @@ import com.android.healthconnect.controller.migration.api.MigrationRestoreState.
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiState
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
 import com.android.healthconnect.controller.navigation.TrampolineActivity
+import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
+import com.android.healthconnect.controller.permissions.connectedapps.ConnectedAppsViewModel
 import com.android.healthconnect.controller.permissions.data.FitnessPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel
 import com.android.healthconnect.controller.selectabledeletion.DeletionDataViewModel
+import com.android.healthconnect.controller.shared.app.AppPermissionsType
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus
 import com.android.healthconnect.controller.tests.utils.NOW
@@ -83,7 +86,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.Mockito
 import org.mockito.Mockito.anyString
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.whenever
@@ -102,11 +104,15 @@ class TrampolineActivityTest {
 
     @BindValue
     val appPermissionViewModel: AppPermissionViewModel = mock(AppPermissionViewModel::class.java)
-    @BindValue val allDataViewModel: AllDataViewModel = Mockito.mock(AllDataViewModel::class.java)
+    @BindValue
+    val connectedAppsViewModel: ConnectedAppsViewModel = mock(ConnectedAppsViewModel::class.java)
+    @BindValue
+    val additionalAccessViewModel: AdditionalAccessViewModel =
+        mock(AdditionalAccessViewModel::class.java)
+    @BindValue val allDataViewModel: AllDataViewModel = mock(AllDataViewModel::class.java)
     @BindValue val homeViewModel: HomeViewModel = mock(HomeViewModel::class.java)
     @BindValue
-    val recentAccessViewModel: RecentAccessViewModel =
-        Mockito.mock(RecentAccessViewModel::class.java)
+    val recentAccessViewModel: RecentAccessViewModel = mock(RecentAccessViewModel::class.java)
     private val context = InstrumentationRegistry.getInstrumentation().context
 
     @Before
@@ -182,6 +188,24 @@ class TrampolineActivityTest {
         whenever(appPermissionViewModel.loadAccessDate(anyString())).thenReturn(accessDate)
         whenever(appPermissionViewModel.lastReadPermissionDisconnected).then {
             MutableLiveData(false)
+        }
+        whenever(connectedAppsViewModel.connectedApps).then {
+            MutableLiveData(
+                listOf(
+                    ConnectedAppMetadata(
+                        TEST_APP,
+                        ConnectedAppStatus.ALLOWED,
+                        AppPermissionsType.FITNESS_PERMISSIONS_ONLY,
+                        accessDate,
+                    )
+                )
+            )
+        }
+        whenever(connectedAppsViewModel.disconnectAllState).then {
+            MutableLiveData(ConnectedAppsViewModel.DisconnectAllState.NotStarted)
+        }
+        whenever(additionalAccessViewModel.additionalAccessState).then {
+            MutableLiveData(AdditionalAccessViewModel.State())
         }
         whenever(allDataViewModel.allData).then {
             MutableLiveData<AllDataViewModel.AllDataState>(
