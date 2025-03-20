@@ -7,8 +7,6 @@ filegroup {
         "unittests/src/android/health/connect/MigrationEntityParcelTest.java",
         // PackageManager getPermissionsInfo (needs HealthPermissionsMocker?)
         "unittests/src/android/health/connect/HealthPermissionsTest.java",
-        // Uses CTS TestUtils
-        "unittests/src/android/healthconnect/aidl/ReadMedicalResourcesRequestParcelTest.java",
         // Needs parcel native code
         "unittests/src/android/healthconnect/internal/datatypes/SleepStageInternalTest.java",
         "unittests/src/android/healthconnect/internal/datatypes/SleepSessionInternalTest.java",
