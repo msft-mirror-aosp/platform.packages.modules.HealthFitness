@@ -181,7 +181,9 @@ fun AllowedAppsList(
 
             // Don't show the remove all button if all of the system apps are shown since
             // the user should revoke each of these manually if desired.
-            if (!showSystem) {
+            // TODO: b/404899205 - Re-enable once system app classification is fixed.
+            val shouldShowRemoveAllButton = false
+            if (!showSystem && shouldShowRemoveAllButton) {
                 // Remove access for all apps button.
                 WearPermissionButton(
                     label = stringResource(R.string.disconnect_all_apps),

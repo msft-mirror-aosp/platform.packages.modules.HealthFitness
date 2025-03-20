@@ -148,7 +148,7 @@ public final class DatabaseMerger {
                 // If this package is not installed on the target device and is not present in the
                 // health db, then fill the health db with the info from source db. According to the
                 // security review b/341253579, we should not parse the imported icon.
-                mAppInfoHelper.addOrUpdateAppInfoIfNoAppInfoEntryExists(packageName, appName);
+                mAppInfoHelper.addAppInfoIfNoAppInfoEntryExists(packageName, appName);
             }
         }
 

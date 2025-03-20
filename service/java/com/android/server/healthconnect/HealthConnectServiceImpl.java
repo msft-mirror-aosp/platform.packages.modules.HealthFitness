@@ -3347,8 +3347,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     @Override
     @RequiresApi(Build.VERSION_CODES.BAKLAVA)
-    public void restoreChanges(
-            List<RestoreChange> changes, byte[] appInfoMap, IEmptyResponseCallback callback) {
+    public void restoreChanges(List<RestoreChange> changes, IEmptyResponseCallback callback) {
         checkParamsNonNull(changes);
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
@@ -3371,7 +3370,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 pid,
                                 uid,
                                 "Caller does not have permission to call" + " restoreChanges.");
-                        mCloudRestoreManager.restoreChanges(changes, appInfoMap);
+                        mCloudRestoreManager.restoreChanges(changes);
                         callback.onResult();
                     } catch (UnsupportedOperationException e) {
                         tryAndThrowException(errorCallback, e, ERROR_UNSUPPORTED_OPERATION);
@@ -3689,11 +3688,22 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         int permissionFlags =
                 mContext.getPackageManager()
                         .getPermissionFlags(READ_HEALTH_DATA_IN_BACKGROUND, packageName, user);
-        int targetSdk =
-                PackageInfoUtils.getPackageInfoUnchecked(
-                                packageName, user, PackageManager.PackageInfoFlags.of(0), mContext)
-                        .applicationInfo
-                        .targetSdkVersion;
+
+        int targetSdk;
+        try {
+            targetSdk =
+                    PackageInfoUtils.getPackageInfoUnchecked(
+                                    packageName,
+                                    user,
+                                    PackageManager.PackageInfoFlags.of(0),
+                                    mContext)
+                            .applicationInfo
+                            .targetSdkVersion;
+        } catch (Exception e) {
+            // Cannot find the package, default false.
+            return false;
+        }
+
         return HealthConnectPermissionHelper.isFromSplitPermission(permissionFlags, targetSdk);
     }
 
