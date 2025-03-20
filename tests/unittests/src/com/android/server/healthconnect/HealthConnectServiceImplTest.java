@@ -487,19 +487,25 @@ public class HealthConnectServiceImplTest {
     @Test
     public void testStageRemoteData_withNotReadMode_onlyValidFilesStaged() throws Exception {
         File dataDir = mContext.getDataDir();
-        File testRestoreFile1 = createAndGetNonEmptyFile(dataDir, "testRestoreFile1");
-        File testRestoreFile2 = createAndGetNonEmptyFile(dataDir, "testRestoreFile2");
+        File writeOnlyFile = createAndGetNonEmptyFile(dataDir, "testRestoreFile1");
+        File readOnlyFile = createAndGetNonEmptyFile(dataDir, "testRestoreFile2");
 
-        assertThat(testRestoreFile1.exists()).isTrue();
-        assertThat(testRestoreFile2.exists()).isTrue();
+        assertThat(writeOnlyFile.exists()).isTrue();
+        assertThat(readOnlyFile.exists()).isTrue();
+
+        ParcelFileDescriptor writeOnlyFd =
+                ParcelFileDescriptor.open(writeOnlyFile, ParcelFileDescriptor.MODE_WRITE_ONLY);
+        // The MODE_WRITE_ONLY is enough to cause an error when running on device.
+        // But when running under Robolectric this does not error for
+        // ShadowParcelFileDescriptor.
+        // So close the file descriptor as well to force an error in both cases.
+        writeOnlyFd.close();
 
         Map<String, ParcelFileDescriptor> pfdsByFileName = new ArrayMap<>();
+        pfdsByFileName.put(writeOnlyFile.getName(), writeOnlyFd);
         pfdsByFileName.put(
-                testRestoreFile1.getName(),
-                ParcelFileDescriptor.open(testRestoreFile1, ParcelFileDescriptor.MODE_WRITE_ONLY));
-        pfdsByFileName.put(
-                testRestoreFile2.getName(),
-                ParcelFileDescriptor.open(testRestoreFile2, ParcelFileDescriptor.MODE_READ_ONLY));
+                readOnlyFile.getName(),
+                ParcelFileDescriptor.open(readOnlyFile, ParcelFileDescriptor.MODE_READ_ONLY));
 
         final IDataStagingFinishedCallback callback = mock(IDataStagingFinishedCallback.class);
         mHealthConnectService.stageAllHealthConnectRemoteData(
@@ -508,7 +514,7 @@ public class HealthConnectServiceImplTest {
         verify(callback, timeout(5000).times(1)).onError(any());
         var stagedFileNames = mBackupRestore.getStagedRemoteFileNames(mUserHandle);
         assertThat(stagedFileNames.size()).isEqualTo(1);
-        assertThat(stagedFileNames.contains(testRestoreFile2.getName())).isTrue();
+        assertThat(stagedFileNames.contains(readOnlyFile.getName())).isTrue();
     }
 
     // Imitates the state when we are not actively staging but the disk reflects that.

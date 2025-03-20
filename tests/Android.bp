@@ -12,9 +12,6 @@ filegroup {
         "unittests/src/android/healthconnect/internal/datatypes/SleepSessionInternalTest.java",
         // Still uses ExtendedMockito
         "unittests/src/com/android/server/healthconnect/HealthConnectManagerServiceTest.java",
-        // testStageRemoteData_withNotReadMode_onlyValidFilesStaged fails but all other tests
-        // passing
-        "unittests/src/com/android/server/healthconnect/HealthConnectServiceImplTest.java",
         // Uses ExtendedMockito
         "unittests/src/com/android/server/healthconnect/backuprestore/BackupRestoreTest.java",
         // Uses CTS TestUtils
