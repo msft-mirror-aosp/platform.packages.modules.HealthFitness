@@ -1,3 +1,7 @@
+package {
+    default_team: "trendy_team_android_health",
+}
+
 // A group of files known not to work with deviceless (aka bivalent aka robolectric) tests
 // Please avoid adding new tests to the filegroup, we are trying to reduce it to empty.
 filegroup {
