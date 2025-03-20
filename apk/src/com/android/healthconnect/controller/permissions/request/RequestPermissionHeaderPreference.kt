@@ -16,6 +16,7 @@
 package com.android.healthconnect.controller.permissions.request
 
 import android.content.Context
+import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -270,7 +271,15 @@ constructor(
         when (screenState) {
             is FitnessScreenState.ShowFitnessRead -> {
                 dataAccessType.text =
-                    context.getString(R.string.request_fitness_permissions_data_access_type_read)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA)
+                        context.getString(
+                            R.string.request_fitness_permissions_data_access_type_read,
+                            context.getString(R.string.request_learn_more),
+                        )
+                    else
+                        context.getString(
+                            R.string.request_fitness_permissions_data_access_type_read
+                        )
                 updateFitnessAccessInfo(
                     isHistoryGranted =
                         (screenState as FitnessScreenState.ShowFitnessRead).historyGranted
@@ -279,15 +288,29 @@ constructor(
             }
             is FitnessScreenState.ShowFitnessWrite -> {
                 dataAccessType.text =
-                    context.getString(R.string.request_fitness_permissions_data_access_type_write)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA)
+                        context.getString(
+                            R.string.request_fitness_permissions_data_access_type_write,
+                            context.getString(R.string.request_learn_more),
+                        )
+                    else
+                        context.getString(
+                            R.string.request_fitness_permissions_data_access_type_write
+                        )
                 accessInfo.visibility = View.GONE
                 updatePrivacyPolicy()
             }
             is FitnessScreenState.ShowFitnessReadWrite -> {
                 dataAccessType.text =
-                    context.getString(
-                        R.string.request_fitness_permissions_data_access_type_read_write
-                    )
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA)
+                        context.getString(
+                            R.string.request_fitness_permissions_data_access_type_read_write,
+                            context.getString(R.string.request_learn_more),
+                        )
+                    else
+                        context.getString(
+                            R.string.request_fitness_permissions_data_access_type_read_write
+                        )
                 updateFitnessAccessInfo(
                     isHistoryGranted =
                         (screenState as FitnessScreenState.ShowFitnessReadWrite).historyGranted
