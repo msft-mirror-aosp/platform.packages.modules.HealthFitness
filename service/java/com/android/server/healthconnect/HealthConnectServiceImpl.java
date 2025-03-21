@@ -817,7 +817,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             }
                         }
 
-                        boolean shouldRecordAccessLog = !holdsDataManagementPermission;
+                        boolean shouldRecordAccessLog =
+                                !holdsDataManagementPermission && !enforceSelfRead;
                         Pair<List<RecordInternal<?>>, PageTokenWrapper> readRecordsResponse =
                                 mFitnessRecordReadHelper.readRecords(
                                         mTransactionManager,
@@ -1068,6 +1069,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         throw new IllegalArgumentException(
                                 "Requested record types must not be empty.");
                     }
+                    // This API doesn't support reading own data without read permissions.
                     mDataPermissionEnforcer.enforceRecordIdsReadPermissions(
                             changeLogsTokenRequest.getRecordTypes(), attributionSource);
                     long startDateAccessEpochMilli = DEFAULT_LONG;
@@ -1093,10 +1095,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             mDataPermissionEnforcer.collectGrantedExtraReadPermissions(
                                     recordTypeToInsertedUuids.keySet(), attributionSource);
 
-                    boolean isReadingSelfData =
-                            changeLogsTokenRequest
-                                    .getPackageNamesToFilter()
-                                    .equals(singletonList(callerPackageName));
                     List<RecordInternal<?>> recordInternals =
                             mFitnessRecordReadHelper.readRecords(
                                     mTransactionManager,
@@ -1105,7 +1103,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                     grantedExtraReadPermissions,
                                     startDateAccessEpochMilli,
                                     isInForeground,
-                                    /* shouldRecordAccessLog= */ !isReadingSelfData);
+                                    /* shouldRecordAccessLog= */ true);
                     List<DeletedLog> deletedLogs =
                             ChangeLogsHelper.getDeletedLogs(changeLogsResponse.getChangeLogsMap());
 
