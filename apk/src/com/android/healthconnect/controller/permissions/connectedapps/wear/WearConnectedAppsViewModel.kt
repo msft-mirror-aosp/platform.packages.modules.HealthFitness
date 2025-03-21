@@ -293,6 +293,18 @@ constructor(
                         }
                     }
             }
+        // If there are no more permissions allowed for this app, revoke background permission.
+        if (
+            appToAllowedDataTypes.value[appMetadata].isNullOrEmpty() &&
+                appToBackgroundReadStatus.value[appMetadata] == true
+        ) {
+            Log.w(
+                TAG,
+                "All read permissions revoked, revoking background " +
+                    "permission for: ${appMetadata.packageName}. ",
+            )
+            updatePermission(READ_HEALTH_DATA_IN_BACKGROUND, appMetadata, false)
+        }
     }
 
     /** Removes all non-system apps from accessing a specific fitness permission. */
