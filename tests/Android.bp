@@ -44,8 +44,6 @@ filegroup {
         "unittests/src/com/android/server/healthconnect/permission/FirstGrantTimeUnitTest.java",
         // Doesn't work: invalid health permissions
         "unittests/src/com/android/server/healthconnect/permission/HealthConnectPermissionHelperTest.java",
-        // Doesn't work: getOPackageUid failing
-        "unittests/src/com/android/server/healthconnect/permission/PermissionPackageChangesOrchestratorTest.java",
         // Doesn't work because threadScheduler is null (so can't read member)
         "unittests/src/com/android/server/healthconnect/storage/datatypehelpers/HealthDataCategoryPriorityHelperTest.java",
         // ExtendedMockito cannot be used in Robolectric tests so these fixtures aren't used.
