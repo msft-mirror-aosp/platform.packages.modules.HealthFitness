@@ -138,13 +138,8 @@ constructor(
     }
 
     private fun disableButtons(isEnabled: Boolean) {
-        if (isEnabled) {
-            enableNextButton(nextDayEnabled)
-        } else {
-            enableNextButton(false)
-        }
-        previousDayButton.isEnabled = isEnabled
-        previousDayButton.isClickable = isEnabled
+        updateButtonAppearance(nextDayButton, isEnabled && nextDayEnabled)
+        updateButtonAppearance(previousDayButton, isEnabled)
     }
 
     private fun bindNextDayButton(view: View) {
@@ -259,7 +254,7 @@ constructor(
                 .atStartOfDay(ZoneId.systemDefault())
                 .plus(toPeriod(period))
                 .toInstant()
-        enableNextButton(maxDate == null || !displayedEndDate.isAfter(today))
+        updateButtonAppearance(nextDayButton, maxDate == null || !displayedEndDate.isAfter(today))
         nextDayEnabled = nextDayButton.isEnabled
         (datePickerSpinner.adapter as DatePickerSpinnerAdapter).setStartTimeAndPeriod(
             getPeriodStartDate(selectedDate, period),
@@ -288,9 +283,9 @@ constructor(
             }
     }
 
-    private fun enableNextButton(enable: Boolean) {
-        nextDayButton.isEnabled = enable
-        nextDayButton.isClickable = enable
+    private fun updateButtonAppearance(button: ImageButton, enable: Boolean) {
+        button.isEnabled = enable
+        button.isClickable = enable
     }
 
     interface OnDateChangedListener {
