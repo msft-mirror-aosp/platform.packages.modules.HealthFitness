@@ -102,6 +102,7 @@ public class UsageStatsCollectorTest {
         Context context = spy(ApplicationProvider.getApplicationContext());
         UserHandle userHandle = ApplicationProvider.getApplicationContext().getUser();
         doReturn(context).when(context).createContextAsUser(eq(userHandle), anyInt());
+        doReturn(context).when(context).getApplicationContext();
         doReturn(mPackageManager).when(context).getPackageManager();
         doReturn(
                         List.of(
