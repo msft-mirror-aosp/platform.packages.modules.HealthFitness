@@ -283,15 +283,6 @@ flag {
 }
 
 flag {
-    name: "dependency_injection"
-    namespace: "health_fitness_aconfig"
-    description: "Enables dependency injection."
-    bug: "341654919"
-    is_fixed_read_only: true
-    is_exported: true
-}
-
-flag {
     name: "new_information_architecture"
     namespace: "health_fitness_aconfig"
     description: "Enables new information architecture."
@@ -400,15 +391,6 @@ flag {
     namespace: "health_fitness_aconfig"
     description: "Enables DB modification to allow collection of ecosystem metrics."
     bug: "369507783"
-    is_fixed_read_only: true
-    is_exported: true
-}
-
-flag {
-    name: "permission_metrics"
-    namespace: "health_fitness_aconfig"
-    description: "Enables collection of permission metrics."
-    bug: "372464298"
     is_fixed_read_only: true
     is_exported: true
 }
