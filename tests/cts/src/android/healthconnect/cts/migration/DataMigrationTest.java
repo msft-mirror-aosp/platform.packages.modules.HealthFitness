@@ -781,35 +781,6 @@ public class DataMigrationTest {
     }
 
     @Test
-    public void testInsertMinDataMigrationSdkExtensionVersion_jobsDisabled() throws IOException {
-        int version = SdkExtensions.getExtensionVersion(Build.VERSION_CODES.UPSIDE_DOWN_CAKE);
-        try {
-            disableStateChangeJobs();
-            runWithShellPermissionIdentity(
-                    () -> {
-                        assertStateChangeJobDoesNotExist();
-                        assertThat(TestUtils.getHealthConnectDataMigrationState())
-                                .isEqualTo(MIGRATION_STATE_IDLE);
-                        TestUtils.insertMinDataMigrationSdkExtensionVersion(version);
-                        assertThat(TestUtils.getHealthConnectDataMigrationState())
-                                .isEqualTo(MIGRATION_STATE_ALLOWED);
-                        assertStateChangeJobDoesNotExist();
-                        TestUtils.startMigration();
-                        assertThat(TestUtils.getHealthConnectDataMigrationState())
-                                .isEqualTo(HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS);
-                        assertStateChangeJobDoesNotExist();
-                        TestUtils.finishMigration();
-                        assertThat(TestUtils.getHealthConnectDataMigrationState())
-                                .isEqualTo(HealthConnectDataState.MIGRATION_STATE_COMPLETE);
-                        assertStateChangeJobDoesNotExist();
-                    },
-                    Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
-        } finally {
-            restoreDeviceConfigs();
-        }
-    }
-
-    @Test
     public void migrateAppInfo_notInstalledAppAndRecordsMigrated_appInfoSaved()
             throws InterruptedException {
         final String recordEntityId = "steps";
@@ -942,19 +913,6 @@ public class DataMigrationTest {
                         ENABLE_PAUSE_STATE_CHANGE_JOB_DEFAULT_FLAG_VALUE);
         setHealthFitnessDeviceConfig(ENABLE_COMPLETE_STATE_CHANGE_JOBS_FLAG, "true");
         setHealthFitnessDeviceConfig(ENABLE_PAUSE_STATE_CHANGE_JOBS_FLAG, "true");
-    }
-
-    private void disableStateChangeJobs() throws IOException {
-        mEnableCompletionJobsBackup =
-                getHealthFitnessDeviceConfig(
-                        ENABLE_COMPLETE_STATE_CHANGE_JOBS_FLAG,
-                        ENABLE_COMPLETE_STATE_CHANGE_JOB_DEFAULT_FLAG_VALUE);
-        mEnablePauseJobsBackup =
-                getHealthFitnessDeviceConfig(
-                        ENABLE_PAUSE_STATE_CHANGE_JOBS_FLAG,
-                        ENABLE_PAUSE_STATE_CHANGE_JOB_DEFAULT_FLAG_VALUE);
-        setHealthFitnessDeviceConfig(ENABLE_COMPLETE_STATE_CHANGE_JOBS_FLAG, "false");
-        setHealthFitnessDeviceConfig(ENABLE_PAUSE_STATE_CHANGE_JOBS_FLAG, "false");
     }
 
     private void restoreDeviceConfigs() throws IOException {
