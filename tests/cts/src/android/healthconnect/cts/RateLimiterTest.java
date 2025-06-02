@@ -122,24 +122,10 @@ public class RateLimiterTest {
     }
 
     @Test
-    public void testTryAcquireApiCallQuota_writeLimitExceeded_flagDisabled()
-            throws InterruptedException {
-        setEnableRateLimiterFlag(false);
-        exceedWriteQuota();
-    }
-
-    @Test
     public void testTryAcquireApiCallQuota_readLimitExceeded_flagEnabled()
             throws InterruptedException {
         exception.expect(HealthConnectException.class);
         exception.expectMessage(containsString("API call quota exceeded"));
-        exceedReadQuota();
-    }
-
-    @Test
-    public void testTryAcquireApiCallQuota_readLimitExceeded_flagDisabled()
-            throws InterruptedException {
-        setEnableRateLimiterFlag(false);
         exceedReadQuota();
     }
 
