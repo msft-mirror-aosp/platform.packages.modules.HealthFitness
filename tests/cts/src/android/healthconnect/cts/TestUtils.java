@@ -136,6 +136,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -150,6 +151,14 @@ public class TestUtils {
             Instant.now().minus(10, ChronoUnit.DAYS).plus(1, ChronoUnit.HOURS);
     private static final String TAG = "HCTestUtils";
     private static final int TIMEOUT_SECONDS = 5;
+
+    private static final Executor sOutcomeExecutor =
+            Executors.newSingleThreadExecutor(
+                    runnable -> {
+                        Thread t = Executors.defaultThreadFactory().newThread(runnable);
+                        t.setName(TAG);
+                        return t;
+                    });
 
     public static boolean isHardwareAutomotive() {
         return hasSystemFeature(AUTOMOTIVE_FEATURE);
@@ -178,7 +187,7 @@ public class TestUtils {
         AtomicReference<HealthConnectException> exceptionAtomicReference = new AtomicReference<>();
         service.getChangeLogToken(
                 request,
-                Executors.newSingleThreadExecutor(),
+                sOutcomeExecutor,
                 new OutcomeReceiver<>() {
                     @Override
                     public void onResult(ChangeLogTokenResponse result) {
@@ -240,7 +249,7 @@ public class TestUtils {
         AtomicReference<HealthConnectException> exceptionAtomicReference = new AtomicReference<>();
         service.insertRecords(
                 records,
-                Executors.newSingleThreadExecutor(),
+                sOutcomeExecutor,
                 new OutcomeReceiver<>() {
                     @Override
                     public void onResult(InsertRecordsResponse result) {
@@ -271,7 +280,7 @@ public class TestUtils {
         AtomicReference<HealthConnectException> exceptionAtomicReference = new AtomicReference<>();
         service.updateRecords(
                 records,
-                Executors.newSingleThreadExecutor(),
+                sOutcomeExecutor,
                 new OutcomeReceiver<>() {
                     @Override
                     public void onResult(Void result) {
@@ -302,7 +311,7 @@ public class TestUtils {
                 new AtomicReference<>();
         service.getChangeLogs(
                 changeLogsRequest,
-                Executors.newSingleThreadExecutor(),
+                sOutcomeExecutor,
                 new OutcomeReceiver<>() {
                     @Override
                     public void onResult(ChangeLogsResponse result) {
@@ -492,7 +501,7 @@ public class TestUtils {
                 new AtomicReference<>();
         service.aggregate(
                 request,
-                Executors.newSingleThreadExecutor(),
+                sOutcomeExecutor,
                 new OutcomeReceiver<>() {
                     @Override
                     public void onResult(AggregateRecordsResponse<T> result) {
@@ -529,7 +538,7 @@ public class TestUtils {
         service.aggregateGroupByDuration(
                 request,
                 duration,
-                Executors.newSingleThreadExecutor(),
+                sOutcomeExecutor,
                 new OutcomeReceiver<>() {
                     @Override
                     public void onResult(
@@ -565,7 +574,7 @@ public class TestUtils {
         service.aggregateGroupByPeriod(
                 request,
                 period,
-                Executors.newSingleThreadExecutor(),
+                sOutcomeExecutor,
                 new OutcomeReceiver<>() {
                     @Override
                     public void onResult(List<AggregateRecordsGroupedByPeriodResponse<T>> result) {
@@ -599,7 +608,7 @@ public class TestUtils {
                 new AtomicReference<>();
         service.readRecords(
                 request,
-                Executors.newSingleThreadExecutor(),
+                sOutcomeExecutor,
                 new OutcomeReceiver<>() {
                     @Override
                     public void onResult(ReadRecordsResponse<T> result) {
@@ -653,7 +662,7 @@ public class TestUtils {
         AtomicReference<Long> pageToken = new AtomicReference<>();
         service.readRecords(
                 request,
-                Executors.newSingleThreadExecutor(),
+                sOutcomeExecutor,
                 new OutcomeReceiver<>() {
                     @Override
                     public void onResult(ReadRecordsResponse<T> result) {
@@ -687,7 +696,7 @@ public class TestUtils {
                     new AtomicReference<>();
             service.setRecordRetentionPeriodInDays(
                     period,
-                    Executors.newSingleThreadExecutor(),
+                    sOutcomeExecutor,
                     new OutcomeReceiver<>() {
                         @Override
                         public void onResult(Void result) {
@@ -722,7 +731,7 @@ public class TestUtils {
             assertThat(service).isNotNull();
             service.deleteRecords(
                     request,
-                    Executors.newSingleThreadExecutor(),
+                    sOutcomeExecutor,
                     new OutcomeReceiver<>() {
                         @Override
                         public void onResult(Void result) {
@@ -754,7 +763,7 @@ public class TestUtils {
         assertThat(service).isNotNull();
         service.deleteRecords(
                 request,
-                Executors.newSingleThreadExecutor(),
+                sOutcomeExecutor,
                 new OutcomeReceiver<>() {
                     @Override
                     public void onResult(Void result) {
@@ -785,7 +794,7 @@ public class TestUtils {
         service.deleteRecords(
                 recordType,
                 timeRangeFilter,
-                Executors.newSingleThreadExecutor(),
+                sOutcomeExecutor,
                 new OutcomeReceiver<>() {
                     @Override
                     public void onResult(Void result) {
@@ -828,7 +837,7 @@ public class TestUtils {
             AtomicReference<HealthConnectException> exceptionAtomicReference =
                     new AtomicReference<>();
             service.queryAccessLogs(
-                    Executors.newSingleThreadExecutor(),
+                    sOutcomeExecutor,
                     new OutcomeReceiver<List<AccessLog>, HealthConnectException>() {
 
                         @Override
@@ -866,7 +875,7 @@ public class TestUtils {
             HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
             assertThat(service).isNotNull();
             service.queryAllRecordTypesInfo(
-                    Executors.newSingleThreadExecutor(),
+                    sOutcomeExecutor,
                     new OutcomeReceiver<
                             Map<Class<? extends Record>, RecordTypeInfoResponse>,
                             HealthConnectException>() {
@@ -906,7 +915,7 @@ public class TestUtils {
                     new AtomicReference<>();
             service.queryActivityDates(
                     recordTypes,
-                    Executors.newSingleThreadExecutor(),
+                    sOutcomeExecutor,
                     new OutcomeReceiver<>() {
                         @Override
                         public void onResult(List<LocalDate> result) {
@@ -965,7 +974,7 @@ public class TestUtils {
         HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
         assertThat(service).isNotNull();
         service.startMigration(
-                Executors.newSingleThreadExecutor(),
+                sOutcomeExecutor,
                 new OutcomeReceiver<Void, MigrationException>() {
                     @Override
                     public void onResult(Void result) {
@@ -987,7 +996,7 @@ public class TestUtils {
         HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
         assertThat(service).isNotNull();
         service.finishMigration(
-                Executors.newSingleThreadExecutor(),
+                sOutcomeExecutor,
                 new OutcomeReceiver<Void, MigrationException>() {
 
                     @Override
@@ -1013,7 +1022,7 @@ public class TestUtils {
                 new AtomicReference<>();
         service.insertMinDataMigrationSdkExtensionVersion(
                 version,
-                Executors.newSingleThreadExecutor(),
+                sOutcomeExecutor,
                 new OutcomeReceiver<>() {
 
                     @Override
@@ -1054,7 +1063,7 @@ public class TestUtils {
                 new AtomicReference<>();
         AtomicReference<HealthConnectException> responseException = new AtomicReference<>();
         service.getHealthConnectDataState(
-                Executors.newSingleThreadExecutor(),
+                sOutcomeExecutor,
                 new OutcomeReceiver<>() {
                     @Override
                     public void onResult(HealthConnectDataState healthConnectDataState) {
@@ -1083,7 +1092,7 @@ public class TestUtils {
         AtomicReference<List<AppInfo>> response = new AtomicReference<>();
         AtomicReference<HealthConnectException> exceptionAtomicReference = new AtomicReference<>();
         service.getContributorApplicationsInfo(
-                Executors.newSingleThreadExecutor(),
+                sOutcomeExecutor,
                 new OutcomeReceiver<>() {
                     @Override
                     public void onResult(ApplicationInfoResponse result) {
@@ -1447,7 +1456,7 @@ public class TestUtils {
                 new AtomicReference<>();
         service.fetchDataOriginsPriorityOrder(
                 permissionCategory,
-                Executors.newSingleThreadExecutor(),
+                sOutcomeExecutor,
                 new OutcomeReceiver<>() {
                     @Override
                     public void onResult(FetchDataOriginsPriorityOrderResponse result) {
