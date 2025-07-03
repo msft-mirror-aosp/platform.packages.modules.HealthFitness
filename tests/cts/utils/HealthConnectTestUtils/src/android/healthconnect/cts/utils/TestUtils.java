@@ -172,6 +172,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -188,6 +189,14 @@ public final class TestUtils {
     private static final String TEST_APP_RECEIVER =
             PKG_TEST_APP + "." + TestAppReceiver.class.getSimpleName();
 
+    private static final Executor sOutcomeExecutor =
+            Executors.newSingleThreadExecutor(
+                    runnable -> {
+                        Thread t = Executors.defaultThreadFactory().newThread(runnable);
+                        t.setName(TAG);
+                        return t;
+                    });
+
     public static boolean isHardwareAutomotive() {
         return hasSystemFeature(AUTOMOTIVE_FEATURE);
     }
@@ -201,7 +210,7 @@ public final class TestUtils {
             ChangeLogTokenRequest request, Context context) throws InterruptedException {
         HealthConnectReceiver<ChangeLogTokenResponse> receiver = new HealthConnectReceiver<>();
         getHealthConnectManager(context)
-                .getChangeLogToken(request, Executors.newSingleThreadExecutor(), receiver);
+                .getChangeLogToken(request, sOutcomeExecutor, receiver);
         return receiver.getResponse();
     }
 
@@ -277,7 +286,7 @@ public final class TestUtils {
         HealthConnectReceiver<InsertRecordsResponse> receiver = new HealthConnectReceiver<>();
         getHealthConnectManager(context)
                 .insertRecords(
-                        unmodifiableList(records), Executors.newSingleThreadExecutor(), receiver);
+                        unmodifiableList(records), sOutcomeExecutor, receiver);
         List<Record> returnedRecords = receiver.getResponse(timeout).getRecords();
         assertThat(returnedRecords).hasSize(records.size());
         return returnedRecords;
@@ -306,7 +315,7 @@ public final class TestUtils {
         HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
         getHealthConnectManager(context)
                 .updateRecords(
-                        unmodifiableList(records), Executors.newSingleThreadExecutor(), receiver);
+                        unmodifiableList(records), sOutcomeExecutor, receiver);
         receiver.verifyNoExceptionOrThrow();
     }
 
@@ -319,7 +328,7 @@ public final class TestUtils {
             ChangeLogsRequest changeLogsRequest, Context context) throws InterruptedException {
         HealthConnectReceiver<ChangeLogsResponse> receiver = new HealthConnectReceiver<>();
         getHealthConnectManager(context)
-                .getChangeLogs(changeLogsRequest, Executors.newSingleThreadExecutor(), receiver);
+                .getChangeLogs(changeLogsRequest, sOutcomeExecutor, receiver);
         return receiver.getResponse();
     }
 
@@ -327,7 +336,7 @@ public final class TestUtils {
             AggregateRecordsRequest<T> request) throws InterruptedException {
         HealthConnectReceiver<AggregateRecordsResponse<T>> receiver =
                 new HealthConnectReceiver<AggregateRecordsResponse<T>>();
-        getHealthConnectManager().aggregate(request, Executors.newSingleThreadExecutor(), receiver);
+        getHealthConnectManager().aggregate(request, sOutcomeExecutor, receiver);
         return receiver.getResponse();
     }
 
@@ -339,7 +348,7 @@ public final class TestUtils {
         }
 
         HealthConnectReceiver<AggregateRecordsResponse<T>> receiver = new HealthConnectReceiver<>();
-        getHealthConnectManager().aggregate(request, Executors.newSingleThreadExecutor(), receiver);
+        getHealthConnectManager().aggregate(request, sOutcomeExecutor, receiver);
         return receiver.getResponse();
     }
 
@@ -351,7 +360,7 @@ public final class TestUtils {
                 new HealthConnectReceiver<>();
         getHealthConnectManager()
                 .aggregateGroupByDuration(
-                        request, duration, Executors.newSingleThreadExecutor(), receiver);
+                        request, duration, sOutcomeExecutor, receiver);
         return receiver.getResponse();
     }
 
@@ -362,7 +371,7 @@ public final class TestUtils {
                 new HealthConnectReceiver<>();
         getHealthConnectManager()
                 .aggregateGroupByPeriod(
-                        request, period, Executors.newSingleThreadExecutor(), receiver);
+                        request, period, sOutcomeExecutor, receiver);
         return receiver.getResponse();
     }
 
@@ -386,7 +395,7 @@ public final class TestUtils {
         assertThat(request.getRecordType()).isNotNull();
         HealthConnectReceiver<ReadRecordsResponse<T>> receiver = new HealthConnectReceiver<>();
         getHealthConnectManager(context)
-                .readRecords(request, Executors.newSingleThreadExecutor(), receiver);
+                .readRecords(request, sOutcomeExecutor, receiver);
         return receiver.getResponse();
     }
 
@@ -436,7 +445,7 @@ public final class TestUtils {
             ReadRecordsRequest<T> request) throws InterruptedException {
         HealthConnectReceiver<ReadRecordsResponse<T>> receiver = new HealthConnectReceiver<>();
         getHealthConnectManager()
-                .readRecords(request, Executors.newSingleThreadExecutor(), receiver);
+                .readRecords(request, sOutcomeExecutor, receiver);
         return receiver.getResponse();
     }
 
@@ -447,7 +456,7 @@ public final class TestUtils {
             HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
             getHealthConnectManager()
                     .setRecordRetentionPeriodInDays(
-                            period, Executors.newSingleThreadExecutor(), receiver);
+                            period, sOutcomeExecutor, receiver);
             receiver.verifyNoExceptionOrThrow();
         } finally {
             uiAutomation.dropShellPermissionIdentity();
@@ -461,7 +470,7 @@ public final class TestUtils {
         try {
             HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
             getHealthConnectManager()
-                    .deleteRecords(request, Executors.newSingleThreadExecutor(), receiver);
+                    .deleteRecords(request, sOutcomeExecutor, receiver);
             receiver.verifyNoExceptionOrThrow();
         } finally {
             uiAutomation.dropShellPermissionIdentity();
@@ -477,7 +486,7 @@ public final class TestUtils {
             throws InterruptedException {
         HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
         getHealthConnectManager(context)
-                .deleteRecords(request, Executors.newSingleThreadExecutor(), receiver);
+                .deleteRecords(request, sOutcomeExecutor, receiver);
         receiver.verifyNoExceptionOrThrow();
     }
 
@@ -487,7 +496,7 @@ public final class TestUtils {
         HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
         getHealthConnectManager()
                 .deleteRecords(
-                        recordType, timeRangeFilter, Executors.newSingleThreadExecutor(), receiver);
+                        recordType, timeRangeFilter, sOutcomeExecutor, receiver);
         receiver.verifyNoExceptionOrThrow();
     }
 
@@ -515,7 +524,7 @@ public final class TestUtils {
         try {
             HealthConnectReceiver<List<AccessLog>> receiver = new HealthConnectReceiver<>();
             getHealthConnectManager()
-                    .queryAccessLogs(Executors.newSingleThreadExecutor(), receiver);
+                    .queryAccessLogs(sOutcomeExecutor, receiver);
             return receiver.getResponse();
         } finally {
             uiAutomation.dropShellPermissionIdentity();
@@ -530,7 +539,7 @@ public final class TestUtils {
             HealthConnectReceiver<Map<Class<? extends Record>, RecordTypeInfoResponse>> receiver =
                     new HealthConnectReceiver<>();
             getHealthConnectManager()
-                    .queryAllRecordTypesInfo(Executors.newSingleThreadExecutor(), receiver);
+                    .queryAllRecordTypesInfo(sOutcomeExecutor, receiver);
             return receiver.getResponse();
         } finally {
             uiAutomation.dropShellPermissionIdentity();
@@ -544,7 +553,7 @@ public final class TestUtils {
         try {
             HealthConnectReceiver<List<LocalDate>> receiver = new HealthConnectReceiver<>();
             getHealthConnectManager()
-                    .queryActivityDates(recordTypes, Executors.newSingleThreadExecutor(), receiver);
+                    .queryActivityDates(recordTypes, sOutcomeExecutor, receiver);
             return receiver.getResponse();
         } finally {
             uiAutomation.dropShellPermissionIdentity();
@@ -553,7 +562,7 @@ public final class TestUtils {
 
     public static void startMigration() throws InterruptedException {
         MigrationReceiver receiver = new MigrationReceiver();
-        getHealthConnectManager().startMigration(Executors.newSingleThreadExecutor(), receiver);
+        getHealthConnectManager().startMigration(sOutcomeExecutor, receiver);
         receiver.verifyNoExceptionOrThrow();
     }
 
@@ -561,13 +570,13 @@ public final class TestUtils {
             throws InterruptedException {
         MigrationReceiver receiver = new MigrationReceiver();
         getHealthConnectManager()
-                .writeMigrationData(entities, Executors.newSingleThreadExecutor(), receiver);
+                .writeMigrationData(entities, sOutcomeExecutor, receiver);
         receiver.verifyNoExceptionOrThrow();
     }
 
     public static void finishMigration() throws InterruptedException {
         MigrationReceiver receiver = new MigrationReceiver();
-        getHealthConnectManager().finishMigration(Executors.newSingleThreadExecutor(), receiver);
+        getHealthConnectManager().finishMigration(sOutcomeExecutor, receiver);
         receiver.verifyNoExceptionOrThrow();
     }
 
@@ -576,7 +585,7 @@ public final class TestUtils {
         MigrationReceiver receiver = new MigrationReceiver();
         getHealthConnectManager()
                 .insertMinDataMigrationSdkExtensionVersion(
-                        version, Executors.newSingleThreadExecutor(), receiver);
+                        version, sOutcomeExecutor, receiver);
         receiver.verifyNoExceptionOrThrow();
     }
 
@@ -612,7 +621,7 @@ public final class TestUtils {
     public static int getHealthConnectDataMigrationState() throws InterruptedException {
         HealthConnectReceiver<HealthConnectDataState> receiver = new HealthConnectReceiver<>();
         getHealthConnectManager()
-                .getHealthConnectDataState(Executors.newSingleThreadExecutor(), receiver);
+                .getHealthConnectDataState(sOutcomeExecutor, receiver);
         return receiver.getResponse().getDataMigrationState();
     }
 
@@ -622,7 +631,7 @@ public final class TestUtils {
                 () ->
                         getHealthConnectManager()
                                 .getHealthConnectDataState(
-                                        Executors.newSingleThreadExecutor(), receiver),
+                                        sOutcomeExecutor, receiver),
                 MANAGE_HEALTH_DATA);
         return receiver.getResponse().getDataRestoreState();
     }
@@ -630,7 +639,7 @@ public final class TestUtils {
     public static List<AppInfo> getApplicationInfo() throws InterruptedException {
         HealthConnectReceiver<ApplicationInfoResponse> receiver = new HealthConnectReceiver<>();
         getHealthConnectManager()
-                .getContributorApplicationsInfo(Executors.newSingleThreadExecutor(), receiver);
+                .getContributorApplicationsInfo(sOutcomeExecutor, receiver);
         return receiver.getResponse().getApplicationInfoList();
     }
 
@@ -829,7 +838,7 @@ public final class TestUtils {
                 new HealthConnectReceiver<>();
         getHealthConnectManager()
                 .fetchDataOriginsPriorityOrder(
-                        dataCategory, Executors.newSingleThreadExecutor(), receiver);
+                        dataCategory, sOutcomeExecutor, receiver);
         return receiver.getResponse();
     }
 
@@ -838,7 +847,7 @@ public final class TestUtils {
         HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
         getHealthConnectManager()
                 .updateDataOriginPriorityOrder(
-                        request, Executors.newSingleThreadExecutor(), receiver);
+                        request, sOutcomeExecutor, receiver);
         receiver.verifyNoExceptionOrThrow();
     }
 
@@ -1050,7 +1059,7 @@ public final class TestUtils {
                 new UpdateDataOriginPriorityOrderRequest(dataOrigins, permissionCategory);
         service.updateDataOriginPriorityOrder(
                 updateDataOriginPriorityOrderRequest,
-                Executors.newSingleThreadExecutor(),
+                sOutcomeExecutor,
                 new OutcomeReceiver<>() {
                     @Override
                     public void onResult(Void result) {
@@ -1117,7 +1126,7 @@ public final class TestUtils {
                 new AtomicReference<>();
         service.fetchDataOriginsPriorityOrder(
                 permissionCategory,
-                Executors.newSingleThreadExecutor(),
+                sOutcomeExecutor,
                 new OutcomeReceiver<>() {
                     @Override
                     public void onResult(FetchDataOriginsPriorityOrderResponse result) {
@@ -1254,7 +1263,7 @@ public final class TestUtils {
             throws InterruptedException {
         HealthConnectReceiver<MedicalDataSource> receiver = new HealthConnectReceiver<>();
         getHealthConnectManager()
-                .createMedicalDataSource(request, Executors.newSingleThreadExecutor(), receiver);
+                .createMedicalDataSource(request, sOutcomeExecutor, receiver);
         return receiver.getResponse();
     }
 
@@ -1263,7 +1272,7 @@ public final class TestUtils {
             throws InterruptedException {
         HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
         getHealthConnectManager()
-                .getMedicalDataSources(ids, Executors.newSingleThreadExecutor(), receiver);
+                .getMedicalDataSources(ids, sOutcomeExecutor, receiver);
         return receiver.getResponse();
     }
 
@@ -1275,7 +1284,7 @@ public final class TestUtils {
             throws InterruptedException {
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
         getHealthConnectManager()
-                .readMedicalResources(ids, Executors.newSingleThreadExecutor(), receiver);
+                .readMedicalResources(ids, sOutcomeExecutor, receiver);
         return receiver.getResponse();
     }
 
@@ -1288,7 +1297,7 @@ public final class TestUtils {
         HealthConnectReceiver<ReadMedicalResourcesResponse> receiver =
                 new HealthConnectReceiver<>();
         getHealthConnectManager()
-                .readMedicalResources(request, Executors.newSingleThreadExecutor(), receiver);
+                .readMedicalResources(request, sOutcomeExecutor, receiver);
         return receiver.getResponse();
     }
 
